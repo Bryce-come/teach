@@ -1,0 +1,39 @@
+{
+  "name": "roms_web",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev.demo": "vue-cli-service serve --mode dev.demo",
+    "build.demo": "vue-cli-service build --modern --mode pro.demo",
+    "lint": "vue-cli-service lint",
+    "rm_cache": "rm -rf ./node_modules/.cache",
+    "core": "yarn add git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "amap-js": "^1.2.1",
+    "element-ui": "^2.13.0",
+    "web-toolkit": "git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git"
+  },
+  "devDependencies": {
+    "@babel/core": "7.7.4",
+    "@types/ali-oss": "^6.0.3",
+    "@types/echarts": "^4.4.1",
+    "@types/qs": "^6.9.0",
+    "@vue/babel-preset-app": "^4.0.5",
+    "@vue/cli-plugin-babel": "^4.0.5",
+    "@vue/cli-plugin-typescript": "^4.0.5",
+    "@vue/cli-service": "^4.0.5",
+    "babel-loader": "^8.0.6",
+    "core-js": "^3.4.2",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^7.3.1",
+    "typescript": "^3.7.2",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
