@@ -2,13 +2,13 @@
 // 主菜单
 export const mainMenuTitles = [
   // 如果没有子导航，直接在这指定CName一样的值
-  '设备总览', 'icon-monitor',
-  '设备监控', 'icon-dashboard',
-  '报警提醒', 'icon-xiangmu',
-  '运行分析', 'icon-oeeanalysis',
-  '工单管理', 'icon-manage2',
-  '远程记录', 'icon-manage2',
-  '系统管理', 'icon-system',
+  '菜单一', 'icon-monitor',
+  '菜单二', 'icon-dashboard',
+  // '报警提醒', 'icon-xiangmu',
+  // '运行分析', 'icon-oeeanalysis',
+  // '工单管理', 'icon-manage2',
+  // '远程记录', 'icon-manage2',
+  // '系统管理', 'icon-system',
 ];
 
 export const loginTitle1 = process.env.VUE_APP_LOGIN_TITLE1;

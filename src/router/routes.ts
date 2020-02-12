@@ -253,9 +253,21 @@ import { PRIVILEGE } from '@/types/privilege';
 //     parentCName: '系统管理',
 //   },
 // };
+// 测试用例
+const test = {
+  path: '/',
+  name: 'test',
+  component: () => import('../views/test/test.vue'),
+  // 这里都加上authDisabled，不用检验是否登录
+  meta: {
+    authDisabled: true,
+    CName: '测试',
+    parentCName: '菜单一',
+  },
+};
 //
 // // 按顺序 用于菜单的排列
-// const indexChildren = [
+const indexChildren = [
 //   indexPage,
 //   monitoring,
 //   monitoringDetail,
@@ -285,13 +297,14 @@ import { PRIVILEGE } from '@/types/privilege';
 //   // 维护人员管理,
 //   // userMng,
 //   roleMng,
-//   {
-//     path: '*',
-//     name: '404_child',
-//     component: () => import('../component/page404.vue'),
-//     meta: { authDisabled: true },
-//   },
-// ];
+  test,
+  {
+    path: '*',
+    name: '404_child',
+    component: () => import('../components/page404.vue'),
+    meta: { authDisabled: true },
+  },
+];
 export const routes = [
   {
     path: '/login',
@@ -299,19 +312,14 @@ export const routes = [
     component: () => import('../views/login.vue'),
     meta: { authDisabled: true },
   },
+
   {
     path: '/',
-    name: 'test',
-    component: () => import('../views/test/test.vue'),
-    meta: { authDisabled: true },
+    name: 'index',
+    redirect: 'test',
+    component: () => import('../views/main/index.vue'),
+    children: indexChildren,
   },
-  // {
-  //   path: '/',
-  //   name: 'index',
-  //   redirect: 'index-page',
-  //   component: () => import('../views/main/index.vue'),
-  //   children: indexChildren,
-  // },
   {
     path: '*',
     name: '404',
