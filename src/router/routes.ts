@@ -89,7 +89,7 @@ import { PRIVILEGE } from '@/types/privilege';
 //   meta: {
 //     privileges: [PRIVILEGE.DEVICE_ANALYSIS],
 //     CName: '报警统计分析',
-//     parentCName: '运行分析',
+//     parentCName: '运行分析', 
 //   },
 //   children: [
 //     {
@@ -265,6 +265,29 @@ const test = {
     parentCName: '菜单一',
   },
 };
+const courseScheduling = {
+  path: '/course/courseScheduling',
+  name: 'courseScheduling',
+  component: () => import('../views/administrator/course/course-scheduling.vue'),
+  // 这里都加上authDisabled，不用检验是否登录
+  meta: {
+    authDisabled: true,
+    CName: '实训排课',
+    parentCName: '实验课程管理',
+  },
+};
+const courseAppointment = {
+  path: '/course/courseAppointment',
+  name: 'courseAppointment',
+  component: () => import('../views/administrator/course/course-appointment.vue'),
+  // 这里都加上authDisabled，不用检验是否登录
+  meta: {
+    authDisabled: true,
+    CName: '预约审核',
+    parentCName: '实验课程管理',
+  },
+};
+
 //
 // // 按顺序 用于菜单的排列
 const indexChildren = [
@@ -298,6 +321,9 @@ const indexChildren = [
 //   // userMng,
 //   roleMng,
   test,
+  // 实验课程管理
+  courseScheduling,
+  courseAppointment,
   {
     path: '*',
     name: '404_child',
@@ -319,6 +345,7 @@ export const routes = [
     redirect: 'test',
     component: () => import('../views/main/index.vue'),
     children: indexChildren,
+    meta: { authDisabled: true },
   },
   {
     path: '*',
