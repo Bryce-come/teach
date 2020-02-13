@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello,everyone
+    hello,equipment maintenance
   </div>
 </template>
 <script lang="ts">

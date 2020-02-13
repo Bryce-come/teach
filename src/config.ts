@@ -3,7 +3,10 @@
 export const mainMenuTitles = [
   // 如果没有子导航，直接在这指定CName一样的值
   '菜单一', 'icon-monitor',
-  '菜单二', 'icon-dashboard',
+  '实验室管理', 'icon-xiangmu',
+  '实验课程管理', 'icon-xiangmu',
+  '人员管理', 'icon-manage2',
+  '系统设置', 'icon-system',
   // '报警提醒', 'icon-xiangmu',
   // '运行分析', 'icon-oeeanalysis',
   // '工单管理', 'icon-manage2',

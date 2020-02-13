@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello,everyone
+    hello,cutting tool management
   </div>
 </template>
 <script lang="ts">

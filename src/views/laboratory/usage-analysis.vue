@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello,everyone
+    hello,usage analysis
   </div>
 </template>
 <script lang="ts">
