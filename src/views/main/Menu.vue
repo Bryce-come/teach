@@ -62,7 +62,8 @@ export default {
       router.push({ name });
     }
     function contains(privileges: any[]) {
-      if (!storeUserInfo.user) { return false; }
+      // todo
+      if (!storeUserInfo.user) { return true; }
       const all = storeUserInfo.user.role.privileges;
       return checkPrivilege(all, privileges);
     }

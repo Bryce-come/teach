@@ -89,7 +89,7 @@ import { PRIVILEGE } from '@/types/privilege';
 //   meta: {
 //     privileges: [PRIVILEGE.DEVICE_ANALYSIS],
 //     CName: '报警统计分析',
-//     parentCName: '运行分析', 
+//     parentCName: '运行分析',
 //   },
 //   children: [
 //     {
@@ -397,7 +397,7 @@ export const routes = [
   {
     path: '/',
     name: 'index',
-    redirect: 'test',
+    // redirect: 'test',
     component: () => import('../views/main/index.vue'),
     children: indexChildren,
     meta: { authDisabled: true },
