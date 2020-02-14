@@ -77,7 +77,7 @@
         ref="formInfo"
         label-position="left" label-width="100px">
         <el-form-item label="用户名：">
-          {{storeUserInfo.user.username}}
+          {{storeUserInfo.user?storeUserInfo.user.username:''}}
         </el-form-item>
         <el-form-item label="姓  名：" prop="name"
                       :rules="[{required: true, message: '请填写性名', trigger: 'blur'}]">
