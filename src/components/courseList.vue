@@ -13,7 +13,14 @@
           </tr>
         </thead>
         <tbody>
-
+           <tr v-for="(weekNum, weekIndex) in weeks.length" :key="weekIndex">
+             <th>
+               <div>第<span>{{weekIndex+1}}</span>节课</div>
+             </th>
+             <td v-for="i in 7" :key="i" >
+               {{i}}
+             </td>
+           </tr>
         </tbody>
       </table>
     </div>
@@ -42,15 +49,35 @@ export default createComponent({
   .class-table {
     margin: 7px;
     table {
+      background-color: rgb(32, 38, 97);
       margin: auto;
       table-layout:fixed;
       width: 80%;
       thead {
-        background-color:#67a1ff ;
+        background-color:#67a1ff  ;
         th {
           color: #fff;
           line-height: 2rem;
           font-weight: normal;
+        }
+      }
+    }
+    tbody{
+      tr {
+        th {
+          color: #fff;
+          background-color:#67a1ff ;
+          line-height: 2rem;
+          font-weight:lighter;
+          text-align: center;
+          vertical-align:middle;
+        }
+        td {
+          background-color:white ;
+          line-height: 2rem;
+          font-weight:lighter;
+          text-align: center;
+          vertical-align:middle;
         }
       }
     }
