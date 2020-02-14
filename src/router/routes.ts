@@ -268,7 +268,7 @@ const test = {
 const courseScheduling = {
   path: '/course/courseScheduling',
   name: 'courseScheduling',
-  component: () => import('../views/administrator/course/course-scheduling.vue'),
+  component: () => import('../views/course/course-scheduling.vue'),
   // 这里都加上authDisabled，不用检验是否登录
   meta: {
     authDisabled: true,
@@ -279,7 +279,7 @@ const courseScheduling = {
 const courseAppointment = {
   path: '/course/courseAppointment',
   name: 'courseAppointment',
-  component: () => import('../views/administrator/course/course-appointment.vue'),
+  component: () => import('../views/course/course-appointment.vue'),
   // 这里都加上authDisabled，不用检验是否登录
   meta: {
     authDisabled: true,
