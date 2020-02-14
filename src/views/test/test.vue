@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello,everyone
+    hello,everybody
   </div>
 </template>
 <script lang="ts">
