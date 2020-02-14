@@ -265,6 +265,56 @@ const test = {
     parentCName: '菜单一',
   },
 };
+const equipmentAccount = {
+  path: '/laboratory/equipment-account',
+  name: 'equipmentAccount',
+  component: () => import('../views/laboratory/equipment-account.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '设备台账管理',
+    parentCName: '实验室管理',
+  },
+};
+const workTop = {
+  path: '/laboratory/worktop',
+  name: 'workTop',
+  component: () => import('../views/laboratory/worktop.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '操作台管理',
+    parentCName: '实验室管理',
+  },
+};
+const equipmentMaintenance = {
+  path: '/laboratory/equipment-maintenance',
+  name: 'equipmentMaintenance',
+  component: () => import('../views/laboratory/equipment-maintenance.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '设备保养维修',
+    parentCName: '实验室管理',
+  },
+};
+const cuttingtoolManagement = {
+  path: '/laboratory/cutting-tool-management',
+  name: 'cuttingtoolMangement',
+  component: () => import('../views/laboratory/cutting-tool-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '刀具管理',
+    parentCName: '实验室管理',
+  },
+};
+const usageAnalysis = {
+  path: '/laboratory/usage-analysis',
+  name: 'usageAnalysis',
+  component: () => import('../views/laboratory/usage-analysis.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '使用情况分析',
+    parentCName: '实验室管理',
+  },
+};
 const courseScheduling = {
   path: '/course/courseScheduling',
   name: 'courseScheduling',
@@ -321,6 +371,11 @@ const indexChildren = [
 //   // userMng,
 //   roleMng,
   test,
+  equipmentAccount,
+  workTop,
+  equipmentMaintenance,
+  cuttingtoolManagement,
+  usageAnalysis,
   // 实验课程管理
   courseScheduling,
   courseAppointment,
