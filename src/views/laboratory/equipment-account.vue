@@ -1,95 +1,89 @@
 <template>
-  <div v-loading="loading" class="equipment-account">
-    <el-form class="flex" label-width="80px" label-position="left">
-        <el-form-item label="设备型号:">
-            <el-select v-model="Device.id" value-key="model" multiple clearable filterable placeholder="请选择设备型号">
-                <el-option v-for="item of Device" :key="item.id" :label="item.model" :value="item"/>
+  <div class="equipment-account">
+    <el-form>
+        <el-form-item label="设备型号:" label-width="80px">
+            <el-select v-model="value1" multiple clearable filterable placeholder="请选择设备型号">
+                <el-option v-for="item of deviceaccountList" :key="item.type.id" :label="item.type.name" :value="item.type.id"/>
             </el-select>
         </el-form-item>
-        <el-form-item label="购入时间:" style="margin-left: 20px">
-            <el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-form-item label="购入时间:" label-width="80px">
+            <el-date-picker v-model="value2" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
              </el-date-picker>
-        </el-form-item>
-        <el-form-item style="margin-left: 60px">
-            <el-button type="primary">查询</el-button>
+             <el-button type="primary" style="margin-left: 20px">查询</el-button>
             <el-button style="margin-left: 20px">重置</el-button>
         </el-form-item>
-    </el-form>
-    <el-form class="flex" label-width="30px" label-position="left">
-        <el-form-item><el-button type="success" @click="addDialog = true">增加</el-button>
-        <el-dialog title="录入设备相关信息" :visible.sync="addDialog">
-            <el-form :model="form" class="flex" label-position="left" >
+        <el-form-item>
+            <el-button type="success" @click="showForm()">增加</el-button>
+            <el-button type="info" style="margin-left: 20px">导出</el-button>
+        </el-form-item>
+    </el-form>    
+     <lkt-table
+      :data="deviceaccountList"
+      style="width: 100%">
+      <el-table-column type="expand">
+      <template slot-scope="props">
+        <el-form class="flex" label-width="100px" label-position="left" inline>
+          <el-form-item label="设备IP" style="margin-left:80px">
+            <span>{{props.row.extend.ip}}</span>
+          </el-form-item>
+          <el-form-item label="厂商联系人" style="margin-left:80px">
+            <span>{{props.row.extend.producerContact}}</span>
+          </el-form-item>
+          <el-form-item label="厂商联系方式" style="margin-left:80px">
+            <span>{{props.row.extend.producerTel}}</span>
+          </el-form-item>
+        </el-form>
+      </template>
+    </el-table-column>
+      <el-table-column prop="type.name" label="设备型号" width="100px"/>
+      <el-table-column prop="extend.address" label="存放地址"/>     
+      <el-table-column prop="extend.buyDt" label="购入日期"/>
+      <el-table-column prop="extend.producerTel" label="联系方式"/>
+      <el-table-column prop="extend.producer" label="生产厂商"/>
+      <el-table-column label="操作">
+          <el-button type="danger" size="mini" @click="remove()">删除</el-button>
+          <el-button type="warning" size="mini" style="margin-left:5px" @click="showForm()">修改</el-button>           
+      </el-table-column>
+    </lkt-table>
+    <kit-dialog-simple title="录入设备相关信息" :modal="modal" :confirm="update">
+            <el-form :model="form" class="flex" label-position="left">
                 <el-form-item label="设备型号">
-                    <el-input v-model="form.model"></el-input>
+                    <el-select v-model="form.model" placeholder="请选择设备型号"></el-select>
                 </el-form-item>
                 <el-form-item label="存放地址" style="margin-left:20px">
                     <el-input v-model="form.address"></el-input>
                 </el-form-item>
                 <el-form-item label="购入日期" style="margin-left:20px">
-                    <el-input v-model="form.date"></el-input>
+                    <el-date-picker v-model="form.date" type="date" placeholder="请选择购入日期"></el-date-picker>
                 </el-form-item>
             </el-form>
             <el-form :model="form" class="flex" label-position="left">
                 <el-form-item label="联系方式">
-                    <el-input v-model="form.contact"></el-input>
+                    <el-input v-model="form.contact" placeholder="请输入联系方式"></el-input>
                 </el-form-item>
                 <el-form-item label="生产厂商" style="margin-left:20px">
-                    <el-input v-model="form.manufacturer"></el-input>
+                    <el-input v-model="form.manufacturer" placeholder="请输入生产厂商"></el-input>
                 </el-form-item>
                 <el-form-item label="厂商联系人" style="margin-left:20px">
-                    <el-input v-model="form.manuLinkman"></el-input>
+                    <el-input v-model="form.manuLinkman" placeholder="请输入厂商联系人"></el-input>
                 </el-form-item>
             </el-form>
             <el-form :model="form" class="flex" label-position="left" >
                 <el-form-item label="厂商联系方式">
-                    <el-input v-model="form.manuContact"></el-input>
+                    <el-input v-model="form.manuContact" placeholder="请输入厂商联系方式"></el-input>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialog = false">取 消</el-button>
-                <el-button type="primary" @click="addDialog = false" style="margin-left:10px">提 交</el-button>
-            </div>
-        </el-dialog>        
-        </el-form-item>
-        <el-form-item><el-button type="info">导出</el-button></el-form-item>
-    </el-form>
-     <el-table
-      :data="Device"
-      style="width: 100%">
-      <el-table-column type="expand">
-      <template >
-        <el-form class="flex" label-width="100px" label-position="left" inline>
-          <el-form-item label="设备IP" style="margin-left:80px">
-            <span>{{Device.ip}}</span>
-          </el-form-item>
-          <el-form-item label="厂商联系人" style="margin-left:80px">
-            <span>{{Device.manuLinkman}}</span>
-          </el-form-item>
-          <el-form-item label="厂商联系方式" style="margin-left:80px">
-            <span>{{Device.manuContact}}</span>
-          </el-form-item>
-        </el-form>
-      </template>
-    </el-table-column>
-    <el-table-column type="selection"/>
-      <el-table-column prop="model" label="设备型号" width="100px"/>
-      <el-table-column prop="address" label="存放地址"/>     
-      <el-table-column prop="date" label="购入日期"/>
-      <el-table-column prop="contact" label="联系方式"/>
-      <el-table-column prop="manufacturer" label="生产厂商"/>
-      <el-table-column label="操作">
-          <el-button type="danger" size="mini" @click="slice">删除</el-button>
-          <el-button type="warning" size="mini" style="margin-left:5px" @click="reviseDialog = true">修改</el-button>
-          <el-dialog title="修改相关信息" :visible.sync="reviseDialog">
+    </kit-dialog-simple>
+    <kit-dialog-simple title="修改相关信息" :modal="modal">
             <el-form :model="reviseForm" class="flex" label-position="left" >
                 <el-form-item label="设备型号">
-                    <el-input v-model="reviseForm.model"></el-input>
+                    <el-select v-model="reviseForm.model"></el-select>
                 </el-form-item>
                 <el-form-item label="存放地址" style="margin-left:20px">
                     <el-input v-model="reviseForm.address"></el-input>
                 </el-form-item>
                 <el-form-item label="购入日期" style="margin-left:20px">
-                    <el-input v-model="reviseForm.date"></el-input>
+                    <el-date-picker v-model="reviseForm.date" type="date"></el-date-picker>
                 </el-form-item>
             </el-form>
             <el-form :model="reviseForm" class="flex" label-position="left">
@@ -108,109 +102,75 @@
                     <el-input v-model="reviseForm.manuContact"></el-input>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="reviseDialog = false">取 消</el-button>
-                <el-button type="primary" @click="reviseDialog = false" style="margin-left:10px">提 交</el-button>
-            </div>
-          </el-dialog>            
-      </el-table-column>
-    </el-table>
+    </kit-dialog-simple> 
   </div>
 </template>
 <script lang="ts">
 import { ref, Ref, onMounted } from '@vue/composition-api';
+import { useConfirm, useLoading } from 'web-toolkit/src/service';
+import { Message } from 'element-ui';
 export default {
   setup() {
-      const Device = [{
-          id: '001',    
-          model: 'NLJT001',
-          address: '浙江自动化学院实验室-01',
-          date: '2019-05-02',
-          contact: '111111111',
-          manufacturer: '浙江金华机床厂',
-          ip: '192.168.0.101',
-          manuLinkman: '张晓明',
-          manuContact: '12345678',          
-      }, {
-          id: '002',
-          model: 'NLJT002',
-          address: '浙江自动化学院实验室-02',
-          date: '2019-05-02',
-          contact: '111111111',
-          manufacturer: '浙江金华机床厂',
-          ip: '192.168.0.102',
-          manuLinkman: '张晓明',
-          manuContact: '12345678',
-      }, {
-          id: '003',
-          model: 'NLJT003',
-          address: '浙江自动化学院实验室-03',
-          date: '2019-05-02',
-          contact: '111111111',
-          manufacturer: '浙江金华机床厂',
-          ip: '192.168.0.103',
-          manuLinkman: '张晓明',
-          manuContact: '12345678',        
-      }, {
-          id: '004',
-          model: 'NLJT004',
-          address: '浙江自动化学院实验室-04',
-          date: '2019-05-02',
-          contact: '111111111',
-          manufacturer: '浙江金华机床厂',
-          ip: '192.168.0.104',
-          manuLinkman: '张晓明',
-          manuContact: '12345678',
-      }, {
-          id: '005',
-          model: 'NLJT005',
-          address: '浙江自动化学院实验室-05',
-          date: '2019-05-02',
-          contact: '111111111',
-          manufacturer: '浙江金华机床厂',
-          ip: '192.168.0.105',
-          manuLinkman: '张晓明',
-          manuContact: '12345678',
-      }];
-      const value1 = '';
-      const addDialog = false;
-      const reviseDialog = false;
+      const loading = ref(false);
+      const deviceaccountList = ref<any>();
+      const value1 = {};
+      const value2 = '';
       const form = {
-          model: " ",
-          address: " ",
-          date: " ",
-          contact: " ",
-          manufacturer: " ",
-          manuLinkman: " ",
-          manuContact: " ",
+          model: '',
+          address: '',
+          date: '',
+          contact: '',
+          manufacturer: '',
+          manuLinkman: '',
+          manuContact: '',
       };
       const reviseForm = {
-        model: " ",
-        address: " ",
-        date: " ",
-        contact: " ",
-        manufacturer: " ",
-        manuLinkman: " ",
-        manuContact: " ",
+          model: '',
+          address: '',
+          date: '',
+          contact: '',
+          manufacturer: '',
+          manuLinkman: '',
+          manuContact: '',
       };
-    //   const slice = () => {
-    //       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-    //       confirmButtonText: '确定',
-    //       cancelButtonText: '取消',
-    //       type: 'warning'
-    //     }).then(() => {
-    //       this.$message({
-    //         type: 'success',
-    //         message: '删除成功!'
-    //       });
-    //     }).catch(() => {
-    //       this.$message({
-    //         type: 'info',
-    //         message: '已取消删除'
-    //       });         
-    //     });}      
+      const query = async () => {
+          deviceaccountList.value = [
+          {id: '001', collector: '', name: 'xx机', type: {id: '0', name: 'NLJT1', img: '', extend: {ctrName: ''}},
+          createDt: '', extend: {ip: '192.168.0.101', buyDt: '2019-12-23', keeper: '王小明', maintenTime: '', address: '浙江自动化学院实验室01', price: '', producer: '浙江金华机床厂',
+          producerContact: '', producerTel: '18977538970'}},
+          {id: '002', collector: '', name: 'xx机', type: {id: '1', name: 'NLJT2', img: '', extend: {ctrName: ''}},
+          createDt: '', extend: {ip: '192.168.0.102', buyDt: '2019-12-23', keeper: '王小明', maintenTime: '', address: '浙江自动化学院实验室02', price: '', producer: '浙江金华机床厂',
+          producerContact: '', producerTel: '18977538970'}},
+          {id: '003', collector: '', name: 'xx机', type: {id: '2', name: 'NLJT3', img: '', extend: {ctrName: ''}},
+          createDt: '', extend: {ip: '192.168.0.103', buyDt: '2019-12-23', keeper: '王小明', maintenTime: '', address: '浙江自动化学院实验室03', price: '', producer: '浙江金华机床厂',
+          producerContact: '', producerTel: '18977538970'}},
+          {id: '004', collector: '', name: 'xx机', type: {id: '3', name: 'NLJT4', img: '', extend: {ctrName: ''}},
+          createDt: '', extend: {ip: '192.168.0.104', buyDt: '2019-12-23', keeper: '王小明', maintenTime: '', address: '浙江自动化学院实验室04', price: '', producer: '浙江金华机床厂',
+          producerContact: '', producerTel: '18977538970'}},
+          {id: '005', collector: '', name: 'xx机', type: {id: '4', name: 'NLJT5', img: '', extend: {ctrName: ''}},
+          createDt: '', extend: {ip: '192.168.0.105', buyDt: '2019-12-23', keeper: '王小明', maintenTime: '', address: '浙江自动化学院实验室05', price: '', producer: '浙江金华机床厂',
+          producerContact: '', producerTel: '18977538970'}}
+          ];
+      };
+      const remove = () => {
+          Message.success('删除成功');
+      };
+      const modal = ref<any>({
+          visible: false,
+    });
+      const showForm = () => {
+          modal.value.visible = true;
+      };
+      async function update() {
+          modal.value.visible = false;
+      };
+      onMounted(useLoading(loading, async () => {
+      await query();
+    }));
       return{
-         Device, value1, addDialog, reviseDialog, form, reviseForm
+         deviceaccountList, value1, value2, form, reviseForm, modal, showForm,
+         remove: useConfirm('确认删除？', useLoading(loading, remove)),
+         update: useLoading(loading, update),         
       };
     },
 };
