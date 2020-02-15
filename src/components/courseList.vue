@@ -1,5 +1,12 @@
 <template>
   <div v-loading="loading">
+    <div class="flex center" style="margin: 5px 10px">
+      <div class="flex align-center" style="margin-right: 10px">
+        <span>请输入要查询的日期：</span>
+        <lkt-date-picker v-model="oneDay" type="datetime" format="yyyy-MM-dd HH:mm" :clearable="false"/>
+        <el-button style="margin-left: 10px" type="primary" @click="list()">查询</el-button>        
+      </div>
+    </div>
     <div class="class-table">
       <div class="flex center">
         <div style="margin: 10px">
@@ -59,9 +66,6 @@
                     <div>
                        {{lessonItem?lessonItem.name:''}}
                     </div>
-                    <div>
-                       {{lessonItem?lessonItem.name:''}}
-                    </div>
                     </div>
                   </el-popover>
                <div v-if="!lessonItem">
@@ -89,6 +93,11 @@ export default createComponent({
     // 已经处理后的课程排列，按照第几节课排列
     // 访问各种设置
     const loading = ref(false);
+    // 学期选择列表
+    const terms = ref({});
+    const oneDay = ref();
+    // 查询函数
+    async function list() {};
     const more_setting = ref({
       lessonNum: 7,
     });
@@ -136,6 +145,8 @@ export default createComponent({
     }));
     return{
       loading,
+      oneDay: new Date,
+      list: useLoading(loading, list),
       weeks,
       digital2Chinese,
       lessons,
@@ -168,14 +179,14 @@ export default createComponent({
         th {
           color: #fff;
           background-color:#67a1ff ;
-          line-height: 2.5rem;
+          line-height: 3.5rem;
           font-weight: lighter;
           text-align: center;
           vertical-align: middle;
         }
         td {
-          background-color:rgb(142, 208, 214) ;
-          line-height: 2rem;
+          // background-color:rgb(142, 208, 214) ;
+          line-height: 3.5rem;
           font-weight: lighter;
           text-align: center;
           vertical-align: middle;         
