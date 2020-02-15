@@ -46,7 +46,7 @@
                   placement="top-start"
                   width="50"
                   >
-                  <div style="color:#67C23A;width:6rem;">
+                  <div style="color:#67C23A;width:6rem;" @click="readLesson(lessonItem)">
                     <i class="el-icon-reading"></i>
                     <span  style="margin-left:5px">查看</span>
                   </div>
@@ -64,7 +64,7 @@
                   </div>
                   <div style="width:100%;height:100%" slot="reference">
                     <div>
-                       {{lessonItem?lessonItem.name:''}}
+                       {{lessonItem?lessonItem.course.name:''}}
                     </div>
                     </div>
                   </el-popover>
@@ -75,10 +75,38 @@
            </tr>
         </tbody>
       </table>
-      <!-- <lkt-dialog-simple
-      :modal="newAppointFlag"
+      <el-dialog
+      :visible.sync="readModel.visible"
+      :modal="readModel.oneLesson"
+      title="课程信息查看"
       >
-      </lkt-dialog-simple> -->
+           <div class="flex center column">
+               <el-form label-width="110px" label-position="left">
+                  <el-form-item label="课程名称：" v-if="readModel.oneLesson.course">
+                    <span>{{readModel.oneLesson.course.name}}</span>
+                  </el-form-item>
+                  <el-form-item label="授课教师：" v-if="readModel.oneLesson.teacher">
+                    <span>{{ readModel.oneLesson.teacher.name }}</span>
+                  </el-form-item>
+                  <el-form-item label="参与学生：" v-if="readModel.oneLesson">
+                    <span>{{ readModel.oneLesson.students  }}</span>
+                  </el-form-item>
+                  <el-form-item label="实验名称：" v-if="readModel.oneLesson.course">
+                    <div v-for="(item,i) in readModel.oneLesson.course.programList" :key='i'>
+                      <span>{{ item }}</span>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="上课时间：" v-if="readModel.oneLesson.extend">
+                    <span>{{  readModel.oneLesson.extend.lessons.length+'课时' }}</span>
+                  </el-form-item>
+                  <el-form-item label="操作台：" v-if="readModel.oneLesson">
+                    <div v-for="(item,i) in readModel.oneLesson.stations" :key='i'>
+                      <span>{{ item }}</span>
+                    </div>
+                  </el-form-item> 
+               </el-form>
+           </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -96,6 +124,12 @@ export default createComponent({
     // 学期选择列表
     const terms = ref({});
     const oneDay = ref();
+    // 查看标志
+    const readModel = ref<any>(
+      {
+        visible: false,
+        oneLesson: '',
+      }); 
     // 查询函数
     async function list() {};
     const more_setting = ref({
@@ -126,20 +160,81 @@ export default createComponent({
       const character = ['零', '一', '二', '三', '四', '五', '六', '七'];
       return identifier === 'week' && (num === 0 || num === 7) ? '日' : character[num];
     } 
+    //重新排列数据
     const newList = async () => {
       lessons.value = [
-        {lesson:['', '', '', {name:'语文',type:1,extend:{lessonInt:3,appointRecord:{result:1}}}, '', '', '']},
+        {lesson: ['', '', '', 
+          {
+            course: { 
+              name: '自动化课程1',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 1,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 3,
+              appointRecord: {result:1},
+              lessons:[1,2,3],
+              class:'自动化1801'}
+          }, '', '', '']},
         {lesson:['', '', '', '', '', '']},
         {lesson:['', '', '', '', '', '']},
-        {lesson:['', '', '', '', '', {name:'数学',type:0,extend:{lessonInt:1}}, '']},
-        {lesson:['', '', '', '', '', {name:'英语',type:1,extend:{lessonInt:1,appointRecord:{result:2}}}, '']},
+        {lesson:['', '', '', '', '', 
+          {
+            course: { 
+              name: '自动化课程2',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 0,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 1,
+              lessons:[4],
+              class:'自动化1801'}
+          }, '']},
+        {lesson:['', '', '', '', '',
+          {
+            course: { 
+              name: '自动化课程3',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 1,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 1,
+              appointRecord: {result:2},
+              lessons:[5],
+              class:'自动化1801'}
+          }, '']},
         {lesson:['', '', '', '', '', '', '']},
-        {lesson:['', {name:'数学',type:2,extend:{lessonInt:1,appointRecord:{result:1}}}, '', '', '', '', '']},
+        {lesson:['', 
+          {
+            course: { 
+              name: '自动化课程4',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 2,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 1,
+              appointRecord: {result:1},
+              lessons:[7],
+              class:'自动化1801'}
+          }, '', '', '', '', '']},
       ]
     };
-    function flag(lessonOne: any) {
-
-    }
+    const readLesson = async(lessonItem: any) => {
+        readModel.value.visible = true;
+        readModel.value.oneLesson = lessonItem;
+    };
    onMounted(useLoading(loading, async () => {
       await newList();
     }));
@@ -152,7 +247,8 @@ export default createComponent({
       lessons,
       more_setting,
       getColors,
-      flag,
+      readLesson,
+      readModel,
     };
   },
 });

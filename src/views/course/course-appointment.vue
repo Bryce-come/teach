@@ -17,7 +17,7 @@
         <el-table-column label="课程" prop="course.name" sortable ></el-table-column>
         <el-table-column label="实验项目" prop="course.programList" sortable ></el-table-column>    
         <el-table-column label="指定教师" prop="teacher.name" sortable></el-table-column>
-        <el-table-column label="参与人" prop="stationList" sortable></el-table-column>
+        <el-table-column label="参与人" prop="students" sortable></el-table-column>
         <el-table-column label="操作" align="center" sortable min-width="150">
           <div class="flex center little-space" slot-scope="{ row }" >
           <el-button type="primary" size="mini" @click="agree(row)">同意</el-button>
@@ -49,8 +49,8 @@ export default createComponent({
         type: 1,
         start: '2020-01-02', 
         course: {
-          name: '语文',
-          programList: '叶问背熟',
+          name: '自动化课程',
+          programList: ['切刀挂刀操作'],
         },
         teacher:{
           name: '王涵',
@@ -67,13 +67,13 @@ export default createComponent({
         type: 1,
         start: '2020-01-02', 
         course: {
-          name: '语文',
-          programList: '叶问背熟',
+          name: '自动化课程',
+          programList: ['切刀挂刀操作'],
         },
         teacher:{
           name: '王涵',
         },
-        stationList:'',
+        students:'',
       }]
     }
     const agree = async (row:any) => {};

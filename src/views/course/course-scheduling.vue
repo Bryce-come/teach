@@ -6,7 +6,6 @@
     <div class="flex center">
       <course-list></course-list>
     </div>
-    
   </div>
 </template>
 <script lang="ts">
