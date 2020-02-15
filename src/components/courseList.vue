@@ -34,14 +34,47 @@
              <td v-for="(lessonItem, j) in item.lesson" :key="j" 
                  :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
                  :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
-               <div v-if="lessonItem" @click="flag(lessonItem)">{{lessonItem.name}}</div>
-               <div v-else>
+                  <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
+                <el-popover
+                  placement="top-start"
+                  width="50"
+                  >
+                  <div style="color:#67C23A;width:6rem;">
+                    <i class="el-icon-reading"></i>
+                    <span  style="margin-left:5px">查看</span>
+                  </div>
+                  <div style="color:#67a1ff;width:6rem;">
+                    <i class="el-icon-edit"></i>
+                    <span  style="margin-left:5px">修改</span>
+                  </div>
+                  <div style="color:#F56C6C;width:6rem;">
+                    <i class="el-icon-delete"></i>
+                    <span  style="margin-left:5px">删除</span>
+                  </div>
+                  <div style="color:#E6A23C;width:6rem;">
+                    <i class="el-icon-takeaway-box"></i>
+                    <span  style="margin-left:5px">延长课时</span>
+                  </div>
+                  <div style="width:100%;height:100%" slot="reference">
+                    <div>
+                       {{lessonItem?lessonItem.name:''}}
+                    </div>
+                    <div>
+                       {{lessonItem?lessonItem.name:''}}
+                    </div>
+                    </div>
+                  </el-popover>
+               <div v-if="!lessonItem">
                  <div class='order'><el-button size='mini'>预约</el-button></div>
                </div>
              </td>
            </tr>
         </tbody>
       </table>
+      <!-- <lkt-dialog-simple
+      :modal="newAppointFlag"
+      >
+      </lkt-dialog-simple> -->
     </div>
   </div>
 </template>
@@ -94,6 +127,9 @@ export default createComponent({
         {lesson:['', '', '', '', '', '', '']},
         {lesson:['', {name:'数学',type:2,extend:{lessonInt:1,appointRecord:{result:1}}}, '', '', '', '', '']},
       ]
+    };
+    function flag(lessonOne: any) {
+
     }
    onMounted(useLoading(loading, async () => {
       await newList();
@@ -105,6 +141,7 @@ export default createComponent({
       lessons,
       more_setting,
       getColors,
+      flag,
     };
   },
 });
