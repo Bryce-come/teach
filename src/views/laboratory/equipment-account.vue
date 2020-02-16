@@ -1,16 +1,16 @@
 <template>
   <div v-loading="loading" class="equipment-account">
-    <el-form>
+    <el-form :inline="true">
         <el-form-item label="设备型号:" label-width="80px">
             <lkt-select :list="deviceTypeList" value-key="name" v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号"/>
         </el-form-item>
         <el-form-item label="购入时间:" label-width="80px">
             <el-date-picker v-model="buyDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
              </el-date-picker>
-             <el-button type="primary" style="margin-left: 20px">查询</el-button>
+             <el-button type="primary" style="margin-left: 60px">查询</el-button>
             <el-button style="margin-left: 20px">重置</el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item style="margin-left:10px" >
             <el-button type="success" @click="showForm()">增加</el-button>
             <el-button type="info" style="margin-left: 20px">导出</el-button>
         </el-form-item>
@@ -157,7 +157,4 @@ function initForm() {
 }
 </script>
 <style scoped lang="scss">
-.el-form-item {
-    margin-bottom: 10px;
-  }
 </style>
