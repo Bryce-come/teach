@@ -305,6 +305,16 @@ const cuttingtoolManagement = {
     parentCName: '实验室管理',
   },
 };
+const monitor = {
+  path: '/laboratory/monitor',
+  name: 'monitor',
+  component: () => import('../views/laboratory/monitor.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '实时监控',
+    parentCName: '实验室管理',
+  },
+};
 const usageAnalysis = {
   path: '/laboratory/usage-analysis',
   name: 'usageAnalysis',
@@ -375,6 +385,7 @@ const indexChildren = [
   workTop,
   equipmentMaintenance,
   cuttingtoolManagement,
+  monitor,
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
