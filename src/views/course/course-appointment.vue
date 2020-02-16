@@ -76,7 +76,9 @@ export default createComponent({
         students:'',
       }]
     }
-    const agree = async (row:any) => {};
+    const agree = async (row:any) => {
+      Message.success('已同意');
+    };
     const remove = async (row:any) => {
       Message.success('删除成功');
     };

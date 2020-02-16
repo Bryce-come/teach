@@ -50,15 +50,15 @@
                     <i class="el-icon-reading"></i>
                     <span  style="margin-left:5px">查看</span>
                   </div>
-                  <div style="color:#67a1ff;width:6rem;">
+                  <div style="color:#67a1ff;width:6rem;" @click='showLesson(lessonItem)'>
                     <i class="el-icon-edit"></i>
                     <span  style="margin-left:5px">修改</span>
                   </div>
-                  <div style="color:#F56C6C;width:6rem;">
+                  <div style="color:#F56C6C;width:6rem;" @click="delectLesson(lessonItem)">
                     <i class="el-icon-delete"></i>
                     <span  style="margin-left:5px">删除</span>
                   </div>
-                  <div style="color:#E6A23C;width:6rem;">
+                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
                     <i class="el-icon-takeaway-box"></i>
                     <span  style="margin-left:5px">延长课时</span>
                   </div>
@@ -69,7 +69,7 @@
                     </div>
                   </el-popover>
                <div v-if="!lessonItem">
-                 <div class='order'><el-button size='mini'>预约</el-button></div>
+                 <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
                </div>
              </td>
            </tr>
@@ -107,12 +107,38 @@
                </el-form>
            </div>
       </el-dialog>
+    <kit-dialog-simple
+      :modal="showModal"
+      :confirm="update"
+      width="500px">
+      <div slot='title'>{{showModal.oneLesson?'修改':'预约'}}课程</div>
+      <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="120px" label-position="left" class="flex column between" style="width: 400px;margin: 0 auto">
+        <el-form-item label="课程名称：" prop="course.name" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
+          <el-input style="width:300px" v-model="showModal.oneLesson.course.name"/>
+        </el-form-item>
+        <el-form-item label="授课教师：" prop="teacher.name">
+          <el-input style="width:300px" v-model="showModal.oneLesson.teacher.name"/>
+        </el-form-item>
+        <el-form-item label="实验项目：" prop="course.programList">
+          <el-input style="width:300px" v-model="showModal.oneLesson.course.programList"/>
+        </el-form-item>
+        <el-form-item label="课时：" prop="extend.lessons">
+          <el-input style="width:300px" v-model="showModal.oneLesson.extend.lessons"/>
+        </el-form-item>
+        <el-form-item label="实验台：" prop="extend.stations">
+          <el-input style="width:300px" v-model="showModal.oneLesson.extend.stations"/>
+        </el-form-item>
+       </el-form>
+    </kit-dialog-simple>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted, createComponent} from '@vue/composition-api';
-import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
+import { ref, Ref, onMounted, createComponent } from '@vue/composition-api';
+import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
+import { Message } from 'element-ui';
+import { ElForm } from 'element-ui/types/form';
+import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 export default createComponent({
   name: 'courseList',
   props:{ },
@@ -124,12 +150,18 @@ export default createComponent({
     // 学期选择列表
     const terms = ref({});
     const oneDay = ref();
-    // 查看标志
+    // 查看标志a
     const readModel = ref<any>(
       {
         visible: false,
         oneLesson: '',
       }); 
+    const showModal = ref<any>(
+      {
+        visible: false,
+        oneLesson: '',
+      }); 
+    const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {};
     const more_setting = ref({
@@ -164,7 +196,8 @@ export default createComponent({
     const newList = async () => {
       lessons.value = [
         {lesson: ['', '', '', 
-          {
+          {  
+            id:1,
             course: { 
               name: '自动化课程1',
               programList: ['切刀挂刀操作'] },
@@ -183,6 +216,7 @@ export default createComponent({
         {lesson:['', '', '', '', '', '']},
         {lesson:['', '', '', '', '', 
           {
+            id: 2,
             course: { 
               name: '自动化课程2',
               programList: ['切刀挂刀操作'] },
@@ -198,6 +232,7 @@ export default createComponent({
           }, '']},
         {lesson:['', '', '', '', '',
           {
+            id: 3,
             course: { 
               name: '自动化课程3',
               programList: ['切刀挂刀操作'] },
@@ -215,6 +250,7 @@ export default createComponent({
         {lesson:['', '', '', '', '', '', '']},
         {lesson:['', 
           {
+            id: 4,
             course: { 
               name: '自动化课程4',
               programList: ['切刀挂刀操作'] },
@@ -231,14 +267,40 @@ export default createComponent({
           }, '', '', '', '', '']},
       ]
     };
-    const readLesson = async(lessonItem: any) => {
+    const readLesson = async (lessonItem: any) => {
         readModel.value.visible = true;
         readModel.value.oneLesson = lessonItem;
+    };
+    const showLesson = async (lessonItem?: any) => {
+      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (lessonItem) {
+        lessonItem = deepClone(lessonItem);
+      } else {
+        lessonItem = initForm();
+      }
+      showModal.value.oneLesson = lessonItem;
+      showModal.value.visible = true;
+    };
+    async function update() {
+      const valid = true;
+      if (valid) {
+       const { course, teacher, type, stations, students, extend } = showModal.value.customer;
+       showModal.value.visible = false; 
+       Message.success(`${isUndefined(course) ? '添加' : '修改'}成功`);
+       await newList();
+      }      
+    };
+    const delectLesson = async (lessonItem:any) => {
+      Message.success('删除成功');
+    };
+    const delayLesson = async (lessonItem:any) => {
+      Message.success('成功延长一小时');
     };
    onMounted(useLoading(loading, async () => {
       await newList();
     }));
-    return{
+
+   return{
       loading,
       oneDay: new Date,
       list: useLoading(loading, list),
@@ -249,9 +311,37 @@ export default createComponent({
       getColors,
       readLesson,
       readModel,
+      form,
+      showModal,
+      showLesson,
+      update,
+      delectLesson: useConfirm('确认删除？', useLoading(loading, delectLesson)),
+      delayLesson: useConfirm('确认延长一课时？', useLoading(loading, delayLesson)),
     };
   },
 });
+function initForm():any {
+  return {
+    course:{
+      name:'',
+      programList: undefined,
+    },
+    teacher: {
+      name: '',
+    },
+    type: undefined,
+    stations: undefined,
+    students: '',
+    extend: {
+      lessonInt:undefined,
+      appointRecord: {
+        result: undefined,
+        },
+      lessons:undefined,
+      class:'',
+    }
+    }
+}
 </script>
 <style scoped lang="scss">
   .class-table {
