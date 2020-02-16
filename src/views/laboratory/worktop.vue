@@ -92,7 +92,7 @@ export default {
     });
     const modal = ref({
       visible: false,
-    });    
+    });
     watch(filterText, () => {
       if (tree.value) { (tree.value as ElTree<any, any>).filter(filterText.value); }
     });
