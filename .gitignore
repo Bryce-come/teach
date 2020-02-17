@@ -13,4 +13,5 @@ weekly.*
 *.njsproj
 *.sln
 package-lock.json
+yarn.lock
 .history
