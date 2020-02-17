@@ -337,6 +337,26 @@ const courseAppointment = {
     parentCName: '实验课程管理',
   },
 };
+const teacherManagement = {
+  path: '/personnel/teacherManagement',
+  name: 'teacherManagement',
+  component : () => import('../views/personnel/teacher-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '教师管理',
+    parentCName: '人员管理',
+  },
+};
+const studentManagement = {
+  path: '/personnel/studentManagement',
+  name: 'studentManagement',
+  component : () => import('../views/personnel/student-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '学生管理',
+    parentCName: '人员管理',
+  },
+};
 
 //
 // // 按顺序 用于菜单的排列
@@ -379,6 +399,8 @@ const indexChildren = [
   // 实验课程管理
   courseScheduling,
   courseAppointment,
+  teacherManagement,
+  studentManagement,
   {
     path: '*',
     name: '404_child',
