@@ -305,6 +305,16 @@ const cuttingtoolManagement = {
     parentCName: '实验室管理',
   },
 };
+const monitor = {
+  path: '/laboratory/monitor',
+  name: 'monitor',
+  component: () => import('../views/laboratory/monitor.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '实时监控',
+    parentCName: '实验室管理',
+  },
+};
 const usageAnalysis = {
   path: '/laboratory/usage-analysis',
   name: 'usageAnalysis',
@@ -335,6 +345,26 @@ const courseAppointment = {
     authDisabled: true,
     CName: '预约审核',
     parentCName: '实验课程管理',
+  },
+};
+const teacherManagement = {
+  path: '/personnel/teacherManagement',
+  name: 'teacherManagement',
+  component : () => import('../views/personnel/teacher-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '教师管理',
+    parentCName: '人员管理',
+  },
+};
+const studentManagement = {
+  path: '/personnel/studentManagement',
+  name: 'studentManagement',
+  component : () => import('../views/personnel/student-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '学生管理',
+    parentCName: '人员管理',
   },
 };
 
@@ -375,10 +405,13 @@ const indexChildren = [
   workTop,
   equipmentMaintenance,
   cuttingtoolManagement,
+  monitor,
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
   courseAppointment,
+  teacherManagement,
+  studentManagement,
   {
     path: '*',
     name: '404_child',
