@@ -93,14 +93,15 @@
 </template>
 <script lang="ts">
 import { ref, Ref, reactive, onMounted, onUnmounted, createComponent } from '@vue/composition-api';
-import {postService, rmStoreUserInfo, updateStoreUserInfo} from 'web-toolkit/src/case-main';
+import {rmStoreUserInfo, updateStoreUserInfo} from 'web-toolkit/src/case-main';
 import { sleep } from 'web-toolkit/src/utils';
 import {useLoading, useLoadingDirect} from 'web-toolkit/src/service';
-import {urlMap} from '@/config';
 import {router} from '@/main';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {storeUserInfo} from 'web-toolkit/src/case-main';
+import {LoginOut, UserUpdateInfo, UserUpdatePwd} from '@/dao/userDao';
+import {AlarmRecordConfirm, MonitorAlarm} from '@/dao/alarmDao';
 
 export default createComponent({
   setup() {
@@ -143,13 +144,13 @@ export default createComponent({
       }
     }
     async function noMessage(id: number) {
-      await postService(urlMap.alarm_record_confirm.url, { id });
+      await AlarmRecordConfirm({ id });
       query();
     }
     async function handleCmdOfUser(cmd: string) {
       switch (cmd) {
         case 'logout':
-          await postService(urlMap.logout.url);
+          await LoginOut();
           rmStoreUserInfo();
           router.push({name: 'login'});
           break;
@@ -158,7 +159,6 @@ export default createComponent({
           if (form.value) { (form.value as ElForm).clearValidate(); }
           break;
         case 'updateInfo':
-          // const {data: {user: u}} = await postService(urlMap.user_info.url);
           // @ts-ignore
           modalUpdateInfo.params.name = storeUserInfo.user!.name;
           // @ts-ignore
@@ -174,10 +174,7 @@ export default createComponent({
         Message.error('请填写完整');
         return;
       }
-      const data = await postService(urlMap.pwd_update.url, modalUpdatePwd.params);
-      if (data.catchHandled) {
-        return;
-      }
+      await UserUpdatePwd(modalUpdatePwd.params);
       Message.success('修改成功');
       (form.value as ElForm).resetFields();
       modalUpdatePwd.visible = false;
@@ -188,21 +185,16 @@ export default createComponent({
         Message.error('请填写完整');
         return;
       }
-      const {result} = await postService(urlMap.user_update_info.url, {
+      await UserUpdateInfo({
         id: modalUpdateInfo.params.id,
         name: modalUpdateInfo.params.name,
         phone: modalUpdateInfo.params.phone,
       });
-      if (result === 1) {
-        Message.success('修改成功');
-        // @ts-ignore
-        storeUserInfo.user.name = modalUpdateInfo.params.name;
-        // @ts-ignore
-        storeUserInfo.user.phone = modalUpdateInfo.params.phone;
-        // @ts-ignore
-        updateStoreUserInfo(storeUserInfo);
-        modalUpdateInfo.visible = false;
-      }
+      Message.success('修改成功');
+      (storeUserInfo.user as any).name = modalUpdateInfo.params.name;
+      (storeUserInfo.user as any).phone = modalUpdateInfo.params.phone;
+      updateStoreUserInfo(storeUserInfo as any);
+      modalUpdateInfo.visible = false;
     }
     onMounted(async () => {
       over.value = false;
@@ -219,7 +211,7 @@ export default createComponent({
       count.value = 0;
     });
     async function query() {
-      const res = await postService(urlMap.monitor_alarms.url, {}, {throwable: false, showMsg: false});
+      const res = await MonitorAlarm();
       if (res.result === 1) {
         const cache: any = {};
         res.data.alarms.forEach((a: any) => {

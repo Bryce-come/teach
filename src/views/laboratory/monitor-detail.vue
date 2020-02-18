@@ -40,8 +40,7 @@ export default {
     const lesson = ref<any>();
     const time = new Date;
     const setStation = async () => {
-      station.value = 
-        {
+      station.value = {
           id: 1,
           name: '操作台1',
           imgUrl: '../../assets/u1630.png',
@@ -52,7 +51,7 @@ export default {
               name: '自动化1801',
             },
           },
-          paramsMap:[
+          paramsMap: [
             {nameSimple: '运行次数', value: 4},
             {nameSimple: '运行状态', value: 4},
             {nameSimple: '运行时间', value: 4},
@@ -60,13 +59,13 @@ export default {
             {nameSimple: '运行半径', value: 4},
             {nameSimple: '数据记录', value: 4},
             {nameSimple: '运行次数', value: 4},
-          ]
-        }
+          ],
+        };
      };
     const query = async () => {
-      lesson.value = {  
-        id:1,
-        course: { 
+      lesson.value = {
+        id: 1,
+        course: {
           name: '自动化课程1',
           programList: '切刀挂刀操作',
           teacher: {
@@ -78,26 +77,26 @@ export default {
         type: 0,
         students: ['马丽', '李海'],
         extend: {
-          appointRecord: {result:1},
-          lessons:[1,2,3],
+          appointRecord: {result: 1},
+          lessons: [1, 2, 3],
           clasz: '自动化1801',
           claszGroup: '自动化一组',
-          }
-      }
-    }
+          },
+      };
+    };
     const timeDiff = (time1: any, time2: any) => {
-        var dateDiff = time2.getTime() - time1.getTime();
-        var hours = Math.floor(dateDiff / (3600 * 1000));
-        var leave1 = dateDiff % (3600 * 1000);
-        var minutes = Math.floor(leave1 / (60 * 1000));
-        var leave2 = leave1 % (60 * 1000);     //计算分钟数后剩余的毫秒数
-        var seconds = Math.round(leave2 / 1000);
+        const dateDiff = time2.getTime() - time1.getTime();
+        const hours = Math.floor(dateDiff / (3600 * 1000));
+        const leave1 = dateDiff % (3600 * 1000);
+        const minutes = Math.floor(leave1 / (60 * 1000));
+        const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
+        const seconds = Math.round(leave2 / 1000);
         return  hours + '小时' + minutes + '分' + seconds + '秒';
     };
     onMounted(useLoading(loading, async () => {
       await setStation();
       await query();
-    })); 
+    }));
     return{
       loading,
       station,

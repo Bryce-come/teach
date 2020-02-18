@@ -141,7 +141,7 @@ import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 export default createComponent({
   name: 'courseList',
-  props:{ },
+  props: { },
   // props 父组件传过来的东西  ctx 相当于子组件的this（cts.$emit()）
   setup(props: any, ctx: any) {
     // 已经处理后的课程排列，按照第几节课排列
@@ -155,50 +155,48 @@ export default createComponent({
       {
         visible: false,
         oneLesson: '',
-      }); 
+      });
     const showModal = ref<any>(
       {
         visible: false,
         oneLesson: '',
-      }); 
+      });
     const form = ref<ElForm|null>(null);
     // 查询函数
-    async function list() {};
+    async function list() {}
     const more_setting = ref({
       lessonNum: 7,
     });
     const lessons = ref<any>();
     function getColors(lessonOne: any, defaultColor: any) {
       const type = lessonOne.type;
-      if(type === 0 || lessonOne ==='') {
+      if (type === 0 || lessonOne === '') {
         return defaultColor;
         // rgb(142, 208, 214) 计划内课程
-      }
-      else if(type == 1 || type == 2) {
+      } else if (type == 1 || type == 2) {
         const result = lessonOne.extend.appointRecord.result;
-        if(result === 2) {
+        if (result === 2) {
           // 已预约课程
           defaultColor = 'rgb(233, 233, 224)';
-        }
-        else if(result === 1) {
+        } else if (result === 1) {
          // 新预约课程
           defaultColor = 'rgb(248, 244, 8)';
         }
         return defaultColor;
      }
-    };
+    }
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
     function digital2Chinese(num: any, identifier: any) {
       const character = ['零', '一', '二', '三', '四', '五', '六', '七'];
       return identifier === 'week' && (num === 0 || num === 7) ? '日' : character[num];
-    } 
-    //重新排列数据
+    }
+    // 重新排列数据
     const newList = async () => {
       lessons.value = [
-        {lesson: ['', '', '', 
-          {  
-            id:1,
-            course: { 
+        {lesson: ['', '', '',
+          {
+            id: 1,
+            course: {
               name: '自动化课程1',
               programList: ['切刀挂刀操作'] },
             teacher: {
@@ -208,16 +206,16 @@ export default createComponent({
             students: '马丽',
             extend: {
               lessonInt: 3,
-              appointRecord: {result:1},
-              lessons:[1,2,3],
-              class:'自动化1801'}
+              appointRecord: {result: 1},
+              lessons: [1, 2, 3],
+              class: '自动化1801'},
           }, '', '', '']},
-        {lesson:['', '', '', '', '', '']},
-        {lesson:['', '', '', '', '', '']},
-        {lesson:['', '', '', '', '', 
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '',
           {
             id: 2,
-            course: { 
+            course: {
               name: '自动化课程2',
               programList: ['切刀挂刀操作'] },
             teacher: {
@@ -227,13 +225,13 @@ export default createComponent({
             students: '马丽',
             extend: {
               lessonInt: 1,
-              lessons:[4],
-              class:'自动化1801'}
+              lessons: [4],
+              class: '自动化1801'},
           }, '']},
-        {lesson:['', '', '', '', '',
+        {lesson: ['', '', '', '', '',
           {
             id: 3,
-            course: { 
+            course: {
               name: '自动化课程3',
               programList: ['切刀挂刀操作'] },
             teacher: {
@@ -243,15 +241,15 @@ export default createComponent({
             students: '马丽',
             extend: {
               lessonInt: 1,
-              appointRecord: {result:2},
-              lessons:[5],
-              class:'自动化1801'}
+              appointRecord: {result: 2},
+              lessons: [5],
+              class: '自动化1801'},
           }, '']},
-        {lesson:['', '', '', '', '', '', '']},
-        {lesson:['', 
+        {lesson: ['', '', '', '', '', '', '']},
+        {lesson: ['',
           {
             id: 4,
-            course: { 
+            course: {
               name: '自动化课程4',
               programList: ['切刀挂刀操作'] },
             teacher: {
@@ -261,11 +259,11 @@ export default createComponent({
             students: '马丽',
             extend: {
               lessonInt: 1,
-              appointRecord: {result:1},
-              lessons:[7],
-              class:'自动化1801'}
+              appointRecord: {result: 1},
+              lessons: [7],
+              class: '自动化1801'},
           }, '', '', '', '', '']},
-      ]
+      ];
     };
     const readLesson = async (lessonItem: any) => {
         readModel.value.visible = true;
@@ -285,22 +283,22 @@ export default createComponent({
       const valid = true;
       if (valid) {
        const { course, teacher, type, stations, students, extend } = showModal.value.customer;
-       showModal.value.visible = false; 
+       showModal.value.visible = false;
        Message.success(`${isUndefined(course) ? '添加' : '修改'}成功`);
        await newList();
-      }      
-    };
-    const delectLesson = async (lessonItem:any) => {
+      }
+    }
+    const delectLesson = async (lessonItem: any) => {
       Message.success('删除成功');
     };
-    const delayLesson = async (lessonItem:any) => {
+    const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
-   onMounted(useLoading(loading, async () => {
+    onMounted(useLoading(loading, async () => {
       await newList();
     }));
 
-   return{
+    return{
       loading,
       oneDay: new Date,
       list: useLoading(loading, list),
@@ -320,10 +318,10 @@ export default createComponent({
     };
   },
 });
-function initForm():any {
+function initForm(): any {
   return {
-    course:{
-      name:'',
+    course: {
+      name: '',
       programList: undefined,
     },
     teacher: {
@@ -333,14 +331,14 @@ function initForm():any {
     stations: undefined,
     students: '',
     extend: {
-      lessonInt:undefined,
+      lessonInt: undefined,
       appointRecord: {
         result: undefined,
         },
-      lessons:undefined,
-      class:'',
-    }
-    }
+      lessons: undefined,
+      class: '',
+    },
+    };
 }
 </script>
 <style scoped lang="scss">

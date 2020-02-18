@@ -47,15 +47,15 @@ export default createComponent({
         },
         createDt: '2020-01-02',
         type: 1,
-        start: '2020-01-02', 
+        start: '2020-01-02',
         course: {
           name: '自动化课程',
           programList: ['切刀挂刀操作'],
         },
-        teacher:{
+        teacher: {
           name: '王涵',
         },
-        stationList:'',
+        stationList: '',
       },
       {
         id: 2,
@@ -65,21 +65,21 @@ export default createComponent({
         },
         createDt: '2020-01-02',
         type: 1,
-        start: '2020-01-02', 
+        start: '2020-01-02',
         course: {
           name: '自动化课程',
           programList: ['切刀挂刀操作'],
         },
-        teacher:{
+        teacher: {
           name: '王涵',
         },
-        students:'',
-      }]
-    }
-    const agree = async (row:any) => {
+        students: '',
+      }];
+    };
+    const agree = async (row: any) => {
       Message.success('已同意');
     };
-    const remove = async (row:any) => {
+    const remove = async (row: any) => {
       Message.success('删除成功');
     };
     onMounted(useLoading(loading, async () => {

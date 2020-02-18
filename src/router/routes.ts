@@ -405,7 +405,7 @@ const systemOptionSetting = {
   meta: {
     authDisabled: true,
     CName: '系统选项设置',
-    parentCName: '系统管理'
+    parentCName: '系统管理',
   },
 };
 const equipmentModelConfiguration = {
@@ -415,7 +415,7 @@ const equipmentModelConfiguration = {
   meta: {
     authDisabled: true,
     CName: '设备型号配置',
-    parentCName: '系统管理'
+    parentCName: '系统管理',
   },
 };
 
@@ -464,10 +464,10 @@ const indexChildren = [
   courseScheduling,
   courseManagement,
   courseAppointment,
-  //人员管理
+  // 人员管理
   teacherManagement,
   studentManagement,
-  //系统管理
+  // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
   {

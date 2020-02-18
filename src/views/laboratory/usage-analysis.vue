@@ -74,7 +74,7 @@ export default createComponent({
       const option: any = getOption();
     };
     function getOption() {
-      let yName = '';
+      const yName = '';
       return {
         legend: {
           show: true,

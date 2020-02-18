@@ -75,9 +75,9 @@ export default {
     const devicesShow = ref<any>();
     const stations = ref<any>();
     const query = async () => {
-        lesson.value = {  
-            id:1,
-            course: { 
+        lesson.value = {
+            id: 1,
+            course: {
               name: '自动化课程1',
               programList: '切刀挂刀操作',
               teacher: {
@@ -89,23 +89,23 @@ export default {
             type: 0,
             students: ['马丽', '李海'],
             extend: {
-              appointRecord: {result:1},
-              lessons:[1,2,3],
+              appointRecord: {result: 1},
+              lessons: [1, 2, 3],
               clasz: '自动化1801',
               claszGroup: '自动化一组',
-              }
-          }
-    }
+              },
+          };
+    };
     const timeDiff = (time1: any, time2: any) => {
-        var dateDiff = time2.getTime() - time1.getTime();
-        var hours = Math.floor(dateDiff / (3600 * 1000));
-        var leave1 = dateDiff % (3600 * 1000);
-        var minutes = Math.floor(leave1 / (60 * 1000));
-        var leave2 = leave1 % (60 * 1000);     //计算分钟数后剩余的毫秒数
-        var seconds = Math.round(leave2 / 1000);
+        const dateDiff = time2.getTime() - time1.getTime();
+        const hours = Math.floor(dateDiff / (3600 * 1000));
+        const leave1 = dateDiff % (3600 * 1000);
+        const minutes = Math.floor(leave1 / (60 * 1000));
+        const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
+        const seconds = Math.round(leave2 / 1000);
         return  hours + '小时' + minutes + '分' + seconds + '秒';
     };
-    const setChart = async () =>{
+    const setChart = async () => {
       summary.value = {
         emergency: 0,
         offline: 1,
@@ -117,9 +117,9 @@ export default {
           name: '设备数量',
           type: 'pie',
           data: [
-            {value:1, name:'故障'},
-            {value:1, name:'离线'},
-            {value:9, name:'开机'},
+            {value: 1, name: '故障'},
+            {value: 1, name: '离线'},
+            {value: 9, name: '开机'},
           ],
             // radius: document.querySelector('#index-pie')!.clientWidth * 0.25,
           radius: 50,
@@ -132,8 +132,8 @@ export default {
             height: 300,
         },
         color: getColors(),
-      }
-    }
+      };
+    };
     const setStation = async () => {
       stations.value = [
         {
@@ -144,9 +144,9 @@ export default {
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 2,
@@ -156,9 +156,9 @@ export default {
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 3,
@@ -168,9 +168,9 @@ export default {
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 4,
@@ -180,9 +180,9 @@ export default {
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 5,
@@ -192,9 +192,9 @@ export default {
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 6,
@@ -204,10 +204,10 @@ export default {
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
-        }
+          },
+        },
       ];
     };
     onMounted(useLoading(loading, async () => {

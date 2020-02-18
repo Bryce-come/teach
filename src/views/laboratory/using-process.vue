@@ -113,7 +113,7 @@ export default createComponent({
     const stations = ref<any>();
     const oneDay = ref();
     const chart: Ref<EChartOption> = ref({});
-    const setChart = async () =>{
+    const setChart = async () => {
       summary.value = {
         emergency: 0,
         offline: 1,
@@ -125,9 +125,9 @@ export default createComponent({
           name: '设备数量',
           type: 'pie',
           data: [
-            {value:1, name:'故障'},
-            {value:1, name:'离线'},
-            {value:9, name:'开机'},
+            {value: 1, name: '故障'},
+            {value: 1, name: '离线'},
+            {value: 9, name: '开机'},
           ],
             // radius: document.querySelector('#index-pie')!.clientWidth * 0.25,
           radius: 50,
@@ -140,8 +140,8 @@ export default createComponent({
             height: 300,
         },
         color: getColors(),
-      }
-    }
+      };
+    };
     const setStation = async () => {
       stations.value = [
         {
@@ -152,9 +152,9 @@ export default createComponent({
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 2,
@@ -164,9 +164,9 @@ export default createComponent({
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 3,
@@ -176,9 +176,9 @@ export default createComponent({
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 4,
@@ -188,9 +188,9 @@ export default createComponent({
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 5,
@@ -200,9 +200,9 @@ export default createComponent({
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
+          },
         },
         {
           id: 6,
@@ -212,15 +212,15 @@ export default createComponent({
             id: 1,
             name: '马利',
             clasz: {
-              name: '自动化1801'
+              name: '自动化1801',
             },
-          }
-        }
+          },
+        },
       ];
     };
     // 查询函数
-    async function list() {};
-   onMounted(useLoading(loading, async () => {
+    async function list() {}
+    onMounted(useLoading(loading, async () => {
       await setChart();
       await setStation();
     }));

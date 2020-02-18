@@ -33,12 +33,12 @@
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { ElForm } from 'element-ui/types/form';
 import { useLoading } from 'web-toolkit/src/service';
-import { postService, storeUserInfo, updateStoreUserInfo } from 'web-toolkit/src/case-main';
-import {loginTitle1, loginTitle2, loginLogo, urlMap, scheme} from '@/config';
+import { storeUserInfo, updateStoreUserInfo } from 'web-toolkit/src/case-main';
+import {loginTitle1, loginTitle2, loginLogo, scheme} from '@/config';
 import {router} from '@/main';
 import { Route } from 'vue-router';
 import {assert} from 'web-toolkit/src/utils/index';
-import {Login} from "@/dao/userDao";
+import {Login} from '@/dao/userDao';
 
 export default createComponent({
   setup() {

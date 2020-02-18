@@ -62,7 +62,7 @@ import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 export default {
   setup() {
     const loading = ref(false);
-    const courseList =ref<any>();
+    const courseList = ref<any>();
     const remove = async (row: any) => {
       Message.success('删除成功');
     };
@@ -102,19 +102,19 @@ export default {
     };
     onMounted(useLoading(loading, async () => {
         await queryCourse();
-    }))
+    }));
     return{
         loading, courseList, queryCourse,
         remove: useConfirm('确认删除？', useLoading(loading, remove)),
-        courseModal, showCourseForm, 
-        courseUpdate: useLoading(loading, courseUpdate),    
+        courseModal, showCourseForm,
+        courseUpdate: useLoading(loading, courseUpdate),
     };
   },
 };
 function initCourseForm() {
     return {
         name: '', code: '', teacher: '', experiment: '',
-        extend: {scoreRatio: [],}
+        extend: {scoreRatio: []},
     };
 }
 </script>
