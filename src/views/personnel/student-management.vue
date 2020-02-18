@@ -98,11 +98,11 @@ export default {
     watch(filterText, () => {
       if (tree.value) { (tree.value as ElTree<any, any>).filter(filterText.value); }
     });
+    const form = ref<ElForm|null>(null);
     const modal = ref<any>({
       visible: false,
       studentInfo: null,
     });
-    const form = ref<ElForm|null>(null);
     const showForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
