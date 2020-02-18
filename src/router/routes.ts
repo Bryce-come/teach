@@ -361,7 +361,7 @@ const courseAppointment = {
 const teacherManagement = {
   path: '/personnel/teacherManagement',
   name: 'teacherManagement',
-  component : () => import('../views/personnel/teacher-management.vue'),
+  component: () => import('../views/personnel/teacher-management.vue'),
   meta: {
     authDisabled: true,
     CName: '教师管理',
@@ -371,11 +371,31 @@ const teacherManagement = {
 const studentManagement = {
   path: '/personnel/studentManagement',
   name: 'studentManagement',
-  component : () => import('../views/personnel/student-management.vue'),
+  component: () => import('../views/personnel/student-management.vue'),
   meta: {
     authDisabled: true,
     CName: '学生管理',
     parentCName: '人员管理',
+  },
+};
+const systemOptionSetting = {
+  path: '/system/system-option-setting',
+  name: 'systemOptionSetting',
+  component: () => import('../views/system/system-option-setting.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '系统选项设置',
+    parentCName: '系统管理'
+  },
+};
+const equipmentModelConfiguration = {
+  path: '/system/equipment-model-configuration',
+  name: 'equipmentModelConfiguration',
+  component: () => import('../views/system/equipment-model-configuration.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '设备型号配置',
+    parentCName: '系统管理'
   },
 };
 
@@ -424,6 +444,8 @@ const indexChildren = [
   courseAppointment,
   teacherManagement,
   studentManagement,
+  systemOptionSetting,
+  equipmentModelConfiguration,
   {
     path: '*',
     name: '404_child',
