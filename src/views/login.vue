@@ -30,7 +30,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, createComponent, Ref, onMounted } from '@vue/composition-api';
+import { ref, createComponent, Ref} from '@vue/composition-api';
 import { ElForm } from 'element-ui/types/form';
 import { useLoading } from 'web-toolkit/src/service';
 import { postService, storeUserInfo, updateStoreUserInfo } from 'web-toolkit/src/case-main';
@@ -38,6 +38,8 @@ import {loginTitle1, loginTitle2, loginLogo, urlMap, scheme} from '@/config';
 import {router} from '@/main';
 import { Route } from 'vue-router';
 import {assert} from 'web-toolkit/src/utils/index';
+import {Login} from "@/dao/userDao";
+
 export default createComponent({
   setup() {
     const loading = ref(false);
@@ -63,7 +65,7 @@ export default createComponent({
     async function login() {
       const valid = await (formRef.value as ElForm).validate();
       assert(valid);
-      const {data} = await postService(urlMap.loginCommon.url, {
+      const data = await Login( {
         ...form.value,
         schema: scheme,
       });
