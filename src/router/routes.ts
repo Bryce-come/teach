@@ -326,6 +326,16 @@ const monitorDetail = {
     parentName: 'monitor',
   },
 };
+const usingProcess = {
+  path: '/laboratory/usingProcess',
+  name: 'usingProcess',
+  component: () => import('../views/laboratory/using-process.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '使用过程分析',
+    parentCName: '实验室管理',
+  },
+};
 const usageAnalysis = {
   path: '/laboratory/usage-analysis',
   name: 'usageAnalysis',
@@ -448,6 +458,7 @@ const indexChildren = [
   cuttingtoolManagement,
   monitor,
   monitorDetail,
+  usingProcess,
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
