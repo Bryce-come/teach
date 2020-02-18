@@ -13,7 +13,7 @@
           <el-button>关闭</el-button>
         </div>
       </div>
-      <div style="font-size:1.2rem">距离下课时间还有<span style="color:red">{{timeDiff(time, lesson.end)}}</span></div>
+      <div style="font-size:1.2rem">距离下课时间还有<span style="color:red" v-if="lesson">{{timeDiff(time, lesson.end)}}</span></div>
       <div>时间状态轴有现成，超哥说等数据接口出来直接加上去</div>
       <div class="flex align-center" style="width:100%">
         <div class="flex align-center wrap watch3">
