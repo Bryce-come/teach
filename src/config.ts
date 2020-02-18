@@ -11,7 +11,7 @@ export const mainMenuTitles = [
   // '运行分析', 'icon-oeeanalysis',
   // '工单管理', 'icon-manage2',
   // '远程记录', 'icon-manage2',
-  // '系统管理', 'icon-system',
+  '系统管理', 'icon-system',
 ];
 
 export const loginTitle1 = process.env.VUE_APP_LOGIN_TITLE1;

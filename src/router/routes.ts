@@ -326,6 +326,16 @@ const monitorDetail = {
     parentName: 'monitor',
   },
 };
+const usingProcess = {
+  path: '/laboratory/usingProcess',
+  name: 'usingProcess',
+  component: () => import('../views/laboratory/using-process.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '使用过程分析',
+    parentCName: '实验室管理',
+  },
+};
 const usageAnalysis = {
   path: '/laboratory/usage-analysis',
   name: 'usageAnalysis',
@@ -347,6 +357,16 @@ const courseScheduling = {
     parentCName: '实验课程管理',
   },
 };
+const courseManagement = {
+  path: '/course/course-management',
+  name: 'courseManagement',
+  component: () => import('../views/course/course-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '课程管理',
+    parentCName: '实验课程管理',
+  },
+};
 const courseAppointment = {
   path: '/course/courseAppointment',
   name: 'courseAppointment',
@@ -361,7 +381,7 @@ const courseAppointment = {
 const teacherManagement = {
   path: '/personnel/teacherManagement',
   name: 'teacherManagement',
-  component : () => import('../views/personnel/teacher-management.vue'),
+  component: () => import('../views/personnel/teacher-management.vue'),
   meta: {
     authDisabled: true,
     CName: '教师管理',
@@ -371,11 +391,31 @@ const teacherManagement = {
 const studentManagement = {
   path: '/personnel/studentManagement',
   name: 'studentManagement',
-  component : () => import('../views/personnel/student-management.vue'),
+  component: () => import('../views/personnel/student-management.vue'),
   meta: {
     authDisabled: true,
     CName: '学生管理',
     parentCName: '人员管理',
+  },
+};
+const systemOptionSetting = {
+  path: '/system/system-option-setting',
+  name: 'systemOptionSetting',
+  component: () => import('../views/system/system-option-setting.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '系统选项设置',
+    parentCName: '系统管理'
+  },
+};
+const equipmentModelConfiguration = {
+  path: '/system/equipment-model-configuration',
+  name: 'equipmentModelConfiguration',
+  component: () => import('../views/system/equipment-model-configuration.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '设备型号配置',
+    parentCName: '系统管理'
   },
 };
 
@@ -418,12 +458,18 @@ const indexChildren = [
   cuttingtoolManagement,
   monitor,
   monitorDetail,
+  usingProcess,
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
+  courseManagement,
   courseAppointment,
+  //人员管理
   teacherManagement,
   studentManagement,
+  //系统管理
+  systemOptionSetting,
+  equipmentModelConfiguration,
   {
     path: '*',
     name: '404_child',
