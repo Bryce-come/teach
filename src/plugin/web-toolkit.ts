@@ -14,8 +14,6 @@ import lktTable from 'web-toolkit/src/components/lkt-table.vue';
 Vue.component('lkt-table', lktTable);
 import lktSelect from 'web-toolkit/src/components/lkt-select.vue';
 Vue.component('lkt-select', lktSelect);
-import lktScrollbar from 'web-toolkit/src/components/lkt-scrollbar.vue';
-Vue.component('lkt-scrollbar', lktScrollbar);
 import LktDatePicker from 'web-toolkit/src/components/lkt-date-picker.vue';
 Vue.component('lkt-date-picker', LktDatePicker);
 import LktChart from 'web-toolkit/src/components/lkt-chart.vue';
