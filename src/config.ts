@@ -5,7 +5,8 @@ export const mainMenuTitles = [
   '实验室管理', 'icon-xiangmu',
   '实验课程管理', 'icon-manage2',
   '人员管理', 'icon-manage2',
-  // '报警提醒', 'icon-xiangmu',
+  // '系统设置', 'icon-system',
+  '报警提醒', 'icon-xiangmu',
   // '运行分析', 'icon-oeeanalysis',
   '系统管理', 'icon-system',
 ];
