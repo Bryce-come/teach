@@ -1,21 +1,27 @@
 <template>
   <div class="out">
     <i class="iconfont icon-404"></i>
-    <div class="info">{{ $route.params.msg === undefined?'当前页面找不到':$route.params.msg }}</div>
+    <div class="info">{{ route.currentRoute.params.msg === undefined?'当前页面找不到':route.currentRoute.params.msg }}</div>
     <br />
-    <el-button type="primary" @click="$router.back()">返 回</el-button>
+    <el-button type="primary" @click="router.back()">返 回</el-button>
     <el-button type="primary" @click="logout()" style="margin-left: 10px">返回至登录页</el-button>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import {router} from '@/main';
+
 export default {
   name: 'page404',
-  methods: {
-    logout() {
-      this.$store.commit('removeToken');
-      this.$router.push({name: 'login'});
-    },
+  setup() {
+    function logout() {
+      // todo
+      // this.$store.commit('removeToken');
+      // this.$router.push({name: 'login'});
+    }
+    return{
+      router,
+    };
   },
 };
 </script>
