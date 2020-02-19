@@ -398,6 +398,36 @@ const studentManagement = {
     parentCName: '人员管理',
   },
 };
+const deviceAlarm = {
+  path: '/alarm/deviceAlarm',
+  name: 'deviceAlarm',
+  component: () => import('../views/alarm/device-alarm.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '设备报警',
+    parentCName: '报警提醒',
+  },
+};
+const disusingAlarm = {
+  path: '/alarm/disusingAlarm',
+  name: 'disusingAlarm',
+  component: () => import('../views/alarm/disusing-alarm.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '非法使用报警',
+    parentCName: '报警提醒',
+  },
+};
+const delayAlarm = {
+  path: '/alarm/delayAlarm',
+  name: 'delayAlarm',
+  component: () => import('../views/alarm/delay-alarm.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '维保超期报警',
+    parentCName: '报警提醒',
+  },
+};
 const systemOptionSetting = {
   path: '/system/system-option-setting',
   name: 'systemOptionSetting',
@@ -467,6 +497,10 @@ const indexChildren = [
   // 人员管理
   teacherManagement,
   studentManagement,
+  //报警提醒
+  deviceAlarm,
+  disusingAlarm,
+  delayAlarm,
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
