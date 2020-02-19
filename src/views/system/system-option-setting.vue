@@ -15,6 +15,11 @@
         设备维保时间设定及到期提醒
         <el-switch v-model="deviceMaintenAlarmOn" style="margin-left:700px"></el-switch>
       </div>
+      <div v-if="deviceMaintenAlarmOn" style="margin-top:20px">
+        提前时间
+        <el-input v-model="advanceTime" style="width:50px"></el-input>
+        天
+      </div>
       <div style="width:920px;height:1px;margin:20px 5px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
     </div>
     <div>
@@ -22,6 +27,11 @@
       <div style="color:grey">
         是否允许LKT-MAN控制CNC设备与PC联通
         <el-switch v-model="CNCLinkOn" style="margin-left:615px"></el-switch>
+      </div>
+      <div v-if="CNCLinkOn" style="margin-top:20px">
+        默认超时时间:
+        <el-input v-model="overTime" style="width:50px"></el-input>
+        分钟
       </div>
       <div style="width:920px;height:1px;margin:20px 5px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
     </div>
@@ -34,46 +44,13 @@
         </div>
       </el-form-item>
     </el-form>
-    <el-form :inline="true">
-      <el-form-item label="第一节时间:" label-width="100px">
-        <el-time-picker is-range v-model="lesson1" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
+    <div v-if="lessonNum" class="wrapper">
+      <div class="wrapper-content" v-for="(item, i) in lessonNum" :key="i">
+        第<span>{{ i+1 }}</span>节课时间:
+        <el-time-picker is-range v-model="lesson1" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" style="margin-left:10px">
         </el-time-picker>
-      </el-form-item>
-      <el-form-item label="第二节时间:" label-width="100px" style="margin-left:100px">
-        <el-time-picker is-range v-model="lesson2" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-      <el-form-item label="第三节时间:" label-width="100px">
-        <el-time-picker is-range v-model="lesson3" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-      <el-form-item label="第四节时间:" label-width="100px" style="margin-left:100px">
-        <el-time-picker is-range v-model="lesson4" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-      <el-form-item label="第五节时间:" label-width="100px">
-        <el-time-picker is-range v-model="lesson5" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-      <el-form-item label="第六节时间:" label-width="100px" style="margin-left:100px">
-        <el-time-picker is-range v-model="lesson6" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-      <el-form-item label="第七节时间:" label-width="100px">
-        <el-time-picker is-range v-model="lesson7" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-      <el-form-item label="第八节时间:" label-width="100px" style="margin-left:100px">
-        <el-time-picker is-range v-model="lesson8" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围">
-        </el-time-picker>
-      </el-form-item>
-    </el-form>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -82,8 +59,10 @@ export default {
   setup() {
     const loading = ref(false);
     const stationUsageAlarmOn = ref(true);
-    const deviceMaintenAlarmOn = ref(true);
-    const CNCLinkOn = ref(true);
+    const deviceMaintenAlarmOn = ref(false);
+    const CNCLinkOn = ref(false);
+    const advanceTime = 30;
+    const overTime = 30;
     const lessonNum = 8;
     const lesson1 = [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)];
     const lesson2 = [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)];
@@ -94,12 +73,24 @@ export default {
     const lesson7 = [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)];
     const lesson8 = [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)];
     return{
-      loading, stationUsageAlarmOn, deviceMaintenAlarmOn, CNCLinkOn, lessonNum,
+      loading, stationUsageAlarmOn, deviceMaintenAlarmOn, CNCLinkOn, lessonNum, advanceTime, overTime,
       lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8,
     };
   },
 };
 </script>
 <style scoped lang="scss">
-
+.wrapper{
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: 30px;
+}
+.wrapper-content{
+  width: 50%;
+  margin-bottom: 20px;
+}
 </style>

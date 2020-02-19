@@ -5,8 +5,7 @@
             <lkt-select :list="deviceTypeList" value-key="name" v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号"/>
         </el-form-item>
         <el-form-item label="购入时间:" label-width="80px">
-            <el-date-picker v-model="buyDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
+            <lkt-date-picker v-model="buyDt"/>
             <el-button type="primary" style="margin-left: 60px">查询</el-button>
             <el-button style="margin-left: 20px">重置</el-button>
         </el-form-item>
