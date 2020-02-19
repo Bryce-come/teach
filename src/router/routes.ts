@@ -115,162 +115,11 @@ import { PRIVILEGE } from '@/types/privilege';
 //     },
 //   ],
 // };
-// const runtime = {
-//   path: '/analysis/runtime',
-//   name: 'runtime',
-//   component: () => import('../views/analysis/runtime.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_ANALYSIS],
-//     CName: '运行时间统计',
-//     parentCName: '运行分析',
-//   },
-// };
-// const deviceAlarmRecord = {
-//   path: '/alarm/device/record',
-//   name: 'deviceAlarmRecord',
-//   component: () => import('../views/alarm/device-alarm-record.vue'),
-//   meta: {
-//     privileges: [],
-//     CName: '设备报警记录',
-//     parentCName: '报警提醒',
-//   },
-// };
-// const analysisGuarantee = {
-//   path: '/alarm/guarantee',
-//   name: 'analysisGuarantee',
-//   component: () => import('../views/alarm/guarantee.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_ANALYSIS, PRIVILEGE.QUALITY_DT_MNG],
-//     CName: '产品质保提醒',
-//     parentCName: '报警提醒',
-//   },
-// };
-// const workOrderList = {
-//   path: '/work-order/list',
-//   name: 'workOrderList',
-//   component: () => import('../views/work-order/order-list.vue'),
-//   meta: {
-//     privileges: [[PRIVILEGE.MAINTENT_ORDER_LIST, PRIVILEGE.MODE_ORDER], [PRIVILEGE.MAINTENT_ORDER_MNG, PRIVILEGE.MODE_ORDER]],
-//     CName: '工单查询',
-//     parentCName: '工单管理',
-//   },
-// };
-// const workOrderList2 = {
-//   path: '/work-order/list2',
-//   name: 'workOrderList2',
-//   component: () => import('../views/work-order/order-list.vue'),
-//   meta: {
-//     privileges: [[PRIVILEGE.MAINTENT_ORDER_LIST, PRIVILEGE.MODE_DEVICE], [PRIVILEGE.MAINTENT_ORDER_MNG, PRIVILEGE.MODE_DEVICE]],
-//     CName: '远程记录',
-//   },
-// };
-// const workOrderCreate = {
-//   path: '/work-order/create',
-//   name: 'workOrderCreate',
-//   component: () => import('../views/work-order/create.vue'),
-//   meta: {
-//     privileges: [[PRIVILEGE.MAINTENT_ORDER_MNG, PRIVILEGE.MODE_ORDER]],
-//     CName: '开始派单',
-//     parentCName: '工单管理',
-//   },
-// };
-// const workOrderComplete = {
-//   path: '/work-order/complete/:id',
-//   name: 'workOrderComplete',
-//   component: () => import('../views/work-order/complete.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.MAINTENT_ORDER_LIST],
-//     CName: '销单',
-//     parentCName: '派单查询',
-//     parentName: 'workOrderList',
-//   },
-// };
-// const 设备配置管理 = {
-//   path: '/setting/device',
-//   name: 'deviceSetting',
-//   component: () => import('../views/setting/device.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_MNG],
-//     CName: '设备信息绑定',
-//     parentCName: '系统管理',
-//   },
-// };
-// const 设备网关配置 = {
-//   path: '/setting/gateway',
-//   name: 'gateway',
-//   component: () => import('../views/setting/gateway.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.ADAPTER_DEVICE_MNG],
-//     CName: '设备网关配置',
-//     parentCName: '系统管理',
-//   },
-// };
-// const 用户信息管理 = {
-//   path: '/setting/system',
-//   name: '用户信息管理',
-//   component: () => import('../views/user/system.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.ADAPTER_DEVICE_MNG],
-//     CName: '用户信息管理',
-//     parentCName: '系统管理',
-//   },
-// };
-// const 参数显示配置 = {
-//   path: '/setting/collector',
-//   name: '参数显示配置',
-//   component: () => import('../views/setting/collector.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.COLLECT_PARAMS_MNG],
-//     CName: '参数显示配置',
-//     parentCName: '系统管理',
-//   },
-// };
-// const 客户资料管理 = {
-//   path: '/setting/customer',
-//   name: '客户资料维护',
-//   component: () => import('../views/setting/customer.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.CUSTOMER_MNG],
-//     CName: '客户资料管理',
-//     parentCName: '系统管理',
-//   },
-// };
-// const deviceType = {
-//   path: '/setting/deviceType',
-//   name: 'deviceType',
-//   component: () => import('../views/general/device-type.vue'),
-//   meta: {
-//     CName: '设备型号配置',
-//     parentCName: '系统管理',
-//   },
-// };
-// const test = {
-//   path: '/setting/test',
-//   name: 'test',
-//   component: () => import('../views/test/test.vue'),
-//   meta: {
-//     CName: '测试',
-//     parentCName: '系统管理',
-//   },
-// };
-// 测试用例
-const test = {
-  path: '/',
-  name: 'test',
-  component: () => import('../views/test/test.vue'),
-  // 这里都加上authDisabled，不用检验是否登录
+const device = {
+  path: '/laboratory/device',
+  name: 'device',
+  component: () => import('../views/laboratory/device.vue'),
   meta: {
-    authDisabled: true,
-    CName: '测试',
-    parentCName: '菜单一',
-  },
-};
-const equipmentAccount = {
-  path: '/laboratory/equipment-account',
-  name: 'equipmentAccount',
-  component: () => import('../views/laboratory/equipment-account.vue'),
-  meta: {
-    authDisabled: true,
     CName: '设备台账管理',
     parentCName: '实验室管理',
   },
@@ -451,8 +300,7 @@ const indexChildren = [
 //   // 维护人员管理,
 //   // userMng,
 //   roleMng,
-  test,
-  equipmentAccount,
+  device,
   workTop,
   equipmentMaintenance,
   cuttingtoolManagement,
@@ -491,7 +339,7 @@ export const routes = [
     // redirect: 'test',
     component: () => import('../views/main/index.vue'),
     children: indexChildren,
-    meta: { authDisabled: true },
+    meta: { authDisabled: false },
   },
   {
     path: '*',

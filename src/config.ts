@@ -2,15 +2,11 @@
 // 主菜单
 export const mainMenuTitles = [
   // 如果没有子导航，直接在这指定CName一样的值
-  '菜单一', 'icon-monitor',
   '实验室管理', 'icon-xiangmu',
   '实验课程管理', 'icon-manage2',
   '人员管理', 'icon-manage2',
-  // '系统设置', 'icon-system',
   // '报警提醒', 'icon-xiangmu',
   // '运行分析', 'icon-oeeanalysis',
-  // '工单管理', 'icon-manage2',
-  // '远程记录', 'icon-manage2',
   '系统管理', 'icon-system',
 ];
 
@@ -70,5 +66,17 @@ export const urlMap = {
   alarm_rule_sd_update: { url: '/rest/alarm/sdrule/update' },
   alarm_rule_sd_del: { url: '/rest/alarm/sdrule/del' },
   alarm_rule_sd_available: { url: '/rest/alarm/sdrule/available' },
-
+  // course
+  course_list: { url: '/rest/course/list' },
+  course_list4student: { url: '/rest/course/list4student' },
+  course_add: { url: '/rest/course/add' },
+  course_update: { url: '/rest/course/update' },
+  course_del: { url: '/rest/course/del' },
+  // program
+  program_list: { url: '/rest/program/list' },
+  program_add: { url: '/rest/program/add' },
+  program_update: { url: '/rest/program/update' },
+  program_del: { url: '/rest/program/del' },
+  program_upload: { url: '/rest/program/upload' },
+  program_upload_del: { url: '/rest/program/upload/del' },
 };

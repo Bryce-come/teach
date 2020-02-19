@@ -200,8 +200,7 @@ export default createComponent({
       over.value = false;
       count.value = 0;
       while (!over.value) {
-        // todo
-        // await query();
+        await query();
         // count.value += 1;
         await sleep(15000);
       }
