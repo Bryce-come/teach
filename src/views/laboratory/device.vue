@@ -19,19 +19,25 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form class="flex" label-width="100px" label-position="left" inline>
-            <el-form-item label="厂商联系人" style="margin-left:80px">
+            <el-form-item label="厂商联系人:" style="margin-left:80px">
               <span>{{props.row.extend.producerContact}}</span>
             </el-form-item>
-            <el-form-item label="厂商联系方式" style="margin-left:80px">
+            <el-form-item label="厂商联系方式:" style="margin-left:80px">
               <span>{{props.row.extend.producerTel}}</span>
+            </el-form-item>
+            <el-form-item label="价格:" style="margin-left:80px">
+              <span>{{props.row.extend.price}}</span>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="设备编号" width="250px"/>
+      <el-table-column prop="id" label="设备编号" width="150px"/>
       <el-table-column prop="name" label="设备名称" />
       <el-table-column prop="deviceType.name" label="设备型号" />
+      <el-table-column prop="extend.address" label="存放地址"/>
       <el-table-column prop="extend.buyDt" :formatter="(row, column, cellValue, index)=> row.extend.buyDt? formatDate(new Date(row.extend.buyDt)):''"  label="购入日期"/>
+      <el-table-column prop="extend.keeper" label="管理员"/>
+      <el-table-column prop="extend.producer" label="生产厂商"/>
       <el-table-column label="操作" width="180">
         <div slot-scope="{row}">
           <el-button type="success" size="mini" @click="showForm(row)">修改</el-button>
