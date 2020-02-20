@@ -54,7 +54,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted } from '@vue/composition-api';
+import { ref, Ref, onMounted, createComponent} from '@vue/composition-api';
 import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
@@ -64,8 +64,10 @@ import { EChartsEvent } from 'web-toolkit/src/types/echarts';
 import { EChartOption } from 'echarts';
 import { urlMap } from '@/config';
 import { statusMap } from '@/utils/device-utils';
-export default {
-  setup() {
+export default createComponent({
+  name: 'monitor',
+  props: { },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
     const box = ref(null);
     const lesson = ref<any>();
@@ -229,7 +231,7 @@ export default {
        stations,
     };
   },
-};
+});
 </script>
 <style scoped lang="scss">
 .monitor{

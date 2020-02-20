@@ -291,6 +291,7 @@ const teachMonitor = {
   path: '/teach/teachMonitor',
   name: 'dteachMonitor',
   component: () => import('../views/teach/teach-monitor.vue'),
+  meta: {
     authDisabled: true,
     CName: '现场监控',
     parentCName: '教学过程管理',
