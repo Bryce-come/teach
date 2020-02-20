@@ -99,6 +99,13 @@ export async function TeacherList() {
   return list;
 }
 
+export async function AdminUserList() {
+  const {data: {list}} = await postService('/rest/admin/user/listUsers',{
+    departmentId: 0
+  });
+  return list;
+}
+
 /**
  * 获取角色列表. 如果是学生，root=2; 如果是教师 root=1
  * @RequestParam(required = false) Integer root
@@ -146,4 +153,14 @@ export async function UserDel(params:any) {
  */
 export async function UserUpdate(params:any) {
   await postService('/rest/admin/user/updateUser',params);
+}
+
+export async function DepartmentList() {
+  const {data:{departments}} = await postService('/rest/user/listDepartment');
+  return departments;
+}
+
+export async function PrivilegeList() {
+  const {data:{privileges}} = await postService('/rest/admin/user/role/listAllPrivileges')
+  return privileges;
 }

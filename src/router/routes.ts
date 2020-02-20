@@ -1,16 +1,26 @@
 
 import { PRIVILEGE } from '@/types/privilege';
 
-// const roleMng = {
-//   path: '/management/role',
-//   name: 'roleMng',
-//   component: () => import('../views/user/role.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.ROLE_MNG],
-//     CName: '角色权限管理',
-//     parentCName: '系统管理',
-//   },
-// };
+const roleMng = {
+  path: '/management/role',
+  name: 'roleMng',
+  component: () => import('../views/user/role.vue'),
+  meta: {
+    privileges: [PRIVILEGE.ROLE_MNG],
+    CName: '角色权限管理',
+    parentCName: '系统管理',
+  },
+};
+const userMng = {
+  path: '/management/user',
+  name: 'userMng',
+  component: () => import('../views/user/user.vue'),
+  meta: {
+    privileges: [PRIVILEGE.USER_MNG],
+    CName: '系统账户管理',
+    parentCName: '系统管理',
+  },
+};
 // const indexPage = {
 //   path: '/index-page',
 //   name: 'index-page',
@@ -329,17 +339,6 @@ const indexChildren = [
 //   workOrderList2,
 //   workOrderComplete,
 //   // workOrderComment,
-//   // 系统管理
-//   设备网关配置,
-//   设备配置管理,
-//   参数显示配置,
-//   alarmRule,
-//   deviceType,
-//   客户资料管理,
-//   用户信息管理,
-//   // 维护人员管理,
-//   // userMng,
-//   roleMng,
   device,
   workTop,
   equipmentMaintenance,
@@ -363,6 +362,8 @@ const indexChildren = [
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
+  userMng,
+  roleMng,
   {
     path: '*',
     name: '404_child',
