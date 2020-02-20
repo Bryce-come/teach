@@ -20,9 +20,11 @@
       <el-table-column label="实验设备"/>
       <el-table-column label="附件" prop="attachment"/>
       <el-table-column label="操作" width="200px">
-        <el-button type="warning" size="mini" @click="showForm()">修改</el-button>
-        <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>
-        <el-button type="text" style="margin-left:5px">查看详情</el-button>
+        <div slot-scope="row">
+          <el-button type="warning" size="mini" @click="showForm(row)">修改</el-button>
+          <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
+          <el-button type="text" style="margin-left:5px">查看详情</el-button>
+        </div>
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
