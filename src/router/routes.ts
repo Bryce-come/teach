@@ -236,6 +236,16 @@ const courseManagement = {
     parentCName: '实验课程管理',
   },
 };
+const reportTemplateManagement = {
+  path: '/course/report-template-management',
+  name: 'reportTemplateManagement',
+  component: () => import('../views/course/report-template-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '报告模板管理',
+    parentCName: '实验课程管理',
+  },
+};
 const courseAppointment = {
   path: '/course/courseAppointment',
   name: 'courseAppointment',
@@ -297,6 +307,26 @@ const delayAlarm = {
     parentCName: '报警提醒',
   },
 };
+const teachMonitor = {
+  path: '/teach/teachMonitor',
+  name: 'dteachMonitor',
+  component: () => import('../views/teach/teach-monitor.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '现场监控',
+    parentCName: '教学过程管理',
+  },
+};
+const programManagement = {
+  path: '/teach/program-management',
+  name: 'programManagement',
+  component: () => import('../views/teach/program-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: 'NC程序管理',
+    parentCName: '教学过程管理',
+  },
+};
 const systemOptionSetting = {
   path: '/system/system-option-setting',
   name: 'systemOptionSetting',
@@ -351,6 +381,7 @@ const indexChildren = [
   courseScheduling,
   experiment,
   courseManagement,
+  reportTemplateManagement,
   courseAppointment,
   // 人员管理
   teacherManagement,
@@ -359,6 +390,9 @@ const indexChildren = [
   deviceAlarm,
   disusingAlarm,
   delayAlarm,
+  //教学过程管理
+  teachMonitor,
+  programManagement,
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
