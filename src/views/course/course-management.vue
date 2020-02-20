@@ -1,14 +1,10 @@
 <template>
   <div v-loading="loading" class="course-management">
-    <el-form :inline="true">
-      <el-form-item>
-        <el-button type="primary">导入</el-button>
-        <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
-      </el-form-item>
-      <el-form-item style="margin-left:550px">
-        <el-input placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="width:400px" clearable/>
-      </el-form-item>
-    </el-form>
+    <div style="margin-bottom:10px">
+      <el-button type="primary">导入</el-button>
+      <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
+      <el-input placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="width:400px;margin-left:550px" clearable/>
+    </div>
     <lkt-table
       :data="courseList"
       style="width:100%">
@@ -59,7 +55,7 @@
       <el-form :inline="true">
         <el-form-item>
           <el-button type="primary">导入</el-button>
-          <el-button type="success" style="margin-left:10px">添加</el-button>
+          <el-button type="success" style="margin-left:10px" @click="addExperimentForm()">添加</el-button>
         </el-form-item>
         <el-form-item style="margin-left:480px">
           <el-input placeholder="输入关键字搜索" style="width:300px"></el-input>
@@ -79,6 +75,17 @@
           <el-button type="danger" size="mini" @click="experimentRemove()">删除</el-button>
         </el-table-column>
       </lkt-table>
+    </kit-dialog-simple>
+    <kit-dialog-simple
+      :modal="addExperimentModal"
+      :confirm="addExperimentUpdate"
+      width="500px">
+      <div slot="title">添加实验项目</div>
+      <el-form>
+        <el-form-item label="实验项目" prop="name">
+          <lkt-select/>
+        </el-form-item>
+      </el-form>
     </kit-dialog-simple>
   </div>
 </template>
@@ -108,6 +115,10 @@ export default {
       visible: false,
       experimentInfo: null,
     });
+    const addExperimentModal = ref<any>({
+      visible: false,
+      addExperimentInfo: null,
+    });
     const showCourseForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
@@ -122,6 +133,13 @@ export default {
     const showExperimentForm = () => {
       experimentModal.value.visible = true;
     };
+    const addExperimentForm = () => {
+      addExperimentModal.value.visible = true;
+    };
+    async function addExperimentUpdate() {
+      addExperimentModal.value.visible = false;
+      Message.success('添加成功');
+    }
     async function experimentUpdate() {
       experimentModal.value.visible = false;
       Message.success('添加成功');
@@ -163,6 +181,8 @@ export default {
         experimentList, experimentModal, showExperimentForm,
         experimentUpdate: useLoading(loading, experimentUpdate),
         experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
+        addExperimentModal, addExperimentForm,
+        addExperimentUpdate: useLoading(loading, addExperimentUpdate),
     };
   },
 };
