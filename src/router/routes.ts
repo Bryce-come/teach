@@ -206,6 +206,16 @@ const courseScheduling = {
     parentCName: '实验课程管理',
   },
 };
+const experiment = {
+  path: '/course/experiment',
+  name: 'experiment',
+  component: () => import('../views/course/experiment.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '实验项目',
+    parentCName: '实验课程管理'
+  },
+};
 const courseManagement = {
   path: '/course/course-management',
   name: 'courseManagement',
@@ -349,6 +359,7 @@ const indexChildren = [
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
+  experiment,
   courseManagement,
   courseAppointment,
   // 人员管理

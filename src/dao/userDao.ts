@@ -88,3 +88,62 @@ export async function StudentList() {
   const {data: {list}} = await postService('/rest/student/list');
   return list;
 }
+
+/**
+ * 教师列表
+ */
+export async function TeacherList() {
+  const {data: {list}} = await postService('/rest/admin/user/listUsers',{
+    departmentId: 1
+  });
+  return list;
+}
+
+/**
+ * 获取角色列表. 如果是学生，root=2; 如果是教师 root=1
+ * @RequestParam(required = false) Integer root
+ */
+export async function RoleList(params:any) {
+  const {data: {roles}} = await postService('/rest/user/listRoles',params);
+  return roles;
+}
+
+/**
+ * 添加用户
+ *  @RequestParam String username,
+    @RequestParam(required = false) String name,
+   @RequestParam(required = false) String phone,
+   @RequestParam String pwd,
+   @RequestParam int role,
+   // no-学号/工号
+   @RequestParam(required = false) String extendJson
+ */
+export async function UserAdd(params:any) {
+  await postService('/rest/admin/user/addUser',params)
+}
+
+/**
+ * 用户冻结/删除
+ * @RequestParam int id,
+ @ApiParam(value = "0-删除，1-冻结，2-解冻")
+ @RequestParam int off
+ */
+export async function UserDel(params:any) {
+  await postService('/rest/admin/user/del',params)
+}
+
+/**
+ * 更新用户信息
+ * @RequestParam int id,
+ @RequestParam(required = false) String username,
+ @RequestParam(required = false) String name,
+ @RequestParam(required = false) String phone,
+ @RequestParam(required = false,defaultValue = "0")int gender,
+ @RequestParam(required = false)String pwd,
+ @RequestParam(required = false,defaultValue = "0") int role,
+ @RequestParam(required = false)String extendJson
+ * @constructor
+ */
+export async function UserUpdate(params:any) {
+  await postService('/rest/admin/user/updateUser',params);
+}

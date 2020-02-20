@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <el-button type="warning" size="mini" @click="showCourseForm()">修改</el-button>
-        <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>
+        <el-button type="danger" size="mini" style="margin-left:5px" @click="courseRemove()">删除</el-button>
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
@@ -53,7 +53,7 @@
     </kit-dialog-simple>
     <kit-dialog-simple
       :modal="experimentModal"
-      :confir="experimentUpdate"
+      :confirm="experimentUpdate"
       width="1000px">
       <div slot="title">实验项目详情</div>
       <el-form :inline="true">
@@ -65,6 +65,20 @@
           <el-input placeholder="输入关键字搜索" style="width:300px"></el-input>
         </el-form-item>
       </el-form>
+      <lkt-table
+        :data="experimentList"
+        style="width:100%">
+        <el-table-column label="实验名称" prop="name"/>
+        <el-table-column label="实验目的" prop="purpose"/>
+        <el-table-column label="实验原理" prop="principle"/>
+        <el-table-column label="实验步骤" prop="steps"/>
+        <el-table-column label="实验结果" prop="results"/>
+        <el-table-column label="关联操作台" prop="stations"/>
+        <el-table-column label="附件" prop="attachment"/>
+        <el-table-column label="操作">
+          <el-button type="danger" size="mini" @click="experimentRemove()">删除</el-button>
+        </el-table-column>
+      </lkt-table>
     </kit-dialog-simple>
   </div>
 </template>
@@ -79,7 +93,10 @@ export default {
     const loading = ref(false);
     const courseList = ref<any>();
     const experimentList = ref<any>();
-    const remove = async (row: any) => {
+    const courseRemove = async (row: any) => {
+      Message.success('删除成功');
+    };
+    const experimentRemove = async (row: any) => {
       Message.success('删除成功');
     };
     const form = ref<ElForm|null>(null);
@@ -140,11 +157,12 @@ export default {
     }));
     return{
         loading, courseList, queryCourse,
-        remove: useConfirm('确认删除？', useLoading(loading, remove)),
+        courseRemove: useConfirm('确认删除？', useLoading(loading, courseRemove)),
         courseModal, showCourseForm,
         courseUpdate: useLoading(loading, courseUpdate),
         experimentList, experimentModal, showExperimentForm,
         experimentUpdate: useLoading(loading, experimentUpdate),
+        experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
     };
   },
 };
