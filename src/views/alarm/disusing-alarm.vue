@@ -38,11 +38,11 @@ export default {
   setup() {
     const loading = ref(false);
     const usageAlarmList = ref<any>();
-    const query = async() =>{
+    const query = async () => {
         usageAlarmList.value = [
             {
                 id: 1,
-                users:{
+                users: {
                     name: '英超就',
                 },
                 type: {
@@ -53,12 +53,12 @@ export default {
                     name: '操作台1',
                 },
                 description: '操作台开启',
-                extend:{
+                extend: {
                     confirm: 1,
-                }
-            }
+                },
+            },
         ];
-    }
+    };
     onMounted(useLoading(loading, async () => {
       await query();
     }));

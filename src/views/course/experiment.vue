@@ -75,7 +75,7 @@ export default {
       experimentInfo: null,
       type: 'add',
     });
-    const form =ref<ElForm | null>(null);
+    const form = ref<ElForm | null>(null);
     const showForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
@@ -110,8 +110,8 @@ export default {
       modal, showForm,
       update: useLoading(loading, update),
     };
-  }
-}
+  },
+};
 function initForm() {
   return {
     name: '', purpose: '', principle: '', steps: '', results: '', stations: '', attachment: '',

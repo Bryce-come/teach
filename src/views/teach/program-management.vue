@@ -98,15 +98,15 @@ export default {
     const query = async () => {
       ncProgramList.value = [
         {id: '0', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: true, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: '',}},
+        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
         {id: '1', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: false, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: '',}},
+        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
         {id: '2', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: false, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: '',}},
+        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
         {id: '3', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: true, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: '',}},
+        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
         {id: '4', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: true, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: '',}},
+        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
       ];
     };
     const turnToExamine = async () => {
@@ -119,8 +119,8 @@ export default {
       loading, ncProgramList, query, turn,
       turnToExamine: useLoading(loading, turnToExamine),
     };
-  }
-}
+  },
+};
 </script>
 <style scoped lang="scss">
 

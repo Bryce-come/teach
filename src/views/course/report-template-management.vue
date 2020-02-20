@@ -43,7 +43,7 @@ export default {
       visible: false,
       reportTemplateInfo: null,
     });
-    const form =ref<ElForm | null>(null);
+    const form = ref<ElForm | null>(null);
     const showForm = async () => {
       modal.value.visible = true;
     };
@@ -70,8 +70,8 @@ export default {
       modal, showForm,
       update: useLoading(loading, update),
     };
-  }
-}
+  },
+};
 </script>
 <style scoped lang="scss">
 

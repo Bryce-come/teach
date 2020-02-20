@@ -223,7 +223,7 @@ const experiment = {
   meta: {
     authDisabled: true,
     CName: '实验项目',
-    parentCName: '实验课程管理'
+    parentCName: '实验课程管理',
   },
 };
 const courseManagement = {
@@ -386,11 +386,11 @@ const indexChildren = [
   // 人员管理
   teacherManagement,
   studentManagement,
-  //报警提醒
+  // 报警提醒
   deviceAlarm,
   disusingAlarm,
   delayAlarm,
-  //教学过程管理
+  // 教学过程管理
   teachMonitor,
   programManagement,
   // 系统管理

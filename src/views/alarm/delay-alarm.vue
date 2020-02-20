@@ -41,10 +41,10 @@ export default {
     });
     const list = ref<any>();
     const queryManually = async () => {
-      list.value =[
+      list.value = [
          {
                 id: 1,
-                device:{
+                device: {
                     name: '加工中心1',
                     referencedColumnName: 'YC124245532',
                 },
@@ -56,13 +56,13 @@ export default {
                     name: '玛丽',
                 },
                 description: '设备刀具磨损严重',
-                extend:{
+                extend: {
                     confirm: 1,
-                    productorName:'五鑫工业设备厂',
+                    productorName: '五鑫工业设备厂',
                     productDt: '2019-2-19',
                     expireDays: 7,
-                }
-            }]
+                },
+            }];
       };
     const confirm = async (row: any) => {
     };

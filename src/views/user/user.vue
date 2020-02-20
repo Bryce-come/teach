@@ -66,7 +66,7 @@ import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
 import {IUser} from '@/types/beans';
 import {urlMap} from '@/config';
 import {ElForm} from 'element-ui/types/form';
-import {AdminUserList, RoleList, UserDel} from "@/dao/userDao";
+import {AdminUserList, RoleList, UserDel} from '@/dao/userDao';
 export default createComponent({
   name: 'User',
   setup() {
@@ -125,7 +125,7 @@ export default createComponent({
       const off = row.off;
       await UserDel({
         id: row.id,
-        off: off===0?1:2
+        off: off === 0 ? 1 : 2,
       });
       Message.success(`${off === Status.Normal ? '冻结' : '恢复'}成功`);
       await query();
@@ -135,11 +135,11 @@ export default createComponent({
       await query();
       Message.success('删除成功');
     }
-    async function query(){
+    async function query() {
       list.value = await AdminUserList();
     }
     onMounted(useLoading(loading, async () => {
-      roleList.value = await RoleList({root:0});
+      roleList.value = await RoleList({root: 0});
       await query();
     }));
     return {
@@ -150,7 +150,7 @@ export default createComponent({
       toggleStatus: useLoading(loading, toggleStatus),
       validator, modal, form,
       update: useLoading(loading, update),
-      query
+      query,
     };
   },
 });
