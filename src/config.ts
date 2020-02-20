@@ -7,7 +7,7 @@ export const mainMenuTitles = [
   '人员管理', 'icon-manage2',
   // '系统设置', 'icon-system',
   '报警提醒', 'icon-xiangmu',
-  // '教学过程管理', 'icon-xiangmu',
+  '教学过程管理', 'icon-oeeanalysis',
   '系统管理', 'icon-system',
 ];
 

@@ -287,6 +287,16 @@ const delayAlarm = {
     parentCName: '报警提醒',
   },
 };
+const teachMonitor = {
+  path: '/teach/teachMonitor',
+  name: 'dteachMonitor',
+  component: () => import('../views/teach/teach-monitor.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '现场监控',
+    parentCName: '教学过程管理',
+  },
+};
 const systemOptionSetting = {
   path: '/system/system-option-setting',
   name: 'systemOptionSetting',
@@ -360,6 +370,8 @@ const indexChildren = [
   deviceAlarm,
   disusingAlarm,
   delayAlarm,
+  //教学过程管理
+  teachMonitor,
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
