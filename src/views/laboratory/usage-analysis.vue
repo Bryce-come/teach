@@ -8,10 +8,12 @@
         <lkt-select :list="deviceParamList" value-key="param" v-model="deviceParam" :clearable="false" placeholder="请选择参数"/>
       </el-form-item>
       <el-form-item label="时间范围:" label-width="80px">
-            <el-date-picker v-model="timeRange" type="datetimerange" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间"></el-date-picker>
-            <el-button type="primary" style="margin-left:15px" @click="query()">查询</el-button>
-            <el-button type="success" style="margin-left:15px">导出原始Excel</el-button>
-        </el-form-item>
+        <lkt-date-picker v-model="timeRange"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" style="margin-left:15px" @click="query()">查询</el-button>
+        <el-button type="success" style="margin-left:15px">导出原始Excel</el-button>
+      </el-form-item>
     </el-form>
     <div style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
