@@ -71,16 +71,7 @@ const userMng = {
 //     parentName: 'monitoring',
 //   },
 // };
-// const commonAnalysis = {
-//   path: '/analysis/common',
-//   name: 'commonAnalysis',
-//   component: () => import('../views/analysis/common.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_ANALYSIS],
-//     CName: '通用统计分析',
-//     parentCName: '运行分析',
-//   },
-// };
+
 // const parameter = {
 //   path: '/analysis/parameter',
 //   name: 'parameterAnalysis',
@@ -90,40 +81,6 @@ const userMng = {
 //     CName: '参数历史统计',
 //     parentCName: '运行分析',
 //   },
-// };
-// const alarmAnalysis = {
-//   path: '/analysis/alarm',
-//   name: 'alarmAnalysis',
-//   redirect: { name: 'alarm-analysis-summary' },
-//   component: () => import('../views/analysis/alarm.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_ANALYSIS],
-//     CName: '报警统计分析',
-//     parentCName: '运行分析',
-//   },
-//   children: [
-//     {
-//       path: '',
-//       name: 'alarm-analysis-summary',
-//       component: () => import('../views/analysis/alarm-summary.vue'),
-//       meta: {
-//         privileges: [PRIVILEGE.DEVICE_ANALYSIS],
-//         CName: '报警总数分析',
-//         parentCName: '报警分析',
-//         parentName: 'alarmAnalysis',
-//       },
-//     }, {
-//       path: 'reason',
-//       name: 'alarm-analysis-reason',
-//       component: () => import('../views/analysis/alarm-reason.vue'),
-//       meta: {
-//         privileges: [PRIVILEGE.DEVICE_ANALYSIS],
-//         CName: '报警原因分析',
-//         parentCName: '报警分析',
-//         parentName: 'alarmAnalysis',
-//       },
-//     },
-//   ],
 // };
 const device = {
   path: '/laboratory/device',
@@ -363,12 +320,6 @@ const indexChildren = [
 //   deviceAlarmRecord,
 //   analysisGuarantee,
 //   orderDelay,
-// // 工单管理
-//   workOrderCreate,
-//   workOrderList,
-//   workOrderList2,
-//   workOrderComplete,
-//   // workOrderComment,
   device,
   workTop,
   equipmentMaintenance,
