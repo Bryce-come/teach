@@ -131,7 +131,10 @@ export default createComponent({
       await query();
     }
     async function remove(row: IUser) {
-      await postService(urlMap.user_delete.url, { id: row.id, off: 0 });
+      await UserDel({
+        id: row.id,
+        off: 0,
+      });
       await query();
       Message.success('删除成功');
     }

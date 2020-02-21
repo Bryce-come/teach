@@ -4,23 +4,21 @@
           <el-button type="primary" size="mini" @click="delay()" style='margin-right:10px'>延迟</el-button>
           <el-button type="danger" size="mini" @click="off()">下课</el-button>
       </div>
-      <monitor></monitor>  
   </div>
 </template>
 <script lang="ts">
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
-import monitor  from '../laboratory/monitor.vue';
-export default createComponent({
-  components: { monitor },
+import monitor  from '../laboratory/monitor.vue'
+export default {
   setup() {
     const loading = ref(false);
-    const delay = async () => {
+    const delay = async () =>{
 
     };
-    const off = async () => {
-
+    const off = async () =>{
+        
     };
     onMounted(useLoading(loading, async () => {
 
@@ -31,7 +29,7 @@ export default createComponent({
      off,
     };
   },
-});
+};
 </script>
 <style scoped lang="scss">
  
