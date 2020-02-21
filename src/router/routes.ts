@@ -266,11 +266,21 @@ const delayAlarm = {
 };
 const teachMonitor = {
   path: '/teach/teachMonitor',
-  name: 'dteachMonitor',
+  name: 'teachMonitor',
   component: () => import('../views/teach/teach-monitor.vue'),
   meta: {
     authDisabled: true,
     CName: '现场监控',
+    parentCName: '教学过程管理',
+  },
+};
+const deviceDistribution = {
+  path: '/teach/deviceDistribution',
+  name: 'deviceDistribution',
+  component: () => import('../views/teach/device-distribution.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '教学设备分配',
     parentCName: '教学过程管理',
   },
 };
@@ -343,6 +353,7 @@ const indexChildren = [
   delayAlarm,
   // 教学过程管理
   teachMonitor,
+  deviceDistribution,
   programManagement,
   // 系统管理
   systemOptionSetting,
