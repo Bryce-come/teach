@@ -1,10 +1,10 @@
 <template>
   <div v-loading="loading" class="teacher-management">
-    <el-form :inline="true">
+    <el-form :inline="true" style="display:flex;justify-content:space-between;flex-wrap:wrap">
       <el-form-item>
         <el-button type="primary" @click="showForm()">添加</el-button>
       </el-form-item>
-      <el-form-item style="margin-left:850px">
+      <el-form-item>
         <el-input v-model="filterText" placeholder="请输入关键字搜索" style="width:100%"></el-input>
       </el-form-item>
     </el-form>

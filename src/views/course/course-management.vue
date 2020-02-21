@@ -1,9 +1,11 @@
 <template>
   <div v-loading="loading" class="course-management">
-    <div style="margin-bottom:10px">
-      <el-button type="primary">导入</el-button>
-      <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
-      <el-input placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="width:400px;margin-left:550px" clearable/>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
+      <div style="margin-bottom:10px">
+        <el-button type="primary">导入</el-button>
+        <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
+      </div>
+      <el-input placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="margin-bottom:10px;width:400px" clearable/>
     </div>
     <lkt-table
       :data="courseList"

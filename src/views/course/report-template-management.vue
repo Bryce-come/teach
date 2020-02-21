@@ -1,8 +1,8 @@
 <template>
   <div v-loading="loading" class="report-template-management">
-    <div style="margin-left:30px;margin-bottom:10px">
+    <div style="margin-bottom:10px;display:flex;justify-content:space-between;flex-wrap:wrap">
       <el-button type="primary" @click="showForm()">添加</el-button>
-      <el-input placeholder="输入关键字搜索" style="margin-left:600px;width:400px"></el-input>
+      <el-input placeholder="输入关键字搜索" style="width:400px"></el-input>
     </div>
     <lkt-table
       :data="experimentReportTemplateList"

@@ -1,14 +1,16 @@
 <template>
   <div v-loading="loading" class="experiment">
-    <div style="display:flex;justify-content:center;margin-bottom:10px">
+    <div style="display:flex;justify-content:flex-start;margin-bottom:10px">
       <el-button type="primary">所有实验</el-button>
       <el-button type="primary" style="margin-left:20px">课内实验</el-button>
       <el-button type="primary" style="margin-left:20px">开放实验</el-button>
     </div>
-    <div style="margin-left:30px;margin-bottom:10px">
-      <el-button type="primary">导入</el-button>
-      <el-button type="success" style="margin-left:10px" @click="showForm()">添加</el-button>
-      <el-input placeholder="输入关键字搜索" style="width:350px;margin-left:600px"></el-input>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
+      <div style="margin-bottom:10px">
+        <el-button type="primary">导入</el-button>
+        <el-button type="success" style="margin-left:10px" @click="showForm()">添加</el-button>
+      </div>      
+      <el-input placeholder="输入关键字搜索" style="margin-bottom:10px;width:350px"></el-input>    
     </div>
     <lkt-table
       :data="experimentList"

@@ -1,6 +1,8 @@
 <template>
   <div v-loading="loading" class="equipment-model-configuration">
-    <el-input v-model="filterText" placeholder="输入关键字搜索" style="margin-left:700px;margin-bottom:10px;width:400px"></el-input>
+    <div style="display:flex;justify-content:flex-end">
+      <el-input v-model="filterText" placeholder="输入关键字搜索" style="margin:10px;width:400px"></el-input>
+    </div>
     <lkt-table
       :data="deviceTypeList"
       style="width:100%">

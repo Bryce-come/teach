@@ -327,6 +327,26 @@ const programManagement = {
     parentCName: '教学过程管理',
   },
 };
+const experimentResultScore = {
+  path: '/teach/experiment-result-score',
+  name: 'experimentResultScore',
+  component: () => import('../views/teach/experiment-result-score.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '实验结果及评分',
+    parentCName: '教学过程管理',
+  },
+};
+const gatewayChannelManagement = {
+  path: '/teach/gateway-channel-management',
+  name: 'gatewayChannelManagement',
+  component: () => import('../views/teach/gateway-channel-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '网关通道管理',
+    parentCName: '教学过程管理',
+  },
+};
 const systemOptionSetting = {
   path: '/system/system-option-setting',
   name: 'systemOptionSetting',
@@ -393,6 +413,8 @@ const indexChildren = [
   // 教学过程管理
   teachMonitor,
   programManagement,
+  experimentResultScore,
+  gatewayChannelManagement,
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,

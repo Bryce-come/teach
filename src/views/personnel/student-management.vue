@@ -14,11 +14,11 @@
         </el-tree>
       </el-col>
       <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px">
-        <el-form :inline="true" style="margin-top:10px">
+        <el-form :inline="true" style="margin-top:10px;display:flex;justify-content:space-between;flex-wrap:wrap">
           <el-form-item>
             <el-button type="primary" @click="showForm()">添加</el-button>
           </el-form-item>
-          <el-form-item style="margin-left:600px">
+          <el-form-item>
             <el-input style="width:100%" placeholder="输入关键字搜索"></el-input>
           </el-form-item>
         </el-form>

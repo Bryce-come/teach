@@ -23,21 +23,22 @@
       </el-tab-pane>
       <el-tab-pane label="历史记录">
         <el-form :inline="true">
-        <el-form-item label="设备名称:" label-width="80px">
+          <el-form-item label="设备名称:" label-width="80px">
             <lkt-select :list="deviceNameList" value-key="name" v-model="deviceName" multiple :clearable="false" placeholder="请选择设备名称"/>
-        </el-form-item>
-        <el-form-item label="设备型号:" label-width="80px">
+          </el-form-item>
+          <el-form-item label="设备型号:" label-width="80px">
             <lkt-select :list="deviceTypeList" value-key="name" v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号"/>
-        </el-form-item>
-        <el-form-item label="维保类型:" label-width="80px">
+          </el-form-item>
+          <el-form-item label="维保类型:" label-width="80px">
             <lkt-select :list="maintainTypeList" value-key="type" v-model="maintainType" multiple :clearable="false" placeholder="请选择维保类型"/>
-        </el-form-item>
-        <el-form-item label="维护日期:" label-width="80px">
-            <el-date-picker v-model="maintainDt" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-             </el-date-picker>
-             <el-button type="primary" style="margin-left: 500px">查询</el-button>
-            <el-button style="margin-left: 20px">重置</el-button>
-        </el-form-item>
+          </el-form-item>
+          <el-form-item label="维护日期:" label-width="80px">
+            <lkt-date-picker v-model="maintainDt"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary">查询</el-button>
+            <el-button style="margin-left: 10px">重置</el-button>
+          </el-form-item>
         </el-form> 
         <lkt-table :data="deviceMaintenanceRecord" style="width:100%">
           <el-table-column prop="occurDt" label="时间"/>          
