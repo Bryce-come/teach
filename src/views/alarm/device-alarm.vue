@@ -72,7 +72,7 @@ import {router} from '@/main';
 export default {
   setup() {
     const loading = ref(false);
-    const deviceName= ref<any>();
+    const deviceName = ref<any>();
     const devicesList = ref<any>();
     const deviceTypeList = ref<any>();
     const deviceType = ref<any>();
@@ -87,11 +87,11 @@ export default {
     const remove = async (row: any) => {
         Message.success('删除成功');
     };
-    const query = async() =>{
+    const query = async () => {
         deviceAlarmList.value = [
             {
                 id: 1,
-                device:{
+                device: {
                     name: '加工中心1',
                     referencedColumnName: 'YC124245532',
                 },
@@ -103,16 +103,16 @@ export default {
                     name: '玛丽',
                 },
                 description: '设备刀具磨损严重',
-                extend:{
+                extend: {
                     confirm: 1,
-                }
-            }
+                },
+            },
         ];
-    }
+    };
     const snapshot = async (row: any) => {
       modal.value.data = row;
       modal.value.visible = true;
-    }
+    };
     onMounted(useLoading(loading, async () => {
       await query();
     }));

@@ -1,16 +1,26 @@
 
 import { PRIVILEGE } from '@/types/privilege';
 
-// const roleMng = {
-//   path: '/management/role',
-//   name: 'roleMng',
-//   component: () => import('../views/user/role.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.ROLE_MNG],
-//     CName: '角色权限管理',
-//     parentCName: '系统管理',
-//   },
-// };
+const roleMng = {
+  path: '/management/role',
+  name: 'roleMng',
+  component: () => import('../views/user/role.vue'),
+  meta: {
+    privileges: [PRIVILEGE.ROLE_MNG],
+    CName: '角色权限管理',
+    parentCName: '系统管理',
+  },
+};
+const userMng = {
+  path: '/management/user',
+  name: 'userMng',
+  component: () => import('../views/user/user.vue'),
+  meta: {
+    privileges: [PRIVILEGE.USER_MNG],
+    CName: '系统账户管理',
+    parentCName: '系统管理',
+  },
+};
 // const indexPage = {
 //   path: '/index-page',
 //   name: 'index-page',
@@ -213,7 +223,7 @@ const experiment = {
   meta: {
     authDisabled: true,
     CName: '实验项目',
-    parentCName: '实验课程管理'
+    parentCName: '实验课程管理',
   },
 };
 const courseManagement = {
@@ -223,6 +233,16 @@ const courseManagement = {
   meta: {
     authDisabled: true,
     CName: '课程管理',
+    parentCName: '实验课程管理',
+  },
+};
+const reportTemplateManagement = {
+  path: '/course/report-template-management',
+  name: 'reportTemplateManagement',
+  component: () => import('../views/course/report-template-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '报告模板管理',
     parentCName: '实验课程管理',
   },
 };
@@ -297,6 +317,7 @@ const teachMonitor = {
     parentCName: '教学过程管理',
   },
 };
+<<<<<<< HEAD
 const deviceDistribution = {
   path: '/teach/deviceDistribution',
   name: 'deviceDistribution',
@@ -304,6 +325,15 @@ const deviceDistribution = {
   meta: {
     authDisabled: true,
     CName: '教学设备分配',
+=======
+const programManagement = {
+  path: '/teach/program-management',
+  name: 'programManagement',
+  component: () => import('../views/teach/program-management.vue'),
+  meta: {
+    authDisabled: true,
+    CName: 'NC程序管理',
+>>>>>>> 587e41f11245b8145273a2c8e2521cb0f870c378
     parentCName: '教学过程管理',
   },
 };
@@ -349,17 +379,6 @@ const indexChildren = [
 //   workOrderList2,
 //   workOrderComplete,
 //   // workOrderComment,
-//   // 系统管理
-//   设备网关配置,
-//   设备配置管理,
-//   参数显示配置,
-//   alarmRule,
-//   deviceType,
-//   客户资料管理,
-//   用户信息管理,
-//   // 维护人员管理,
-//   // userMng,
-//   roleMng,
   device,
   workTop,
   equipmentMaintenance,
@@ -372,20 +391,27 @@ const indexChildren = [
   courseScheduling,
   experiment,
   courseManagement,
+  reportTemplateManagement,
   courseAppointment,
   // 人员管理
   teacherManagement,
   studentManagement,
-  //报警提醒
+  // 报警提醒
   deviceAlarm,
   disusingAlarm,
   delayAlarm,
-  //教学过程管理
+  // 教学过程管理
   teachMonitor,
+<<<<<<< HEAD
   deviceDistribution,
+=======
+  programManagement,
+>>>>>>> 587e41f11245b8145273a2c8e2521cb0f870c378
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
+  userMng,
+  roleMng,
   {
     path: '*',
     name: '404_child',

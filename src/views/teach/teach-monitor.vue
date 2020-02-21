@@ -11,16 +11,16 @@
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
-import monitor  from '../laboratory/monitor.vue'
+import monitor  from '../laboratory/monitor.vue';
 export default createComponent({
   components: { monitor },
   setup() {
     const loading = ref(false);
-    const delay = async () =>{
+    const delay = async () => {
 
     };
-    const off = async () =>{
-        
+    const off = async () => {
+
     };
     onMounted(useLoading(loading, async () => {
 

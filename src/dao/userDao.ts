@@ -93,8 +93,15 @@ export async function StudentList() {
  * 教师列表
  */
 export async function TeacherList() {
-  const {data: {list}} = await postService('/rest/admin/user/listUsers',{
-    departmentId: 1
+  const {data: {list}} = await postService('/rest/admin/user/listUsers', {
+    departmentId: 1,
+  });
+  return list;
+}
+
+export async function AdminUserList() {
+  const {data: {list}} = await postService('/rest/admin/user/listUsers', {
+    departmentId: 0,
   });
   return list;
 }
@@ -103,8 +110,8 @@ export async function TeacherList() {
  * 获取角色列表. 如果是学生，root=2; 如果是教师 root=1
  * @RequestParam(required = false) Integer root
  */
-export async function RoleList(params:any) {
-  const {data: {roles}} = await postService('/rest/user/listRoles',params);
+export async function RoleList(params: any) {
+  const {data: {roles}} = await postService('/rest/user/listRoles', params);
   return roles;
 }
 
@@ -118,8 +125,8 @@ export async function RoleList(params:any) {
    // no-学号/工号
    @RequestParam(required = false) String extendJson
  */
-export async function UserAdd(params:any) {
-  await postService('/rest/admin/user/addUser',params)
+export async function UserAdd(params: any) {
+  await postService('/rest/admin/user/addUser', params);
 }
 
 /**
@@ -128,8 +135,8 @@ export async function UserAdd(params:any) {
  @ApiParam(value = "0-删除，1-冻结，2-解冻")
  @RequestParam int off
  */
-export async function UserDel(params:any) {
-  await postService('/rest/admin/user/del',params)
+export async function UserDel(params: any) {
+  await postService('/rest/admin/user/del', params);
 }
 
 /**
@@ -144,6 +151,16 @@ export async function UserDel(params:any) {
  @RequestParam(required = false)String extendJson
  * @constructor
  */
-export async function UserUpdate(params:any) {
-  await postService('/rest/admin/user/updateUser',params);
+export async function UserUpdate(params: any) {
+  await postService('/rest/admin/user/updateUser', params);
+}
+
+export async function DepartmentList() {
+  const {data: {departments}} = await postService('/rest/user/listDepartment');
+  return departments;
+}
+
+export async function PrivilegeList() {
+  const {data: {privileges}} = await postService('/rest/admin/user/role/listAllPrivileges');
+  return privileges;
 }
