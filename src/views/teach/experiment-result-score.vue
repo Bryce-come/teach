@@ -34,25 +34,47 @@
         </div>
         <el-input placeholder="输入操作台/学生搜索" style="width:400px;margin:10px"></el-input>
       </div>
-      <lkt-table>
-        <el-table-column label="学生" prop=""/>
-        <el-table-column label="提交时间" prop=""/>
-        <el-table-column label="操作台" prop=""/>
-        <el-table-column label="状态" prop=""/>
+      <lkt-table
+        :data="experimentReportList"
+        style="width:100%">
+        <el-table-column label="学生" prop="student"/>
+        <el-table-column label="提交时间" prop="createDt"/>
+        <el-table-column label="操作台"/>
+        <el-table-column label="状态">
+          <span style="color:green">已评分</span>
+        </el-table-column>
         <el-table-column label="实验过程">
           <el-button type="text">查看</el-button>
         </el-table-column>
-        <el-table-column label="操作评分" prop=""/>
-        <el-table-column label="实验报告" prop="">
-          <el-button type="text">{{}}</el-button>
+        <el-table-column label="操作评分" prop="extend.score1"/>
+        <el-table-column label="实验报告">
+          <el-button type="text">1.doc</el-button>
         </el-table-column>
-        <el-table-column label="报告评分" prop=""/>
-        <el-table-column label="总分" prop=""/>
+        <el-table-column label="报告评分" prop="extend.score2"/>
+        <el-table-column label="总分">
+          <div slot-scope="props">{{props.row.extend.score1 + props.row.extend.score2}}</div>
+        </el-table-column>
         <el-table-column label="操作">
-          <el-button type="text">评分</el-button>
+          <div slot-scope="{row}">
+            <el-button type="text" @click="showScoreForm(row)">评分</el-button>
+          </div>
         </el-table-column>
       </lkt-table>
     </div>
+    <kit-dialog-simple
+      :modal="scoreModal"
+      :confirm="scoreUpdate"
+      width="400px">
+      <div slot="title">实验评分</div>
+      <el-form v-if="scoreModal.scoreInfo" ref="form" :model="scoreModal.scoreInfo" label-width="100px" label-position="left" style="margin: 0 10px">
+        <el-form-item label="操作评分:" prop="extend.score1">
+          <el-input v-model="scoreModal.scoreInfo.extend.score1"></el-input>
+        </el-form-item>
+        <el-form-item label="报告评分:" prop="extend.score2">
+          <el-input v-model="scoreModal.scoreInfo.extend.score2"></el-input>
+        </el-form-item>
+      </el-form>
+    </kit-dialog-simple>
   </div>
 </template>
 <script lang="ts">
@@ -64,10 +86,47 @@ import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 export default {
   setup() {
     const loading = ref(false);
+    const experimentReportList = ref<any>();
+    const scoreModal = ref<any>({
+      visible: false,
+      scoreInfo: null,
+    });
+    const form = ref<ElForm | null>(null);
+    const showScoreForm = async (data?: any) => {
+      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (data) {
+        data = deepClone(data);
+
+      } else {
+        data = initForm();
+      }
+      scoreModal.value.scoreInfo = data;
+      scoreModal.value.visible = true;
+    };
+    async function scoreUpdate() {
+      scoreModal.value.visible = false;
+      Message.success('评分成功');
+      await query();
+    }
+    const query = async () => {
+      experimentReportList.value = [
+        {id: '0', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
+        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
+      ];
+    };
+    onMounted(useLoading(loading, async () => {
+      await query();
+    }));
     return {
-      loading,
+      loading, experimentReportList, query, scoreModal, showScoreForm,
+      scoreUpdate: useLoading(loading, scoreUpdate),
     };
   }
+}
+function initForm() {
+  return {
+    extend: {score1: 0, score2: 0},
+  };
 }
 </script>
 <style scoped lang="scss">
