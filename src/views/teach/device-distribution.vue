@@ -4,8 +4,7 @@
         <h3 style='margin:10px'>上课班级信息</h3>
         <el-form :inline="true" >
             <el-form-item label="上课时间:" label-width="80px">
-                <el-date-picker v-model="lesson.date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
-                </el-date-picker>
+                <lkt-date-picker v-model="lesson.date"></lkt-date-picker>
             </el-form-item>
             <el-form-item label="上课班级:" label-width="80px" v-if='lesson.extend' >
                 <lkt-select :list="classList" value-key="name" v-model="lesson.extend.clasz" multiple :clearable="false" placeholder="请选择上课班级"/>
