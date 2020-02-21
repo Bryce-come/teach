@@ -17,19 +17,13 @@
       :data="deviceList"
       style="width: 100%">
       <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form class="flex" label-width="100px" label-position="left" inline>
-            <el-form-item label="厂商联系人:" style="margin-left:80px">
-              <span>{{props.row.extend.producerContact}}</span>
-            </el-form-item>
-            <el-form-item label="厂商联系方式:" style="margin-left:80px">
-              <span>{{props.row.extend.producerTel}}</span>
-            </el-form-item>
-            <el-form-item label="价格:" style="margin-left:80px">
-              <span>{{props.row.extend.price}}</span>
-            </el-form-item>
+        <div slot-scope="props" class="flex around">
+          <el-form label-width="100px">
+            <el-form-item label="设备购入价格:">{{props.row.extend.price}}</el-form-item>
+            <el-form-item label="厂商联系人员:">{{props.row.extend.producerContact}}</el-form-item>
+            <el-form-item label="厂商联系方式:">{{props.row.extend.producerTel}}</el-form-item>
           </el-form>
-        </template>
+        </div>
       </el-table-column>
       <el-table-column prop="id" label="设备编号" width="150px"/>
       <el-table-column prop="name" label="设备名称" />
@@ -39,9 +33,9 @@
       <el-table-column prop="extend.keeper" label="管理员"/>
       <el-table-column prop="extend.producer" label="生产厂商"/>
       <el-table-column label="操作" width="180">
-        <div slot-scope="{row}">
+        <div class="flex center little-space wrap" slot-scope="{row}">
           <el-button type="success" size="mini" @click="showForm(row)">修改</el-button>
-          <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
+          <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
         </div>
       </el-table-column>
     </lkt-table>

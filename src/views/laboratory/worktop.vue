@@ -31,8 +31,10 @@
             <el-table-column prop="" label="LKT-MAN编号" width="120px"/>
             <el-table-column prop="" label="网关状态"/>
             <el-table-column label="操作" width="160px">
-              <el-button type="warning" size="mini">修改</el-button>
-              <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>
+              <div class="flex center little-space wrap" slot-scope="{ row }">
+                <el-button type="warning" size="mini">修改</el-button>
+                <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+              </div>              
             </el-table-column>
             </lkt-table>
           </el-form-item>
@@ -48,8 +50,10 @@
             <el-table-column prop="" label="网口2名称"/>
             <el-table-column prop="" label="网口2地址"/>
             <el-table-column label="操作" width="160px">
-              <el-button type="warning" size="mini">修改</el-button>
-              <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>
+              <div class="flex center little-space wrap" slot-scope="{ row }">
+                <el-button type="warning" size="mini">修改</el-button>
+                <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+              </div>   
             </el-table-column>
             </lkt-table>
           </el-form-item>
@@ -63,8 +67,10 @@
             <el-table-column prop="" label="所属设备编号"/>
             <el-table-column prop="" label="摄像位置"/>
             <el-table-column label="操作" width="160px">
-              <el-button type="warning" size="mini">修改</el-button>
-              <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>
+              <div class="flex center little-space wrap" slot-scope="{ row }">
+                <el-button type="warning" size="mini">修改</el-button>
+                <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+              </div>   
             </el-table-column>
             </lkt-table>
           </el-form-item>

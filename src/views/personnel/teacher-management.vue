@@ -1,13 +1,9 @@
 <template>
   <div v-loading="loading" class="teacher-management">
-    <el-form :inline="true" style="display:flex;justify-content:space-between;flex-wrap:wrap">
-      <el-form-item>
-        <el-button type="primary" @click="showForm()">添加</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="filterText" placeholder="请输入关键字搜索" style="width:100%"></el-input>
-      </el-form-item>
-    </el-form>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin:10px 0">      
+      <el-button type="primary" @click="showForm()">添加</el-button>      
+      <el-input v-model="filterText" placeholder="请输入关键字搜索" style="width:300px"></el-input>      
+    </div>
     <lkt-table
       :data="teacherUserList"
       style="width:100%">
@@ -17,7 +13,10 @@
       <el-table-column prop="phone" label="联系电话"/>
       <el-table-column prop="address" label="邮箱地址"/>    
       <el-table-column label="操作">
-        <el-button type="danger" size="mini" @click="remove()">删除</el-button>
+        <div class="flex center little-space wrap" slot-scope="{ row }">
+          <el-button type="warning" size="mini" @click="showForm(row)">修改</el-button>
+          <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
+        </div>
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple

@@ -19,8 +19,10 @@
         <el-button type="text" size="mini" @click="showExperimentForm()">查看详情</el-button>
       </el-table-column>
       <el-table-column label="操作">
-        <el-button type="warning" size="mini" @click="showCourseForm()">修改</el-button>
-        <el-button type="danger" size="mini" style="margin-left:5px" @click="courseRemove()">删除</el-button>
+        <div class="flex center little-space wrap" slot-scope="{row}">
+          <el-button type="warning" size="mini" @click="showCourseForm(row)">修改</el-button>
+          <el-button type="danger" size="mini" @click="courseRemove(row)">删除</el-button>
+        </div>
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
@@ -39,7 +41,7 @@
               <el-input v-model="courseModal.courseInfo.teacher"></el-input>
           </el-form-item>
           <el-form-item label="实验项目" prop="experiment" :rules="{ required: true, message: '请选择实验项目'}">
-              <el-input v-model="courseModal.courseInfo.experiment"></el-input>
+              <lkt-select v-model="courseModal.courseInfo.experiment" multiple></lkt-select>
           </el-form-item>
           <el-form-item label="操作评分占比" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
               <el-input v-model="courseModal.courseInfo.extend.scoreRatio[0]"></el-input>
@@ -54,12 +56,8 @@
       :confirm="experimentUpdate"
       width="1000px">
       <div slot="title">实验项目详情</div>
-      <el-form :inline="true">
+      <el-form class="flex end">
         <el-form-item>
-          <el-button type="primary">导入</el-button>
-          <el-button type="success" style="margin-left:10px" @click="addExperimentForm()">添加</el-button>
-        </el-form-item>
-        <el-form-item style="margin-left:480px">
           <el-input placeholder="输入关键字搜索" style="width:300px"></el-input>
         </el-form-item>
       </el-form>
@@ -77,17 +75,6 @@
           <el-button type="danger" size="mini" @click="experimentRemove()">删除</el-button>
         </el-table-column>
       </lkt-table>
-    </kit-dialog-simple>
-    <kit-dialog-simple
-      :modal="addExperimentModal"
-      :confirm="addExperimentUpdate"
-      width="500px">
-      <div slot="title">添加实验项目</div>
-      <el-form>
-        <el-form-item label="实验项目" prop="name">
-          <lkt-select/>
-        </el-form-item>
-      </el-form>
     </kit-dialog-simple>
   </div>
 </template>
@@ -117,10 +104,6 @@ export default {
       visible: false,
       experimentInfo: null,
     });
-    const addExperimentModal = ref<any>({
-      visible: false,
-      addExperimentInfo: null,
-    });
     const showCourseForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
@@ -135,13 +118,6 @@ export default {
     const showExperimentForm = () => {
       experimentModal.value.visible = true;
     };
-    const addExperimentForm = () => {
-      addExperimentModal.value.visible = true;
-    };
-    async function addExperimentUpdate() {
-      addExperimentModal.value.visible = false;
-      Message.success('添加成功');
-    }
     async function experimentUpdate() {
       experimentModal.value.visible = false;
       Message.success('添加成功');
@@ -183,8 +159,6 @@ export default {
         experimentList, experimentModal, showExperimentForm,
         experimentUpdate: useLoading(loading, experimentUpdate),
         experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
-        addExperimentModal, addExperimentForm,
-        addExperimentUpdate: useLoading(loading, addExperimentUpdate),
     };
   },
 };
