@@ -317,7 +317,6 @@ const teachMonitor = {
     parentCName: '教学过程管理',
   },
 };
-<<<<<<< HEAD
 const deviceDistribution = {
   path: '/teach/deviceDistribution',
   name: 'deviceDistribution',
@@ -325,7 +324,9 @@ const deviceDistribution = {
   meta: {
     authDisabled: true,
     CName: '教学设备分配',
-=======
+    parentCName: '教学过程管理',
+  },
+};
 const programManagement = {
   path: '/teach/program-management',
   name: 'programManagement',
@@ -333,7 +334,6 @@ const programManagement = {
   meta: {
     authDisabled: true,
     CName: 'NC程序管理',
->>>>>>> 587e41f11245b8145273a2c8e2521cb0f870c378
     parentCName: '教学过程管理',
   },
 };
@@ -402,11 +402,8 @@ const indexChildren = [
   delayAlarm,
   // 教学过程管理
   teachMonitor,
-<<<<<<< HEAD
   deviceDistribution,
-=======
   programManagement,
->>>>>>> 587e41f11245b8145273a2c8e2521cb0f870c378
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
