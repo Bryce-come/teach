@@ -1,8 +1,8 @@
 <template>
   <div v-loading="loading">
-    <el-form class="flex align-center">
+    <el-form style="display:flex;justify-content:flex-start;flex-wrap:wrap">
       <el-form-item label="设备型号:" label-width="80px">
-        <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="deviceTypes" multiple :clearable="true" placeholder="请选择设备型号"/>
+        <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="deviceTypes" multiple :clearable="true" style="width:200px" placeholder="请选择设备型号"/>
       </el-form-item>
       <el-form-item label="购入时间:" label-width="80px">
         <el-date-picker v-model="dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">

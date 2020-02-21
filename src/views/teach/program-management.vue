@@ -21,7 +21,9 @@
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex between">NC程序审核</div>
         <div v-if="turn">
-          <el-input style="margin-left:700px;margin-bottom:10px;width:400px" placeholder="输入程序名查询"></el-input>
+          <div style="display:flex;justify-content:flex-end">
+            <el-input style="margin: 10px;width:400px" placeholder="输入程序名查询"></el-input>
+          </div>
           <lkt-table
             :data="ncProgramList"
             style="width:100%">

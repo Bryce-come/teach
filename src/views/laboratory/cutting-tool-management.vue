@@ -1,15 +1,15 @@
 <template>
   <div v-loading="loading" calss="cutting-tool-management">
-    <el-form :inline="true">
+    <el-form :inline="true" style="display:flex;justify-content:flex-start;flex-wrap:wrap">
       <el-form-item label="刀具名称:" label-width="80px">
         <lkt-select :list="cutterNameList" value-key="name" v-model="cutterName" multiple :clearable="false" placeholder="请选择刀具名称"/>
       </el-form-item>
       <el-form-item label="刀具型号:" label-width="80px">
         <lkt-select :list="cutterNoList" value-key="no" v-model="cutterNo" multiple :clearable="false" placeholder="请选择刀具型号"/>
       </el-form-item>
-      <el-form-item style="margin-left:180px">
+      <el-form-item>
         <el-button type="primary">查询</el-button>
-        <el-button style="margin-left:20px">重置</el-button>
+        <el-button style="margin-left:10px">重置</el-button>
       </el-form-item>
     </el-form>
     <el-form>
