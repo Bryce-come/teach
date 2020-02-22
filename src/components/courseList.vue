@@ -2,14 +2,8 @@
   <div v-loading="loading">
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
-<<<<<<< HEAD
         <lkt-date-picker v-model="oneDay"/>
         <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>        
-=======
-        <span>请输入要查询的日期：</span>
-        <lkt-date-picker v-model="oneDay" type="datetime" format="yyyy-MM-dd HH:mm" :clearable="false"/>
-        <el-button style="margin-left: 10px" type="primary" @click="list()">查询</el-button>
->>>>>>> 08fdbb1924dd0f179531c864ebcccdc0a8cca63b
       </div>
     </div>
     <div class="class-table">
@@ -43,16 +37,10 @@
              <th>
                <div>第<span>{{i+1}}</span>节课</div>
              </th>
-<<<<<<< HEAD
              <td v-for="(lessonItem, j) in item.lesson" :key="j" 
                  :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
                  :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
                  class="shadow">
-=======
-             <td v-for="(lessonItem, j) in item.lesson" :key="j"
-                 :rowspan="lessonItem !== ''? lessonItem.extend.lessonInt:''"
-                 :style="{'background-color': lessonItem !== ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
->>>>>>> 08fdbb1924dd0f179531c864ebcccdc0a8cca63b
                   <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
                 <el-popover
                   placement="top-start"
@@ -402,11 +390,7 @@ function initForm(): any {
       }
     }
   }
-<<<<<<< HEAD
   .shadow:hover{
     box-shadow: 0 0 15px rgb(15, 15, 15);
   }
 </style>
-=======
-</style>
->>>>>>> 08fdbb1924dd0f179531c864ebcccdc0a8cca63b
