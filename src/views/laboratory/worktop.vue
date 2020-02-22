@@ -3,7 +3,7 @@
     <el-row :gutter="40" type="flex" justify="space-between">
       <el-col :span="6">
         <el-input placeholder="输入关键字搜索" v-model="filterText" style="margin-bottom:5px"></el-input>
-        <el-row style="margin-left:60px;margin-bottom:5px">
+        <el-row style="display:flex;justify-content:space-between;margin-bottom:5px">
           <el-button type="primary" size="small">导入</el-button>
           <el-button type="success" size="small" style="margin-left:5px" @click="showForm()">添加</el-button>
           <el-button type="info" size="small" style="margin-left:5px">导出</el-button>
@@ -20,8 +20,10 @@
       <el-col :span="18" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px">
         <el-form>
           <el-form-item label="操作台01 > 关联设备信息">
-            <el-button type="primary" size="mini" style="margin-left:600px">添加</el-button>
-            <lkt-table
+            <div style="display:flex;justify-content:flex-end;margin-top:5px">
+              <el-button type="primary" size="mini">添加</el-button>
+            </div>
+            <el-table
             :data="expStationList"
             style="width:100%">
             <el-table-column prop="" label="设备编号"/>
@@ -31,16 +33,16 @@
             <el-table-column prop="" label="LKT-MAN编号" width="120px"/>
             <el-table-column prop="" label="网关状态"/>
             <el-table-column label="操作" width="160px">
-              <div class="flex center little-space wrap" slot-scope="{ row }">
+              <div class="flex center little-space wrap" slot-scope="{row}">
                 <el-button type="warning" size="mini">修改</el-button>
                 <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
               </div>              
             </el-table-column>
-            </lkt-table>
+            </el-table>
           </el-form-item>
           <el-form-item label="操作台01 > PC信息">
             <el-button type="primary" size="mini" style="margin-left:640px">添加</el-button>
-            <lkt-table
+            <el-table
             :data="expStationList"
             style="width:100%">
             <el-table-column prop="" label="PC编号"/>
@@ -55,11 +57,11 @@
                 <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
               </div>   
             </el-table-column>
-            </lkt-table>
+            </el-table>
           </el-form-item>
           <el-form-item label="操作台01 > 摄像头信息">
             <el-button type="primary" size="mini" style="margin-left:620px">添加</el-button>
-            <lkt-table
+            <el-table
             :data="expStationList"
             style="width:100%">
             <el-table-column prop="" label="摄像头名称"/>
@@ -72,7 +74,7 @@
                 <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
               </div>   
             </el-table-column>
-            </lkt-table>
+            </el-table>
           </el-form-item>
         </el-form>
       </el-col>
@@ -154,14 +156,6 @@ export default {
     const query = async () => {
       expStationList.value = [
         {id: '1', name: '操作台1', devices: '', extend: {PCs: [{PCIp: '', PCNo: '', remark: '', belongDevice: ''}]},
-        remark: '', cameras: [{ip: '', name: '', remark: ''}], createDt: ''},
-        {id: '2', name: '操作台2', devices: '', extend: {PCs: [{PCIp: '', PCNo: '', remark: '', belongDevice: ''}]},
-        remark: '', cameras: [{ip: '', name: '', remark: ''}], createDt: ''},
-        {id: '3', name: '操作台3', devices: '', extend: {PCs: [{PCIp: '', PCNo: '', remark: '', belongDevice: ''}]},
-        remark: '', cameras: [{ip: '', name: '', remark: ''}], createDt: ''},
-        {id: '4', name: '操作台4', devices: '', extend: {PCs: [{PCIp: '', PCNo: '', remark: '', belongDevice: ''}]},
-        remark: '', cameras: [{ip: '', name: '', remark: ''}], createDt: ''},
-        {id: '5', name: '操作台5', devices: '', extend: {PCs: [{PCIp: '', PCNo: '', remark: '', belongDevice: ''}]},
         remark: '', cameras: [{ip: '', name: '', remark: ''}], createDt: ''},
       ];
     };
