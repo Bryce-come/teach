@@ -3,7 +3,7 @@ import {postService} from 'web-toolkit/src/case-main/index';
 /**
  * 课表列表
  * RequestParam long start,
-   RequestParam long end
+ * RequestParam long end
  */
 export async function CourseRecordList(params: any) {
   const {data: {list}} = await postService('/rest/course/record/list', params);
@@ -21,20 +21,20 @@ export async function CourseRecordDetail(params: any) {
 
 /**
  * 增加课程记录
- * ApiParam(value = "正常课程-0，个人预约-2，授课预约-1",required = true)
-   RequestParam int type,
-   RequestParam(required = false) Integer courseId,
-   RequestParam(required = false) Integer programId,
-   RequestParam(required = false) Integer teacherId,
-   RequestParam(required = false) String studentJson,
-   ApiParam(value = "个人预约时必填")
-   RequestParam(required = false) String stationJson,
-   RequestParam long start,
-   RequestParam long end,
-   ApiParam(value = "lessons:[], clasz-班级, claszGroup-分组，stationBind:{<stationId>:[uid]}")
-   RequestParam String extendJson,
-   ApiParam(value = "重复选项：重复后续几周")
-   RequestParam(required = false) Integer optionRepeatWeeks
+ * * ApiParam(value = "正常课程-0，个人预约-2，授课预约-1",required = true)
+ * RequestParam int type,
+ * RequestParam(required = false) Integer courseId,
+ * RequestParam(required = false) Integer programId,
+ * RequestParam(required = false) Integer teacherId,
+ * RequestParam(required = false) String studentJson,
+ * * ApiParam(value = "个人预约时必填")
+ * RequestParam(required = false) String stationJson,
+ * RequestParam long start,
+ * RequestParam long end,
+ * * ApiParam(value = "lessons:[], clasz-班级, claszGroup-分组，stationBind:{<stationId>:[uid]}")
+ * RequestParam String extendJson,
+ * * ApiParam(value = "重复选项：重复后续几周")
+ * RequestParam(required = false) Integer optionRepeatWeeks
  */
 export async function CourseRecordAdd(params: any) {
   await postService('/rest/course/record/add', params);
@@ -43,7 +43,7 @@ export async function CourseRecordAdd(params: any) {
 /**
  * 附加增加
  * RequestParam int id,
-   RequestParam MultipartFile file
+ * RequestParam MultipartFile file
  */
 export async function CourseRecordAttachAdd(params: any) {
   await postService('/rest/course/record/attach/add', params);
@@ -52,7 +52,7 @@ export async function CourseRecordAttachAdd(params: any) {
 /**
  * 附加删除
  * RequestParam int id,
- RequestParam String path
+ * RequestParam String path
  */
 export async function CourseRecordAttachDel(params: any) {
   await postService('/rest/course/record/attach/del', params);
@@ -61,18 +61,18 @@ export async function CourseRecordAttachDel(params: any) {
 /**
  * 修改课程记录
  * RequestParam int id,
- ApiParam(value = "正常课程-0，个人预约-2，授课预约-1",required = true)
- RequestParam(required = false) Integer type,
- RequestParam(required = false) Integer courseId,
- RequestParam(required = false) Integer programId,
- RequestParam(required = false) Integer teacherId,
- RequestParam(required = false) String studentJson,
- ApiParam(value = "个人预约时必填")
- RequestParam(required = false) String stationJson,
- RequestParam(required = false) Long start,
- RequestParam(required = false) Long end,
- ApiParam(value = "lessons:[], clasz-班级, claszGroup-分组，stationBind:{<stationId>:[uid]}")
- RequestParam(required = false) String extendJson
+ * ApiParam(value = "正常课程-0，个人预约-2，授课预约-1",required = true)
+ * RequestParam(required = false) Integer type,
+ * RequestParam(required = false) Integer courseId,
+ * RequestParam(required = false) Integer programId,
+ * RequestParam(required = false) Integer teacherId,
+ * RequestParam(required = false) String studentJson,
+ * ApiParam(value = "个人预约时必填")
+ * RequestParam(required = false) String stationJson,
+ * RequestParam(required = false) Long start,
+ * RequestParam(required = false) Long end,
+ * ApiParam(value = "lessons:[], clasz-班级, claszGroup-分组，stationBind:{<stationId>:[uid]}")
+ * RequestParam(required = false) String extendJson
  */
 export async function CourseRecordUpdate(params: any) {
   await postService('/rest/course/record/update', params);

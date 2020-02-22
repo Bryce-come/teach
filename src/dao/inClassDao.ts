@@ -12,8 +12,8 @@ export async function CNCLinkStatus() {
 
 /**
  * cnc网关连接状态设置
- RequestParam String stationJson,
- RequestParam boolean status
+ * RequestParam String stationJson,
+ * RequestParam boolean status
  */
 export async function CNCLinkSet(params: any) {
   await postService('/rest/inClass/link/set', params);
@@ -28,8 +28,8 @@ export async function ClassOver() {
 
 /**
  * 延长课时
- RequestParam int id,
- RequestParam int minutes
+ * RequestParam int id,
+ * RequestParam int minutes
  */
 export async function ClassLengthen(params: any) {
   await postService('/rest/inClass/lengthen', params);
@@ -37,12 +37,12 @@ export async function ClassLengthen(params: any) {
 
 /**
  * nc程序提交列表
- RequestParam int recordId,
- RequestParam(required = false) Integer studentId,
- RequestParam(required = false) Integer limit,
- ApiParam(value = "当从报告中获取nc列表时，通过course/program/student")
- RequestParam(required = false) Integer courseId,
- RequestParam(required = false) Integer programId
+ * RequestParam int recordId,
+ * RequestParam(required = false) Integer studentId,
+ * RequestParam(required = false) Integer limit,
+ * ApiParam(value = "当从报告中获取nc列表时，通过course/program/student")
+ * RequestParam(required = false) Integer courseId,
+ * RequestParam(required = false) Integer programId
  */
 export async function NCExamList(params: any) {
   const {data: {list}} = await postService('/rest/inClass/ncExam/list', params);
@@ -51,7 +51,7 @@ export async function NCExamList(params: any) {
 
 /**
  * nc程序提交列表
- RequestParam int id,
+ * RequestParam int id,
  */
 export async function NCExamDetail(params: any) {
   const {data: {record}} = await postService('/rest/inClass/ncExam/detail', params);
@@ -61,9 +61,9 @@ export async function NCExamDetail(params: any) {
 /**
  * nc程序审核
  * RequestParam int id,
- ApiParam(required = true, value = "通过并同意加工-2、退回修改-0")
- RequestParam int result,
- RequestParam(required = false) String remark,
+ * ApiParam(required = true, value = "通过并同意加工-2、退回修改-0")
+ * RequestParam int result,
+ * RequestParam(required = false) String remark,
  */
 export async function NCExamOperate(params: any) {
   await postService('/rest/inClass/ncExam/operate', params);

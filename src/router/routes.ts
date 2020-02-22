@@ -111,9 +111,9 @@ const equipmentMaintenance = {
     parentCName: '实验室管理',
   },
 };
-const cuttingtoolManagement = {
+const cuttingToolManagement = {
   path: '/laboratory/cutting-tool-management',
-  name: 'cuttingtoolMangement',
+  name: 'cuttingToolManagement',
   component: () => import('../views/laboratory/cutting-tool-management.vue'),
   meta: {
     authDisabled: true,
@@ -343,9 +343,6 @@ const indexChildren = [
 //   monitoringDetail,
 // // 运行分析
 //   parameter,
-//   runtime,
-//   commonAnalysis,
-//   alarmAnalysis,
 // // 报警提醒
 //   deviceAlarmRecord,
 //   analysisGuarantee,
@@ -353,7 +350,7 @@ const indexChildren = [
   device,
   workTop,
   equipmentMaintenance,
-  cuttingtoolManagement,
+  cuttingToolManagement,
   monitor,
   monitorDetail,
   usingProcess,

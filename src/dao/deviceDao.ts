@@ -30,16 +30,16 @@ export async function DeviceDel(params: any) {
 /**
  * 设备维保记录添加
  * RequestParam String deviceId,
- ApiParam(required = true,value = "0-巡检, 1-保养，2-维修")
- RequestParam int type,
- RequestParam String executor,
- ApiParam(value = "维护状态：正常、维护中、故障、告警、报废")
- RequestParam(required = false) String status,
- RequestParam(required = false) String treatment,
- RequestParam long restorationDt,
- RequestParam(required = false) Long nextDt,
- ApiParam(value = "executorPhone:联系方式")
- RequestParam(required = false) String extendJson
+ * ApiParam(required = true,value = "0-巡检, 1-保养，2-维修")
+ * RequestParam int type,
+ * RequestParam String executor,
+ * ApiParam(value = "维护状态：正常、维护中、故障、告警、报废")
+ * RequestParam(required = false) String status,
+ * RequestParam(required = false) String treatment,
+ * RequestParam long restorationDt,
+ * RequestParam(required = false) Long nextDt,
+ * ApiParam(value = "executorPhone:联系方式")
+ * RequestParam(required = false) String extendJson
  */
 export async function DeviceMaintenAdd(params: any) {
   await postService('/rest/device/mainten/add', params);
@@ -63,10 +63,10 @@ export async function DeviceMaintenLatest() {
 /**
  * 设备维保历史
  * RequestParam(required = false) String devicesJson,
- RequestParam(required = false) String typesJson,
- RequestParam(required = false) String executorsJson,
- RequestParam(required = false) Long start,
- RequestParam(required = false) Long end
+ * RequestParam(required = false) String typesJson,
+ * RequestParam(required = false) String executorsJson,
+ * RequestParam(required = false) Long start,
+ * RequestParam(required = false) Long end
  */
 export async function DeviceMaintenList() {
   const {data: {list}} = await postService('/rest/device/mainten/list');
@@ -74,7 +74,7 @@ export async function DeviceMaintenList() {
 }
 
 /**
- 执行人备选列表
+ * 执行人备选列表
  */
 export async function DeviceMaintenListExecutor() {
   const {data: {list}} = await postService('/rest/device/mainten/listExecutor');

@@ -4,7 +4,7 @@
       <div class="flex align-center" style="margin-right: 10px">
         <span>请输入要查询的日期：</span>
         <lkt-date-picker v-model="oneDay" type="datetime" format="yyyy-MM-dd HH:mm" :clearable="false"/>
-        <el-button style="margin-left: 10px" type="primary" @click="list()">查询</el-button>        
+        <el-button style="margin-left: 10px" type="primary" @click="list()">查询</el-button>
       </div>
     </div>
     <div class="class-table">
@@ -38,28 +38,28 @@
              <th>
                <div>第<span>{{i+1}}</span>节课</div>
              </th>
-             <td v-for="(lessonItem, j) in item.lesson" :key="j" 
-                 :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
-                 :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
+             <td v-for="(lessonItem, j) in item.lesson" :key="j"
+                 :rowspan="lessonItem !== ''? lessonItem.extend.lessonInt:''"
+                 :style="{'background-color': lessonItem !== ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
                   <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
                 <el-popover
                   placement="top-start"
                   width="50"
                   >
                   <div style="color:#67C23A;width:6rem;" @click="readLesson(lessonItem)">
-                    <i class="el-icon-reading"></i>
+                    <i class="el-icon-reading"/>
                     <span  style="margin-left:5px">查看</span>
                   </div>
                   <div style="color:#67a1ff;width:6rem;" @click='showLesson(lessonItem)'>
-                    <i class="el-icon-edit"></i>
+                    <i class="el-icon-edit"/>
                     <span  style="margin-left:5px">修改</span>
                   </div>
                   <div style="color:#F56C6C;width:6rem;" @click="delectLesson(lessonItem)">
-                    <i class="el-icon-delete"></i>
+                    <i class="el-icon-delete"/>
                     <span  style="margin-left:5px">删除</span>
                   </div>
                   <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                    <i class="el-icon-takeaway-box"></i>
+                    <i class="el-icon-takeaway-box"/>
                     <span  style="margin-left:5px">延长课时</span>
                   </div>
                   <div style="width:100%;height:100%" slot="reference">
@@ -103,7 +103,7 @@
                     <div v-for="(item,i) in readModel.oneLesson.stations" :key='i'>
                       <span>{{ item }}</span>
                     </div>
-                  </el-form-item> 
+                  </el-form-item>
                </el-form>
            </div>
       </el-dialog>
@@ -164,7 +164,7 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {}
-    const more_setting = ref({
+    const moreSetting = ref({
       lessonNum: 7,
     });
     const lessons = ref<any>();
@@ -173,7 +173,7 @@ export default createComponent({
       if (type === 0 || lessonOne === '') {
         return defaultColor;
         // rgb(142, 208, 214) 计划内课程
-      } else if (type == 1 || type == 2) {
+      } else if (type === 1 || type === 2) {
         const result = lessonOne.extend.appointRecord.result;
         if (result === 2) {
           // 已预约课程
@@ -300,12 +300,12 @@ export default createComponent({
 
     return{
       loading,
-      oneDay: new Date,
+      oneDay: new Date(),
       list: useLoading(loading, list),
       weeks,
       digital2Chinese,
       lessons,
-      more_setting,
+      moreSetting,
       getColors,
       readLesson,
       readModel,
@@ -373,7 +373,7 @@ function initForm(): any {
           line-height: 3.5rem;
           font-weight: lighter;
           text-align: center;
-          vertical-align: middle;         
+          vertical-align: middle;
           .order {
             height: 2.5rem;
             width: 5rem;

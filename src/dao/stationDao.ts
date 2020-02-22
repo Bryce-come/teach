@@ -23,8 +23,8 @@ export async function StationInfo(params: any) {
 /**
  * 操作台增加
  * RequestParam String name,
- ApiParam(value = "PCs:[{PCIP，PCNo, remark}], remark，cameras:[{ip,name,remark}]")
- RequestParam(required = false) String extendJson
+ * ApiParam(value = "PCs:[{PCIP，PCNo, remark}], remark，cameras:[{ip,name,remark}]")
+ * RequestParam(required = false) String extendJson
  */
 export async function StationAdd(params: any) {
   await postService('/rest/expStation/add', params);
@@ -32,8 +32,8 @@ export async function StationAdd(params: any) {
 
 /**
  * RequestParam int id,
- RequestParam(required = false) String name,
- RequestParam(required = false) String extendJson
+ * RequestParam(required = false) String name,
+ * RequestParam(required = false) String extendJson
  */
 export async function StationUpdate(params: any) {
   await postService('/rest/expStation/update', params);
@@ -49,13 +49,13 @@ export async function StationDel(params: any) {
 /**
  * 增加设备/PC
  * RequestParam int id,
- RequestParam(required = false) String deviceId,
- RequestParam(required = false) String adapterId,
- ApiParam(value = "[{PCIP，PCNo, remark}]")
- RequestParam(required = false) String pcJson,
- ApiParam(value = "[{ip,name,remark}]")
- RequestParam(required = false) String cameraJson,
- RequestParam(required = false) String deviceIP
+ * RequestParam(required = false) String deviceId
+ * RequestParam(required = false) String adapterId,
+ * ApiParam(value = "[{PCIP，PCNo, remark}]")
+ * RequestParam(required = false) String pcJson,
+ * ApiParam(value = "[{ip,name,remark}]")
+ * RequestParam(required = false) String cameraJson,
+ * RequestParam(required = false) String deviceIP
  */
 export async function StationAddComponent(params: any) {
   await postService('/rest/expStation/addComponent', params);
@@ -64,9 +64,9 @@ export async function StationAddComponent(params: any) {
 /**
  * 删除设备/PC
  * RequestParam int id,
- RequestParam(required = false) String deviceId,
- RequestParam(required = false) String PCIP,
- RequestParam(required = false) String cameraIP
+ * RequestParam(required = false) String deviceId,
+ * RequestParam(required = false) String PCIP,
+ * RequestParam(required = false) String cameraIP
  */
 export async function StationDelComponent(params: any) {
   await postService('/rest/expStation/delComponent', params);
