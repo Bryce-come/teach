@@ -39,16 +39,16 @@
 </template>
 <script lang="ts">
 import { Message } from 'element-ui';
-  import { ref, onMounted } from '@vue/composition-api';
-  import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
-  import { isUndefined, deepClone } from 'web-toolkit/src/utils';
-  import {IRole} from 'web-toolkit/src/types/interfaces';
-  import {postService} from 'web-toolkit/src/case-main';
-  import {urlMap} from '@/config';
-  import {ElForm} from 'element-ui/types/form';
-  import {DepartmentList, PrivilegeList, RoleList} from '@/dao/userDao';
+import { ref, onMounted } from '@vue/composition-api';
+import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
+import { isUndefined, deepClone } from 'web-toolkit/src/utils';
+import {IRole} from 'web-toolkit/src/types/interfaces';
+import {postService} from 'web-toolkit/src/case-main';
+import {urlMap} from '@/config';
+import {ElForm} from 'element-ui/types/form';
+import {DepartmentList, PrivilegeList, RoleList} from '@/dao/userDao';
 
-  export default {
+export default {
   setup() {
     const loading = ref(false);
     const roleList = ref<any>([]);
@@ -125,7 +125,7 @@ import { Message } from 'element-ui';
     };
   },
 };
-  function initRoleForm(): Partial<IRole> {
+function initRoleForm(): Partial<IRole> {
   return {
     name: '',
     privileges: [],

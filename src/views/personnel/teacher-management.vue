@@ -72,30 +72,30 @@ import { Message } from 'element-ui';
 import {urlMap} from '@/config';
 import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {TeacherList,UserAdd,RoleList,UserDel,UserUpdate} from '../../dao/userDao'
-interface Iid{
-  id:number;
+import {TeacherList, UserAdd, RoleList, UserDel, UserUpdate} from '../../dao/userDao';
+interface Iid {
+  id: number;
 }
 export default {
   data() {
       return {
         options: [{
           value: '2',
-          label: '教师'
+          label: '教师',
         }, {
           value: '4',
-          label: '教师2'
+          label: '教师2',
         }],
-        value: ''
-      }
+        value: '',
+      };
     },
   setup() {
     const loading = ref(false);
     const teacherUserList = ref<any>();
     const [keywords, filtered] = useSearch(teacherUserList, {
-      includeProps: ['username', 'role.name', 'name', 'phone' ,'address'],
+      includeProps: ['username', 'role.name', 'name', 'phone' , 'address'],
     });
-    const remove = async (row:any) => {
+    const remove = async (row: any) => {
         await UserDel({
         id: row.id,
         off: 0,
@@ -136,13 +136,13 @@ export default {
         phone: addModal.value.teacherInfo.phone,
         pwd: addModal.value.teacherInfo.pwd,
         role: addModal.value.teacherInfo.role,
-        extend: {no:addModal.value.teacherInfo.no,address: addModal.value.teacherInfo.address,},
-        extendJson:'',
+        extend: {no: addModal.value.teacherInfo.no, address: addModal.value.teacherInfo.address},
+        extendJson: '',
       };
-      result.extendJson = JSON.stringify(result.extend)
+      result.extendJson = JSON.stringify(result.extend);
       if (!addModal.value.teacherInfo.id) {
         await UserAdd(result);
-        console.log(result)
+        console.log(result);
         Message.success('添加成功');
       } else {
         await UserUpdate(result);
@@ -152,15 +152,15 @@ export default {
       await query();
     }
     const query = async () => {
-        const firstList = await TeacherList()
-        teacherUserList.value = firstList
-        console.log(firstList[2])
+        const firstList = await TeacherList();
+        teacherUserList.value = firstList;
+        console.log(firstList[2]);
     };
     onMounted(useLoading(loading, async () => {
         await query();
     }));
     return{
-      loading, query, teacherUserList,keywords, filtered,
+      loading, query, teacherUserList, keywords, filtered,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       update: useLoading(loading, update),
       addModal, form, showForm,
@@ -170,7 +170,7 @@ export default {
 };
 function initForm() {
   return {
-      name: '', username: '', pwd: '', phone: '',  role:'', extend:{}, pwdCheck: '',
+      name: '', username: '', pwd: '', phone: '',  role: '', extend: {}, pwdCheck: '',
   };
 }
 </script>

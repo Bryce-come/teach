@@ -121,8 +121,8 @@ export default {
       loading, experimentReportList, query, scoreModal, showScoreForm,
       scoreUpdate: useLoading(loading, scoreUpdate),
     };
-  }
-}
+  },
+};
 function initForm() {
   return {
     extend: {score1: 0, score2: 0},

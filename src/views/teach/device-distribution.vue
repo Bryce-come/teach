@@ -113,7 +113,7 @@
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
-import monitor  from '../laboratory/monitor.vue'
+import monitor from '../laboratory/monitor.vue';
 export default {
   setup() {
     const loading = ref(false);
@@ -130,7 +130,7 @@ export default {
     });
     const checkList = ref([]);
     const checkDeviceList = ref([]);
-    const query= async () =>{
+    const query = async () => {
         lesson.value = {
            date: new Date,
            students: [
@@ -183,22 +183,22 @@ export default {
                 ],
            extend: {
                 clasz: '自动化1602',
-                claszGroup:[ '一组', '二组' ],
-           }
-       }
+                claszGroup: [ '一组', '二组' ],
+           },
+       };
     };
     const distribution = async () => {
-        studentMode.value.data = lesson.value; 
+        studentMode.value.data = lesson.value;
         studentMode.value.visible = true;
     };
     const distributionDevice = async () => {
         deviceMode.value.data = lesson.value;
         deviceMode.value.visible = true;
     };
-    const update = async () =>{
+    const update = async () => {
         deviceMode.value.visible = false;
         studentMode.value.visible = false;
-    }
+    };
     onMounted(useLoading(loading, async () => {
       await query();
 

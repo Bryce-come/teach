@@ -48,7 +48,7 @@ export async function ClassUpdate(params: any) {
  * @RequestParam int id
  */
 export async function ClassDel(params: any) {
-  params.off=0;
+  params.off = 0;
   await postService('/rest/class/del', params);
 }
 
@@ -57,7 +57,7 @@ export async function ClassDel(params: any) {
  * @RequestParam int id
  */
 export async function ClassFreeze(params: any) {
-  params.off=1;
+  params.off = 1;
   await postService('/rest/class/del', params);
 }
 
@@ -66,7 +66,7 @@ export async function ClassFreeze(params: any) {
  * @RequestParam int id
  */
 export async function ClassUnFreeze(params: any) {
-  params.off=2;
+  params.off = 2;
   await postService('/rest/class/del', params);
 }
 

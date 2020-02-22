@@ -37,8 +37,8 @@ export default {
     return {
       loading, list, query,
     };
-  }
-}
+  },
+};
 </script>
 <style scoped lang="scss">
 
