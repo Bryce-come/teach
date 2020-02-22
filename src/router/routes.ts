@@ -334,6 +334,24 @@ const equipmentModelConfiguration = {
     parentCName: '系统管理',
   },
 };
+const preview = {
+  path: '/preview',
+  name: 'preview',
+  component: () => import('../views/teach/preview.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '课前预习',
+  },
+};
+const homework = {
+  path: '/homework',
+  name: 'homework',
+  component: () => import('../views/teach/homework.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '课后作业',
+  },
+};
 
 //
 // // 按顺序 用于菜单的排列
@@ -379,6 +397,10 @@ const indexChildren = [
   equipmentModelConfiguration,
   userMng,
   roleMng,
+  // 课前预习
+  preview,
+  // 课后作业
+  homework,
   {
     path: '*',
     name: '404_child',

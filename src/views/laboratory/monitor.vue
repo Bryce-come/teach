@@ -1,16 +1,38 @@
 <template>
   <div v-loading="loading">
     <div class="monitor flex align-center">
-      <div v-if="lesson" class="card flex align-center column monitor-left" ref="box">
-        <h3>上课班级信息</h3>
-        <el-form label-width="110px" label-position="left">
-          <el-form-item label="课程名称：">{{ lesson.course.name }}</el-form-item>
-          <el-form-item label="实验项目：">{{ lesson.course.programList }}</el-form-item>
-          <el-form-item label="授课老师：">{{ lesson.course.teacher.name }}</el-form-item>
-          <el-form-item label="授课班级：">{{ lesson.extend.clasz }}</el-form-item>
-          <el-form-item label="上课人数：">{{ lesson.students.length }}</el-form-item>
-          <el-form-item label="距离下课时间：">{{ timeDiff(time, lesson.end) }}</el-form-item>
-        </el-form>
+      <div v-if="lesson" class="card monitor-left" ref="box">
+        <div class="flex align-center"><h3>上课班级信息</h3></div>
+        <div style="margin:auto">
+          <el-form label-width="110px" label-position="left" style="width:100%;margin-top:20px" >
+            <div class="flex align-center wrap">
+              <div class="form-line">
+                <el-form-item label="课程名称：">{{ lesson.course.name }}</el-form-item>
+              </div>
+              <div class="form-line">
+                <el-form-item label="实验项目：">{{ lesson.course.programList }}</el-form-item>
+              </div>
+              <div class="form-line">
+                <el-form-item label="授课老师：">{{ lesson.course.teacher.name }}</el-form-item>
+              </div>
+              <div class="form-line">
+                <el-form-item label="授课班级：">{{ lesson.extend.clasz }}</el-form-item>
+              </div>
+              <div class="form-line">
+                <el-form-item label="上课人数：">{{ lesson.students.length }}</el-form-item>
+              </div>
+              <div class="form-line">
+                <el-form-item label="距离下课时间：">{{ timeDiff(time, lesson.end) }}</el-form-item>
+              </div>
+            </div>
+          </el-form>
+          <div class="flex align-center">
+                <div>本课程进度：</div>
+                <div style="width:200px">
+                  <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" status="success"></el-progress>
+                </div>
+            </div>
+        </div>
       </div>
       <div class="card monitor-right">
         <div class="flex align-center" style="margin:auto"><h3>设备状态统计</h3></div>
@@ -77,6 +99,7 @@
       const chart: Ref<EChartOption> = ref({});
       const devicesShow = ref<any>();
       const stations = ref<any>();
+      const percentage = ref(0);
       const query = async () => {
         lesson.value = {
           id: 1,
@@ -98,6 +121,9 @@
             claszGroup: '自动化一组',
           },
         };
+        const num1 = lesson.value.end.getTime() - lesson.value.start.getTime();
+        const num2 = new Date().getTime() - lesson.value.start.getTime();
+        percentage.value = Math.round(100 * num2 / num1) ;
       };
       const timeDiff = (time1: any, time2: any) => {
         const dateDiff = time2.getTime() - time1.getTime();
@@ -231,6 +257,7 @@
         setChart,
         devicesShow,
         stations,
+        percentage,
       };
     },
   });
@@ -290,5 +317,9 @@
         width: 50%;
       }
     }
+  }
+  .form-line {
+    width: 48%;
+    margin-bottom: 10px;
   }
 </style>

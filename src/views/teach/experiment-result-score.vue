@@ -18,8 +18,7 @@
         <el-form-item label="上课分组:">
           <lkt-select/>
         </el-form-item>
-        <el-form-item label="学生人数:">
-          <el-input style="width:50px"></el-input>
+        <el-form-item label="学生人数:">{{25}}
           <span>人</span>
         </el-form-item>
       </el-form>
@@ -28,9 +27,9 @@
       <div class="block_title flex between">成绩评定</div>
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
         <div style="margin:10px">
-          <el-button type="primary">全部</el-button>
-          <el-button type="primary" style="margin-left:5px">已评分</el-button>
-          <el-button type="primary" style="margin-left:5px">未评分</el-button>
+          <el-button :type="allScored?'primary':''" @click="showAllScored()">全部</el-button>
+          <el-button :type="hasScored?'primary':''" style="margin-left:5px" @click="showHasScored()">已评分</el-button>
+          <el-button :type="noScored?'primary':''" style="margin-left:5px" @click="showNoScored()">未评分</el-button>
         </div>
         <el-input placeholder="输入操作台/学生搜索" style="width:400px;margin:10px"></el-input>
       </div>
@@ -41,7 +40,10 @@
         <el-table-column label="提交时间" prop="createDt"/>
         <el-table-column label="操作台"/>
         <el-table-column label="状态">
-          <span style="color:green">已评分</span>
+          <div slot-scope="props">
+            <div v-if="props.row.extend.score1 && props.row.extend.score2" style="color:green">已评分</div>
+            <div v-else style="color:red">未评分</div>
+          </div>
         </el-table-column>
         <el-table-column label="实验过程">
           <el-button type="text">查看</el-button>
@@ -87,6 +89,9 @@ export default {
   setup() {
     const loading = ref(false);
     const experimentReportList = ref<any>();
+    const allScored = ref(true);
+    const hasScored = ref(false);
+    const noScored = ref(false);
     const scoreModal = ref<any>({
       visible: false,
       scoreInfo: null,
@@ -112,7 +117,24 @@ export default {
       experimentReportList.value = [
         {id: '0', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
         note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
+        {id: '1', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
+        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: null, score2: null, ratio1: 60, ratio2: 40}},
       ];
+    };
+    const showAllScored = async () => {
+      allScored.value = true;
+      hasScored.value = false;
+      noScored.value = false;
+    };
+    const showHasScored = async () => {
+      allScored.value = false;
+      hasScored.value = true;
+      noScored.value = false;
+    };
+    const showNoScored = async () => {
+      allScored.value = false;
+      hasScored.value = false;
+      noScored.value = true;
     };
     onMounted(useLoading(loading, async () => {
       await query();
@@ -120,6 +142,10 @@ export default {
     return {
       loading, experimentReportList, query, scoreModal, showScoreForm,
       scoreUpdate: useLoading(loading, scoreUpdate),
+      allScored, hasScored, noScored,
+      showAllScored: useLoading(loading, showAllScored),
+      showHasScored: useLoading(loading, showHasScored),
+      showNoScored: useLoading(loading, showNoScored),
     };
   },
 };
