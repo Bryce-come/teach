@@ -12,8 +12,7 @@
         <el-form-item label="上课分组:">
           <lkt-select style="width:120px"/>
         </el-form-item>
-        <el-form-item label="学生人数:">
-          <el-input style="width:50px"></el-input>
+        <el-form-item label="学生人数:">{{25}}
           <span>人</span>
         </el-form-item>
       </el-form>

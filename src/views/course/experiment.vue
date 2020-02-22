@@ -1,9 +1,9 @@
 <template>
   <div v-loading="loading" class="experiment">
     <div style="display:flex;justify-content:flex-start;margin-bottom:10px">
-      <el-button type="primary">所有实验</el-button>
-      <el-button type="primary" style="margin-left:20px">课内实验</el-button>
-      <el-button type="primary" style="margin-left:20px">开放实验</el-button>
+      <el-button :type="allExp?'primary':''" @click="showAllExp()">所有实验</el-button>
+      <el-button :type="inExp?'primary':''" style="margin-left:20px" @click="showInExp()">课内实验</el-button>
+      <el-button :type="outExp?'primary':''" style="margin-left:20px" @click="showOutExp()">开放实验</el-button>
     </div>
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
       <div style="margin-bottom:10px">
@@ -22,7 +22,7 @@
       <el-table-column label="实验设备"/>
       <el-table-column label="附件" prop="attachment"/>
       <el-table-column label="操作" width="200px">
-        <div slot-scope="row">
+        <div slot-scope="{row}">
           <el-button type="warning" size="mini" @click="showForm(row)">修改</el-button>
           <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
           <el-button type="text" style="margin-left:5px">查看详情</el-button>
@@ -69,6 +69,9 @@ export default {
   setup() {
     const loading = ref(false);
     const experimentList = ref<any>();
+    const allExp = ref(true);
+    const inExp = ref(false);
+    const outExp = ref(false);
     const remove = async (row: any) => {
       Message.success('删除成功');
     };
@@ -103,6 +106,21 @@ export default {
         {id: 4, code: '', name: '5xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '开放实验', extend: {}, stations: [], attachment: [], createDt: ''},
       ];
     };
+    const showAllExp = async () => {
+      allExp.value = true;
+      inExp.value = false;
+      outExp.value = false;
+    };
+    const showInExp = async () => {
+      allExp.value = false;
+      inExp.value = true;
+      outExp.value = false;
+    };
+    const showOutExp = async () => {
+      allExp.value = false;
+      inExp.value = false;
+      outExp.value = true;
+    };
     onMounted(useLoading(loading, async () => {
       await query();
     }));
@@ -111,6 +129,10 @@ export default {
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       modal, showForm,
       update: useLoading(loading, update),
+      allExp, inExp, outExp,
+      showAllExp: useLoading(loading, showAllExp),
+      showInExp: useLoading(loading, showInExp),
+      showOutExp: useLoading(loading, showOutExp),
     };
   },
 };
