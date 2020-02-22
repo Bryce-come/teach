@@ -9,6 +9,8 @@ export const mainMenuTitles = [
   '报警提醒', 'icon-xiangmu',
   '教学过程管理', 'icon-oeeanalysis',
   '系统管理', 'icon-system',
+  '课前预习', 'icon-xiangmu',
+  '课后作业', 'icon-xiangmu',
 ];
 
 export const loginTitle1 = process.env.VUE_APP_LOGIN_TITLE1;
