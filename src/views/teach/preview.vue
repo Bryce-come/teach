@@ -57,8 +57,8 @@ export default {
     return {
       loading,
     };
-  }
-}
+  },
+};
 </script>
 <style scoped lang="scss">
 .wrapper{

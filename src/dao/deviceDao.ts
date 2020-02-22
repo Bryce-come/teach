@@ -13,15 +13,15 @@ export const DeviceTypeList = async () => {
  * @ApiParam(value = "ctrName, systemType, systemProducer, systemVersion")
  * @RequestParam(required = false) String extendJson
  */
-export const DeviceTypeUpdate = async (params:any) => {
-  await postService('/rest/device/type/mng/updateType',params);
+export const DeviceTypeUpdate = async (params: any) => {
+  await postService('/rest/device/type/mng/updateType', params);
 };
 
 /**
  * id, image
  */
-export const DeviceTypeUploadImg = async (params:any) => {
-  await uploadService('/rest/device/type/mng/upload/image',params);
+export const DeviceTypeUploadImg = async (params: any) => {
+  await uploadService('/rest/device/type/mng/upload/image', params);
 };
 
 // params: types, start, end

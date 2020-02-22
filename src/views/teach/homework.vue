@@ -99,8 +99,8 @@ export default {
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList,
     };
-  }
-}
+  },
+};
 </script>
 <style lang="scss">
 

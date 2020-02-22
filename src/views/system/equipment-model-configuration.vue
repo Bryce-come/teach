@@ -58,8 +58,8 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading} from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {deepClone} from 'web-toolkit/src/utils';
-import {ImageLink} from "@/dao/commonDao.ts";
-import {DeviceTypeList, DeviceTypeUpdate, DeviceTypeUploadImg} from "@/dao/deviceDao";
+import {ImageLink} from '@/dao/commonDao.ts';
+import {DeviceTypeList, DeviceTypeUpdate, DeviceTypeUploadImg} from '@/dao/deviceDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -81,27 +81,27 @@ export default {
         await DeviceTypeUpdate({
           id: modal.value.deviceTypeInfo.id,
           name: modal.value.deviceTypeInfo.name,
-          extendJson: JSON.stringify(modal.value.deviceTypeInfo.extend)
+          extendJson: JSON.stringify(modal.value.deviceTypeInfo.extend),
         });
         modal.value.visible = false;
         Message.success('修改成功');
         await query();
       }
     }
-    function img(path:any) {
-      if(path){
+    function img(path: any) {
+      if (path) {
         return ImageLink(path);
       }
     }
     const query = async () => {
       deviceTypeList.value = await DeviceTypeList();
     };
-    async function upload(option:any,row:any){
+    async function upload(option: any, row: any) {
       await DeviceTypeUploadImg({
         id: row.id,
-        image: option.file
+        image: option.file,
       });
-      Message.success("上传成功");
+      Message.success('上传成功');
       await query();
     }
     onMounted(useLoading(loading, async () => {
@@ -111,7 +111,7 @@ export default {
       loading, deviceTypeList, modal, form, showForm, query,
       update: useLoading(loading, update),
       img,
-      upload: useLoading(loading, upload)
+      upload: useLoading(loading, upload),
     };
   },
 };
