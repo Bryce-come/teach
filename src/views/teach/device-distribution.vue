@@ -132,7 +132,7 @@ export default {
     const checkDeviceList = ref([]);
     const query = async () => {
         lesson.value = {
-           date: new Date,
+           date: 12454657789965,
            students: [
                 {id: 1,
                 name: '马克',

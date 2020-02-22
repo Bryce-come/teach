@@ -36,8 +36,8 @@ export async function ClassList4Select() {
 
 /**
  * 增加/修改班级
- * @RequestParam String name,
- @RequestParam(required = false) Integer id
+ * RequestParam String name,
+ RequestParam(required = false) Integer id
  */
 export async function ClassUpdate(params: any) {
   await postService('/rest/class/update', params);
@@ -45,7 +45,7 @@ export async function ClassUpdate(params: any) {
 
 /**
  * 删除班级
- * @RequestParam int id
+ * RequestParam int id
  */
 export async function ClassDel(params: any) {
   params.off = 0;
@@ -54,7 +54,7 @@ export async function ClassDel(params: any) {
 
 /**
  * 冻结班级
- * @RequestParam int id
+ * RequestParam int id
  */
 export async function ClassFreeze(params: any) {
   params.off = 1;
@@ -63,7 +63,7 @@ export async function ClassFreeze(params: any) {
 
 /**
  * 解冻班级
- * @RequestParam int id
+ * RequestParam int id
  */
 export async function ClassUnFreeze(params: any) {
   params.off = 2;
@@ -72,9 +72,9 @@ export async function ClassUnFreeze(params: any) {
 
 /**
  * 分组更新/增加
- * @RequestParam String name,
- @RequestParam int cid,
- @RequestParam(required = false) Integer id
+ * RequestParam String name,
+ RequestParam int cid,
+ RequestParam(required = false) Integer id
  */
 export async function ClassGroupUpdate(params: any) {
   await postService('/rest/class/group/update', params);
@@ -82,7 +82,7 @@ export async function ClassGroupUpdate(params: any) {
 
 /**
  * 分组删除
- * @RequestParam int id
+ * RequestParam int id
  */
 export async function ClassGroupDel(params: any) {
   await postService('/rest/class/group/del', params);
@@ -90,10 +90,10 @@ export async function ClassGroupDel(params: any) {
 
 /**
  * 学生列表
- * @RequestParam(required = false) Integer classId,
- @RequestParam(required = false) Integer groupId,
- @ApiParam(value = "用于select待选列表")
- @RequestParam(required = false, defaultValue = "false") boolean forSelect
+ * RequestParam(required = false) Integer classId,
+ RequestParam(required = false) Integer groupId,
+ ApiParam(value = "用于select待选列表")
+ RequestParam(required = false, defaultValue = "false") boolean forSelect
  */
 export async function StudentList() {
   const {data: {list}} = await postService('/rest/student/list');
@@ -119,7 +119,7 @@ export async function AdminUserList() {
 
 /**
  * 获取角色列表. 如果是学生，root=2; 如果是教师 root=1
- * @RequestParam(required = false) Integer root
+ * RequestParam(required = false) Integer root
  */
 export async function RoleList(params: any) {
   const {data: {roles}} = await postService('/rest/user/listRoles', params);
@@ -128,13 +128,13 @@ export async function RoleList(params: any) {
 
 /**
  * 添加用户
- *  @RequestParam String username,
-    @RequestParam(required = false) String name,
-   @RequestParam(required = false) String phone,
-   @RequestParam String pwd,
-   @RequestParam int role,
+ *  RequestParam String username,
+    RequestParam(required = false) String name,
+   RequestParam(required = false) String phone,
+   RequestParam String pwd,
+   RequestParam int role,
    // no-学号/工号
-   @RequestParam(required = false) String extendJson
+   RequestParam(required = false) String extendJson
  */
 export async function UserAdd(params: any) {
   await postService('/rest/admin/user/addUser', params);
@@ -142,9 +142,9 @@ export async function UserAdd(params: any) {
 
 /**
  * 用户冻结/删除
- * @RequestParam int id,
- @ApiParam(value = "0-删除，1-冻结，2-解冻")
- @RequestParam int off
+ * RequestParam int id,
+ ApiParam(value = "0-删除，1-冻结，2-解冻")
+ RequestParam int off
  */
 export async function UserDel(params: any) {
   await postService('/rest/admin/user/del', params);
@@ -152,15 +152,15 @@ export async function UserDel(params: any) {
 
 /**
  * 更新用户信息
- * @RequestParam int id,
- @RequestParam(required = false) String username,
- @RequestParam(required = false) String name,
- @RequestParam(required = false) String phone,
- @RequestParam(required = false,defaultValue = "0")int gender,
- @RequestParam(required = false)String pwd,
- @RequestParam(required = false,defaultValue = "0") int role,
- @RequestParam(required = false)String extendJson
- * @constructor
+ * RequestParam int id,
+ RequestParam(required = false) String username,
+ RequestParam(required = false) String name,
+ RequestParam(required = false) String phone,
+ RequestParam(required = false,defaultValue = "0")int gender,
+ RequestParam(required = false)String pwd,
+ RequestParam(required = false,defaultValue = "0") int role,
+ RequestParam(required = false)String extendJson
+ * constructor
  */
 export async function UserUpdate(params: any) {
   await postService('/rest/admin/user/updateUser', params);

@@ -11,7 +11,7 @@
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
-import monitor  from '../laboratory/monitor.vue';
+import monitor from '../laboratory/monitor.vue';
 export default createComponent({
   components: { monitor },
   setup() {

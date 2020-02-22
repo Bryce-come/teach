@@ -38,7 +38,7 @@ export default {
     const loading = ref(false);
     const station = ref<any>();
     const lesson = ref<any>();
-    const time = new Date;
+    const time = ref<any>();
     const setStation = async () => {
       station.value = {
           id: 1,
@@ -96,6 +96,7 @@ export default {
     onMounted(useLoading(loading, async () => {
       await setStation();
       await query();
+      time.value = new Date();
     }));
     return{
       loading,

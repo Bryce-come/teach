@@ -2,9 +2,9 @@ import {postService} from 'web-toolkit/src/case-main/index';
 
 /**
  * 视频记录
- *  @RequestParam String ip,
- @RequestParam long start,
- @RequestParam long end
+ *  RequestParam String ip,
+ RequestParam long start,
+ RequestParam long end
  */
 export async function CameraRecordList(params: any) {
   const {data: {list}} = await postService('/rest/camera/record/list', params);
@@ -22,7 +22,7 @@ export async function MonitorStationList() {
 
 /**
  * 监控详情
- * @RequestParam int stationId
+ * RequestParam int stationId
  * 返回 station, record:CourseRecord
  */
 export async function MonitorStationDetail(params: any) {

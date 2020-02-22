@@ -72,7 +72,7 @@
       const loading = ref(false);
       const box = ref(null);
       const lesson = ref<any>();
-      const time = new Date;
+      const time = ref<any>();
       const summary = ref<any>();
       const chart: Ref<EChartOption> = ref({});
       const devicesShow = ref<any>();
@@ -217,6 +217,7 @@
         await query();
         await setChart();
         await setStation();
+        time.value = new Date();
       }));
       return {
         loading,

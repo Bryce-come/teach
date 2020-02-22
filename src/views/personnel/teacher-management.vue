@@ -142,7 +142,7 @@ export default {
       result.extendJson = JSON.stringify(result.extend);
       if (!addModal.value.teacherInfo.id) {
         await UserAdd(result);
-        console.log(result);
+        // console.log(result);
         Message.success('添加成功');
       } else {
         await UserUpdate(result);
@@ -154,7 +154,7 @@ export default {
     const query = async () => {
         const firstList = await TeacherList();
         teacherUserList.value = firstList;
-        console.log(firstList[2]);
+        // console.log(firstList[2]);
     };
     onMounted(useLoading(loading, async () => {
         await query();
