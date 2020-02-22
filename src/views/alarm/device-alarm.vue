@@ -8,7 +8,7 @@
             <lkt-select :list="deviceTypeList" value-key="type" v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号"/>
         </el-form-item>
         <el-form-item label="发生时间:" label-width="80px">
-            <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            <el-date-picker v-model="date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
         </el-form-item>
         <el-form-item label="请选择管理员:" label-width="100px">
@@ -34,9 +34,9 @@
       <el-table-column prop="statues" label="设备状态"/>
       <el-table-column prop="occurDt" label="发生时间"/>
       <el-table-column label="操作" width="220px">
-        <div slot-scope="{ row }" class="flex column">
-        <el-button type="text" @click="snapshot(row)">查看详情</el-button>
-        <el-tag v-if="row.extend.confirm" type="warning">已被确认</el-tag>
+        <div slot-scope="{ row }" class="flex column" style="width:100px">
+        <el-button type="text" @click="snapshot(row)" style="width:85px">查看详情</el-button>
+        <el-tag v-if="row.extend.confirm" type="warning" style="width:85px">已被确认</el-tag>
         </div>
       </el-table-column>
     </lkt-table>

@@ -2,9 +2,8 @@
   <div v-loading="loading">
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
-        <span>请输入要查询的日期：</span>
-        <lkt-date-picker v-model="oneDay" type="datetime" format="yyyy-MM-dd HH:mm" :clearable="false"/>
-        <el-button style="margin-left: 10px" type="primary" @click="list()">查询</el-button>
+        <lkt-date-picker v-model="oneDay"/>
+        <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>        
       </div>
     </div>
     <div class="class-table">
@@ -38,9 +37,10 @@
              <th>
                <div>第<span>{{i+1}}</span>节课</div>
              </th>
-             <td v-for="(lessonItem, j) in item.lesson" :key="j"
-                 :rowspan="lessonItem !== ''? lessonItem.extend.lessonInt:''"
-                 :style="{'background-color': lessonItem !== ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
+             <td v-for="(lessonItem, j) in item.lesson" :key="j" 
+                 :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
+                 :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
+                 class="shadow">
                   <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
                 <el-popover
                   placement="top-start"
@@ -58,11 +58,11 @@
                     <i class="el-icon-delete"/>
                     <span  style="margin-left:5px">删除</span>
                   </div>
-                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                    <i class="el-icon-takeaway-box"/>
+                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                    <i class="el-icon-takeaway-box"></i>
                     <span  style="margin-left:5px">延长课时</span>
-                  </div>
-                  <div style="width:100%;height:100%" slot="reference">
+                  </div> -->
+                  <div style="width:100%;height:100%" slot="reference" >
                     <div>
                        {{lessonItem?lessonItem.course.name:''}}
                     </div>
@@ -389,5 +389,8 @@ function initForm(): any {
         }
       }
     }
+  }
+  .shadow:hover{
+    box-shadow: 0 0 15px rgb(15, 15, 15);
   }
 </style>
