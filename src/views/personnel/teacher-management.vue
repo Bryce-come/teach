@@ -1,13 +1,9 @@
 <template>
   <div v-loading="loading" class="teacher-management">
-    <el-form :inline="true">
-      <el-form-item>
-          <div class="flex align-center between little-space">
-            <el-button type="success" @click="showForm()">添加新教员</el-button>
-            <el-input class="search-bar" v-model="keywords" placeholder="请输入搜索内容" clearable/>
-        </div>
-      </el-form-item>
-    </el-form>
+    <div class="flex align-center between little-space">
+      <el-button type="success" @click="showForm()">添加教师</el-button>
+      <el-input class="search-bar" v-model="keywords" placeholder="请输入搜索内容" clearable/>
+    </div>
     <lkt-table
       :data="filtered"
       style="width:100%" >
@@ -30,7 +26,7 @@
       width="700px">
         <div slot="title">录入授课教师信息</div>
         <el-form v-if="addModal.teacherInfo" ref="form" :model="addModal.teacherInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="账号名称：" prop="username" :rules="{ required: true, message: '请输入账号名称'}">
+          <el-form-item label="登录用户名" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
               <el-input v-model="addModal.teacherInfo.username"></el-input>
           </el-form-item>
           <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
@@ -52,11 +48,11 @@
                 </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="工号：" prop="no">
-              <el-input v-model="addModal.teacherInfo.no"></el-input>
+          <el-form-item label="工号" prop="extend.no">
+              <el-input v-model="addModal.teacherInfo.extend.no"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱地址：" prop="address">
-              <el-input v-model="addModal.teacherInfo.address"></el-input>
+          <el-form-item label="邮箱地址" prop="extend.address">
+              <el-input v-model="addModal.teacherInfo.extend.address"></el-input>
           </el-form-item>
           <el-form-item label="联系电话：" prop="phone">
               <el-input v-model="addModal.teacherInfo.phone"></el-input>
@@ -93,7 +89,7 @@ export default {
     const loading = ref(false);
     const teacherUserList = ref<any>();
     const [keywords, filtered] = useSearch(teacherUserList, {
-      includeProps: ['username', 'role.name', 'name', 'phone' , 'address'],
+      includeProps: ['username', 'role.name', 'name', 'phone' ,'extend.no','extend.address'],
     });
     const remove = async (row: any) => {
         await UserDel({
@@ -136,13 +132,12 @@ export default {
         phone: addModal.value.teacherInfo.phone,
         pwd: addModal.value.teacherInfo.pwd,
         role: addModal.value.teacherInfo.role,
-        extend: {no: addModal.value.teacherInfo.no, address: addModal.value.teacherInfo.address},
-        extendJson: '',
+        extend: {no:addModal.value.teacherInfo.extend.no,address: addModal.value.teacherInfo.extend.address,},
+        extendJson:'',
       };
       result.extendJson = JSON.stringify(result.extend);
       if (!addModal.value.teacherInfo.id) {
         await UserAdd(result);
-        // console.log(result);
         Message.success('添加成功');
       } else {
         await UserUpdate(result);
@@ -154,7 +149,6 @@ export default {
     const query = async () => {
         const firstList = await TeacherList();
         teacherUserList.value = firstList;
-        // console.log(firstList[2]);
     };
     onMounted(useLoading(loading, async () => {
         await query();

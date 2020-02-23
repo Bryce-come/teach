@@ -1,6 +1,6 @@
 <template v-loading="loading">
   <div>  
-      <div class="flex align-center" style="margin-bottom:10px">
+      <div class="flex end" style="margin-bottom:10px">
           <el-button type="primary" @click="delay()" style='margin-right:10px'>延迟</el-button>
           <el-button type="danger" @click="off()">下课</el-button>
       </div>

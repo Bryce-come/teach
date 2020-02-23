@@ -1,9 +1,27 @@
-import {postService} from 'web-toolkit/src/case-main/index';
+import {postService, uploadService} from 'web-toolkit/src/case-main/index';
 import {urlMap} from '@/config';
+import axios from 'axios';
 
 export const DeviceTypeList = async () => {
   const { data: {list} } = await postService(urlMap.device_type_list.url);
   return list;
+};
+
+/**
+ * @RequestParam String id,
+ * @RequestParam String name,
+ * @ApiParam(value = "ctrName, systemType, systemProducer, systemVersion")
+ * @RequestParam(required = false) String extendJson
+ */
+export const DeviceTypeUpdate = async (params: any) => {
+  await postService('/rest/device/type/mng/updateType', params);
+};
+
+/**
+ * id, image
+ */
+export const DeviceTypeUploadImg = async (params: any) => {
+  await uploadService('/rest/device/type/mng/upload/image', params);
 };
 
 // params: types, start, end

@@ -107,8 +107,8 @@ export default {
       experimentReportTemplateList,
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
-  }
-}
+  },
+};
 </script>
 <style lang="scss">
 
