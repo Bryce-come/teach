@@ -64,34 +64,34 @@
       width="700px">
         <div slot="title">添加设备维保记录</div>
         <el-form v-if="modal.maintainRecordInfo" ref="form" :model="modal.maintainRecordInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="设备名称" prop="device.name" :rules="{ required: true, message: '请输入设备名称'}">
+          <el-form-item label="设备名称：" prop="device.name" :rules="{ required: true, message: '请输入设备名称'}">
             <el-input v-model="modal.maintainRecordInfo.device.name"></el-input>
           </el-form-item>
-          <el-form-item label="设备编号" prop="id" :rules="{ required: true, message: '请输入设备编号'}">
+          <el-form-item label="设备编号：" prop="id" :rules="{ required: true, message: '请输入设备编号'}">
             <el-input v-model="modal.maintainRecordInfo.id"></el-input>
           </el-form-item>
-          <el-form-item label="设备型号" prop="device.type.name" :rules="{ required: true, message: '请选择设备型号'}">
+          <el-form-item label="设备型号：" prop="device.type.name" :rules="{ required: true, message: '请选择设备型号'}">
               <el-select v-model="modal.maintainRecordInfo.device.type.name"></el-select>
           </el-form-item>          
-          <el-form-item label="保养时间" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
+          <el-form-item label="保养时间：" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
               <el-date-picker v-model="modal.maintainRecordInfo.restorationDt" type="date"></el-date-picker>
           </el-form-item>
-          <el-form-item label="保养内容" prop="treatment" :rules="{ required: true, message: '请输入保养内容'}">
+          <el-form-item label="保养内容：" prop="treatment" :rules="{ required: true, message: '请输入保养内容'}">
               <el-input type="text" v-model="modal.maintainRecordInfo.treatment"></el-input>
           </el-form-item>
-          <el-form-item label="维保类型" prop="type" :rules="{ required: true, message: '请选择维保类型'}">
+          <el-form-item label="维保类型：" prop="type" :rules="{ required: true, message: '请选择维保类型'}">
               <el-input type="text" v-model="modal.maintainRecordInfo.type"></el-input>
           </el-form-item>
-          <el-form-item label="维护人" prop="executor" :rules="{ required: true, message: '请输入维护人姓名'}">
+          <el-form-item label="维护人：" prop="executor" :rules="{ required: true, message: '请输入维护人姓名'}">
               <el-input v-model="modal.maintainRecordInfo.executor"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式" prop="extend.executorPhone">
+          <el-form-item label="联系方式：" prop="extend.executorPhone">
               <el-input v-model="modal.maintainRecordInfo.extend.executorPhone"></el-input>
           </el-form-item>
-          <el-form-item label="当前状态" prop="status" :rules="{ required: true, message: '请选择当前状态'}">
+          <el-form-item label="当前状态：" prop="status" :rules="{ required: true, message: '请选择当前状态'}">
               <el-input type="text" v-model="modal.maintainRecordInfo.status"></el-input>
           </el-form-item>
-          <el-form-item label="下次保养时间" prop="nextDt" :rules="{ required: true, message: '请选择下次保养时间'}">
+          <el-form-item label="下次保养时间：" prop="nextDt" :rules="{ required: true, message: '请选择下次保养时间'}">
               <el-date-picker v-model="modal.maintainRecordInfo.nextDt" type="date"></el-date-picker>
           </el-form-item>
         </el-form>

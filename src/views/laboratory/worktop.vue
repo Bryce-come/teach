@@ -85,13 +85,13 @@
       width="700px">
         <div slot="title">添加操作台</div>
         <el-form v-if="modal.workTopInfo" ref="form" :model="modal.workTopInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="试验台名称" prop="name" :rules="{ required: true, message: '请输入操作台名称'}">
+          <el-form-item label="试验台名称：" prop="name" :rules="{ required: true, message: '请输入操作台名称'}">
               <el-input v-model="modal.workTopInfo.name"></el-input>
           </el-form-item>
-          <el-form-item label="关联设备数量" prop="devices" :rules="{ required: true, message: '请输入关联设备数量'}">
+          <el-form-item label="关联设备数量：" prop="devices" :rules="{ required: true, message: '请输入关联设备数量'}">
               <el-input v-model="modal.workTopInfo.devices"></el-input>
           </el-form-item>
-          <el-form-item label="关联PC数量" prop="extend.PCs.remark" :rules="{ required: true, message: '请输入关联PC数量'}">
+          <el-form-item label="关联PC数量：" prop="extend.PCs.remark" :rules="{ required: true, message: '请输入关联PC数量'}">
               <el-input v-model="modal.workTopInfo.extend.PCs.remark"></el-input>
           </el-form-item>
           <!-- <el-form-item label="密码" prop="pwd" :rules="{ required: true, message: '请输入密码'}">

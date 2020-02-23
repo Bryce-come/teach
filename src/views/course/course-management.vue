@@ -30,23 +30,23 @@
       :confirm="courseUpdate"
       width="700px">
         <div slot="title">{{courseModal.courseInfo && courseModal.courseInfo.id ? '修改' : '录入'}}课程信息</div>
-        <el-form v-if="courseModal.courseInfo" ref="form" :model="courseModal.courseInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="课程代码" prop="code" :rules="{ required: true, message: '请输入课程代码'}">
+        <el-form v-if="courseModal.courseInfo" ref="form" :model="courseModal.courseInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
+          <el-form-item label="课程代码：" prop="code" :rules="{ required: true, message: '请输入课程代码'}">
               <el-input v-model="courseModal.courseInfo.code"></el-input>
           </el-form-item>
-          <el-form-item label="课程名称" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
+          <el-form-item label="课程名称：" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
               <el-input v-model="courseModal.courseInfo.name"></el-input>
           </el-form-item>
-          <el-form-item label="任课教师" prop="teacher" :rules="{ required: true, message: '请输入任课教师'}">
+          <el-form-item label="任课教师：" prop="teacher" :rules="{ required: true, message: '请输入任课教师'}">
               <el-input v-model="courseModal.courseInfo.teacher"></el-input>
           </el-form-item>
-          <el-form-item label="实验项目" prop="experiment" :rules="{ required: true, message: '请选择实验项目'}">
+          <el-form-item label="实验项目：" prop="experiment" :rules="{ required: true, message: '请选择实验项目'}">
               <lkt-select v-model="courseModal.courseInfo.experiment" multiple></lkt-select>
           </el-form-item>
-          <el-form-item label="操作评分占比" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
+          <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
               <el-input v-model="courseModal.courseInfo.extend.scoreRatio[0]"></el-input>
           </el-form-item>
-          <el-form-item label="报告评分占比" prop="extend.scoreRatio[1]" :rules="{ required: true, message: '请输入报告评分占比'}">
+          <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, message: '请输入报告评分占比'}">
               <el-input v-model="courseModal.courseInfo.extend.scoreRatio[1]"></el-input>
           </el-form-item>
         </el-form>

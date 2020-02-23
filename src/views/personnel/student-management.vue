@@ -53,7 +53,7 @@
       width="700px">
         <div slot="title">{{modal.studentInfo && modal.studentInfo.id ? '修改' : '录入'}}学生信息</div>
         <el-form v-if="modal.studentInfo" ref="form" :model="modal.studentInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="姓名" prop="name" :rules="{ required: true, message: '请输入姓名'}">
+          <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
               <el-input v-model="modal.studentInfo.name"></el-input>
           </el-form-item>
           <el-form-item label="班级" prop="extend.clasz" :rules="{ required: true, message: '请选择班级'}">
@@ -79,7 +79,7 @@
           <el-form-item label="确认密码：" prop="pwdCheck" :rules="{ required: !modal.studentInfo.id, validator: validator }">
             <el-input clearable v-model="modal.studentInfo.pwdCheck" type="password" />
           </el-form-item>
-          <el-form-item label="联系方式" prop="phone">
+          <el-form-item label="联系方式：" prop="phone">
               <el-input v-model="modal.studentInfo.phone"></el-input>
           </el-form-item>
           <el-form-item label="邮箱地址" prop="extend.address">
