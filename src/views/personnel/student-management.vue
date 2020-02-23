@@ -97,11 +97,11 @@ import { useSearch, useConfirm, useLoading } from 'web-toolkit/src/service';
 import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {StudentList, UserAdd,RoleList,UserDel,UserUpdate,ClassList4Select,ClassList} from '@/dao/userDao';
+import {StudentList, UserAdd, RoleList, UserDel, UserUpdate, ClassList4Select, ClassList} from '@/dao/userDao';
 export default {
   setup() {
-    function armasd(){
-      console.log("!")
+    function armasd() {
+      console.log('!');
     }
     const loading = ref(false);
     const tree = ref<ElTree<any, any>|null>(null);
@@ -115,7 +115,7 @@ export default {
       children: 'children',
       label: 'name',
     });
-    const remove = async (row:any) => {
+    const remove = async (row: any) => {
         await UserDel({
         id: row.id,
         off: 0,
@@ -126,7 +126,7 @@ export default {
       if (tree.value) { (tree.value as ElTree<any, any>).filter(filterText.value); }
     });
     const [keywords, filtered] = useSearch(studentUserList, {
-      includeProps: ['username', 'name', 'phone' ,'address','extend.clasz','extend.claszGroup'],
+      includeProps: ['username', 'name', 'phone' , 'address', 'extend.clasz', 'extend.claszGroup'],
     });
     const form = ref<ElForm|null>(null);
     const modal = ref<any>({
@@ -188,11 +188,11 @@ export default {
         extend: {
           address: modal.value.studentInfo.extend.address,
           clasz: modal.value.studentInfo.extend.clasz,
-          claszGroup: modal.value.studentInfo.extend.claszGroup
+          claszGroup: modal.value.studentInfo.extend.claszGroup,
         },
-        extendJson:'',
+        extendJson: '',
       };
-      result.extendJson = JSON.stringify(result.extend)
+      result.extendJson = JSON.stringify(result.extend);
       if (!modal.value.studentInfo.id) {
         await UserAdd(result);
         Message.success('添加成功');
@@ -218,14 +218,14 @@ export default {
       // console.log(classList.value[0].groups)
       // console.log(groupList)
       await queryStudentList();
-      const aList=await ClassList();
-      list.value=[];
-      blist.value=[];
-      list.value.children=[];
-      blist.value.children=[];
-      for(let i=0;i<aList.length;i++){
-        list.value[i]={id:aList[i].id,name:aList[i].name,children:[...aList[i].groups]}
-        blist.value[i]={value:aList[i].name,label:aList[i].name,children:[...aList[i].groups]}
+      const aList = await ClassList();
+      list.value = [];
+      blist.value = [];
+      list.value.children = [];
+      blist.value.children = [];
+      for (let i = 0; i < aList.length; i++) {
+        list.value[i] = {id: aList[i].id, name: aList[i].name, children: [...aList[i].groups]};
+        blist.value[i] = {value: aList[i].name, label: aList[i].name, children: [...aList[i].groups]};
       }
       // console.log(list.value[0].children)
       // for(let i=0;i<list.value[i].length;i++){
@@ -240,23 +240,23 @@ export default {
       //   {value:list.value[0].children[0].name,label:list.value[0].children[0].name},
       //   {value:list.value[0].children[1].name,label:list.value[0].children[1].name}
       // ]
-      console.log(list)
-      console.log(blist)
+      console.log(list);
+      console.log(blist);
       // console.log(list)
     }));
     return{
-      loading, filterText, list, tree, props, filterNode, studentUserList,filtered,keywords,blist,
+      loading, filterText, list, tree, props, filterNode, studentUserList, filtered, keywords, blist,
       storeUserInfo,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
       queryStudentList,
       modal, form, showForm,
       update: useLoading(loading, update),
-      validator,classList,groupList,
+      validator, classList, groupList,
     };
     return{
 
-    }
+    };
   },
 };
 enum Status {
@@ -265,7 +265,7 @@ enum Status {
 }
 function initForm() {
   return {
-    name: '', username: '', phone: '', status: '',role:3,pwdCheck: '',
+    name: '', username: '', phone: '', status: '', role: 3, pwdCheck: '',
     extend: {clasz: '', claszGroup: ''},
   };
 }

@@ -272,7 +272,7 @@ export default createComponent({
         },
       ];
     };
-     function setColors(lessonOne: any, defaultColor: any) {
+    function setColors(lessonOne: any, defaultColor: any) {
       const type = lessonOne.type;
       if (type === 0 || lessonOne === '') {
         return defaultColor;
@@ -370,30 +370,29 @@ export default createComponent({
       ];
     };
     const tabCell = async () => {
-       var tab = document.getElementById('tabs');
+       const tab = document.getElementById('tabs');
        // @ts-ignore
-       var rows = tab.rows;
-       var rlen = rows.length;
-       for (var i = 1; i < rlen; i++) {
-         var cells = rows[i].cells; 
-         for (var j = 1; j < cells.length; j++) {
-             cells[j].onclick = function () {
+       const rows = tab.rows;
+       const rlen = rows.length;
+       for (let i = 1; i < rlen; i++) {
+         const cells = rows[i].cells;
+         for (let j = 1; j < cells.length; j++) {
+             cells[j].onclick = function() {
                 if (!isshow.value) {
                     color.value = this.style.backgroundColor;
                 }
                 isshow.value = !isshow.value;
-                 if (isshow.value && color.value !== 'white') {
+                if (isshow.value && color.value !== 'white') {
                      this.style.backgroundColor = 'darkorchid';
                      showModal.value = true;
-                 }
-                 else{
+                 } else {
                    this.style.backgroundColor = color.value;
                    showModal.value = false;
                    }
-             }
+             };
          }
        }
-    }
+    };
     // 查询函数
     async function list() {}
     onMounted(useLoading(loading, async () => {

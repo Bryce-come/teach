@@ -272,27 +272,26 @@ export default createComponent({
         readModel.value.oneLesson = lessonItem;
     };
     const tabCell = async () => {
-       var tab = document.getElementById('tabs');
+       const tab = document.getElementById('tabs');
        // @ts-ignore
-       var rows = tab.rows;
-       var rlen = rows.length;
-       for (var i = 1; i < rlen; i++) {
-         var cells = rows[i].cells; 
-         for (var j = 1; j < cells.length; j++) {
-             cells[j].onclick = function () {
+       const rows = tab.rows;
+       const rlen = rows.length;
+       for (let i = 1; i < rlen; i++) {
+         const cells = rows[i].cells;
+         for (let j = 1; j < cells.length; j++) {
+             cells[j].onclick = function() {
                 if (!isshow.value) {
                     color.value = this.style.backgroundColor;
                     console.log(color);
                 }
                 isshow.value = !isshow.value;
-                 if (isshow.value) {
+                if (isshow.value) {
                      this.style.backgroundColor = 'darkorchid';
-                 }
-                 else this.style.backgroundColor = color.value;
-             }
+                 } else { this.style.backgroundColor = color.value; }
+             };
          }
        }
-    }
+    };
     const showLesson = async (lessonItem?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (lessonItem) {
