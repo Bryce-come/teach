@@ -6,17 +6,11 @@
     </div>
     <div v-if="reportButton">
       <div style="margin-top:20px">
-        <el-form style="display:flex;justify-content:flex-start;flex-wrap:wrap">
+        <el-form class="flex between">
           <el-form-item label="课程名称" label-width="80px">
             <lkt-select/>
           </el-form-item>
-          <el-form-item label="实验名称" label-width="80px">
-            <lkt-select/>
-          </el-form-item>
-          <el-form-item label="实验类型" label-width="80px">
-            <lkt-select/>
-          </el-form-item>
-          <el-form-item style="margin-left:20px">
+          <el-form-item>
             <el-button type="primary">查询</el-button>
           </el-form-item>
         </el-form>
@@ -32,10 +26,16 @@
         <el-table-column label="实验报告" prop=""/>
         <el-table-column label="实验报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
-          <div slot-scope="props">{{props.row.extend.score1 + props.row.extend.score2}}</div>
+          <div slot-scope="props">
+            <span v-if="props.row.extend.score1 && props.row.extend.score2">
+              {{props.row.extend.score1 + props.row.extend.score2}}
+            </span>
+          </div>
         </el-table-column>
         <el-table-column label="操作">
-          <el-button type="text">提交报告</el-button>
+          <div slot-scope="props">
+            <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''">提交报告</el-button>
+          </div>
         </el-table-column>
       </lkt-table>
     </div>
@@ -48,7 +48,9 @@
           <el-table-column label="上传时间" prop="createDt" sortable width="500px"/>
           <el-table-column label="实验报告模板名称" prop="name" width="500px"/>
           <el-table-column label="操作">
-            <el-button type="text">下载</el-button>
+            <div slot-scope="{row}">
+              <el-button type="text" @click="download(row)">下载</el-button>
+            </div>
           </el-table-column>
         </lkt-table>
       </div>
@@ -72,6 +74,8 @@ export default {
       experimentResultList.value = [
         {id: '0', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
         note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
+        {id: '1', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
+        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: null, score2: null, ratio1: 60, ratio2: 40}},
       ];
       experimentReportTemplateList.value = [
         {id: '0', name: '自动化操作实验报告模板1', path: '', createDt: ''},
@@ -89,6 +93,9 @@ export default {
       reportButton.value = false;
       templateButton.value = true;
     };
+    const download = async () => {
+      Message.success('下载成功');
+    }; 
     onMounted(useLoading(loading, async () => {
       await query();
     }));
@@ -98,6 +105,7 @@ export default {
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList,
+      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   }
 }

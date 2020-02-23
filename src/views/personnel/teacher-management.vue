@@ -30,10 +30,10 @@
       width="700px">
         <div slot="title">录入授课教师信息</div>
         <el-form v-if="addModal.teacherInfo" ref="form" :model="addModal.teacherInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="账号名称" prop="username" :rules="{ required: true, message: '请输入账号名称'}">
+          <el-form-item label="账号名称：" prop="username" :rules="{ required: true, message: '请输入账号名称'}">
               <el-input v-model="addModal.teacherInfo.username"></el-input>
           </el-form-item>
-          <el-form-item label="姓名" prop="name" :rules="{ required: true, message: '请输入姓名'}">
+          <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
               <el-input v-model="addModal.teacherInfo.name"></el-input>
           </el-form-item>
           <el-form-item :label="!addModal.teacherInfo.id ? '密码：' : '修改密码：'" prop="pwd" :rules="[{ required: !addModal.teacherInfo.id, message: '请填写密码' }, { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}]">
@@ -42,7 +42,7 @@
           <el-form-item label="确认密码：" prop="pwdCheck" :rules="{ required: !addModal.teacherInfo.id, validator: validator }">
             <el-input clearable v-model="addModal.teacherInfo.pwdCheck" type="password" />
           </el-form-item>
-          <el-form-item label="老师类型" prop="role" :rules="{ required: true, message: '请选择类型'}">
+          <el-form-item label="老师类型：" prop="role" :rules="{ required: true, message: '请选择类型'}">
               <el-select v-model="addModal.teacherInfo.role">
                 <el-option
                   v-for="item in options"
@@ -52,13 +52,13 @@
                 </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="工号" prop="no">
+          <el-form-item label="工号：" prop="no">
               <el-input v-model="addModal.teacherInfo.no"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱地址" prop="address">
+          <el-form-item label="邮箱地址：" prop="address">
               <el-input v-model="addModal.teacherInfo.address"></el-input>
           </el-form-item>
-          <el-form-item label="联系电话" prop="phone">
+          <el-form-item label="联系电话：" prop="phone">
               <el-input v-model="addModal.teacherInfo.phone"></el-input>
           </el-form-item>
         </el-form>

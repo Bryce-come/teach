@@ -46,28 +46,28 @@
       width="700px">
         <div slot="title">{{modal.studentInfo && modal.studentInfo.id ? '修改' : '录入'}}学生信息</div>
         <el-form v-if="modal.studentInfo" ref="form" :model="modal.studentInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="姓名" prop="name" :rules="{ required: true, message: '请输入姓名'}">
+          <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
               <el-input v-model="modal.studentInfo.name"></el-input>
           </el-form-item>
-          <el-form-item label="班级" prop="extend.clasz" :rules="{ required: true, message: '请输入班级'}">
+          <el-form-item label="班级：" prop="extend.clasz" :rules="{ required: true, message: '请输入班级'}">
               <el-input v-model="modal.studentInfo.extend.clasz"></el-input>
           </el-form-item>
-          <el-form-item label="教学分组" prop="extend.claszGroup" :rules="{ required: true, message: '请输入教学分组'}">
+          <el-form-item label="教学分组：" prop="extend.claszGroup" :rules="{ required: true, message: '请输入教学分组'}">
               <el-input v-model="modal.studentInfo.extend.claszGroup"></el-input>
           </el-form-item>
-          <el-form-item label="账号名称" prop="username" :rules="{ required: true, message: '请输入账号名称'}">
+          <el-form-item label="账号名称：" prop="username" :rules="{ required: true, message: '请输入账号名称'}">
               <el-input v-model="modal.studentInfo.username"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="pwd" :rules="{ required: true, message: '请输入密码'}">
+          <el-form-item label="密码：" prop="pwd" :rules="{ required: true, message: '请输入密码'}">
               <el-input v-model="modal.studentInfo.pwd"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式" prop="phone">
+          <el-form-item label="联系方式：" prop="phone">
               <el-input v-model="modal.studentInfo.phone"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱地址" prop="address">
+          <el-form-item label="邮箱地址：" prop="address">
               <el-input v-model="modal.studentInfo.address"></el-input>
           </el-form-item>
-          <el-form-item label="状态" prop="status">
+          <el-form-item label="状态：" prop="status">
               <el-select v-model="modal.studentInfo.status"></el-select>
           </el-form-item>
         </el-form>

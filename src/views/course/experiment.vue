@@ -25,7 +25,7 @@
         <div slot-scope="{row}">
           <el-button type="warning" size="mini" @click="showForm(row)">修改</el-button>
           <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
-          <el-button type="text" style="margin-left:5px">查看详情</el-button>
+          <el-button type="text" style="margin-left:5px" @click="detialForm(row)">查看详情</el-button>
         </div>
       </el-table-column>
     </lkt-table>
@@ -34,26 +34,53 @@
       :confirm="update">
       <div slot="title">录入实验信息</div>
       <el-form v-if="modal.experimentInfo" ref="form" :model="modal.experimentInfo" label-width="120px" label-position="left" style="margin: 0 10px">
-        <el-form-item label="实验名称" prop="name" :rules="{ required: true, message: '请输入实验名称'}">
+        <el-form-item label="实验名称：" prop="name" :rules="{ required: true, message: '请输入实验名称'}">
           <el-input v-model="modal.experimentInfo.name"></el-input>
         </el-form-item>
-        <el-form-item label="实验目的" prop="purpose" :rules="{ required: true, message: '请输入实验目的'}">
+        <el-form-item label="实验目的：" prop="purpose" :rules="{ required: true, message: '请输入实验目的'}">
           <el-input v-model="modal.experimentInfo.purpose"></el-input>
         </el-form-item>
-        <el-form-item label="实验原理" prop="principle" :rules="{ required: true, message: '请输入实验原理'}">
+        <el-form-item label="实验原理：" prop="principle" :rules="{ required: true, message: '请输入实验原理'}">
           <el-input v-model="modal.experimentInfo.principle"></el-input>
         </el-form-item>
-        <el-form-item label="实验步骤" prop="steps" :rules="{ required: true, message: '请输入实验步骤'}">
+        <el-form-item label="实验步骤：" prop="steps" :rules="{ required: true, message: '请输入实验步骤'}">
           <el-input v-model="modal.experimentInfo.steps"></el-input>
         </el-form-item>
-        <el-form-item label="实验结果" prop="results" :rules="{ required: true, message: '请输入实验结果'}">
+        <el-form-item label="实验结果：" prop="results" :rules="{ required: true, message: '请输入实验结果'}">
           <el-input v-model="modal.experimentInfo.results"></el-input>
         </el-form-item>
-        <el-form-item label="关联操作台" prop="stations" :rules="{ required: true, message: '请选择关联操作台'}">
+        <el-form-item label="关联操作台：" prop="stations" :rules="{ required: true, message: '请选择关联操作台'}">
           <lkt-select v-model="modal.experimentInfo.stations"></lkt-select>
         </el-form-item>
-        <el-form-item label="附件" prop="attachment" :rules="{ required: true, message: '请上传附件'}">
+        <el-form-item label="附件：" prop="attachment" :rules="{ required: true, message: '请上传附件'}">
           <el-input v-model="modal.experimentInfo.attachment" type="file"></el-input>
+        </el-form-item>
+      </el-form>
+    </kit-dialog-simple>
+    <kit-dialog-simple
+      :modal="detialModal">
+      <div slot="title">查看详情</div>
+      <el-form v-if="detialModal.detialInfo" ref="form" :model="detialModal.detialInfo" label-width="120px" label-position="left" style="margin: 0 10px">
+        <el-form-item label="实验名称：">
+          <div>{{detialModal.detialInfo.name}}</div>
+        </el-form-item>
+        <el-form-item label="实验目的：">
+          <div>{{detialModal.detialInfo.purpose}}</div>
+        </el-form-item>
+        <el-form-item label="实验原理：">
+          <div>{{detialModal.detialInfo.principle}}</div>
+        </el-form-item>
+        <el-form-item label="实验步骤：">
+          <div>{{detialModal.detialInfo.steps}}</div>
+        </el-form-item>
+        <el-form-item label="实验结果：">
+          <div>{{detialModal.detialInfo.results}}</div>
+        </el-form-item>
+        <el-form-item label="关联操作台：">
+          <div>{{detialModal.detialInfo.stations}}</div>
+        </el-form-item>
+        <el-form-item label="附件：">
+          <div>{{detialModal.detialInfo.attachment}}</div>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -97,6 +124,14 @@ export default {
       Message.success('添加成功');
       await query();
     }
+    const detialModal = ref<any>({
+      visible: false,
+      detialInfo: null,
+    });
+    const detialForm = async (data?: any) => {
+      detialModal.value.detialInfo = data;
+      detialModal.value.visible = true;
+    };
     const query = async () => {
       experimentList.value = [
         {id: 0, code: '', name: '1xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '课内实验', extend: {}, stations: [], attachment: [], createDt: ''},
@@ -133,6 +168,7 @@ export default {
       showAllExp: useLoading(loading, showAllExp),
       showInExp: useLoading(loading, showInExp),
       showOutExp: useLoading(loading, showOutExp),
+      detialModal, detialForm,
     };
   },
 };
