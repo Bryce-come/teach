@@ -74,7 +74,7 @@ export default createComponent({
     const list = ref<any>([]);
     const roleList = ref<any>([]);
     const [keywords, filtered] = useSearch(list, {
-      includeProps: ['username', 'id', 'role.name', 'name', 'phone'],
+      includeProps: ['username', 'role.name', 'name', 'phone'],
     });
     const modal = ref<any>({
       visible: false,

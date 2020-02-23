@@ -1,6 +1,5 @@
 import {postService, uploadService} from 'web-toolkit/src/case-main/index';
 import {urlMap} from '@/config';
-import axios from 'axios';
 
 export const DeviceTypeList = async () => {
   const { data: {list} } = await postService(urlMap.device_type_list.url);

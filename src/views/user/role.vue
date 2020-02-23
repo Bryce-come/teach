@@ -13,8 +13,8 @@
         </span>
       </el-table-column>
       <el-table-column width="200" label="操作" align="center">
-        <template slot-scope="{ row }" >
-          <el-button style="margin-right: 10px" type="primary" size="mini" @click="showForm(row)">修改</el-button>
+        <template slot-scope="{ row }" class="flex column">
+          <el-button type="primary" size="mini" @click="showForm(row)">修改</el-button>
           <el-button v-if="!row.extend || !row.extend.immutable" type="danger" size="mini" @click="deleteRole(row)">删除</el-button>
         </template>
       </el-table-column>
