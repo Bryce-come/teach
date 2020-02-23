@@ -1,21 +1,24 @@
 <template >
   <div v-loading="loading"> 
-    <div class="card">
-        <h3 style='margin:10px'>上课班级信息</h3>
+    <div style="margin: 10px 0" class="block_background">
+      <div class="block_title flex between">上课班级信息</div>
         <el-form :inline="true" >
-            <el-form-item label="上课时间:" label-width="80px">
-                <lkt-date-picker v-model="lesson.date"></lkt-date-picker>
+            <el-form-item label="上课时间:" label-width="100px" v-if='lesson'>
+                <span>{{lesson.date}}</span>
             </el-form-item>
-            <el-form-item label="上课班级:" label-width="80px" v-if='lesson.extend' >
-                <lkt-select :list="classList" value-key="name" v-model="lesson.extend.clasz" multiple :clearable="false" placeholder="请选择上课班级"/>
-            </el-form-item>
-            <el-form-item label="教学分组:" label-width="80px" v-if='lesson.extend'>
-                <lkt-select :list="classGroupList" value-key="type" v-model="lesson.extend.claszGroup" multiple :clearable="false" placeholder="请选择分组"/>
-            </el-form-item>
+            <el-form-item label="上课班级:" label-width="100px" v-if='lesson.extend' >
+                <span>{{lesson.extend.clasz}}</span>
+            </el-form-item> 
+            <el-form-item label="教学分组:" label-width="100px" v-if='lesson.extend'>
+               <span v-for="(item, i ) in lesson.extend.claszGroup" :key="i">
+                   {{item}}</span>
+            </el-form-item> 
             <el-form-item label="人数:" label-width="100px">
                 <span v-if="lesson.students">{{lesson.students.length}}人</span>
             </el-form-item>
         </el-form> 
+    </div>
+    <div style="margin: 10px 0" class="card">
         <el-tabs type="card">
             <el-tab-pane label="按设备分">
                <div class="flex align-center wrap">
@@ -132,7 +135,7 @@ export default {
     const checkDeviceList = ref([]);
     const query = async () => {
         lesson.value = {
-           date: 12454657789965,
+           date: '2020/02/23 周四 第1-3节',
            students: [
                 {id: 1,
                 name: '马克',

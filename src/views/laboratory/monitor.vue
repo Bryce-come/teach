@@ -267,8 +267,8 @@
     height: 21.5rem;
 
     .monitor-left {
-      margin-right: 1rem;
-      width: 48%;
+      margin-right: 2%;
+      width: 49%;
       height: 100%;
       padding: 15px 20px;
 
@@ -282,8 +282,7 @@
     }
 
     .monitor-right {
-      margin-right: 1rem;
-      width: 48%;
+      width: 49%;
       height: 100%;
       padding: 15px 20px;
 

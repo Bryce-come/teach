@@ -23,7 +23,7 @@
             <el-button type="primary" size="small">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </el-button-group>
         </div>
-      <table id='tabs'>
+      <table id="tabs">
         <thead>
           <tr>
             <th>时间</th>
@@ -40,96 +40,17 @@
              <td v-for="(lessonItem, j) in item.lesson" :key="j" 
                  :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
                  :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
-                >
+                 >
                   <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
-                <el-popover
-                  placement="top-start"
-                  width="50"
-                  >
-                  <div style="color:#67C23A;width:6rem;" @click="readLesson(lessonItem)">
-                    <i class="el-icon-reading"/>
-                    <span  style="margin-left:5px">查看</span>
-                  </div>
-                  <div style="color:#67a1ff;width:6rem;" @click='showLesson(lessonItem)'>
-                    <i class="el-icon-edit"/>
-                    <span  style="margin-left:5px">修改</span>
-                  </div>
-                  <div style="color:#F56C6C;width:6rem;" @click="delectLesson(lessonItem)">
-                    <i class="el-icon-delete"/>
-                    <span  style="margin-left:5px">删除</span>
-                  </div>
-                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                    <i class="el-icon-takeaway-box"></i>
-                    <span  style="margin-left:5px">延长课时</span>
-                  </div> -->
-                  <div style="width:100%;height:100%" slot="reference" >
+                  <div style="width:100%;height:100%">
                     <div>
                        {{lessonItem?lessonItem.course.name:''}}
                     </div>
-                    </div>
-                  </el-popover>
-               <div v-if="!lessonItem">
-                 <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
-               </div>
+                 </div>
              </td>
            </tr>
         </tbody>
       </table>
-      <el-dialog
-      :visible.sync="readModel.visible"
-      :modal="readModel.oneLesson"
-      title="课程信息查看"
-      >
-           <div class="flex center column">
-               <el-form label-width="110px" label-position="left">
-                  <el-form-item label="课程名称：" v-if="readModel.oneLesson.course">
-                    <span>{{readModel.oneLesson.course.name}}</span>
-                  </el-form-item>
-                  <el-form-item label="授课教师：" v-if="readModel.oneLesson.teacher">
-                    <span>{{ readModel.oneLesson.teacher.name }}</span>
-                  </el-form-item>
-                  <el-form-item label="参与学生：" v-if="readModel.oneLesson">
-                    <span>{{ readModel.oneLesson.students  }}</span>
-                  </el-form-item>
-                  <el-form-item label="实验名称：" v-if="readModel.oneLesson.course">
-                    <div v-for="(item,i) in readModel.oneLesson.course.programList" :key='i'>
-                      <span>{{ item }}</span>
-                    </div>
-                  </el-form-item>
-                  <el-form-item label="上课时间：" v-if="readModel.oneLesson.extend">
-                    <span>{{  readModel.oneLesson.extend.lessons.length+'课时' }}</span>
-                  </el-form-item>
-                  <el-form-item label="操作台：" v-if="readModel.oneLesson">
-                    <div v-for="(item,i) in readModel.oneLesson.stations" :key='i'>
-                      <span>{{ item }}</span>
-                    </div>
-                  </el-form-item>
-               </el-form>
-           </div>
-      </el-dialog>
-    <kit-dialog-simple
-      :modal="showModal"
-      :confirm="update"
-      width="500px">
-      <div slot='title'>{{showModal.oneLesson?'修改':'预约'}}课程</div>
-      <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="120px" label-position="left" class="flex column between" style="width: 400px;margin: 0 auto">
-        <el-form-item label="课程名称：" prop="course.name" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
-          <el-input style="width:300px" v-model="showModal.oneLesson.course.name"/>
-        </el-form-item>
-        <el-form-item label="授课教师：" prop="teacher.name">
-          <el-input style="width:300px" v-model="showModal.oneLesson.teacher.name"/>
-        </el-form-item>
-        <el-form-item label="实验项目：" prop="course.programList">
-          <el-input style="width:300px" v-model="showModal.oneLesson.course.programList"/>
-        </el-form-item>
-        <el-form-item label="课时：" prop="extend.lessons">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.lessons"/>
-        </el-form-item>
-        <el-form-item label="实验台：" prop="extend.stations">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.stations"/>
-        </el-form-item>
-       </el-form>
-    </kit-dialog-simple>
     </div>
   </div>
 </template>
@@ -140,35 +61,18 @@ import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 export default createComponent({
-  name: 'courseList',
+  name: 'noactionCourseList',
   props: { },
   // props 父组件传过来的东西  ctx 相当于子组件的this（cts.$emit()）
   setup(props: any, ctx: any) {
     // 已经处理后的课程排列，按照第几节课排列
     // 访问各种设置
     const loading = ref(false);
-    // 学期选择列表
-    const terms = ref({});
     const oneDay = ref();
     const isshow = ref(false);
     const color = ref();
-    // 查看标志a
-    const readModel = ref<any>(
-      {
-        visible: false,
-        oneLesson: '',
-      });
-    const showModal = ref<any>(
-      {
-        visible: false,
-        oneLesson: '',
-      });
-    const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {}
-    const moreSetting = ref({
-      lessonNum: 7,
-    });
     const lessons = ref<any>();
     function getColors(lessonOne: any, defaultColor: any) {
       const type = lessonOne.type;
@@ -267,10 +171,6 @@ export default createComponent({
           }, '', '', '', '', '']},
       ];
     };
-    const readLesson = async (lessonItem: any) => {
-        readModel.value.visible = true;
-        readModel.value.oneLesson = lessonItem;
-    };
     const tabCell = async () => {
        var tab = document.getElementById('tabs');
        // @ts-ignore
@@ -282,10 +182,9 @@ export default createComponent({
              cells[j].onclick = function () {
                 if (!isshow.value) {
                     color.value = this.style.backgroundColor;
-                    console.log(color);
                 }
                 isshow.value = !isshow.value;
-                 if (isshow.value) {
+                 if (isshow.value && color.value !== 'white') {
                      this.style.backgroundColor = 'darkorchid';
                  }
                  else this.style.backgroundColor = color.value;
@@ -293,31 +192,7 @@ export default createComponent({
          }
        }
     }
-    const showLesson = async (lessonItem?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
-      if (lessonItem) {
-        lessonItem = deepClone(lessonItem);
-      } else {
-        lessonItem = initForm();
-      }
-      showModal.value.oneLesson = lessonItem;
-      showModal.value.visible = true;
-    };
-    async function update() {
-      const valid = true;
-      if (valid) {
-       const { course, teacher, type, stations, students, extend } = showModal.value.customer;
-       showModal.value.visible = false;
-       Message.success(`${isUndefined(course) ? '添加' : '修改'}成功`);
-       await newList();
-      }
-    }
-    const delectLesson = async (lessonItem: any) => {
-      Message.success('删除成功');
-    };
-    const delayLesson = async (lessonItem: any) => {
-      Message.success('成功延长一小时');
-    };
+    
     onMounted(useLoading(loading, async () => {
       await newList();
       await tabCell();
@@ -330,19 +205,10 @@ export default createComponent({
       weeks,
       digital2Chinese,
       lessons,
-      moreSetting,
       getColors,
-      readLesson,
-      readModel,
-      form,
-      showModal,
-      showLesson,
-      update,
-      delectLesson: useConfirm('确认删除？', useLoading(loading, delectLesson)),
-      delayLesson: useConfirm('确认延长一课时？', useLoading(loading, delayLesson)),
       isshow,
-      color,
       tabCell,
+      color,
     };
   },
 });
@@ -404,7 +270,7 @@ function initForm(): any {
           vertical-align: middle;
           .order {
             height: 2.5rem;
-            line-height: 2.5rem;
+            width: 5rem;
             text-align: center;
             vertical-align: middle;
           }
@@ -417,5 +283,9 @@ function initForm(): any {
         }
       }
     }
+  }
+  .shadow{
+    background-color: darkorchid;
+    box-shadow: 0 0 15px rgb(15, 15, 15);
   }
 </style>

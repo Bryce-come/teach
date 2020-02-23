@@ -152,6 +152,17 @@ const usingProcess = {
     parentCName: '实验室管理',
   },
 };
+const processMonitorDetail = {
+  path: '/laboratory/processMonitorDetail/:id',
+  name: 'processMonitorDetail',
+  component: () => import('../views/laboratory/process-monitor-detail.vue'),
+  meta: {
+    authDisabled: true,
+    CName: '操作台详情',
+    parentCName: '实验室管理',
+    parentName: 'usingProcess',
+  },
+};
 const usageAnalysis = {
   path: '/laboratory/usage-analysis',
   name: 'usageAnalysis',
@@ -372,6 +383,7 @@ const indexChildren = [
   monitor,
   monitorDetail,
   usingProcess,
+  processMonitorDetail,
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
