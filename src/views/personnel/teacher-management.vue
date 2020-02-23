@@ -89,7 +89,7 @@ export default {
     const loading = ref(false);
     const teacherUserList = ref<any>();
     const [keywords, filtered] = useSearch(teacherUserList, {
-      includeProps: ['username', 'role.name', 'name', 'phone' ,'extend.no','extend.address'],
+      includeProps: ['username', 'role.name', 'name', 'phone' , 'extend.no', 'extend.address'],
     });
     const remove = async (row: any) => {
         await UserDel({
@@ -132,8 +132,8 @@ export default {
         phone: addModal.value.teacherInfo.phone,
         pwd: addModal.value.teacherInfo.pwd,
         role: addModal.value.teacherInfo.role,
-        extend: {no:addModal.value.teacherInfo.extend.no,address: addModal.value.teacherInfo.extend.address,},
-        extendJson:'',
+        extend: {no: addModal.value.teacherInfo.extend.no, address: addModal.value.teacherInfo.extend.address},
+        extendJson: '',
       };
       result.extendJson = JSON.stringify(result.extend);
       if (!addModal.value.teacherInfo.id) {
