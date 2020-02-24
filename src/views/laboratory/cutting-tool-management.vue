@@ -14,10 +14,12 @@
       <el-table-column prop="fitDeviceType" label="适配设备类型"/>
       <el-table-column prop="quantity" label="库存"/>
       <el-table-column prop="extend.discardNum" label="报废数量"/>
-      <el-table-column label="操作" width="220px">
-        <el-button type="text" @click="storeRecordForm()">出入库登记</el-button>
-        <el-button type="text" style="margin-left:5px" @click="storeHistoryForm()">历史记录</el-button>
-        <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>
+      <el-table-column label="操作" width="220px" >
+        <div class="flex center little-space" slot-scope="{row}">
+          <el-button type="text" @click="storeRecordForm(row)">出入库登记</el-button>
+          <el-button type="text" style="margin-left:5px" @click="storeHistoryForm(row)">历史记录</el-button>
+          <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
+        </div>
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
@@ -33,7 +35,7 @@
               <el-input v-model="addModal.cutterInfo.no" ></el-input>
           </el-form-item>
           <el-form-item label="适配设备型号(多选)：" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">
-              <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="addModal.cutterInfo.fitDeviceType.id" multiple></lkt-select>
+              <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="addModal.cutterInfo.fitDeviceType" multiple></lkt-select>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -106,15 +108,16 @@ export default {
     const [keywords, cutterNameList] = useSearch(cutterList, {
       includeProps: ['no', 'name'],
     });
-    const remove = async (row: any) => {
-        Message.success('删除成功');
-    };
     const form1 = ref<ElForm|null>(null);
     const form2 = ref<ElForm|null>(null);
     const addModal = ref<any>({
       visible: false,
       cutterInfo: null,
       type: 'add',
+    });
+    const storeRecordModal = ref<any>({
+      visible: false,
+      storeInfo: null,
     });
     const cutterForm = async (data?: any) => {
       if (form1.value) { (form1.value as ElForm).clearValidate(); }
@@ -128,10 +131,31 @@ export default {
       addModal.value.cutterInfo = data;
       addModal.value.visible = true;
     };
-    const storeRecordModal = ref<any>({
-      visible: false,
-      storeInfo: null,
-    });
+    async function cutterInfoUpdate() {
+      const valid = await (form1.value as ElForm).validate();
+      console.log(valid);
+      console.log(addModal.value.cutterInfo);
+      if (valid) {
+        if (addModal.value.type === 'add') {
+          await ComponentStoreAdd({
+            name: addModal.value.cutterInfo.name,
+            no: addModal.value.cutterInfo.no,
+            dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
+          })
+        }
+        addModal.value.visible = false;
+        Message.success('添加成功');
+        cutterList.value =await ComponentStoreList();
+        console.log(cutterList);
+      }
+    }
+    const remove = async (row: any) => {
+      await ComponentStoreDel({
+        id: row.id,
+      });
+      cutterList.value =await ComponentStoreList();
+      Message.success('删除成功');
+    };
     const storeRecordForm = async (data: any) => {
       if (form1.value) { (form1.value as ElForm).clearValidate(); }
       if (data) {
@@ -150,23 +174,6 @@ export default {
     const storeHistoryForm = async () => {
       storeHistoryModal.value.visible = true;
     };
-    async function cutterInfoUpdate() {
-      const valid = await (form1.value as ElForm).validate();
-      console.log(valid);
-      console.log(addModal.value.cutterInfo);
-      if (valid) {
-        if (addModal.value.type === 'add') {
-          await ComponentStoreAdd({
-            name: addModal.value.cutterInfo.name,
-            no: addModal.value.cutterInfo.no,
-            fitDeviceType: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
-          })
-        }
-        addModal.value.visible = false;
-        Message.success('添加成功');
-        cutterList.value =await ComponentStoreList();
-      }
-    }
     async function storeRecordUpdate() {
       const valid = true;
       if (valid) {
