@@ -2,29 +2,26 @@
   <div class="flex column center login-wrapper" v-loading="loading">
     <div class="login-underlay">
       <div>
-        <img :src="loginLogo" style="height: 7vh;padding: 10px 0 0 20px" />
+        <img src="../assets/login_pic.png" >
       </div>
-      <div class="flex align-center" style="width: 100%; height: 70vh; margin-top: -4vh">
+      <el-card class="flex align-center">
         <div class="login-title flex column center">
-          <div class="title1">{{loginTitle1}}</div>
-          <div class="title2">{{loginTitle2}}</div>
+          <div class="title1">实验室管理系统</div>
         </div>
-        <el-form hide-required-asterisk class="login-body vivify popIn flex column around" ref="formRef" :model="form" :rules="rule">
-          <el-form-item prop="username">
-            <label>用户名</label>
-            <input v-model="form.username" autofocus autocomplete="off" placeholder="用户名" @keyup.enter="login($refs.formRef)" />
+        <el-form class="vivify popIn flex column around" ref="formRef" :model="form" :rules="rule">
+          <el-form-item prop="username" label="用户名：" >
+            <el-input v-model="form.username" autofocus placeholder="用户名" @keyup.enter="login($refs.formRef)" />
           </el-form-item>
-          <input class="login-fake-autocomplete" tabindex="-1" type="text">
-          <input class="login-fake-autocomplete" tabindex="-1" type="password">
-          <el-form-item prop="pwd">
-            <label>密 码</label>
-            <input type="password" autocomplete="off" v-model="form.pwd" placeholder="密  码" @keyup.enter="login($refs.formRef)" />
+<!--          <input class="login-fake-autocomplete" tabindex="-1" type="text">-->
+<!--          <input class="login-fake-autocomplete" tabindex="-1" type="password">-->
+          <el-form-item prop="pwd" label="密码：" >
+            <el-input type="password" v-model="form.pwd" placeholder="密  码" @keyup.enter="login($refs.formRef)" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="login($refs.formRef)">登录</el-button>
           </el-form-item>
         </el-form>
-      </div>
+      </el-card>
     </div>
     <div class="login-support">技术支持：杭州领克信息科技有限公司</div>
   </div>
@@ -99,25 +96,19 @@ export default createComponent({
 <style lang="scss" scoped>
 .login-wrapper {
   position: relative;
-  /*background-color: #334156;*/
-  background-color: #6499e8;
   width: 100vw;
   height: 100vh;
+  background: url("../assets/login_bg.jpg") no-repeat;
+  background-size: 100% 100%;
 }
 .login-underlay {
-  /*background-color: #4a5166;*/
-  background-color: rgba(48, 62, 67, 0.84);
-  border-radius: 10px;
-  box-shadow: 3px 3px 10px rgba($color: #000000, $alpha: .3);
-  width: 70vw;
-  height: 75vh;
+
 }
 .login-title{
-  color: #0297ff;
-  font-size: 3rem;
+  font-size: 1.6rem;
   text-align: center;
   margin-bottom: 25px;
-  font-weight: 400;
+  font-weight: 500;
   margin-left: 15%;
   margin-right: 15%;
   .title2 {
@@ -125,16 +116,14 @@ export default createComponent({
   }
 }
 .login-body {
-  background: #525050;
   padding: 5% 7%;
-  box-shadow: 3px 3px 10px rgba($color: #000, $alpha: .5);
-  border-radius: 10px;
+  //box-shadow: 3px 3px 10px rgba($color: #000, $alpha: .5);
+  //border-radius: 10px;
   width: 30vw;
   max-width: 30rem;
   height: 50vh;
   max-height: 40rem;
   border: none;
-  margin-right: -40%;
   font-size: 1rem;
   .login-fake-autocomplete {
     width: 0;
@@ -142,23 +131,7 @@ export default createComponent({
     border: none;
     position: absolute;
   }
-  .el-form-item {
-    label {
-      font-size: 1.05rem;
-      color: #fff;
-    }
-    input {
-      font-size: 1rem;
-      display: block;
-      letter-spacing: 1px;
-      width: 100%;
-      border: none;
-      border-bottom: 1px solid #fff;
-      line-height: 2rem;
-      background-color: transparent;
-      color: #fff;
-    }
-  }
+
   .el-button{
     width: 100%;
     font-weight: 600;
