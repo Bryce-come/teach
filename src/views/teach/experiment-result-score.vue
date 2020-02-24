@@ -49,7 +49,7 @@
           </div>
         </el-table-column>
         <el-table-column label="实验过程">
-          <el-button type="text">查看</el-button>
+          <el-button type="text" @click="$router.push({name:'monitorDetail'})">查看</el-button>
         </el-table-column>
         <el-table-column label="操作评分" prop="extend.score1"/>
         <el-table-column label="实验报告">
