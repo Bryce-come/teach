@@ -9,14 +9,14 @@
     @select="routeTo">
     <template v-for="(item, index) of storePageMenu">
       <el-menu-item
-        v-if="item.name && contains(item.privileges)"
+        v-if="item && item.name && contains(item.privileges)"
         :key="index"
         :index="item.name">
         <i :class="'iconfont ' + item.icon"/>
         <span class="title">{{ item.title }}</span>
       </el-menu-item>
       <el-submenu
-        v-if="!item.name && item.children && item.children.length > 0 && contains(item.privileges)"
+        v-if="item && !item.name && item.children && item.children.length > 0 && contains(item.privileges)"
         popper-class="my-el-menu-popper"
         :key="index"
         :index="item.title">

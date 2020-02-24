@@ -5,7 +5,7 @@
           <el-button type="danger" @click="off()">下课</el-button>
       </div>
       <monitor></monitor> 
-       <kit-dialog-simple
+      <kit-dialog-simple
       :modal="delayMode"
       :confirm="confirm"
       width="500px">
