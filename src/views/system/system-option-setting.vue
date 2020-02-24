@@ -92,7 +92,7 @@
 <script lang="ts">
 import { ref, onMounted } from '@vue/composition-api';
 import { useLoading} from 'web-toolkit/src/service';
-import { SettingGet, SettingSet } from "@/dao/settingDao";
+import { SettingGet, SettingSet } from '@/dao/settingDao';
 import { Message } from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 
@@ -101,44 +101,44 @@ export default {
     const loading = ref(false);
     const form2 = ref<ElForm|null>(null);
     const modal = ref<any>({
-      termsDt:[null,null]
+      termsDt: [null, null],
     });
-    async function query(){
-      let m = await SettingGet({});
-      if(m.terms && m.terms.length===2){
-        m.termsDt = [new Date(m.terms[0]), new Date(m.terms[1])]
+    async function query() {
+      const m = await SettingGet({});
+      if (m.terms && m.terms.length === 2) {
+        m.termsDt = [new Date(m.terms[0]), new Date(m.terms[1])];
       }
       modal.value = m;
     }
     // 直接传要修改的参数
-    async function update(params:any){
+    async function update(params: any) {
       await SettingSet(params);
-      Message.success("设置成功");
+      Message.success('设置成功');
     }
-    async function updateTerms(){
+    async function updateTerms() {
       const valid = await (form2.value as ElForm).validate();
-      if(!valid) return ;
-      let params = { lessonNum: modal.value.lessonNum };
-      let flagTime = undefined;
-      for(let i=1;i<=modal.value.lessonNum;i++){
-        modal.value['lesson'+i][0].setSeconds(0);
-        modal.value['lesson'+i][1].setSeconds(0);
-        (params as any)['lesson'+i] = [modal.value['lesson'+i][0].getTime(), modal.value['lesson'+i][1].getTime()];
-        if(flagTime && modal.value['lesson'+i][0].getTime()<flagTime){
-          Message.error("课时时间存在冲突");
+      if (!valid) { return ; }
+      const params = { lessonNum: modal.value.lessonNum };
+      let flagTime;
+      for (let i = 1; i <= modal.value.lessonNum; i++) {
+        modal.value['lesson' + i][0].setSeconds(0);
+        modal.value['lesson' + i][1].setSeconds(0);
+        (params as any)['lesson' + i] = [modal.value['lesson' + i][0].getTime(), modal.value['lesson' + i][1].getTime()];
+        if (flagTime && modal.value['lesson' + i][0].getTime() < flagTime) {
+          Message.error('课时时间存在冲突');
           return ;
         }
-        flagTime = modal.value['lesson'+i][1].getTime();
+        flagTime = modal.value['lesson' + i][1].getTime();
       }
       await update(params);
     }
-    onMounted(useLoading(loading, async ()=>{
+    onMounted(useLoading(loading, async () => {
       await query();
     }));
     return{
       loading, modal, form2,
       update: useLoading(loading, update),
-      updateTerms: useLoading(loading, updateTerms)
+      updateTerms: useLoading(loading, updateTerms),
     };
   },
 };
