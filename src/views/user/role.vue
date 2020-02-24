@@ -2,7 +2,6 @@
   <div class="page" v-loading="loading">
     <div class="flex between align-center little-space">
       <el-button type="success" @click="showForm()">添加角色</el-button>
-<!--      <el-input class="search-bar" placeholder="请输入搜索内容" prefix-icon="el-icon-search" clearable v-model="keywords"/>-->
     </div>
     <lkt-table :data="filtered" stripe>
       <el-table-column prop="name" label="角色名称" width="150"/>
@@ -12,8 +11,8 @@
           {{ chinesize(row.privileges).join('，') }}
         </span>
       </el-table-column>
-      <el-table-column width="200" label="操作" align="center">
-        <template slot-scope="{ row }" >
+      <el-table-column width="200" label="操作" align="left">
+        <template slot-scope="{ row }" class="flex">
           <el-button style="margin-right: 10px" type="primary" size="mini" @click="showForm(row)">修改</el-button>
           <el-button v-if="!row.extend || !row.extend.immutable" type="danger" size="mini" @click="deleteRole(row)">删除</el-button>
         </template>

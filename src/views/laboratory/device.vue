@@ -17,7 +17,7 @@
       :data="deviceList"
       style="width: 100%">
       <el-table-column type="expand">
-        <div slot-scope="props" class="flex startl">
+        <div slot-scope="props" class="flex around">
           <el-form label-width="100px">
             <el-form-item label="设备购入价格:">{{props.row.extend.price}}</el-form-item>
             <el-form-item label="厂商联系人员:">{{props.row.extend.producerContact}}</el-form-item>

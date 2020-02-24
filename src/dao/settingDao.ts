@@ -14,7 +14,9 @@ export async function SettingGet(params: any) {
  * RequestParam String json
  */
 export async function SettingSet(params: any) {
-  await postService('/rest/setting/set', params);
+  await postService('/rest/setting/set', {
+    json: JSON.stringify(params),
+  });
 }
 
 /**
