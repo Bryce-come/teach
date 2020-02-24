@@ -1,25 +1,21 @@
 <template>
   <div class="flex column center login-wrapper" v-loading="loading">
-    <div class="login-underlay">
-      <div>
+    <div class="login-underlay flex center">
+      <div class="left flex center">
         <img src="../assets/login_pic.png" >
       </div>
-      <el-card class="flex align-center">
+      <el-card class="flex column center vivify popIn">
         <div class="login-title flex column center">
           <div class="title1">实验室管理系统</div>
         </div>
-        <el-form class="vivify popIn flex column around" ref="formRef" :model="form" :rules="rule">
+        <el-form class="flex column around" ref="formRef" :model="form" :rules="rule">
           <el-form-item prop="username" label="用户名：" >
-            <el-input v-model="form.username" autofocus placeholder="用户名" @keyup.enter="login($refs.formRef)" />
+            <el-input v-model="form.username" autofocus placeholder="用户名" @keyup.enter.native="login($refs.formRef)" />
           </el-form-item>
-<!--          <input class="login-fake-autocomplete" tabindex="-1" type="text">-->
-<!--          <input class="login-fake-autocomplete" tabindex="-1" type="password">-->
           <el-form-item prop="pwd" label="密码：" >
-            <el-input type="password" v-model="form.pwd" placeholder="密  码" @keyup.enter="login($refs.formRef)" />
+            <el-input type="password" v-model="form.pwd" placeholder="密  码" @keyup.enter.native="login($refs.formRef)" />
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="login($refs.formRef)">登录</el-button>
-          </el-form-item>
+          <el-button style="width: 100%;margin-top: 1rem" type="primary" @click="login($refs.formRef)">登录</el-button>
         </el-form>
       </el-card>
     </div>
@@ -95,14 +91,24 @@ export default createComponent({
 </script>
 <style lang="scss" scoped>
 .login-wrapper {
-  position: relative;
   width: 100vw;
   height: 100vh;
   background: url("../assets/login_bg.jpg") no-repeat;
   background-size: 100% 100%;
 }
 .login-underlay {
-
+  height: 90vh;
+  .left{
+    img{
+      width: 32vw;
+    }
+  }
+  .el-card{
+    width: 25rem;
+    height: 28rem;
+    padding-bottom: 1rem;
+    margin-left: 3rem;
+  }
 }
 .login-title{
   font-size: 1.6rem;
@@ -115,35 +121,12 @@ export default createComponent({
     font-size: 2.5rem;
   }
 }
-.login-body {
-  padding: 5% 7%;
-  //box-shadow: 3px 3px 10px rgba($color: #000, $alpha: .5);
-  //border-radius: 10px;
-  width: 30vw;
-  max-width: 30rem;
-  height: 50vh;
-  max-height: 40rem;
-  border: none;
-  font-size: 1rem;
-  .login-fake-autocomplete {
-    width: 0;
-    height: 0;
-    border: none;
-    position: absolute;
-  }
-
-  .el-button{
-    width: 100%;
-    font-weight: 600;
-  }
-}
 .login-support{
   color: #fff;
   width: 100%;
-  position: absolute;
-  bottom: 10px;
+  float: bottom;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   text-align: center;
 }
 </style>
