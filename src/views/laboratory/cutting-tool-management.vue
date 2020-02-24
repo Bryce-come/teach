@@ -1,8 +1,8 @@
 <template>
-  <div v-loading="loading" calss="cutting-tool-management">    
+  <div v-loading="loading" calss="cutting-tool-management">
     <div style="margin-bottom:10px">
       <el-button type="primary" @click="cutterForm()">增加刀具信息</el-button>
-    </div>  
+    </div>
     <div class="flex end" style="margin-bottom: 5px;margin-top: -46px">
       <el-input slot="search" class="search-bar" v-model="keywords" placeholder="按关键字搜索" clearable/>
     </div>
@@ -25,7 +25,7 @@
       :confirm="cutterInfoUpdate"
       width="500px">
         <div slot="title">刀具信息登记</div>
-        <el-form v-if="addModal.cutterInfo" ref="form" :model="addModal.cutterInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
+        <el-form v-if="addModal.cutterInfo" ref="form1" :model="addModal.cutterInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
           <el-form-item label="刀具名称：" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
             <el-input v-model="addModal.cutterInfo.name"></el-input>
           </el-form-item>
@@ -42,7 +42,7 @@
       :confirm="storeRecordUpdate"
       width="700px">
         <div slot="title">出入库登记</div>
-        <el-form v-if="storeRecordModal.storeInfo" ref="form" :model="storeRecordModal.storeInfo" label-width="140px" label-position="left" style="width: 580px;margin: 0 auto">
+        <el-form v-if="storeRecordModal.storeInfo" ref="form2" :model="storeRecordModal.storeInfo" label-width="140px" label-position="left" style="width: 580px;margin: 0 auto">
           <el-form-item label="出入库类型：" prop="type" :rules="{ required: true, message: '请选择出入库类型'}">
             <lkt-select v-model="storeRecordModal.storeInfo.type"></lkt-select>
           </el-form-item>
@@ -75,7 +75,7 @@
         <div slot="title">历史记录</div>
         <div style="display:flex;justify-content:flex-end">
           <el-input style="width:300px" placeholder="请输入关键字搜索" v-model="filterText"></el-input>
-        </div>     
+        </div>
         <lkt-table
           :data="deviceComponentStoreRecord"
           style="width:100%">
@@ -98,25 +98,26 @@ import { DeviceTypeList,} from '@/dao/deviceDao';
 export default {
   setup() {
     const loading = ref(false);
-    const cutterList = ref<any>();
+    const cutterList = ref<any>([]);
     const deviceTypeList = ref<any>();
     const deviceComponentStore = ref<any>();
     const deviceComponentStoreRecord = ref<any>();
     const filterText = ref<string|null>(null);
     const [keywords, cutterNameList] = useSearch(cutterList, {
-      includeProps: ['no', 'fitDeviceType', 'name', 'quantity' ,'extend.discardNum'],
+      includeProps: ['no', 'name'],
     });
     const remove = async (row: any) => {
         Message.success('删除成功');
     };
-    const form = ref<ElForm|null>(null);
+    const form1 = ref<ElForm|null>(null);
+    const form2 = ref<ElForm|null>(null);
     const addModal = ref<any>({
       visible: false,
       cutterInfo: null,
       type: 'add',
     });
     const cutterForm = async (data?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (form1.value) { (form1.value as ElForm).clearValidate(); }
       if (data) {
         data = deepClone(data);
         addModal.value.type = 'update';
@@ -132,7 +133,7 @@ export default {
       storeInfo: null,
     });
     const storeRecordForm = async (data: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (form1.value) { (form1.value as ElForm).clearValidate(); }
       if (data) {
         data = deepClone(data);
 
@@ -150,7 +151,7 @@ export default {
       storeHistoryModal.value.visible = true;
     };
     async function cutterInfoUpdate() {
-      const valid = await (form.value as ElForm).validate();
+      const valid = await (form1.value as ElForm).validate();
       console.log(valid);
       console.log(addModal.value.cutterInfo);
       if (valid) {
@@ -198,7 +199,7 @@ export default {
        deviceTypeList.value = await DeviceTypeList();
     }));
     return{
-      loading, cutterNameList, keywords, cutterList, form,
+      loading, cutterNameList, keywords, cutterList, form1, form2,
       query, deviceComponentStore,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       addModal, cutterForm, deviceTypeList,
