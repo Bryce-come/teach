@@ -81,7 +81,7 @@ export default {
     }));
     return {
       loading, courseList, query,
-      download: useConfirm('确认下载？',useLoading(loading, download)),
+      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
 };

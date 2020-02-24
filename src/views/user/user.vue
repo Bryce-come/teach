@@ -15,9 +15,9 @@
           <el-tag v-if="row.off === 1" type="danger">冻结</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" min-width="160">
-        <div class="flex center little-space wrap" slot-scope="{ row }">
-          <el-button type="primary" class="align" size="mini" @click="showForm(row)">修改</el-button>
+      <el-table-column label="操作" align="left" width="240">
+        <div class="flex wrap button-in-row" slot-scope="{ row }">
+          <el-button type="primary" size="mini" @click="showForm(row)">修改</el-button>
           <el-button
             v-if="storeUserInfo.user.id !== row.id"
             size="mini" :type="row.off === 0 ? 'warning' : 'success'"
@@ -67,6 +67,7 @@ import {IUser} from '@/types/beans';
 import {urlMap} from '@/config';
 import {ElForm} from 'element-ui/types/form';
 import {AdminUserList, RoleList, UserDel} from '@/dao/userDao';
+
 export default createComponent({
   name: 'User',
   setup() {

@@ -95,7 +95,7 @@ export default {
     };
     const download = async () => {
       Message.success('下载成功');
-    }; 
+    };
     onMounted(useLoading(loading, async () => {
       await query();
     }));

@@ -125,7 +125,7 @@ import { useSearch, useConfirm, useLoading } from 'web-toolkit/src/service';
 import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {StudentList, UserAdd,RoleList,UserDel,UserUpdate,ClassList4Select,ClassList,ClassUpdate,ClassDel} from '@/dao/userDao';
+import {StudentList, UserAdd, RoleList, UserDel, UserUpdate, ClassList4Select, ClassList, ClassUpdate, ClassDel} from '@/dao/userDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -148,13 +148,13 @@ export default {
         });
         await queryStudentList();
     };
-    const removeClass = async (row:any)=>{
+    const removeClass = async (row: any) => {
         await ClassDel({
-          id:row.id
-        })
-        console.log(row.id)
+          id: row.id,
+        });
+        console.log(row.id);
         await queryClassList();
-    }
+    };
     watch(filterText, () => {
       if (tree.value) { (tree.value as ElTree<any, any>).filter(filterText.value); }
     });
@@ -193,7 +193,7 @@ export default {
       visible: false,
       addClazInfo: '',
     });
-    function showFormB(row:any){
+    function showFormB(row: any) {
     //   addClaz.value.clazInfo = row ? deepClone(row) :initClazForm();
     //   addClaz.value.visible = true;
     //   if (clazForm.value) { (clazForm.value as ElForm).clearValidate(); }
@@ -206,11 +206,11 @@ export default {
     //   await ClassUpdate(result);
         addClazFlag.value.visible = !addClazFlag.value.visible;
     }
-    async function addClaz(row: any){
-      if(addClazFlag.value.addClazInfo!=''){
-        const result={
-          name:addClazFlag.value.addClazInfo
-        }
+    async function addClaz(row: any) {
+      if (addClazFlag.value.addClazInfo != '') {
+        const result = {
+          name: addClazFlag.value.addClazInfo,
+        };
         // const i=await ClassList();
         // const iFlag =  ref<any>({
         //   visible: true
@@ -223,11 +223,10 @@ export default {
         // }
         // console.log(i)
         // console.log(iFlag)
-        await ClassUpdate(result)
+        await ClassUpdate(result);
         addClazFlag.value.visible = !addClazFlag.value.visible;
         await queryClassList();
-      }
-      else{
+      } else {
         addClazFlag.value.visible = !addClazFlag.value.visible;
       }
     }
@@ -273,28 +272,28 @@ export default {
         const firstList = await StudentList();
         studentUserList.value  = firstList;
     };
-    async function queryClassList(){
-      const aList=await ClassList();
-      list.value=[];
-      blist.value=[];
-      list.value.children=[];
-      blist.value.children=[];
-      for(let i=0;i<aList.length;i++){
-        list.value[i]={id:aList[i].id,name:aList[i].name,children:[...aList[i].groups]}
-        blist.value[i]={value:aList[i].name,label:aList[i].name,children:[...aList[i].groups]}
+    async function queryClassList() {
+      const aList = await ClassList();
+      list.value = [];
+      blist.value = [];
+      list.value.children = [];
+      blist.value.children = [];
+      for (let i = 0; i < aList.length; i++) {
+        list.value[i] = {id: aList[i].id, name: aList[i].name, children: [...aList[i].groups]};
+        blist.value[i] = {value: aList[i].name, label: aList[i].name, children: [...aList[i].groups]};
       }
-      console.log(aList)
-      console.log(list)
+      console.log(aList);
+      console.log(list);
     }
-    function armasd(row:any){
-      modal.value.studentInfo.extend.claszGroup='';
+    function armasd(row: any) {
+      modal.value.studentInfo.extend.claszGroup = '';
       const midList = ref<any>();
-      midList.value=[]
-      for(let i=0;i<classList.value.length;i++){
-        midList.value[i]=classList.value[i].name
+      midList.value = [];
+      for (let i = 0; i < classList.value.length; i++) {
+        midList.value[i] = classList.value[i].name;
       }
-      groupList.value = classList.value[row-1].groups
-      return groupList
+      groupList.value = classList.value[row - 1].groups;
+      return groupList;
     }
     onMounted(useLoading(loading, async () => {
       classList.value = await ClassList();
@@ -302,16 +301,16 @@ export default {
       await queryClassList();
     }));
     return{
-      loading, filterText, list, tree, props, studentUserList,filtered,keywords,blist,addClazFlag,
-      storeUserInfo,removeClass:useConfirm('确认删除？', useLoading(loading, removeClass)),
+      loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag,
+      storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
       armasd,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
-      queryStudentList,queryClassList,
-      modal, form, showForm,addClaz,
+      queryStudentList, queryClassList,
+      modal, form, showForm, addClaz,
       showFormB,
       update: useLoading(loading, update),
-      validator,classList,groupList,ctogList,
+      validator, classList, groupList, ctogList,
     };
     return{
 
