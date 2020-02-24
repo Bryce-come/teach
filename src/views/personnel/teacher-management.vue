@@ -29,7 +29,7 @@
           <el-form-item label="登录用户名" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
               <el-input v-model="addModal.teacherInfo.username"></el-input>
           </el-form-item>
-          <el-form-item label="姓名" prop="name" :rules="{ required: true, message: '请输入姓名'}">
+          <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
               <el-input v-model="addModal.teacherInfo.name"></el-input>
           </el-form-item>
           <el-form-item :label="!addModal.teacherInfo.id ? '密码：' : '修改密码：'" prop="pwd" :rules="[{ required: !addModal.teacherInfo.id, message: '请填写密码' }, { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}]">
@@ -38,7 +38,7 @@
           <el-form-item label="确认密码：" prop="pwdCheck" :rules="{ required: !addModal.teacherInfo.id, validator: validator }">
             <el-input clearable v-model="addModal.teacherInfo.pwdCheck" type="password" />
           </el-form-item>
-          <el-form-item label="老师类型" prop="role" :rules="{ required: true, message: '请选择类型'}">
+          <el-form-item label="老师类型：" prop="role" :rules="{ required: true, message: '请选择类型'}">
               <el-select v-model="addModal.teacherInfo.role">
                 <el-option
                   v-for="item in options"
@@ -54,7 +54,7 @@
           <el-form-item label="邮箱地址" prop="extend.address">
               <el-input v-model="addModal.teacherInfo.extend.address"></el-input>
           </el-form-item>
-          <el-form-item label="联系电话" prop="phone">
+          <el-form-item label="联系电话：" prop="phone">
               <el-input v-model="addModal.teacherInfo.phone"></el-input>
           </el-form-item>
         </el-form>
@@ -89,7 +89,7 @@ export default {
     const loading = ref(false);
     const teacherUserList = ref<any>();
     const [keywords, filtered] = useSearch(teacherUserList, {
-      includeProps: ['username', 'role.name', 'name', 'phone' ,'extend.no','extend.address'],
+      includeProps: ['username', 'role.name', 'name', 'phone' , 'extend.no', 'extend.address'],
     });
     const remove = async (row: any) => {
         await UserDel({
@@ -132,8 +132,8 @@ export default {
         phone: addModal.value.teacherInfo.phone,
         pwd: addModal.value.teacherInfo.pwd,
         role: addModal.value.teacherInfo.role,
-        extend: {no:addModal.value.teacherInfo.extend.no,address: addModal.value.teacherInfo.extend.address,},
-        extendJson:'',
+        extend: {no: addModal.value.teacherInfo.extend.no, address: addModal.value.teacherInfo.extend.address},
+        extendJson: '',
       };
       result.extendJson = JSON.stringify(result.extend);
       if (!addModal.value.teacherInfo.id) {

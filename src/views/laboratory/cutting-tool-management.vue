@@ -1,5 +1,8 @@
 <template>
-  <div v-loading="loading" calss="cutting-tool-management">
+  <div v-loading="loading" calss="cutting-tool-management">    
+    <div style="margin-bottom:10px">
+      <el-button type="primary" @click="cutterForm()">增加刀具信息</el-button>
+    </div>  
     <el-form :inline="true" style="display:flex;justify-content:flex-start;flex-wrap:wrap">
       <el-form-item label="刀具名称:" label-width="80px">
         <lkt-select :list="cutterNameList" value-key="name" v-model="cutterName" multiple :clearable="false" placeholder="请选择刀具名称"/>
@@ -10,11 +13,6 @@
       <el-form-item>
         <el-button type="primary">查询</el-button>
         <el-button style="margin-left:10px">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <el-form>
-      <el-form-item>
-        <el-button type="primary" @click="cutterForm()">增加刀具信息</el-button>
       </el-form-item>
     </el-form>
     <lkt-table
@@ -37,13 +35,13 @@
       width="700px">
         <div slot="title">刀具信息登记</div>
         <el-form v-if="addModal.cutterInfo" ref="form" :model="addModal.cutterInfo" label-width="160px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="刀具名称" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
+          <el-form-item label="刀具名称：" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
             <el-input v-model="addModal.cutterInfo.name"></el-input>
           </el-form-item>
-          <el-form-item label="刀具型号" prop="no" :rules="{ required: true, message: '请选择刀具型号'}">
+          <el-form-item label="刀具型号：" prop="no" :rules="{ required: true, message: '请选择刀具型号'}">
               <lkt-select v-model="addModal.cutterInfo.no"></lkt-select>
           </el-form-item>
-          <el-form-item label="适配设备型号(多选)" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">
+          <el-form-item label="适配设备型号(多选)：" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">
               <lkt-select v-model="addModal.cutterInfo.fitDeviceType" multiple></lkt-select>
           </el-form-item>
         </el-form>
@@ -54,37 +52,39 @@
       width="700px">
         <div slot="title">出入库登记</div>
         <el-form v-if="storeRecordModal.storeInfo" ref="form" :model="storeRecordModal.storeInfo" label-width="140px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="出入库类型" prop="type" :rules="{ required: true, message: '请选择出入库类型'}">
+          <el-form-item label="出入库类型：" prop="type" :rules="{ required: true, message: '请选择出入库类型'}">
             <lkt-select v-model="storeRecordModal.storeInfo.type"></lkt-select>
           </el-form-item>
-          <el-form-item label="批次" prop="extend.batchNo" :rules="{ required: true, message: '请输入批次'}">
+          <el-form-item label="批次：" prop="extend.batchNo" :rules="{ required: true, message: '请输入批次'}">
             <el-input v-model="storeRecordModal.storeInfo.extend.batchNo"></el-input>
           </el-form-item>
-          <el-form-item label="数量" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+          <el-form-item label="数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
             <el-input v-model="storeRecordModal.storeInfo.quantity"></el-input>
           </el-form-item>
-          <el-form-item label="厂商" prop="extend.company" :rules="{ required: true, message: '请输入厂商名称'}">
+          <el-form-item label="厂商：" prop="extend.company" :rules="{ required: true, message: '请输入厂商名称'}">
             <el-input v-model="storeRecordModal.storeInfo.company"></el-input>
           </el-form-item>
-          <el-form-item label="供货商" prop="extend.supplier" :rules="{ required: true, message: '请输入供货商名称'}">
+          <el-form-item label="供货商：" prop="extend.supplier">
             <el-input v-model="storeRecordModal.storeInfo.extend.supplier"></el-input>
           </el-form-item>
-          <el-form-item label="供货商联系方式" prop="extend.supplierTel" :rules="{ required: true, message: '请输入供货商联系方式'}">
+          <el-form-item label="供货商联系方式：" prop="extend.supplierTel">
             <el-input v-model="storeRecordModal.storeInfo.extend.supplierTel"></el-input>
           </el-form-item>
-          <el-form-item label="购入时间" prop="extend.buyDt" :rules="{ required: true, message: '请选择购入时间'}">
+          <el-form-item label="购入时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择购入时间'}">
             <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
           </el-form-item>
-          <el-form-item label="保管人" prop="extend.keeper" :rules="{ required: true, message: '请输入保管人姓名'}">
+          <el-form-item label="保管人：" prop="extend.keeper">
             <el-input v-model="storeRecordModal.storeInfo.extend.keeper"></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
       :modal="storeHistoryModal"
-      width="1300px">
+      width="800px">
         <div slot="title">历史记录</div>
-        <el-input style="width:100%" placeholder="请输入关键字搜索" v-model="filterText"></el-input>
+        <div style="display:flex;justify-content:flex-end">
+          <el-input style="width:300px" placeholder="请输入关键字搜索" v-model="filterText"></el-input>
+        </div>     
         <lkt-table
           :data="deviceComponentStoreRecord"
           style="width:100%">

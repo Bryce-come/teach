@@ -11,8 +11,10 @@
       <el-table-column label="大小"/>
       <el-table-column label="上传时间" prop="createDt"/>
       <el-table-column label="操作" width="120px">
-        <el-button type="text">下载</el-button>
-        <el-button type="danger" size="mini" style="margin-left:10px" @click="remove()">删除</el-button>
+        <div slot-scope="{row}">
+          <el-button type="text" @click="download(row)">下载</el-button>
+          <el-button type="danger" size="mini" style="margin-left:10px" @click="remove(row)">删除</el-button>
+        </div>
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
@@ -52,6 +54,9 @@ export default {
       Message.success('添加成功');
       await query();
     }
+    const download = async () => {
+      Message.success('下载成功');
+    };
     const query = async () => {
       experimentReportTemplateList.value = [
         {id: '0', name: '自动化操作实验报告模板', path: '', createDt: ''},
@@ -69,6 +74,7 @@ export default {
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       modal, showForm,
       update: useLoading(loading, update),
+      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
 };

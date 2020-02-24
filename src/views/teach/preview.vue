@@ -1,12 +1,15 @@
 <template>
   <div v-loading="loading" class="preview">
     <div style="margin: 10px 0" class="block_background">
-      <div class="block_title flex start">未来两天共有实验课程<span>{{4}}</span>门</div>
+      <div class="block_title flex start"><i class="iconfont icon-message4"></i>未来两天共有实验课程<span>{{4}}</span>门</div>
       <div class="wrapper">
-        <el-button type="text">{{'自动化原理与操作'}}：{{'2月10日 周一 14：30~15：30'}}</el-button>
-        <el-button type="text">{{'自动化原理与操作'}}：{{'2月10日 周一 14：30~15：30'}}</el-button>
-        <el-button type="text">{{'自动化原理与操作'}}：{{'2月10日 周一 14：30~15：30'}}</el-button>
-        <el-button type="text">{{'自动化原理与操作'}}：{{'2月10日 周一 14：30~15：30'}}</el-button>
+        <div class="wrapper-content" v-for="(item, id) in courseList" :key="id">
+          <div style="margin-left:50px">
+            <i class="iconfont icon-manage2 i"></i>
+            <span style="font-weight:bold;font-size:1.2rem">{{item.name + '：'}}</span>
+            <span>{{item.time}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div style="margin: 10px 0" class="block_background">
@@ -21,6 +24,11 @@
             <el-form-item label="操作台：">{{'操作台02'}}</el-form-item>
           </el-form>
           <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
+      </div>
+      <div style="margin-top:20px">
+        <div style="font-weight:bold;margin: 10px">实验名称</div>
+        <div style="margin:20px">自动化操作</div>
+        <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
       <div style="margin-top:20px">
         <div style="font-weight:bold;margin: 10px">实验目的</div>
@@ -44,18 +52,36 @@
       </div>
       <div style="margin-top:20px">
         <div style="font-weight:bold;margin: 10px">附件</div>
-        <el-button type="text" style="margin:20px">关键代码.nv</el-button>
+        <el-button type="text" style="margin:20px" @click="download()">关键代码.nv</el-button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import {ref, Ref, onMounted} from '@vue/composition-api';
+import { useLoading, useConfirm } from 'web-toolkit/src/service';
+import { Message } from 'element-ui';
 export default {
   setup() {
     const loading = ref(false);
+    const courseList = ref<any>();
+    const query = async () => {
+      courseList.value = [
+        {id: 0, name: '自动化原理与操作', time: '2月10日 周一 13：30~14：30'},
+        {id: 1, name: '自动化原理与操作', time: '2月11日 周二 13：30~14：30'},
+        {id: 2, name: '自动化原理与操作', time: '2月12日 周三 13：30~14：30'},
+        {id: 3, name: '自动化原理与操作', time: '2月13日 周四 13：30~14：30'},
+      ];
+    };
+    const download = async () => {
+      Message.success('下载成功');
+    };
+    onMounted(useLoading(loading, async () => {
+      await query();
+    }));
     return {
-      loading,
+      loading, courseList, query,
+      download: useConfirm('确认下载？',useLoading(loading, download)),
     };
   },
 };
@@ -68,10 +94,13 @@ export default {
   justify-content: space-between;
   // flex-direction: row;
   flex-wrap: wrap;
-  // margin: 10px;
+  margin: 10px;
 }
 .wrapper-content{
-  // width: 50%;
+  width: 50%;
   margin-bottom: 20px;
+}
+.i{
+  font-size: 1.2rem!important
 }
 </style>

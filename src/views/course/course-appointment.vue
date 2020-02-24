@@ -1,24 +1,24 @@
 <template>
   <div  v-loading="loading">
     <div class="flex center">
-      <course-list></course-list>
+      <noaction-course-list></noaction-course-list>
     </div>
     <div style="width:95%; margin:10px auto">
       <lkt-table :data="appointRecords">
-        <el-table-column label="预约人" prop="applicant.name" sortable ></el-table-column>
-        <el-table-column label="角色" prop="applicant.role" sortable ></el-table-column>
-        <el-table-column label="申请时间" prop="createDt" sortable ></el-table-column>
-        <el-table-column label="类型" sortable >
+        <el-table-column fixed="left" width="100" label="预约人" prop="applicant.name" sortable ></el-table-column>
+        <el-table-column label="角色" width="100" prop="applicant.role" sortable ></el-table-column>
+        <el-table-column label="申请时间" width="100" prop="createDt" sortable ></el-table-column>
+        <el-table-column label="类型" width="100" sortable >
           <span slot-scope="{ row }">
             {{(row.type===1? '授课预约':'')+(row.type===2? '个人预约':'')}}
           </span>
         </el-table-column>
-        <el-table-column label="预约时间" prop="start" sortable ></el-table-column>
-        <el-table-column label="课程" prop="course.name" sortable ></el-table-column>
-        <el-table-column label="实验项目" prop="course.programList" sortable ></el-table-column>    
-        <el-table-column label="指定教师" prop="teacher.name" sortable></el-table-column>
-        <el-table-column label="参与人" prop="students" sortable></el-table-column>
-        <el-table-column label="操作" align="center" sortable min-width="150">
+        <el-table-column label="预约时间" width="120" prop="start" sortable ></el-table-column>
+        <el-table-column label="课程" width="120" prop="course.name" sortable ></el-table-column>
+        <el-table-column label="实验项目" width="120" prop="course.programList" sortable ></el-table-column>    
+        <el-table-column label="指定教师" width="100" prop="teacher.name" sortable></el-table-column>
+        <el-table-column label="参与人" width="100" prop="students" sortable></el-table-column>
+        <el-table-column label="操作" fixed="right" align="center" sortable min-width="150">
           <div class="flex center little-space" slot-scope="{ row }" >
           <el-button type="primary" size="mini" @click="agree(row)">同意</el-button>
           <el-button type="danger" size="mini" @click="remove(row)">拒绝</el-button>
@@ -32,9 +32,9 @@
 import { ref, Ref, onMounted, createComponent } from '@vue/composition-api';
 import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
-import courseList from '../../components/courseList.vue';
+import noactionCourseList from '../../components/noaction-courstList.vue';
 export default createComponent({
-  components: { courseList },
+  components: { noactionCourseList },
   setup() {
     const loading = ref(false);
     const appointRecords = ref<any>();
@@ -90,7 +90,7 @@ export default createComponent({
     loading,
     query,
     agree,
-    remove: useConfirm('确认删除？', useLoading(loading, remove)),
+    remove: useConfirm('确认拒绝？', useLoading(loading, remove)),
     };
   },
 });

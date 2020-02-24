@@ -2,9 +2,60 @@
   <div v-loading="loading">
     <el-tabs type="card">
       <el-tab-pane label="按课时查询">
-          <course-list></course-list>
-          <div class="total">
-            <div style="margin:10px"><h3>本周总体情况</h3></div>
+        <div class="flex center" style="margin: 5px 10px">
+            <div class="flex align-center" style="margin-right: 10px">
+              <lkt-date-picker v-model="oneDay"/>
+              <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>        
+            </div>
+          </div>
+          <div class="class-table">
+            <div class="flex center">
+              <div style="margin: 10px">
+                <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(142, 208, 214)"></span>
+                <span>计划内课程</span>
+                <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(233, 233, 224)"></span>
+                <span>已预约课程</span>
+                <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(248, 244, 8)"></span>
+                <span>新预约课程</span>
+              </div>
+            </div>
+            <div class="flex end" style="margin-right: 10%;margin-bottom:10px">
+                <el-button-group>
+                  <el-button type="primary" size="small" icon="el-icon-arrow-left">上一周</el-button>
+                  <el-button type="primary" size="small">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+                </el-button-group>
+              </div>
+            <table id="tabs">
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th v-for="(weekNum, weekIndex) in weeks.length" :key="weekIndex">
+                  {{'周' + digital2Chinese(weekIndex, 'week')}}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item,i) in lessons" :key="i">
+                  <th>
+                    <div>第<span>{{i+1}}</span>节课</div>
+                  </th>
+                  <td v-for="(lessonItem, j) in item.lesson" :key="j" 
+                      :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
+                      :style="{'background-color': lessonItem != ''? setColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
+                      >
+                        <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
+                        <div style="width:100%;height:100%">
+                          <div>
+                            {{lessonItem?lessonItem.course.name:''}}
+                          </div>
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="total" v-if="showModal">
+            <div style="margin:10px"><h3>本课程总体情况</h3></div>
             <div class="flex align-center" style="width:100%">
                 <div class="flex align-center watch3">
                     <div style="font-weight: 700;padding: 5px 40px">总课时：</div>
@@ -25,7 +76,7 @@
             <div style="margin:10px"><h3>操作台总览</h3></div>
                 <div class="flex center wrap">
                 <div class="device-card"
-                    @click="$router.push({name:'monitorDetail'})"
+                    @click="$router.push({name:'processMonitorDetail'})"
                     v-for="(item,i) in stations" :key="i">
                     <div class="flex align-center">
                     <div class="device-img">
@@ -46,12 +97,11 @@
       </el-tab-pane>
       <el-tab-pane label="按日期查询">
         <div class="total">
-            <div class="flex align-center" style="margin-right: 10px">
-                <span>请输入要查询的日期：</span>
-                <lkt-date-picker v-model="oneDay" type="datetime" format="yyyy-MM-dd HH:mm" :clearable="false"/>
-                <el-button style="margin-left: 10px" type="primary" @click="list()">查询</el-button>        
-            </div>
-            <div style="margin:10px"><h3>本周总体情况</h3></div>
+          <div class="flex align-center" style="margin-right: 10px">
+            <lkt-date-picker v-model="oneDay"/>
+            <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>        
+          </div>
+            <div style="margin:10px"><h3>总体情况</h3></div>
             <div class="flex align-center" style="width:100%">
                 <div class="flex align-center watch3">
                     <div style="font-weight: 700;padding: 5px 40px">总课时：</div>
@@ -72,7 +122,7 @@
             <div style="margin:10px"><h3>操作台总览</h3></div>
                 <div class="flex center wrap">
                 <div class="device-card"
-                    @click="$router.push({name:'monitorDetail'})"
+                    @click="$router.push({name:'processMonitorDetail'})"
                     v-for="(item,i) in stations" :key="i">
                     <div class="flex align-center">
                     <div class="device-img">
@@ -111,7 +161,11 @@ export default createComponent({
     const loading = ref(false);
     const summary = ref<any>();
     const stations = ref<any>();
+    const showModal = ref(false);
     const oneDay = ref();
+    const isshow = ref(false);
+    const color = ref();
+    const lessons = ref<any>();
     const chart: Ref<EChartOption> = ref({});
     const setChart = async () => {
       summary.value = {
@@ -218,11 +272,134 @@ export default createComponent({
         },
       ];
     };
+    function setColors(lessonOne: any, defaultColor: any) {
+      const type = lessonOne.type;
+      if (type === 0 || lessonOne === '') {
+        return defaultColor;
+        // rgb(142, 208, 214) 计划内课程
+      } else if (type === 1 || type === 2) {
+        const result = lessonOne.extend.appointRecord.result;
+        if (result === 2) {
+          // 已预约课程
+          defaultColor = 'rgb(233, 233, 224)';
+        } else if (result === 1) {
+         // 新预约课程
+          defaultColor = 'rgb(248, 244, 8)';
+        }
+        return defaultColor;
+     }
+    }
+    const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+    function digital2Chinese(num: any, identifier: any) {
+      const character = ['零', '一', '二', '三', '四', '五', '六', '七'];
+      return identifier === 'week' && (num === 0 || num === 7) ? '日' : character[num];
+    }
+    // 重新排列数据
+    const newList = async () => {
+      lessons.value = [
+        {lesson: ['', '', '',
+          {
+            id: 1,
+            course: {
+              name: '自动化课程1',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 1,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 3,
+              appointRecord: {result: 1},
+              lessons: [1, 2, 3],
+              class: '自动化1801'},
+          }, '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '',
+          {
+            id: 2,
+            course: {
+              name: '自动化课程2',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 0,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 1,
+              lessons: [4],
+              class: '自动化1801'},
+          }, '']},
+        {lesson: ['', '', '', '', '',
+          {
+            id: 3,
+            course: {
+              name: '自动化课程3',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 1,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 1,
+              appointRecord: {result: 2},
+              lessons: [5],
+              class: '自动化1801'},
+          }, '']},
+        {lesson: ['', '', '', '', '', '', '']},
+        {lesson: ['',
+          {
+            id: 4,
+            course: {
+              name: '自动化课程4',
+              programList: ['切刀挂刀操作'] },
+            teacher: {
+              name: '玛丽'},
+            type: 2,
+            stations: ['操作台1'],
+            students: '马丽',
+            extend: {
+              lessonInt: 1,
+              appointRecord: {result: 1},
+              lessons: [7],
+              class: '自动化1801'},
+          }, '', '', '', '', '']},
+      ];
+    };
+    const tabCell = async () => {
+       const tab = document.getElementById('tabs');
+       // @ts-ignore
+       const rows = tab.rows;
+       const rlen = rows.length;
+       for (let i = 1; i < rlen; i++) {
+         const cells = rows[i].cells;
+         for (let j = 1; j < cells.length; j++) {
+             cells[j].onclick = function() {
+                if (!isshow.value) {
+                    color.value = this.style.backgroundColor;
+                }
+                isshow.value = !isshow.value;
+                if (isshow.value && color.value !== 'white') {
+                     this.style.backgroundColor = 'darkorchid';
+                     showModal.value = true;
+                 } else {
+                   this.style.backgroundColor = color.value;
+                   showModal.value = false;
+                   }
+             };
+         }
+       }
+    };
     // 查询函数
     async function list() {}
     onMounted(useLoading(loading, async () => {
       await setChart();
       await setStation();
+      await newList();
+      await tabCell();
     }));
     return{
        loading,
@@ -231,8 +408,16 @@ export default createComponent({
        setChart ,
        stations,
        setStation,
-       oneDay,
+       oneDay: new Date(),
        list,
+       showModal,
+       weeks,
+       digital2Chinese,
+       lessons,
+       setColors,
+       isshow,
+       tabCell,
+       color,
     };
   },
 });
@@ -263,4 +448,52 @@ export default createComponent({
         }
     }
 }
+  .class-table {
+    margin: 7px;
+    table {
+      background-color: rgb(32, 38, 97);
+      table-layout:fixed;
+      margin: auto;
+      width: 80%;
+      thead {
+        background-color:#67a1ff  ;
+        th {
+          color: #fff;
+          line-height: 2.5rem;
+          font-weight: normal;
+        }
+      }
+    }
+    tbody{
+      tr {
+        th {
+          color: #fff;
+          background-color:#67a1ff ;
+          line-height: 3.5rem;
+          font-weight: lighter;
+          text-align: center;
+          vertical-align: middle;
+        }
+        td {
+          // background-color:rgb(142, 208, 214) ;
+          line-height: 3.5rem;
+          font-weight: lighter;
+          text-align: center;
+          vertical-align: middle;
+          .order {
+            height: 2.5rem;
+            width: 5rem;
+            text-align: center;
+            vertical-align: middle;
+          }
+          .order .el-button{
+            display: none;
+          }
+          .order:hover .el-button{
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
 </style>

@@ -21,6 +21,9 @@
         <el-form-item label="学生人数:">{{25}}
           <span>人</span>
         </el-form-item>
+        <el-form-item style="margin-left:20px">
+          <el-button type="primary">查询</el-button>
+        </el-form-item>
       </el-form>
     </div>
     <div style="margin: 10px 0" class="block_background">
@@ -50,7 +53,9 @@
         </el-table-column>
         <el-table-column label="操作评分" prop="extend.score1"/>
         <el-table-column label="实验报告">
-          <el-button type="text">1.doc</el-button>
+          <div slot-scope="{row}">
+            <el-button type="text" @click="download(row)">{{'1.doc'}}</el-button>
+          </div>
         </el-table-column>
         <el-table-column label="报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
@@ -113,6 +118,9 @@ export default {
       Message.success('评分成功');
       await query();
     }
+    const download = async () => {
+      Message.success('下载成功');
+    };
     const query = async () => {
       experimentReportList.value = [
         {id: '0', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
@@ -146,6 +154,7 @@ export default {
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),
+      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
 };

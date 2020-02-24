@@ -1,10 +1,15 @@
 <template>
   <div v-loading="loading" class="gateway-channel-management">
-    <div style="display:flex;justify-content:flex-end;margin:10px">
-      <el-input placeholder="请输入操作台/设备名称/设备型号/设备编号/LKT-MAN编号搜索" style="width:500px"></el-input>
+    <div class="flex between">
+      <div class="flex center little-space wrap">
+        <el-button type="primary">批量开启</el-button>
+        <el-button type="danger">批量关闭</el-button>
+      </div>
+      <!-- <el-input placeholder="请输入操作台/设备名称/设备型号/设备编号/LKT-MAN编号搜索" style="width:500px;margin-top:5px"></el-input> -->
     </div>
-    <lkt-table
+    <el-table
       :data="list">
+      <el-table-column type="selection"/>
       <el-table-column label="操作台" prop="station"/>
       <el-table-column label="设备名称" prop="device.name"/>
       <el-table-column label="设备型号" prop="device.type.name"/>
@@ -13,7 +18,7 @@
       <el-table-column label="网管通道">
         <el-switch></el-switch>   
       </el-table-column>
-    </lkt-table>
+    </el-table>
   </div>
 </template>
 <script lang="ts">
