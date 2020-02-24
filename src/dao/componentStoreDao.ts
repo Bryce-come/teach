@@ -31,8 +31,8 @@ export async function ComponentStoreDel(params: any) {
 /**
  * 刀具列表
  */
-export async function ComponentStoreList(params: any) {
-  const {data: {list}} = await postService('/rest/device/component/store/list', params);
+export async function ComponentStoreList() {
+  const {data: {list}} = await postService('/rest/device/component/store/list');
   return list;
 }
 
