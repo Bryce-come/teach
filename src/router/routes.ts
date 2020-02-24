@@ -419,7 +419,7 @@ export const routes = [
   {
     path: '/',
     name: 'index',
-    // redirect: 'test',
+    // redirect: {name: 'Monitor'},
     component: () => import('../views/main/index.vue'),
     children: indexChildren,
     meta: { authDisabled: false },
