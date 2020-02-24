@@ -18,7 +18,7 @@
       <el-table-column label="实验项目">
         <el-button type="text" size="mini" @click="showExperimentForm()">查看详情</el-button>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <div class="flex center little-space wrap" slot-scope="{row}">
           <el-button type="warning" size="mini" @click="showCourseForm(row)">修改</el-button>
           <el-button type="danger" size="mini" @click="courseRemove(row)">删除</el-button>

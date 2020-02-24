@@ -23,7 +23,7 @@
       <el-table-column prop="fitDeviceType" label="适配设备类型"/>
       <el-table-column prop="quantity" label="库存"/>
       <el-table-column prop="extend.discardNum" label="报废数量"/>
-      <el-table-column label="操作" width="220px">
+      <el-table-column label="操作" width="220px" align="center">
         <el-button type="text" @click="storeRecordForm()">出入库登记</el-button>
         <el-button type="text" style="margin-left:5px" @click="storeHistoryForm()">历史记录</el-button>
         <el-button type="danger" size="mini" style="margin-left:5px" @click="remove()">删除</el-button>

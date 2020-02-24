@@ -10,7 +10,7 @@
       <el-table-column label="文件名" prop="name"/>
       <el-table-column label="大小"/>
       <el-table-column label="上传时间" prop="createDt"/>
-      <el-table-column label="操作" width="120px">
+      <el-table-column label="操作" width="120px" align="center">
         <div slot-scope="{row}">
           <el-button type="text" @click="download(row)">下载</el-button>
           <el-button type="danger" size="mini" style="margin-left:10px" @click="remove(row)">删除</el-button>

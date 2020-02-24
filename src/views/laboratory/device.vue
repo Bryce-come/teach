@@ -32,7 +32,7 @@
       <el-table-column prop="extend.buyDt" :formatter="(row, column, cellValue, index)=> row.extend.buyDt? formatDate(new Date(row.extend.buyDt)):''"  label="购入日期"/>
       <el-table-column prop="extend.keeper" label="管理员"/>
       <el-table-column prop="extend.producer" label="生产厂商"/>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="180" align="center">
         <div class="flex center little-space wrap" slot-scope="{row}">
           <el-button type="success" size="mini" @click="showForm(row)">修改</el-button>
           <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
