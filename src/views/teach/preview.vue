@@ -6,7 +6,7 @@
         <div class="wrapper-content" v-for="(item, id) in courseList" :key="id">
           <div style="margin-left:50px">
             <i class="iconfont icon-manage2 i"></i>
-            <span style="font-weight:bold;font-size:1.2rem">{{item.name + '：'}}</span>
+            <span style="font-weight:bold;font-size:1.2rem;margin-left:5px">{{item.name + '：'}}</span>
             <span>{{item.time}}</span>
           </div>
         </div>
@@ -15,8 +15,8 @@
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex start">课程详细信息</div>
       <div style="margin-top:20px">
-          <div style="font-weight:bold;margin: 10px">自动化原理与操作</div>
-          <el-form label-width="100px" style="display:flex;justify-content:start;flex-wrap:wrap">
+          <div style="font-weight:bold;margin: 10px 20px">自动化原理与操作</div>
+          <el-form label-width="150px" class="flex space-between wrap" style="width:60%">
             <el-form-item label="上课时间：">{{'2020年2月10日  周一  14：30~15：30  2课时'}}</el-form-item>
             <el-form-item label="授课教师：">{{'马冬梅'}}</el-form-item>
             <el-form-item label="上课班级：">{{'自动化1602'}}</el-form-item>
@@ -26,17 +26,17 @@
           <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px">实验名称</div>
+        <div style="font-weight:bold;margin: 10px 20px">实验名称</div>
         <div style="margin:20px">自动化操作</div>
         <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px">实验目的</div>
+        <div style="font-weight:bold;margin: 10px 20px">实验目的</div>
         <div style="margin:20px">通过编程实现vigenere加密，更加深入的了解其原理，掌握vigenere算法。</div>
         <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px">实验步骤</div>
+        <div style="font-weight:bold;margin: 10px 20px">实验步骤</div>
         <el-form style="margin:20px">
           <el-form-item label="1、预习内容">
             <div>vigenere cipher加密规则：1）找到一个关键字作为密钥；2）将关键字重复的写在明文上；3）根据vigenere table 找出对应的密文</div>
@@ -51,7 +51,7 @@
         <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px">附件</div>
+        <div style="font-weight:bold;margin: 10px 20px">附件</div>
         <el-button type="text" style="margin:20px" @click="download()">关键代码.nv</el-button>
       </div>
     </div>
@@ -81,7 +81,7 @@ export default {
     }));
     return {
       loading, courseList, query,
-      download: useConfirm('确认下载？',useLoading(loading, download)),
+      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
 };
@@ -101,6 +101,7 @@ export default {
   margin-bottom: 20px;
 }
 .i{
-  font-size: 1.2rem!important
+  font-size: 1.4rem!important;
+  color: blue;
 }
 </style>

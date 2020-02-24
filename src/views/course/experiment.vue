@@ -32,7 +32,7 @@
     <kit-dialog-simple
       :modal="modal"
       :confirm="update">
-      <div slot="title">录入实验信息</div>
+      <div slot="title">{{modal.experimentInfo && modal.experimentInfo.id ? '修改' : '录入'}}实验信息</div>
       <el-form v-if="modal.experimentInfo" ref="form" :model="modal.experimentInfo" label-width="120px" label-position="left" style="margin: 0 10px">
         <el-form-item label="实验名称：" prop="name" :rules="{ required: true, message: '请输入实验名称'}">
           <el-input v-model="modal.experimentInfo.name"></el-input>
@@ -109,12 +109,16 @@ export default {
     });
     const form = ref<ElForm | null>(null);
     const showForm = async (data?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
+      }
       if (data) {
         data = deepClone(data);
+        modal.value.type = 'update';
 
       } else {
         data = initForm();
+        modal.value.type = 'add';
       }
       modal.value.experimentInfo = data;
       modal.value.visible = true;

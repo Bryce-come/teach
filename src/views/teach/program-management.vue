@@ -3,16 +3,16 @@
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex between">上课班级信息</div>
       <el-form label-width="100px" style="margin-top:10px" :inline="true">
-        <el-form-item label="上课时间:">
-          <lkt-date-picker style="width:350px"></lkt-date-picker>
+        <el-form-item label="上课时间：">
+          <span>{{'2020/02/23 周四 第1-3节'}}</span>
         </el-form-item>
-        <el-form-item label="上课班级:">
-          <lkt-select style="width:120px"/>
+        <el-form-item label="上课班级：">
+          <span>{{'自动化1602'}}</span>
         </el-form-item>
-        <el-form-item label="上课分组:">
-          <lkt-select style="width:120px"/>
+        <el-form-item label="上课分组：">
+          <span>{{'一组 二组'}}</span>
         </el-form-item>
-        <el-form-item label="学生人数:">{{25}}
+        <el-form-item label="学生人数：">{{4}}
           <span>人</span>
         </el-form-item>
       </el-form>
@@ -50,11 +50,14 @@
             </el-form>
           </el-row>
           <el-row>
-            <el-col :span="6">
+            <el-col :span="12">
               <div style="margin-left:20px;font-weight:bold">NC程序代码</div>
-              <el-input type="textarea" style="height:600px;width:90%"></el-input>
+              <el-input type="textarea" style="width:96%;margin:20px"></el-input>
+              <div class="flex end">
+                <el-button type="primary" @click="download()">下载程序</el-button>
+              </div>
             </el-col>
-            <el-col :span="18">
+            <el-col :span="12">
               <div style="font-weight:bold">提交历史记录</div>
               <el-table
                 :data="ncProgramList"
@@ -72,9 +75,9 @@
               </el-table>
               <el-form>
                 <el-form-item label="修改意见:">
-                  <el-input type="textarea" style="width:700px"></el-input>
+                  <el-input type="textarea" style="width:500px"></el-input>
                 </el-form-item>
-                <el-form-item style="display:flex;justify-between:center">
+                <el-form-item class="flex start">
                   <el-button type="primary" @click="turn=true">通过审核同意加工</el-button>
                   <el-button type="danger" style="margin-left:20px" @click="turn=true">退回修改</el-button>
                 </el-form-item>
@@ -113,12 +116,16 @@ export default {
     const turnToExamine = async () => {
       turn.value = false;
     };
+    const download = async () => {
+      Message.success('下载成功');
+    };
     onMounted(useLoading(loading, async () => {
         await query();
     }));
     return {
       loading, ncProgramList, query, turn,
       turnToExamine: useLoading(loading, turnToExamine),
+      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
 };
