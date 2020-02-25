@@ -16,7 +16,7 @@
           <el-table-column label="当前状态">
             <div style="color:blue">正常</div>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" align="center">
             <el-button type="danger" size="mini" @click="remove()">删除</el-button>
           </el-table-column>
         </lkt-table>
@@ -52,7 +52,7 @@
           <el-table-column label="当前状态">
             <div style="color:blue">正常</div>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" align="center">
             <el-button type="danger" size="mini" @click="remove()">删除</el-button>
           </el-table-column>
         </lkt-table>

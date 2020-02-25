@@ -10,22 +10,22 @@
         <el-button type="primary">导入</el-button>
         <el-button type="success" style="margin-left:10px" @click="showForm()">添加</el-button>
       </div>      
-      <el-input placeholder="输入关键字搜索" style="margin-bottom:10px;width:350px"></el-input>    
+      <el-input class="search bar" v-model="keywords" placeholder="输入关键字搜索" style="margin-bottom:10px;width:350px"></el-input>    
     </div>
     <lkt-table
-      :data="experimentList"
+      :data="filtered"
       style="width:100%">
-      <el-table-column label="名称" prop="name"/>
-      <el-table-column label="类型" prop="label"/>
+      <el-table-column label="名称" prop="name"/>      
+      <el-table-column label="类型" prop="label"/>    
       <el-table-column label="简介" prop="purpose"/>
       <el-table-column label="关联操作台" prop="stations"/>
       <el-table-column label="实验设备"/>
       <el-table-column label="附件" prop="attachment"/>
-      <el-table-column label="操作" width="200px">
+      <el-table-column label="操作" width="200px" align="center">
         <div slot-scope="{row}">
           <el-button type="warning" size="mini" @click="showForm(row)">修改</el-button>
           <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
-          <el-button type="text" style="margin-left:5px" @click="detialForm(row)">查看详情</el-button>
+          <el-button type="text" style="margin-left:5px" @click="detailForm(row)">查看详情</el-button>
         </div>
       </el-table-column>
     </lkt-table>
@@ -49,38 +49,38 @@
         <el-form-item label="实验结果：" prop="results" :rules="{ required: true, message: '请输入实验结果'}">
           <el-input v-model="modal.experimentInfo.results"></el-input>
         </el-form-item>
-        <el-form-item label="关联操作台：" prop="stations" :rules="{ required: true, message: '请选择关联操作台'}">
-          <lkt-select v-model="modal.experimentInfo.stations"></lkt-select>
+        <el-form-item label="关联操作台：" prop="stations">
+          <lkt-select :list="stationList" value-key="name" option-value-key="id" v-model="modal.experimentInfo.stations"></lkt-select>
         </el-form-item>
-        <el-form-item label="附件：" prop="attachment" :rules="{ required: true, message: '请上传附件'}">
+        <el-form-item label="附件：" prop="attachment">
           <el-input v-model="modal.experimentInfo.attachment" type="file"></el-input>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
-      :modal="detialModal">
+      :modal="detailModal">
       <div slot="title">查看详情</div>
-      <el-form v-if="detialModal.detialInfo" ref="form" :model="detialModal.detialInfo" label-width="120px" label-position="left" style="margin: 0 10px">
+      <el-form v-if="detailModal.detailInfo" ref="form" :model="detailModal.detailInfo" label-width="120px" label-position="left" style="margin: 0 10px">
         <el-form-item label="实验名称：">
-          <div>{{detialModal.detialInfo.name}}</div>
+          <div>{{detailModal.detailInfo.name}}</div>
         </el-form-item>
         <el-form-item label="实验目的：">
-          <div>{{detialModal.detialInfo.purpose}}</div>
+          <div>{{detailModal.detailInfo.purpose}}</div>
         </el-form-item>
         <el-form-item label="实验原理：">
-          <div>{{detialModal.detialInfo.principle}}</div>
+          <div>{{detailModal.detailInfo.principle}}</div>
         </el-form-item>
         <el-form-item label="实验步骤：">
-          <div>{{detialModal.detialInfo.steps}}</div>
+          <div>{{detailModal.detailInfo.steps}}</div>
         </el-form-item>
         <el-form-item label="实验结果：">
-          <div>{{detialModal.detialInfo.results}}</div>
+          <div>{{detailModal.detailInfo.results}}</div>
         </el-form-item>
         <el-form-item label="关联操作台：">
-          <div>{{detialModal.detialInfo.stations}}</div>
+          <div>{{detailModal.detailInfo.stations}}</div>
         </el-form-item>
         <el-form-item label="附件：">
-          <div>{{detialModal.detialInfo.attachment}}</div>
+          <div>{{detailModal.detailInfo.attachment}}</div>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -92,15 +92,28 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import {ProgramList, ProgramAdd, ProgramUpdate, ProgramDel, ProgramUpload, ProgramUploadDel} from '@/dao/courseProgramDao';
+import {StationList} from '@/dao/stationDao'
 export default {
   setup() {
     const loading = ref(false);
     const experimentList = ref<any>();
+    const stationList = ref<any>();
+    const [keywords, filtered] = useSearch(experimentList, {
+      includeProps: ['name'],
+    });
     const allExp = ref(true);
     const inExp = ref(false);
     const outExp = ref(false);
     const remove = async (row: any) => {
+      await ProgramDel({
+        id: row.id,
+      });
       Message.success('删除成功');
+      // await query();
+      await showAllExp();
+      // await showInExp();
+      // await showOutExp();
     };
     const modal = ref<any>({
       visible: false,
@@ -124,47 +137,107 @@ export default {
       modal.value.visible = true;
     };
     async function update() {
-      modal.value.visible = false;
-      Message.success('添加成功');
-      await query();
+      const valid = await (form.value as ElForm).validate();
+      if (valid) {
+        // *id, code, name, purpose, principle, steps, results, label, stationJson, extendJson
+        if (modal.value.type === 'add') {
+          await ProgramAdd({
+            id: modal.value.experimentInfo.id,
+            code: modal.value.experimentInfo.code,
+            name: modal.value.experimentInfo.name,
+            purpose: modal.value.experimentInfo.purpose,
+            principle: modal.value.experimentInfo.principle,
+            steps: modal.value.experimentInfo.steps,
+            results: modal.value.experimentInfo.results,
+            label: modal.value.experimentInfo.label,
+            stationJson: JSON.stringify(modal.value.experimentInfo.stations),
+            extendJson: JSON.stringify(modal.value.experimentInfo.extend),
+          });
+        } else {
+          await ProgramUpdate({
+            id: modal.value.experimentInfo.id,
+            code: modal.value.experimentInfo.code,
+            name: modal.value.experimentInfo.name,
+            purpose: modal.value.experimentInfo.purpose,
+            principle: modal.value.experimentInfo.principle,
+            steps: modal.value.experimentInfo.steps,
+            results: modal.value.experimentInfo.results,
+            label: modal.value.experimentInfo.label,
+            stationJson: JSON.stringify(modal.value.experimentInfo.stations),
+            extendJson: JSON.stringify(modal.value.experimentInfo.extend),
+          });
+        }
+        modal.value.visible = false;
+        Message.success(`${modal.value.type === 'add' ? '添加' : '修改'}成功`);
+        // await query();
+        await showAllExp();
+        // await showInExp();
+        // await showOutExp();
+      }
     }
-    const detialModal = ref<any>({
+    const detailModal = ref<any>({
       visible: false,
-      detialInfo: null,
+      detailInfo: null,
     });
-    const detialForm = async (data?: any) => {
-      detialModal.value.detialInfo = data;
-      detialModal.value.visible = true;
+    const detailForm = async (data?: any) => {
+      detailModal.value.detailInfo = data;
+      detailModal.value.visible = true;
     };
-    const query = async () => {
-      experimentList.value = [
-        {id: 0, code: '', name: '1xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '课内实验', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 1, code: '', name: '2xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '开放实验', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 2, code: '', name: '3xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '课内实验', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 3, code: '', name: '4xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '开放实验', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 4, code: '', name: '5xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '开放实验', extend: {}, stations: [], attachment: [], createDt: ''},
-      ];
-    };
+    // const query = async () => {
+    //   const firstList = await ProgramList();
+    //   const inExpList = firstList.课内实验;
+    //   const outExpList = firstList.开放实验;
+    //   if (inExp.value === true) {
+    //     experimentList.value = inExpList;
+    //   } else if (outExp.value === true) {
+    //     experimentList.value = outExpList;
+    //   } else {
+    //     for(var i = 0;i < outExpList.length;i++) {
+    //       inExpList.push(outExpList[i])
+    //     }
+    //     experimentList.value = inExpList;
+    //   }
+    //   console.log(experimentList.value);
+    // };
     const showAllExp = async () => {
       allExp.value = true;
       inExp.value = false;
       outExp.value = false;
+      stationList.value = await StationList(true);
+      const firstList = await ProgramList();
+      const inExpList = firstList.课内实验;
+      const outExpList = firstList.开放实验;
+      for(var i = 0;i < outExpList.length;i++) {
+          inExpList.push(outExpList[i])
+        }
+      experimentList.value = inExpList;
+      console.log(stationList.value);
     };
     const showInExp = async () => {
       allExp.value = false;
       inExp.value = true;
       outExp.value = false;
+      const firstList = await ProgramList();
+      const inExpList = firstList.课内实验;
+      experimentList.value = inExpList;
     };
     const showOutExp = async () => {
       allExp.value = false;
       inExp.value = false;
       outExp.value = true;
+      const firstList = await ProgramList();
+      const outExpList = firstList.开放实验;
+      experimentList.value = outExpList;
+      // console.log(experimentList.value[0].stations);
     };
     onMounted(useLoading(loading, async () => {
-      await query();
+      //await query();
+      await showAllExp();
+      // await showInExp();
+      // await showOutExp();
     }));
     return{
-      loading, experimentList, query,
+      loading, experimentList, keywords, filtered,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       modal, showForm,
       update: useLoading(loading, update),
@@ -172,13 +245,15 @@ export default {
       showAllExp: useLoading(loading, showAllExp),
       showInExp: useLoading(loading, showInExp),
       showOutExp: useLoading(loading, showOutExp),
-      detialModal, detialForm,
+      detailModal, detailForm,
+      stationList,
     };
   },
 };
 function initForm() {
   return {
-    name: '', purpose: '', principle: '', steps: '', results: '', stations: '', attachment: '',
+    id: '', name: '', purpose: '', principle: '', steps: '', results: '', attachment: '',
+    stations: [], extend: {},
   };
 }
 </script>

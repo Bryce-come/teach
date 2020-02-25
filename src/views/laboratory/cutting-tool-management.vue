@@ -34,15 +34,22 @@
       :confirm="cutterInfoUpdate"
       width="500px">
         <div slot="title">刀具信息登记</div>
-        <el-form v-if="addModal.cutterInfo" ref="form1" :model="addModal.cutterInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
+        <el-form v-if="addModal.cutterInfo" ref="form1" :model="addModal.cutterInfo" label-width="140px" label-position="left" style="width: 377px;margin: 0 auto">
           <el-form-item label="刀具名称：" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
             <el-input v-model="addModal.cutterInfo.name"></el-input>
           </el-form-item>
           <el-form-item label="刀具型号：" prop="no" :rules="{ required: true, message: '请选择刀具型号'}">
-              <el-input v-model="addModal.cutterInfo.no" ></el-input>
+            <el-input v-model="addModal.cutterInfo.no" ></el-input>
           </el-form-item>
-          <el-form-item label="适配设备型号(多选)：" prop="fitDeviceTypeList" :rules="{ required: true, message: '请选择适配设备型号'}">
-              <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="addModal.cutterInfo.fitDeviceTypeList" multiple></lkt-select>
+          <el-form-item label="适配设备型号：" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">
+            <el-select v-model="addModal.cutterInfo.fitDeviceType" multiple placeholder="请选择">
+              <el-option
+                v-for="item of deviceTypeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -245,7 +252,7 @@ export default {
 };
 function initCutterForm() {
   return {
-    name: '', no: '', fitDeviceTypeList: [],
+    name: '', no: '',
   };
 }
 function initStoreRecordForm() {
