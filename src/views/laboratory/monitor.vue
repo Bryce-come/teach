@@ -82,21 +82,22 @@
   import {ElForm} from 'element-ui/types/form';
   import {isUndefined, deepClone} from 'web-toolkit/src/utils';
   import {lineConfig, getColors} from 'web-toolkit/src/utils/echarts-helper';
-  import {EChartsEvent} from 'web-toolkit/src/types/echarts';
-  import {EChartOption} from 'echarts';
-  import {urlMap} from '@/config';
   import {statusMap} from '@/utils/device-utils';
+  import {CourseRecordInClass} from "@/dao/courseRecordDao";
 
   export default createComponent({
     name: 'monitor',
     props: {},
     setup(props: any, ctx: any) {
       const loading = ref(false);
+      const courseRecord = ref<any>();
+      const stationList = ref<any>([]);
+
       const box = ref(null);
       const lesson = ref<any>();
       const time = ref<any>();
       const summary = ref<any>();
-      const chart: Ref<EChartOption> = ref({});
+      const chart = ref<any>({});
       const devicesShow = ref<any>();
       const stations = ref<any>();
       const percentage = ref(0);
@@ -240,13 +241,14 @@
         ];
       };
       onMounted(useLoading(loading, async () => {
+        courseRecord.value = await CourseRecordInClass();
         await query();
         await setChart();
         await setStation();
         time.value = new Date();
       }));
       return {
-        loading,
+        loading, courseRecord,
         box,
         time,
         lesson,

@@ -100,7 +100,7 @@ import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ProgramList, ProgramAdd, ProgramUpdate, ProgramDel, ProgramUpload, ProgramUploadDel} from '@/dao/courseProgramDao';
-import {StationList} from '@/dao/stationDao'
+import {StationList} from '@/dao/stationDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -225,7 +225,7 @@ export default {
       await showAllExp();
     }
     onMounted(useLoading(loading, async () => {
-      //await query();
+      // await query();
       await showAllExp();
       stationList.value = await StationList(true);
       // console.log(stationList.value);
