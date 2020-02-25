@@ -34,7 +34,7 @@
       :confirm="cutterInfoUpdate"
       width="500px">
         <div slot="title">刀具信息登记</div>
-        <el-form v-if="addModal.cutterInfo" ref="form1" :model="addModal.cutterInfo" label-width="140px" label-position="left" style="width: 377px;margin: 0 auto">
+        <el-form v-if="addModal.cutterInfo" ref="form1" :model="addModal.cutterInfo" label-width="140px" label-position="left" style="width: 357px;margin: 0 auto">
           <el-form-item label="刀具名称：" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
             <el-input v-model="addModal.cutterInfo.name"></el-input>
           </el-form-item>
@@ -167,16 +167,17 @@ export default {
       const valid = await (form1.value as ElForm).validate();
       if (valid) {
         if (addModal.value.type === 'add') {
+          // console.log(addModal.value.cutterInfo);
           await ComponentStoreAdd({
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
-            dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceTypeList),
+            dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
           })
         }
         addModal.value.visible = false;
         Message.success('添加成功');
         cutterList.value =await ComponentStoreList();
-        // console.log(cutterList);
+        // console.log(cutterList.value);
       }
     }
     const remove = async (row: any) => {
@@ -225,7 +226,7 @@ export default {
         cutterList.value =await ComponentStoreList();
         storeRecordModal.value.visible = false;
         Message.success('添加成功');
-        console.log(storeRecordModal.value.storeInfo);
+        // console.log(storeRecordModal.value.storeInfo);
       }
     }
     const query = async (data: any) => {
