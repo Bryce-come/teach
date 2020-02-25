@@ -15,7 +15,7 @@
           <el-form-item prop="pwd" label="密码：" >
             <el-input type="password" v-model="form.pwd" placeholder="密  码" @keyup.enter.native="login($refs.formRef)" />
           </el-form-item>
-          <el-button style="width: 100%;margin-top: 1rem" type="primary" @click="login($refs.formRef)">登录</el-button>
+          <el-button style="width: 100%;margin-top: 1rem;font-size: 1.2em" type="primary" @click="login($refs.formRef)">登录</el-button>
         </el-form>
       </el-card>
     </div>
@@ -104,23 +104,25 @@ export default createComponent({
     }
   }
   .el-card{
-    width: 25rem;
     height: 28rem;
     padding-bottom: 1rem;
     margin-left: 3rem;
+    .el-form{
+      width: 20rem;
+    }
+    .login-title{
+      width: 100%;
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 500;
+      .title2 {
+        font-size: 2.5rem;
+      }
+    }
   }
 }
-.login-title{
-  font-size: 1.6rem;
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: 500;
-  margin-left: 15%;
-  margin-right: 15%;
-  .title2 {
-    font-size: 2.5rem;
-  }
-}
+
 .login-support{
   color: #fff;
   width: 100%;
