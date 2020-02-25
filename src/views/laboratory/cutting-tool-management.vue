@@ -11,7 +11,14 @@
       style="width:100%">
       <el-table-column prop="name" label="刀具名称"/>
       <el-table-column prop="no" label="刀具型号"/>
-      <el-table-column prop="fitDeviceType" label="适配设备类型"/>
+      <!-- <el-table-column prop="fitDeviceTypeList.name" label="适配设备类型"/> -->
+      <el-table-column label="适配设备类型">
+         <div class="flex center little-space" slot-scope="{row}" >
+           <div v-for="(item,i) in row.fitDeviceTypeList" :key="i" style="padding: 0">
+             {{item.name}}
+           </div>
+         </div>
+      </el-table-column>
       <el-table-column prop="quantity" label="库存"/>
       <el-table-column prop="extend.discardNum" label="报废数量"/>
       <el-table-column label="操作" width="220px" >
@@ -34,19 +41,19 @@
           <el-form-item label="刀具型号：" prop="no" :rules="{ required: true, message: '请选择刀具型号'}">
               <el-input v-model="addModal.cutterInfo.no" ></el-input>
           </el-form-item>
-          <el-form-item label="适配设备型号(多选)：" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">
-              <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="addModal.cutterInfo.fitDeviceType" multiple></lkt-select>
+          <el-form-item label="适配设备型号(多选)：" prop="fitDeviceTypeList" :rules="{ required: true, message: '请选择适配设备型号'}">
+              <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="addModal.cutterInfo.fitDeviceTypeList" multiple></lkt-select>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
       :modal="storeRecordModal"
       :confirm="storeRecordUpdate"
-      width="700px">
+      width="600px">
         <div slot="title">出入库登记</div>
-        <el-form v-if="storeRecordModal.storeInfo" ref="form2" :model="storeRecordModal.storeInfo" label-width="140px" label-position="left" style="width: 580px;margin: 0 auto">
+        <el-form v-if="storeRecordModal.storeInfo" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
           <el-form-item label="出入库类型：" prop="type" :rules="{ required: true, message: '请选择出入库类型'}">
-            <lkt-select v-model="storeRecordModal.storeInfo.type"></lkt-select>
+            <lkt-select :list="storeTypeList" value-key="name" option-value-key="id" v-model="storeRecordModal.storeInfo.type"></lkt-select>
           </el-form-item>
           <el-form-item label="批次：" prop="extend.batchNo" :rules="{ required: true, message: '请输入批次'}">
             <el-input v-model="storeRecordModal.storeInfo.extend.batchNo"></el-input>
@@ -54,7 +61,7 @@
           <el-form-item label="数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
             <el-input v-model="storeRecordModal.storeInfo.quantity"></el-input>
           </el-form-item>
-          <el-form-item label="厂商：" prop="extend.company" :rules="{ required: true, message: '请输入厂商名称'}">
+          <el-form-item label="厂商：" prop="extend.company">
             <el-input v-model="storeRecordModal.storeInfo.company"></el-input>
           </el-form-item>
           <el-form-item label="供货商：" prop="extend.supplier">
@@ -63,7 +70,7 @@
           <el-form-item label="供货商联系方式：" prop="extend.supplierTel">
             <el-input v-model="storeRecordModal.storeInfo.extend.supplierTel"></el-input>
           </el-form-item>
-          <el-form-item label="购入时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择购入时间'}">
+          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
             <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
           </el-form-item>
           <el-form-item label="保管人：" prop="extend.keeper">
@@ -75,14 +82,19 @@
       :modal="storeHistoryModal"
       width="800px">
         <div slot="title">历史记录</div>
-        <div style="display:flex;justify-content:flex-end">
-          <el-input style="width:300px" placeholder="请输入关键字搜索" v-model="filterText"></el-input>
+        <div class="flex end" style="margin-bottom: 5px;margin-top: -10px">
+         <el-input slot="search1" class="search-bar" v-model="filterText" style="width:200px" placeholder="按关键字搜索" clearable/>
         </div>
         <lkt-table
           :data="deviceComponentStoreRecord"
           style="width:100%">
           <el-table-column prop="dt" label="时间"/>
-          <el-table-column prop="type" label="类型"/>
+          <el-table-column label="类型">
+            <div slot-scope="{ row }">
+              {{row.type === 0 ?'新购': '' || row.type === 1 ?'借出': '' || row.type === 2 ?'还回': '' || row.type === 3 ?'报废': ''}}
+              <!-- {{row.type}} -->
+            </div>
+          </el-table-column>
           <el-table-column prop="quantity" label="数量"/>
           <el-table-column prop="person" label="操作人"/>
         </lkt-table>
@@ -95,7 +107,7 @@ import { Message } from 'element-ui';
 import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
 import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel } from '@/dao/componentStoreDao';
+import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel, ComponentStoreRecordList } from '@/dao/componentStoreDao';
 import { DeviceTypeList,} from '@/dao/deviceDao';
 export default {
   setup() {
@@ -103,11 +115,24 @@ export default {
     const cutterList = ref<any>([]);
     const deviceTypeList = ref<any>();
     const deviceComponentStore = ref<any>();
-    const deviceComponentStoreRecord = ref<any>();
-    const filterText = ref<string|null>(null);
+    const deviceComponentStoreRecordList = ref<any>([]);
+    const componentID = ref<any>();
+    const [filterText, deviceComponentStoreRecord] = useSearch(deviceComponentStoreRecordList, {
+      includeProps: ['type', 'person'],
+    });
     const [keywords, cutterNameList] = useSearch(cutterList, {
       includeProps: ['no', 'name'],
     });
+    const storeTypeList = ref<any>([
+      { name: '新购',
+        id: 0 },
+      { name: '借出',
+        id: 1 },
+      { name: '还回', 
+        id: 2 },
+      { name: '报废',
+        id: 3 },                        
+    ]);
     const form1 = ref<ElForm|null>(null);
     const form2 = ref<ElForm|null>(null);
     const addModal = ref<any>({
@@ -133,20 +158,18 @@ export default {
     };
     async function cutterInfoUpdate() {
       const valid = await (form1.value as ElForm).validate();
-      console.log(valid);
-      console.log(addModal.value.cutterInfo);
       if (valid) {
         if (addModal.value.type === 'add') {
           await ComponentStoreAdd({
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
-            dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
+            dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceTypeList),
           })
         }
         addModal.value.visible = false;
         Message.success('添加成功');
         cutterList.value =await ComponentStoreList();
-        console.log(cutterList);
+        // console.log(cutterList);
       }
     }
     const remove = async (row: any) => {
@@ -157,10 +180,10 @@ export default {
       Message.success('删除成功');
     };
     const storeRecordForm = async (data: any) => {
-      if (form1.value) { (form1.value as ElForm).clearValidate(); }
+      if (form2.value) { (form2.value as ElForm).clearValidate(); }
       if (data) {
+        componentID.value = data.id;
         data = deepClone(data);
-
       } else {
         data = initStoreRecordForm();
       }
@@ -171,37 +194,39 @@ export default {
       visible: false,
       storeHistoryInfo: null,
     });
-    const storeHistoryForm = async () => {
+    const storeHistoryForm = async (row: any) => {
+      storeHistoryModal.value.storeHistoryInfo = row;
+      // console.log(storeHistoryModal.value.storeHistoryInfo);
+      await query(storeHistoryModal.value.storeHistoryInfo);
       storeHistoryModal.value.visible = true;
     };
+    //出入库登记确认函数
     async function storeRecordUpdate() {
-      const valid = true;
+      const valid = await (form2.value as ElForm).validate();
       if (valid) {
-        const { type, quantity, extend: {batchNo, company, supplier, supplierTel, buyDt, keeper} } = storeRecordModal.value.storeInfo;
+         // 时间格式转化
+        if (storeRecordModal.value.storeInfo.extend.buyDt && storeRecordModal.value.storeInfo.extend.buyDt instanceof Date) {
+          storeRecordModal.value.storeInfo.extend.buyDt = storeRecordModal.value.storeInfo.extend.buyDt.getTime();
+        }
+        await ComponentStoreRecordAdd({
+          componentId: componentID.value,
+          type: storeRecordModal.value.storeInfo.type,
+          quantity: storeRecordModal.value.storeInfo.quantity,
+          dt: storeRecordModal.value.storeInfo.extend.buyDt,
+          extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
+        });
+        cutterList.value =await ComponentStoreList();
         storeRecordModal.value.visible = false;
         Message.success('添加成功');
-        await query();
+        console.log(storeRecordModal.value.storeInfo);
       }
     }
-    const query = async () => {
-      deviceComponentStore.value = [
-        {id: '0', type: '', name: '刀具1', no: 'YC2838363738931', fitDeviceType: ['samrt200', 'smart300'], quantity: '100', createDt: '', extend: {discardNum: '20'}},
-        {id: '1', type: '', name: '刀具2', no: 'YC2838363738932', fitDeviceType: ['samrt200'], quantity: '120', createDt: '', extend: {discardNum: '11'}},
-        {id: '2', type: '', name: '刀具3', no: 'YC2838363738933', fitDeviceType: ['samrt200'], quantity: '60', createDt: '', extend: {discardNum: '15'}},
-        {id: '3', type: '', name: '刀具4', no: 'YC2838363738934', fitDeviceType: ['samrt200', 'smart300'], quantity: '55', createDt: '', extend: {discardNum: '20'}},
-        {id: '4', type: '', name: '刀具5', no: 'YC2838363738935', fitDeviceType: ['samrt200'], quantity: '32', createDt: '', extend: {discardNum: '2'}},
-      ];
-      deviceComponentStoreRecord.value = [
-        {id: '0', type: '借出', component: '', quantity: '10', dt: '', remark: '', createDt: '',
-        extend: {person: '', stationRecord: {id: '', quantity: ''}, batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''}},
-        {id: '1', type: '归还', component: '', quantity: '8', dt: '', remark: '', createDt: '',
-        extend: {person: '', stationRecord: {id: '', quantity: ''}, batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''}},
-        {id: '2', type: '新购', component: '', quantity: '30', dt: '', remark: '', createDt: '',
-        extend: {person: '', stationRecord: {id: '', quantity: ''}, batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''}},
-      ];
+    const query = async (data: any) => {
+      deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
+        componentId: data.id});
+      console.log(deviceComponentStoreRecordList);
     };
     onMounted(useLoading(loading, async () => {
-      await query();
        cutterList.value =await ComponentStoreList();
        deviceTypeList.value = await DeviceTypeList();
     }));
@@ -214,13 +239,13 @@ export default {
       storeRecordModal, storeRecordForm,
       storeRecordUpdate: useLoading(loading, storeRecordUpdate),
       storeHistoryModal, storeHistoryForm,
-      filterText, deviceComponentStoreRecord,
+      filterText, deviceComponentStoreRecord, deviceComponentStoreRecordList, componentID, storeTypeList, 
     };
   },
 };
 function initCutterForm() {
   return {
-    name: '', no: '', fitDeviceType: {},
+    name: '', no: '', fitDeviceTypeList: [],
   };
 }
 function initStoreRecordForm() {
