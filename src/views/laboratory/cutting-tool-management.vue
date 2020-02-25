@@ -103,7 +103,7 @@ import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
 import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel } from '@/dao/componentStoreDao';
-import { DeviceTypeList,} from '@/dao/deviceDao';
+import { DeviceTypeList} from '@/dao/deviceDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -148,11 +148,11 @@ export default {
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
             dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
-          })
+          });
         }
         addModal.value.visible = false;
         Message.success('添加成功');
-        cutterList.value =await ComponentStoreList();
+        cutterList.value = await ComponentStoreList();
         console.log(cutterList);
       }
     }
@@ -160,7 +160,7 @@ export default {
       await ComponentStoreDel({
         id: row.id,
       });
-      cutterList.value =await ComponentStoreList();
+      cutterList.value = await ComponentStoreList();
       Message.success('删除成功');
     };
     const storeRecordForm = async (data: any) => {
