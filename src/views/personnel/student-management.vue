@@ -221,7 +221,7 @@ export default {
           groupLista:[],
           groupListb:[],
           groupIdList:[],
-          groupNmaeList:[]
+          groupNameList:[]
         })
     async function getGroupList(){
         
@@ -239,9 +239,9 @@ export default {
           }
         }
         grpandclzList.value.groupIdList=grpandclzList.value.groupLista.reduce(function (a:any, b:any) { return a.concat(b)} );
-        grpandclzList.value.groupNmaeList=grpandclzList.value.groupListb.reduce(function (a:any, b:any) { return a.concat(b)} );
+        grpandclzList.value.groupNameList=grpandclzList.value.groupListb.reduce(function (a:any, b:any) { return a.concat(b)} );
         for(let i=0;i<studentUserList.value.length;i++){
-          studentUserList.value[i].claszGroup=grpandclzList.value.groupNmaeList[grpandclzList.value.groupIdList.indexOf(studentUserList.value[i].extend.claszGroup)]
+          studentUserList.value[i].claszGroup=grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(studentUserList.value[i].extend.claszGroup)]
           studentUserList.value[i].clasz=grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(studentUserList.value[i].extend.clasz)]
         }
     }
@@ -277,10 +277,9 @@ export default {
       // if(row.level=1){
       //   keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
       // }
-      if (row.level=2){
-        keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
-      }
-      
+      // else if (row.level=2){
+      //   keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
+      // }
     }
     const upgrpFlag = ref<any>({
       visible: false,
