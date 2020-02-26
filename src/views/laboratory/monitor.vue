@@ -76,193 +76,193 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
-  import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
-  import {Message} from 'element-ui';
-  import {ElForm} from 'element-ui/types/form';
-  import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-  import {lineConfig, getColors} from 'web-toolkit/src/utils/echarts-helper';
-  import {statusMap} from '@/utils/device-utils';
-  import {CourseRecordInClass} from "@/dao/courseRecordDao";
+import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
+import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
+import {Message} from 'element-ui';
+import {ElForm} from 'element-ui/types/form';
+import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import {lineConfig, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import {statusMap} from '@/utils/device-utils';
+import {CourseRecordInClass} from '@/dao/courseRecordDao';
 
-  export default createComponent({
-    name: 'monitor',
-    props: {},
-    setup(props: any, ctx: any) {
-      const loading = ref(false);
-      const courseRecord = ref<any>();
-      const stationList = ref<any>([]);
+export default createComponent({
+  name: 'monitor',
+  props: {},
+  setup(props: any, ctx: any) {
+    const loading = ref(false);
+    const courseRecord = ref<any>();
+    const stationList = ref<any>([]);
 
-      const box = ref(null);
-      const lesson = ref<any>();
-      const time = ref<any>();
-      const summary = ref<any>();
-      const chart = ref<any>({});
-      const devicesShow = ref<any>();
-      const stations = ref<any>();
-      const percentage = ref(0);
-      const query = async () => {
-        lesson.value = {
+    const box = ref(null);
+    const lesson = ref<any>();
+    const time = ref<any>();
+    const summary = ref<any>();
+    const chart = ref<any>({});
+    const devicesShow = ref<any>();
+    const stations = ref<any>();
+    const percentage = ref(0);
+    const query = async () => {
+      lesson.value = {
+        id: 1,
+        course: {
+          name: '自动化课程1',
+          programList: '切刀挂刀操作',
+          teacher: {
+            name: '玛丽',
+          },
+        },
+        start: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
+        type: 0,
+        students: ['马丽', '李海'],
+        extend: {
+          appointRecord: {result: 1},
+          lessons: [1, 2, 3],
+          clasz: '自动化1801',
+          claszGroup: '自动化一组',
+        },
+      };
+      const num1 = lesson.value.end.getTime() - lesson.value.start.getTime();
+      const num2 = new Date().getTime() - lesson.value.start.getTime();
+      percentage.value = Math.round(100 * num2 / num1) ;
+    };
+    const timeDiff = (time1: any, time2: any) => {
+      const dateDiff = time2.getTime() - time1.getTime();
+      const hours = Math.floor(dateDiff / (3600 * 1000));
+      const leave1 = dateDiff % (3600 * 1000);
+      const minutes = Math.floor(leave1 / (60 * 1000));
+      const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
+      const seconds = Math.round(leave2 / 1000);
+      return hours + '小时' + minutes + '分' + seconds + '秒';
+    };
+    const setChart = async () => {
+      summary.value = {
+        emergency: 0,
+        offline: 1,
+        on: 9,
+      };
+      const xyData = Object.entries(summary.value);
+      chart.value = {
+        series: [{
+          name: '设备数量',
+          type: 'pie',
+          data: [
+            {value: 1, name: '故障'},
+            {value: 1, name: '离线'},
+            {value: 9, name: '开机'},
+          ],
+          // radius: document.querySelector('#index-pie')!.clientWidth * 0.25,
+          radius: 50,
+          label: {
+            formatter: '{b}：{c}',
+            fontSize: 14,
+          },
+        }],
+        grid: {
+          height: 300,
+        },
+        color: getColors(),
+      };
+    };
+    const setStation = async () => {
+      stations.value = [
+        {
           id: 1,
-          course: {
-            name: '自动化课程1',
-            programList: '切刀挂刀操作',
-            teacher: {
-              name: '玛丽',
-            },
-          },
-          start: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
-          end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
-          type: 0,
-          students: ['马丽', '李海'],
-          extend: {
-            appointRecord: {result: 1},
-            lessons: [1, 2, 3],
-            clasz: '自动化1801',
-            claszGroup: '自动化一组',
-          },
-        };
-        const num1 = lesson.value.end.getTime() - lesson.value.start.getTime();
-        const num2 = new Date().getTime() - lesson.value.start.getTime();
-        percentage.value = Math.round(100 * num2 / num1) ;
-      };
-      const timeDiff = (time1: any, time2: any) => {
-        const dateDiff = time2.getTime() - time1.getTime();
-        const hours = Math.floor(dateDiff / (3600 * 1000));
-        const leave1 = dateDiff % (3600 * 1000);
-        const minutes = Math.floor(leave1 / (60 * 1000));
-        const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
-        const seconds = Math.round(leave2 / 1000);
-        return hours + '小时' + minutes + '分' + seconds + '秒';
-      };
-      const setChart = async () => {
-        summary.value = {
-          emergency: 0,
-          offline: 1,
-          on: 9,
-        };
-        const xyData = Object.entries(summary.value);
-        chart.value = {
-          series: [{
-            name: '设备数量',
-            type: 'pie',
-            data: [
-              {value: 1, name: '故障'},
-              {value: 1, name: '离线'},
-              {value: 9, name: '开机'},
-            ],
-            // radius: document.querySelector('#index-pie')!.clientWidth * 0.25,
-            radius: 50,
-            label: {
-              formatter: '{b}：{c}',
-              fontSize: 14,
-            },
-          }],
-          grid: {
-            height: 300,
-          },
-          color: getColors(),
-        };
-      };
-      const setStation = async () => {
-        stations.value = [
-          {
+          name: '操作台1',
+          imgUrl: '../../assets/u1630.png',
+          student: {
             id: 1,
-            name: '操作台1',
-            imgUrl: '../../assets/u1630.png',
-            student: {
-              id: 1,
-              name: '马利',
-              clasz: {
-                name: '自动化1801',
-              },
+            name: '马利',
+            clasz: {
+              name: '自动化1801',
             },
           },
-          {
-            id: 2,
-            name: '操作台2',
-            imgUrl: '../../assets/u1630.png',
-            student: {
-              id: 1,
-              name: '马利',
-              clasz: {
-                name: '自动化1801',
-              },
+        },
+        {
+          id: 2,
+          name: '操作台2',
+          imgUrl: '../../assets/u1630.png',
+          student: {
+            id: 1,
+            name: '马利',
+            clasz: {
+              name: '自动化1801',
             },
           },
-          {
-            id: 3,
-            name: '操作台3',
-            imgUrl: '../../assets/u1630.png',
-            student: {
-              id: 1,
-              name: '马利',
-              clasz: {
-                name: '自动化1801',
-              },
+        },
+        {
+          id: 3,
+          name: '操作台3',
+          imgUrl: '../../assets/u1630.png',
+          student: {
+            id: 1,
+            name: '马利',
+            clasz: {
+              name: '自动化1801',
             },
           },
-          {
-            id: 4,
-            name: '操作台4',
-            imgUrl: '../../assets/u1630.png',
-            student: {
-              id: 1,
-              name: '马利',
-              clasz: {
-                name: '自动化1801',
-              },
+        },
+        {
+          id: 4,
+          name: '操作台4',
+          imgUrl: '../../assets/u1630.png',
+          student: {
+            id: 1,
+            name: '马利',
+            clasz: {
+              name: '自动化1801',
             },
           },
-          {
-            id: 5,
-            name: '操作台5',
-            imgUrl: '../../assets/u1630.png',
-            student: {
-              id: 1,
-              name: '马利',
-              clasz: {
-                name: '自动化1801',
-              },
+        },
+        {
+          id: 5,
+          name: '操作台5',
+          imgUrl: '../../assets/u1630.png',
+          student: {
+            id: 1,
+            name: '马利',
+            clasz: {
+              name: '自动化1801',
             },
           },
-          {
-            id: 6,
-            name: '操作台6',
-            imgUrl: '../../assets/u1630.png',
-            student: {
-              id: 1,
-              name: '马利',
-              clasz: {
-                name: '自动化1801',
-              },
+        },
+        {
+          id: 6,
+          name: '操作台6',
+          imgUrl: '../../assets/u1630.png',
+          student: {
+            id: 1,
+            name: '马利',
+            clasz: {
+              name: '自动化1801',
             },
           },
-        ];
-      };
-      onMounted(useLoading(loading, async () => {
-        courseRecord.value = await CourseRecordInClass();
-        await query();
-        await setChart();
-        await setStation();
-        time.value = new Date();
-      }));
-      return {
-        loading, courseRecord,
-        box,
-        time,
-        lesson,
-        query,
-        timeDiff,
-        summary,
-        chart,
-        setChart,
-        devicesShow,
-        stations,
-        percentage,
-      };
-    },
-  });
+        },
+      ];
+    };
+    onMounted(useLoading(loading, async () => {
+      courseRecord.value = await CourseRecordInClass();
+      await query();
+      await setChart();
+      await setStation();
+      time.value = new Date();
+    }));
+    return {
+      loading, courseRecord,
+      box,
+      time,
+      lesson,
+      query,
+      timeDiff,
+      summary,
+      chart,
+      setChart,
+      devicesShow,
+      stations,
+      percentage,
+    };
+  },
+});
 </script>
 <style scoped lang="scss">
   .monitor {

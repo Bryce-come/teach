@@ -115,7 +115,7 @@ import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
 import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel, ComponentStoreRecordList } from '@/dao/componentStoreDao';
-import { DeviceTypeList,} from '@/dao/deviceDao';
+import { DeviceTypeList} from '@/dao/deviceDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -176,7 +176,7 @@ export default {
         }
         addModal.value.visible = false;
         Message.success('添加成功');
-        cutterList.value =await ComponentStoreList();
+        cutterList.value = await ComponentStoreList();
         // console.log(cutterList.value);
       }
     }
@@ -208,7 +208,7 @@ export default {
       await query(storeHistoryModal.value.storeHistoryInfo);
       storeHistoryModal.value.visible = true;
     };
-    //出入库登记确认函数
+    // 出入库登记确认函数
     async function storeRecordUpdate() {
       const valid = await (form2.value as ElForm).validate();
       if (valid) {
@@ -223,7 +223,7 @@ export default {
           dt: storeRecordModal.value.storeInfo.extend.buyDt,
           extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
-        cutterList.value =await ComponentStoreList();
+        cutterList.value = await ComponentStoreList();
         storeRecordModal.value.visible = false;
         Message.success('添加成功');
         // console.log(storeRecordModal.value.storeInfo);
@@ -235,7 +235,7 @@ export default {
       console.log(deviceComponentStoreRecordList);
     };
     onMounted(useLoading(loading, async () => {
-       cutterList.value =await ComponentStoreList();
+       cutterList.value = await ComponentStoreList();
        deviceTypeList.value = await DeviceTypeList();
     }));
     return{

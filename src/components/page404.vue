@@ -1,7 +1,7 @@
 <template>
   <div class="out">
-    <i class="iconfont icon-404"></i>
-    <div class="info">{{ route.currentRoute.params.msg === undefined?'当前页面找不到':route.currentRoute.params.msg }}</div>
+    <i class="iconfont icon-404"/>
+    <div class="info">{{ router.currentRoute.params.msg === undefined?'当前页面找不到':router.currentRoute.params.msg }}</div>
     <br />
     <el-button type="primary" @click="router.back()">返 回</el-button>
     <el-button type="primary" @click="logout()" style="margin-left: 10px">返回至登录页</el-button>
