@@ -20,7 +20,12 @@
          </div>
       </el-table-column>
       <el-table-column prop="quantity" label="库存"/>
-      <el-table-column prop="extend.discardNum" label="报废数量"/>
+      <el-table-column label="报废数量">
+        <div slot-scope="{row}">
+           <div v-if='row.extend.discardNum'>{{row.extend.discardNum}}</div>
+           <div v-else>0</div>
+        </div>
+      </el-table-column>
       <el-table-column label="操作" width="220px" >
         <div class="flex center little-space" slot-scope="{row}">
           <el-button type="text" @click="storeRecordForm(row)">出入库登记</el-button>
@@ -118,7 +123,7 @@ import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
 import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel, ComponentStoreRecordList } from '@/dao/componentStoreDao';
-import { DeviceTypeList,} from '@/dao/deviceDao';
+import { DeviceTypeList} from '@/dao/deviceDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -131,7 +136,7 @@ export default {
       includeProps: ['type', 'person'],
     });
     const [keywords, cutterNameList] = useSearch(cutterList, {
-      includeProps: ['no', 'name'],
+      includeProps: ['dt', 'no', 'name'],
     });
     const storeTypeList = ref<any>([
       { name: '新购',
@@ -179,7 +184,7 @@ export default {
         }
         addModal.value.visible = false;
         Message.success('添加成功');
-        cutterList.value =await ComponentStoreList();
+        cutterList.value = await ComponentStoreList();
         // console.log(cutterList.value);
       }
     }
@@ -211,7 +216,7 @@ export default {
       await query(storeHistoryModal.value.storeHistoryInfo);
       storeHistoryModal.value.visible = true;
     };
-    //出入库登记确认函数
+    // 出入库登记确认函数
     async function storeRecordUpdate() {
       const valid = await (form2.value as ElForm).validate();
       if (valid) {
@@ -226,7 +231,7 @@ export default {
           dt: storeRecordModal.value.storeInfo.extend.buyDt,
           extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
-        cutterList.value =await ComponentStoreList();
+        cutterList.value = await ComponentStoreList();
         storeRecordModal.value.visible = false;
         Message.success('添加成功');
         // console.log(storeRecordModal.value.storeInfo);
@@ -238,8 +243,9 @@ export default {
       console.log(deviceComponentStoreRecordList);
     };
     onMounted(useLoading(loading, async () => {
-       cutterList.value =await ComponentStoreList();
+       cutterList.value = await ComponentStoreList();
        deviceTypeList.value = await DeviceTypeList();
+       console.log(cutterList);
     }));
     return{
       loading, cutterNameList, keywords, cutterList, form1, form2,
