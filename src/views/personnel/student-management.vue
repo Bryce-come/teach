@@ -418,6 +418,9 @@ export default {
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (!valid) { return ; }
+      if(modal.value.studentInfo.phone===''){
+        modal.value.studentInfo.phone=undefined
+      }
       const result = {
         id: modal.value.studentInfo.id,
         username: modal.value.studentInfo.username,
