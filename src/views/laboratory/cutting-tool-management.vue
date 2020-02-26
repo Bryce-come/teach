@@ -20,7 +20,12 @@
          </div>
       </el-table-column>
       <el-table-column prop="quantity" label="库存"/>
-      <el-table-column prop="extend.discardNum" label="报废数量"/>
+      <el-table-column label="报废数量">
+        <div slot-scope="{row}">
+           <div v-if='row.extend.discardNum'>{{row.extend.discardNum}}</div>
+           <div v-else>0</div>
+        </div>
+      </el-table-column>
       <el-table-column label="操作" width="220px" >
         <div class="flex center little-space" slot-scope="{row}">
           <el-button type="text" @click="storeRecordForm(row)">出入库登记</el-button>
@@ -128,7 +133,7 @@ export default {
       includeProps: ['type', 'person'],
     });
     const [keywords, cutterNameList] = useSearch(cutterList, {
-      includeProps: ['no', 'name'],
+      includeProps: ['dt', 'no', 'name'],
     });
     const storeTypeList = ref<any>([
       { name: '新购',
@@ -237,6 +242,7 @@ export default {
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
        deviceTypeList.value = await DeviceTypeList();
+       console.log(cutterList);
     }));
     return{
       loading, cutterNameList, keywords, cutterList, form1, form2,
