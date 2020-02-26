@@ -3,50 +3,38 @@
     <el-row :gutter="40" type="flex" justify="space-between">
       <el-col :span="4">
         <el-button type="success" @click="showFormB()">添加班级</el-button>
-        <div v-if='addClazFlag.visible'>
-          <el-input  v-model="addClazFlag.addClazInfo" placeholder="请输入班级名称"></el-input>
-          <el-button type="success" @click="addClaz(addClazFlag.addClazInfo)">确定</el-button>
-        </div>
         <el-tree 
           class="filter-tree" 
           :data="list" 
           :props="props" 
           node-key="id"
           default-expand-all
+          :expand-on-click-node='false'
           ref="tree">
           <span class="custom-tree-node" slot-scope="{ node, data }" @click="() => firstTab(node)">
-            
-            <!-- <span disabled="true">{{ node.label }}</span> -->
             <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
             class="tel" type="text" disabled="disabled" 
             v-model="node.label">
             <span>
-              <!-- <el-button
-                type="text"
-                size="mini"
-                v-if="node.level===1"
-                @click="() => toggleClazStatus(data)">
-                {{ data.off === 0 ? '冻结' : '恢复' }}
-              </el-button> -->
               <el-button
                 type="text"
                 size="mini"
-                v-if="node.level===1"
+                v-if="node.level===1&&data.tagoff===false"
                 @click="() => FrozenClaz(data)">
-                <i class="el-icon-circle-close" title="冻结"></i>
+                <i class="iconfont icon-dongjie1" title="冻结"></i>
               </el-button>
               <el-button
                 type="text"
                 size="mini"
-                v-if="node.level===1"
+                v-if="node.level===1&&data.tagoff===true"
                 @click="() => unFrozenClaz(data)">
-                <i class="el-icon-circle-check" title="解冻"></i>
+                <i class="iconfont icon-jiedong1" title="解冻"></i>
               </el-button>
               <el-button
                 type="text"
                 size="mini"
                 v-if='node.level===1'
-                @click="() => addGrop(data)">
+                @click="() => addNewGroup(node)">
                 <i class="el-icon-plus" title="增加"></i>
               </el-button>
               <el-button
@@ -119,6 +107,26 @@
         </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      :modal="addNewGroupFlag"
+      :confirm="addNewGroupDate">
+      <div slot="title">增加新的小组</div>
+        <el-form v-if="addNewGroupFlag.visible" ref="form" :model="addNewGroupFlag.addNewGroupInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
+          <el-form-item label="名称：" prop="name" :rules="{ required: true, message: '请输入名称'}">
+              <el-input v-model="addNewGroupFlag.addNewGroupInfo"></el-input>
+          </el-form-item>
+        </el-form>
+    </kit-dialog-simple>
+    <kit-dialog-simple
+      :modal="addClazFlag"
+      :confirm="addClaz">
+      <div slot="title">增加新的班级</div>
+        <el-form v-if="addClazFlag.visible" ref="form" :model="addClazFlag.addClazInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
+          <el-form-item label="名称：" prop="name" :rules="{ required: true, message: '请输入名称'}">
+              <el-input v-model="addClazFlag.addClazInfo"></el-input>
+          </el-form-item>
+        </el-form>
+    </kit-dialog-simple>
+    <kit-dialog-simple
       :modal="modal"
       :confirm="update"
       width="700px">
@@ -147,7 +155,7 @@
             <el-input clearable v-model="modal.studentInfo.pwdCheck" type="password" />
           </el-form-item>
           <el-form-item label="联系方式：" prop="phone">
-              <el-input v-model="modal.studentInfo.phone"></el-input>
+              <el-input v-model="modal.studentInfo.phone" maxlength='11'></el-input>
           </el-form-item>
           <el-form-item label="邮箱地址" prop="extend.address">
               <el-input v-model="modal.studentInfo.extend.address"></el-input>
@@ -182,7 +190,6 @@ export default {
       label: 'name',
     });
     const append = async (row: any) => {
-        console.log(row);
     };
     const remove = async (row: any) => {
         await UserDel({
@@ -201,65 +208,42 @@ export default {
     watch(filterText, () => {
       if (tree.value) { (tree.value as ElTree<any, any>).filter(filterText.value); }
     });
-    const [keywords, filtered= ref<any>({clasz: [],
-        claszGroip: []})] = useSearch(studentUserList, {
-      includeProps: ['username', 'name', 'phone' , 'address', 'clasz', 'claszGroup'],
-    });
-    async function chFiltered() {
-      const filGrp = ref<any>({
-        claszId: [],
-        claszGroipId: [],
-        claszIdN: [],
-        claszGroipIdNa: [],
-        claszGroipIdNb: [],
-        claszGroipIdNc: [],
-        claszGroipIdNd: [],
-        claszGroipIdNe: [],
-        claszGroipIndex: [],
-        claszGroipName: [],
-        claszIndex: [],
-        claszName: [],
-      });
-      for (let i = 0; i < filtered.value.length; i++) {
-        filGrp.value.claszId[i] = filtered.value[i].extend.clasz;
-        filGrp.value.claszGroipId[i] = filtered.value[i].extend.claszGroup;
-      }
-      for (let i = 0; i < list.value.length; i++) {
-        filGrp.value.claszIdN[i] = list.value[i].id;
-      }
-      for (let i = 0; i < filtered.value.length; i++) {
-        filGrp.value.claszIndex[i] = filGrp.value.claszIdN.indexOf(filtered.value[i].extend.clasz);
-      }
-      for (let i = 0; i < filGrp.value.claszIndex.length; i++) {
-        filGrp.value.claszName[i] = list.value[filGrp.value.claszIndex[i]].name;
-      }
-      for (let i = 0; i < filtered.value.length; i++) {
-        filtered.value[i].clasz = filGrp.value.claszName[i];
-      }
-      for (let i = 0; i < list.value.length; i++) {
-        filGrp.value.claszGroipIdNa[i] = [...list.value[i].children];
-      }
-      for (let i = 0; i < filGrp.value.claszGroipIdNa.length; i++) {
-        filGrp.value.claszGroipIdNb[i] = [filGrp.value.claszGroipIdNa[i]];
-      }
-      for (let i = 0; i < filGrp.value.claszGroipIdNa.length; i++) {
-        filGrp.value.claszGroipIdNd[i] = [filGrp.value.claszGroipIdNa[i]];
-      }
-      for (let i = 0; i < classList.value.length; i++) {
-        for (let j = 0; j < classList.value[i].groups.length; j++) {
-          filGrp.value.claszGroipIdNb[i][j] = classList.value[i].groups[j].id;
+    const TreeBtnFlag=ref<any>({
+      visible:false
+    })
+    function chgTreeBtnFlag(){
+      TreeBtnFlag.value.visible=!TreeBtnFlag.value.visible
+
+    }
+    const grpandclzList=ref<any>({
+          claszIdList:[],
+          claszNameList:[],
+          groupLista:[],
+          groupListb:[],
+          groupIdList:[],
+          groupNmaeList:[]
+        })
+    async function getGroupList(){
+        
+        const result = await ClassList()
+        for(let i =0;i<result.length;i++){
+          grpandclzList.value.claszIdList[i]=result[i].id
+          grpandclzList.value.claszNameList[i]=result[i].name
         }
-      }
-      for (let i = 0; i < classList.value.length; i++) {
-        for (let j = 0; j < classList.value[i].groups.length; j++) {
-          filGrp.value.claszGroipIdNd[i][j] = classList.value[i].groups[j].name;
+        for(let i =0;i<result.length;i++){
+          grpandclzList.value.groupLista[i]=[]
+          grpandclzList.value.groupListb[i]=[]
+          for(let j=0;j<result[i].groups.length;j++){
+            grpandclzList.value.groupLista[i][j]=result[i].groups[j].id
+            grpandclzList.value.groupListb[i][j]=result[i].groups[j].name
+          }
         }
-      }
-      filGrp.value.claszGroipIdNc = filGrp.value.claszGroipIdNb.reduce(function(a: any, b: any) { return a.concat(b); } );
-      filGrp.value.claszGroipIdNe = filGrp.value.claszGroipIdNd.reduce(function(a: any, b: any) { return a.concat(b); } );
-      for (let i = 0; i < filGrp.value.claszGroipId.length; i++) {
-        filtered.value[i].claszGroup = filGrp.value.claszGroipIdNe[filGrp.value.claszGroipIdNc.indexOf(filGrp.value.claszGroipId[i])];
-      }
+        grpandclzList.value.groupIdList=grpandclzList.value.groupLista.reduce(function (a:any, b:any) { return a.concat(b)} );
+        grpandclzList.value.groupNmaeList=grpandclzList.value.groupListb.reduce(function (a:any, b:any) { return a.concat(b)} );
+        for(let i=0;i<studentUserList.value.length;i++){
+          studentUserList.value[i].claszGroup=grpandclzList.value.groupNmaeList[grpandclzList.value.groupIdList.indexOf(studentUserList.value[i].extend.claszGroup)]
+          studentUserList.value[i].clasz=grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(studentUserList.value[i].extend.clasz)]
+        }
     }
     const form = ref<ElForm|null>(null);
     // const clazForm = ref<ElForm|null>(null);
@@ -267,10 +251,6 @@ export default {
       visible: false,
       studentInfo: null,
     });
-    // const addClaz = ref<any>({
-    //   visible: false,
-    //   clazInfo: null,
-    // });
     async function toggleStatus(row: any) {
       const off = row.off;
       await UserDel({
@@ -293,62 +273,59 @@ export default {
       visible: false,
       addClazInfo: '',
     });
-    function showFormB(row: any) {
-      // 重复班级未修改
-        addClazFlag.value.visible = !addClazFlag.value.visible;
-    }
     function firstTab(row: any) {
-      const result = ref<any>();
-      keywords.value = row.data.id;
+      if(row.level=1){
+        keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
+      }
+      else if (row.level=2){
+        keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
+      }
+      
     }
     const upgrpFlag = ref<any>({
       visible: false,
       upgrpInfo: '',
       data: '',
     });
+    function showFormB(){
+      addClazFlag.value.visible = true
+    }
     function updataGropFlag(row: any) {
       upgrpFlag.value.visible = true;
       upgrpFlag.value.data = row;
       upgrpFlag.value.upgrpInfo = row.data.name;
-      console.log(upgrpFlag.value.data);
     }
-    const ForzenStatus = ref<any>({
-      isForzenStatus: false,
-      notForzenStatus: true,
+    const addNewGroupFlag = ref<any>({
+      visible: false,
+      addNewGroupInfo: '',
+      data: '',
+      claz:''
     });
-    // const some =ref<any>({
-    //   classList[row.id].
-    // })
+    function addNewGroup(row:any){
+      addNewGroupFlag.value.visible = true;
+      addNewGroupFlag.value.data = row;
+    }
     async function FrozenClaz(row: any) {
       const result = {
         id: row.id,
         off: 1,
       };
-      ForzenStatus.value.isForzenStatus = true,
-      ForzenStatus.value.notForzenStatus = false,
+      row.tagoff=true
       await ClassFreeze(result);
       await queryClassList();
       classList.value = await ClassList();
+      Message.success('冻结成功')
     }
     async function unFrozenClaz(row: any) {
       const result = {
         id: row.id,
         off: 2,
       };
-      ForzenStatus.value.notForzenStatus = true,
-      ForzenStatus.value.isForzenStatus = false,
+      row.tagoff=false
       await ClassUnFreeze(result);
       await queryClassList();
       classList.value = await ClassList();
-    }
-    async function addGrop(row: any) {
-      const result = {
-        cid: row.id,
-        name: `组${row.children.length + 1}`,
-      };
-      await ClassGroupUpdate(result);
-      await queryClassList();
-      classList.value = await ClassList();
+      Message.success('解冻成功')
     }
     async function removeGrop(row: any) {
       const result = {
@@ -358,45 +335,85 @@ export default {
       await queryClassList();
       classList.value = await ClassList();
     }
-    // 重复名未定
     async function addClaz(row: any) {
-      if (addClazFlag.value.addClazInfo != '') {
+      const claszList=ref<any>({
+        claszNameList:[]
+      })
+      for(let i =0;i<classList.value.length;i++){
+          claszList.value.claszNameList[i]=classList.value[i].name
+      }
+      if (addClazFlag.value.addClazInfo != ''&&claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo)===-1) {
         const result = {
           name: addClazFlag.value.addClazInfo,
         };
         await ClassUpdate(result);
-        addClazFlag.value.visible = !addClazFlag.value.visible;
         await queryClassList();
         classList.value = await ClassList();
         addClazFlag.value.addClazInfo = '';
-      } else {
-        addClazFlag.value.visible = !addClazFlag.value.visible;
+        addClazFlag.value.visible = false
+      }else if(addClazFlag.value.addClazInfo != ''&&claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo)!=-1){
+        addClazFlag.value.visible = false
+        Message.error('请输入名称或该名称已存在')
+      }else if(addClazFlag.value.addClazInfo === ''){
+        addClazFlag.value.visible = false
+        Message.error('请输入名称或该名称已存在')
       }
     }
     async function showForm(row: any) {
+      // if (modal.value.studentInfo.extend.clasz=''){
+        console.log(row)
+      // }
       if (row) {
         row.pwd = '';
         (row as any).pwdCheck = '';
       }
+      
       modal.value.studentInfo = row ? deepClone(row) : initForm();
       modal.value.visible = true;
       await armasd(row.extend.clasz);
-      console.log(row);
       if (form.value) { (form.value as ElForm).clearValidate(); }
     }
     async function upgrpDate() {
-      const result = {
-        cid: upgrpFlag.value.data.parent.data.id,
-        name: upgrpFlag.value.upgrpInfo,
-        id: upgrpFlag.value.data.data.id,
+      if(grpandclzList.value.claszIdList.indexOf(upgrpFlag.value.data.parent.data.id)!=-1){
+        upgrpFlag.value.visible = false;
+        Message.error("请输入名称或该名称已存在")
+      }else{
+          const result = {
+          cid: upgrpFlag.value.data.parent.data.id,
+          name: upgrpFlag.value.upgrpInfo,
+          id: upgrpFlag.value.data.data.id,
+        };
+        if ( upgrpFlag.value.upgrpInfo != '') {
+          await ClassGroupUpdate(result);
+          await queryClassList();
+          // await chFiltered();
+          classList.value = await ClassList();
+          upgrpFlag.value.visible = false;
+        }
+      }
+      
+      
+    }
+    async function addNewGroupDate() {
+      if(grpandclzList.value.claszIdList.indexOf(addNewGroupFlag.value.data.data.id)!=-1){
+        addNewGroupFlag.value.visible = false;
+        Message.error("请输入名称或该名称已存在")
+      }
+      else {
+        const result = {
+        cid: addNewGroupFlag.value.data.data.id,
+        name: addNewGroupFlag.value.addNewGroupInfo,
       };
-      if (result.name != '') {
+      if (addNewGroupFlag.value.addNewGroupInfo != '') {
         await ClassGroupUpdate(result);
         await queryClassList();
-        await chFiltered();
+        // await chFiltered();
         classList.value = await ClassList();
+        addNewGroupFlag.value.visible = false;
       }
-      upgrpFlag.value.visible = false;
+      }
+      
+      
     }
     async function update() {
       const valid = await (form.value as ElForm).validate();
@@ -425,13 +442,17 @@ export default {
       }
       modal.value.visible = false;
       await queryStudentList();
-      await chFiltered();
+      // await chFiltered();
     }
     const queryStudentList = async () => {
         const firstList = await StudentList();
         studentUserList.value  = firstList;
         await ClassList();
+        await getGroupList()
+        brigList.value = studentUserList.value
     };
+    const brigList = ref<any>({
+    })
     async function queryClassList() {
       const aList = await ClassList();
       list.value = [];
@@ -439,12 +460,13 @@ export default {
       list.value.children = [];
       blist.value.children = [];
       for (let i = 0; i < aList.length; i++) {
-        list.value[i] = {id: aList[i].id, name: aList[i].name, children: [...aList[i].groups]};
+        list.value[i] = {id: aList[i].id, name: aList[i].name, tagoff:aList[i].freez,children: [...aList[i].groups]};
         blist.value[i] = {value: aList[i].name, label: aList[i].name, children: [...aList[i].groups]};
       }
+
     }
     async function armasd(row: any) {
-      modal.value.studentInfo.extend.claszGroup = '';
+      // modal.value.studentInfo.extend.claszGroup = '';
       const midList = ref<any>();
       midList.value = [];
       await queryClassList();
@@ -457,19 +479,23 @@ export default {
       classList.value = await ClassList();
       await queryStudentList();
       await queryClassList();
-      await chFiltered();
+      // await chFiltered();
+      await getGroupList()
     }));
-
+    const [keywords, filtered] = useSearch(brigList, {
+          includeProps: ['username', 'name', 'phone' , 'address', 'clasz', 'claszGroup'],
+      });
     return{
       loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag,
-      storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
-      armasd, showFormB, upgrpFlag,
+      addNewGroup,addNewGroupDate,storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
+      armasd, upgrpFlag,showFormB,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
       queryStudentList, queryClassList, removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
-      modal, form, showForm, addClaz, addGrop, upgrpDate,
-      update: useLoading(loading, update), updataGropFlag, ForzenStatus, chFiltered,
-      validator, classList, groupList, ctogList, append, FrozenClaz, unFrozenClaz, firstTab,
+      modal, form, showForm, addClaz, upgrpDate,TreeBtnFlag,
+      update: useLoading(loading, update), updataGropFlag,getGroupList,addNewGroupFlag,chgTreeBtnFlag,
+      // chFiltered,
+      validator, classList, groupList, ctogList, append, FrozenClaz, unFrozenClaz, firstTab,grpandclzList,
     };
     return{
 
