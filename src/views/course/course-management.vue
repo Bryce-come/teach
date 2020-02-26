@@ -16,7 +16,9 @@
       <el-table-column prop="extend.scoreRatio[0]" label="操作评分占比"/>
       <el-table-column prop="extend.scoreRatio[1]" label="报告评分占比"/>
       <el-table-column label="实验项目">
-        <el-button type="text" size="mini" @click="showExperimentForm()">查看详情</el-button>
+        <div slot-scope="{row}">
+          <el-button type="text" size="mini" @click="showExperimentForm(row)">查看详情</el-button>
+        </div>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <div class="flex center little-space wrap" slot-scope="{row}">
@@ -37,17 +39,25 @@
           <el-form-item label="课程名称：" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
               <el-input v-model="courseModal.courseInfo.name"></el-input>
           </el-form-item>
-          <el-form-item label="任课教师：" prop="teacherId" :rules="{ required: true, message: '请选择任课教师'}">
-              <el-select v-model="courseModal.courseInfo.teacherId">
+          <el-form-item label="任课教师：" prop="teacher.id" :rules="{ required: true, message: '请选择任课教师'}">
+              <el-select v-model="courseModal.courseInfo.teacher.id">
                 <el-option
                   v-for="item of teacherList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"></el-option>
+                  :value="item.id">
+                </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="实验项目：" prop="experiment" :rules="{ required: true, message: '请选择实验项目'}">
-              <lkt-select :list="experimentList" value-key="name" option-value-key="id" v-model="courseModal.courseInfo.experiment" multiple></lkt-select>
+          <el-form-item label="实验项目：" prop="program" :rules="{ required: true, message: '请选择实验项目'}">
+              <el-select v-model="courseModal.courseInfo.program" multiple>
+                <el-option
+                  v-for="item of experimentList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
           </el-form-item>
           <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
               <el-input v-model="courseModal.courseInfo.extend.scoreRatio[0]"></el-input>
@@ -64,21 +74,29 @@
       <div slot="title">实验项目详情</div>
       <el-form class="flex end">
         <el-form-item>
-          <el-input placeholder="输入关键字搜索" style="width:300px"></el-input>
+          <el-input v-model="keywords2" placeholder="输入关键字搜索" style="width:300px"></el-input>
         </el-form-item>
       </el-form>
       <lkt-table
-        :data="experimentList"
+        :data="filtered2"
         style="width:100%">
         <el-table-column label="实验名称" prop="name"/>
         <el-table-column label="实验目的" prop="purpose"/>
         <el-table-column label="实验原理" prop="principle"/>
         <el-table-column label="实验步骤" prop="steps"/>
         <el-table-column label="实验结果" prop="results"/>
-        <el-table-column label="关联操作台" prop="stations"/>
+        <el-table-column label="关联操作台">
+          <div class="flex start" slot-scope="props" >
+            <div v-for="(item,i) in props.row.stations" :key="i" style="padding: 0">
+              {{item.id + ','}}
+            </div>
+          </div>
+        </el-table-column>
         <el-table-column label="附件" prop="attachment"/>
         <el-table-column label="操作">
-          <el-button type="danger" size="mini" @click="experimentRemove()">删除</el-button>
+          <div slot-scope="{row}">
+            <el-button type="danger" size="mini" @click="experimentRemove(row)">删除</el-button>
+          </div>
         </el-table-column>
       </lkt-table>
     </kit-dialog-simple>
@@ -90,7 +108,7 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {CourseList, CourseAdd, CourseUpdate, CourseDel } from '@/dao/courseProgramDao';
+import {CourseList, CourseAdd, CourseUpdate, CourseDel, ProgramList, ProgramDel } from '@/dao/courseProgramDao';
 import {TeacherList} from '@/dao/userDao';
 export default {
   setup() {
@@ -100,15 +118,27 @@ export default {
       includeProps: ['code', 'name', 'teacher.name'],
     });
     const teacherList = ref<any>();
-    const experimentList = ref<any>();
+    const experimentList = ref<any>([]);
+    const expOfCourseList = ref<any>([]);
+    const [keywords2, filtered2] = useSearch(expOfCourseList, {
+      includeProps: ['name',],
+    });
     const courseRemove = async (row: any) => {
       await CourseDel({
         id: row.id,
       });
-      courseList.value = await CourseList(true);
+      courseList.value = await CourseList({
+        containPrograms: true,
+      });
       Message.success('删除成功');
     };
     const experimentRemove = async (row: any) => {
+      await ProgramDel({
+        id: row.id,
+      });
+      courseList.value = await CourseList({
+        containPrograms: true,
+      });
       Message.success('删除成功');
     };
     const form = ref<ElForm|null>(null);
@@ -133,13 +163,21 @@ export default {
       courseModal.value.courseInfo = data;
       courseModal.value.visible = true;
     };
-    const showExperimentForm = () => {
+    const showExperimentForm = async (data?: any) => {
+      if (data) {
+        expOfCourseList.value = data.programList;
+        console.log(expOfCourseList.value);
+        // for(var i=0;i<expOfCourseList.value.length;i++) {
+        //   console.log(expOfCourseList.value[i].stations);
+        // }
+      }
       experimentModal.value.visible = true;
     };
     async function experimentUpdate() {
       experimentModal.value.visible = false;
-      Message.success('添加成功');
-      await queryCourse();
+      courseList.value = await CourseList({
+        containPrograms: true,
+      });
     }
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
@@ -150,55 +188,44 @@ export default {
             // id: courseModal.value.courseInfo.id,
             code: courseModal.value.courseInfo.code,
             name: courseModal.value.courseInfo.name,
-            teacherId: courseModal.value.courseInfo.teacherId,
+            teacherId: courseModal.value.courseInfo.teacher.id,
             extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
             programJson: JSON.stringify(courseModal.value.courseInfo.program),
           });
         } else {
           await CourseUpdate({
-            // id: courseModal.value.courseInfo.id,
+            id: courseModal.value.courseInfo.id,
             code: courseModal.value.courseInfo.code,
             name: courseModal.value.courseInfo.name,
-            teacherId: courseModal.value.courseInfo.teacherId,
+            teacherId: courseModal.value.courseInfo.teacher.id,
             extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
             programJson: JSON.stringify(courseModal.value.courseInfo.program),
           });
         }
         courseModal.value.visible = false;
         Message.success(`${courseModal.value.type === 'add' ? '添加' : '修改'}成功`);
-        courseList.value = await CourseList(true);
-        await queryCourse();
+        courseList.value = await CourseList({
+          containPrograms: true,
+        });
       }
     }
-    const queryCourse = async () => {
-      // courseList.value = [
-      //     {id: 0, code: '1000231', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-      //     {id: 1, code: '1000232', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-      //     {id: 2, code: '1000233', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-      //     {id: 3, code: '1000234', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-      //     {id: 4, code: '1000235', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-      // ];
-      experimentList.value = [
-        {id: 0, code: '', name: '实验1', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 1, code: '', name: '实验2', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 2, code: '', name: '实验3', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 3, code: '', name: '实验4', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 4, code: '', name: '实验5', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-      ];
-    };
     onMounted(useLoading(loading, async () => {
-        await queryCourse();
         teacherList.value = await TeacherList();
-        courseList.value = await CourseList(true);
-        console.log(courseList.value);
+        experimentList.value = await ProgramList();
+        courseList.value = await CourseList({
+          containPrograms: true,
+        });
         console.log(teacherList.value);
+        console.log(courseList.value);
+        console.log(experimentList.value);
     }));
     return{
-        loading, courseList, queryCourse, form, keywords, filtered, teacherList,
+        loading, courseList, form, keywords, filtered, teacherList,
         courseRemove: useConfirm('确认删除？', useLoading(loading, courseRemove)),
-        courseModal, showCourseForm,
+        courseModal, showCourseForm, experimentList,
         courseUpdate: useLoading(loading, courseUpdate),
-        experimentList, experimentModal, showExperimentForm,
+        experimentModal, showExperimentForm, expOfCourseList,
+        keywords2, filtered2,
         experimentUpdate: useLoading(loading, experimentUpdate),
         experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
     };
@@ -206,7 +233,7 @@ export default {
 };
 function initCourseForm() {
     return {
-        name: '', code: '', teacherId: '', experiment: '',
+        name: '', code: '', teacher: {id: '', name: ''},
         extend: {scoreRatio: []},
     };
 }

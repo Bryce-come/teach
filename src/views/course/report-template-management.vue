@@ -34,11 +34,15 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import {ReportTemplateList, ReportTemplateAdd, ReportTemplateDel} from '@/dao/reportDao'
 export default {
   setup() {
     const loading = ref(false);
     const experimentReportTemplateList = ref<any>();
     const remove = async (row: any) => {
+      await ReportTemplateDel({
+        id: row.id,
+      });
       Message.success('删除成功');
     };
     const modal = ref<any>({
@@ -58,13 +62,17 @@ export default {
       Message.success('下载成功');
     };
     const query = async () => {
-      experimentReportTemplateList.value = [
-        {id: '0', name: '自动化操作实验报告模板', path: '', createDt: ''},
-        {id: '1', name: '自动化操作实验报告模板', path: '', createDt: ''},
-        {id: '2', name: '自动化操作实验报告模板', path: '', createDt: ''},
-        {id: '3', name: '自动化操作实验报告模板', path: '', createDt: ''},
-        {id: '4', name: '自动化操作实验报告模板', path: '', createDt: ''},
-      ];
+      // experimentReportTemplateList.value = [
+      //   {id: '0', name: '自动化操作实验报告模板', path: '', createDt: ''},
+      //   {id: '1', name: '自动化操作实验报告模板', path: '', createDt: ''},
+      //   {id: '2', name: '自动化操作实验报告模板', path: '', createDt: ''},
+      //   {id: '3', name: '自动化操作实验报告模板', path: '', createDt: ''},
+      //   {id: '4', name: '自动化操作实验报告模板', path: '', createDt: ''},
+      // ];
+      experimentReportTemplateList.value = await ReportTemplateList({
+        file: '',
+      });
+      console.log(experimentReportTemplateList.value);
     };
     onMounted(useLoading(loading, async () => {
       await query();
