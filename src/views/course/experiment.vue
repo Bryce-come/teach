@@ -107,7 +107,7 @@
         </el-form-item>
         <el-form-item label="关联操作台：">
           <div class="flex start">
-            <div v-for="item of detailModal.detailInfo.stationList">{{item.name + ','}}</div>
+            <div v-for="item of detailModal.detailInfo.stationList" :key="item.id">{{item.name + ','}}</div>
           </div>
         </el-form-item>
         <el-form-item label="附件：">
@@ -255,13 +255,13 @@ export default {
     };
     const showInExp = async () => {
       const firstList = await ProgramList();
-      experimentList.value = firstList.filter(function (item) {
+      experimentList.value = firstList.filter(function (item: any) {
         return item.label === '课内实验';
       })
     };
     const showOutExp = async () => {
       const secondList = await ProgramList();
-      experimentList.value = secondList.filter(function (item) {
+      experimentList.value = secondList.filter(function (item: any) {
         return item.label === '开放实验';
       })
     };

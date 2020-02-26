@@ -5,55 +5,86 @@
       <el-tab-pane label="当前维保记录">
         <lkt-table :data="deviceMaintenanceRecord" style="width:100%">          
           <el-table-column prop="device.name" label="设备名称"/>
-          <el-table-column prop="id" label="设备编号"/>
-          <el-table-column prop="device.type.name" label="设备型号"/>
+          <el-table-column prop="device.id" label="设备编号"/>
+          <el-table-column prop="device.deviceType.name" label="设备型号"/>
           <el-table-column prop="restorationDt" label="最近维保时间" width="120px"/>
-          <el-table-column prop="type" label="维保类型"/>
+          <el-table-column prop="type" label="维保类型">
+             <div slot-scope="{ row }">
+              {{row.type === 0 ?'巡检': '' || row.type === 1 ?'保养': '' || row.type === 2 ?'维修': ''}}
+            </div>
+          </el-table-column>
           <el-table-column prop="treatment" label="维保内容" width="100px"/>
           <el-table-column prop="executor" label="维护人"/>
           <el-table-column prop="extend.executorPhone" label="联系方式" width="100px"/>
           <el-table-column prop="nextDt" label="距离下次维护时间" width="150px"/>
-          <el-table-column label="当前状态">
-            <div style="color:blue">正常</div>
+          <el-table-column prop="status" label="当前状态">
           </el-table-column>
-          <el-table-column label="操作" align="center">
-            <el-button type="danger" size="mini" @click="remove()">删除</el-button>
+          <el-table-column label="操作" align="center" >
+            <div slot-scope="{row}">
+            <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+            </div>
           </el-table-column>
         </lkt-table>
       </el-tab-pane>
       <el-tab-pane label="历史记录">
         <el-form :inline="true">
           <el-form-item label="设备名称:" label-width="80px">
-            <lkt-select :list="deviceNameList" value-key="name" v-model="deviceName" multiple :clearable="false" placeholder="请选择设备名称"/>
+            <el-select v-model="deviceName" multiple :clearable="false" placeholder="请选择设备名称">
+              <el-option
+                v-for="item of deviceNameList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="设备型号:" label-width="80px">
-            <lkt-select :list="deviceTypeList" value-key="name" v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号"/>
+          <el-form-item label="维护人:" label-width="80px">
+            <el-select v-model="executorName" filterable allow-create multiple :clearable="false" placeholder="请选择维护人">
+              <el-option
+                v-for="item of executorList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="维保类型:" label-width="80px">
-            <lkt-select :list="maintainTypeList" value-key="type" v-model="maintainType" multiple :clearable="false" placeholder="请选择维保类型"/>
+            <el-select v-model="maintainType" multiple :clearable="false" placeholder="请选择维保类型">
+              <el-option
+                v-for="item of maintainTypeList"
+                :key="item.id"
+                :label="item.type"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="维护日期:" label-width="80px">
             <lkt-date-picker v-model="maintainDt"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">查询</el-button>
-            <el-button style="margin-left: 10px">重置</el-button>
+            <el-button type="primary" @click="queryMaintainRecordHistory()">查询</el-button>
           </el-form-item>
         </el-form> 
-        <lkt-table :data="deviceMaintenanceRecord" style="width:100%">
-          <el-table-column prop="occurDt" label="时间"/>          
+        <lkt-table :data="deviceMaintenanceHistoryRecord" style="width:100%">
+          <el-table-column prop="restorationDt" label="最近维保时间" width="120px"/>
           <el-table-column prop="device.name" label="设备名称"/>
-          <el-table-column prop="id" label="设备编号"/>
-          <el-table-column prop="device.type.name" label="设备型号"/>
-          <el-table-column prop="type" label="维保类型"/>
+          <el-table-column prop="device.id" label="设备编号"/>
+          <el-table-column prop="device.deviceType.name" label="设备型号"/>
+          <el-table-column prop="type" label="维保类型">
+             <div slot-scope="{ row }">
+              {{row.type === 0 ?'巡检': '' || row.type === 1 ?'保养': '' || row.type === 2 ?'维修': ''}}
+            </div>
+          </el-table-column>
           <el-table-column prop="treatment" label="维保内容" width="100px"/>
           <el-table-column prop="executor" label="维护人"/>
           <el-table-column prop="extend.executorPhone" label="联系方式" width="100px"/>
-          <el-table-column label="当前状态">
-            <div style="color:blue">正常</div>
+          <el-table-column prop="nextDt" label="距离下次维护时间" width="150px"/>
+          <el-table-column prop="status" label="当前状态">
           </el-table-column>
-          <el-table-column label="操作" align="center">
-            <el-button type="danger" size="mini" @click="remove()">删除</el-button>
+          <el-table-column label="操作" align="center" >
+            <div slot-scope="{row}">
+            <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+            </div>
           </el-table-column>
         </lkt-table>
       </el-tab-pane>
@@ -61,17 +92,24 @@
     <kit-dialog-simple
       :modal="modal"
       :confirm="update"
-      width="700px">
+      width="600px">
         <div slot="title">添加设备维保记录</div>
-        <el-form v-if="modal.maintainRecordInfo" ref="form" :model="modal.maintainRecordInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
+        <el-form v-if="modal.maintainRecordInfo" ref="form" :model="modal.maintainRecordInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
           <el-form-item label="设备名称：" prop="device.name" :rules="{ required: true, message: '请输入设备名称'}">
             <el-input v-model="modal.maintainRecordInfo.device.name"></el-input>
           </el-form-item>
-          <el-form-item label="设备编号：" prop="id" :rules="{ required: true, message: '请输入设备编号'}">
-            <el-input v-model="modal.maintainRecordInfo.id"></el-input>
+          <el-form-item label="设备编号：" prop="device.referencedColumnName" :rules="{ required: true, message: '请输入设备编号'}">
+            <el-input v-model="modal.maintainRecordInfo.device.referencedColumnName"></el-input>
           </el-form-item>
-          <el-form-item label="设备型号：" prop="device.type.name" :rules="{ required: true, message: '请选择设备型号'}">
-              <el-select v-model="modal.maintainRecordInfo.device.type.name"></el-select>
+          <el-form-item label="设备型号：" prop="device.deviceType" :rules="{ required: true, message: '请选择设备型号'}">
+              <el-select v-model="modal.maintainRecordInfo.device.deviceType" placeholder="请选择">
+              <el-option
+                v-for="item of deviceTypeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>          
           <el-form-item label="保养时间：" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
               <el-date-picker v-model="modal.maintainRecordInfo.restorationDt" type="date"></el-date-picker>
@@ -80,18 +118,39 @@
               <el-input type="text" v-model="modal.maintainRecordInfo.treatment"></el-input>
           </el-form-item>
           <el-form-item label="维保类型：" prop="type" :rules="{ required: true, message: '请选择维保类型'}">
-              <el-input type="text" v-model="modal.maintainRecordInfo.type"></el-input>
+            <el-select v-model="modal.maintainRecordInfo.type" placeholder="请选择">
+              <el-option
+                v-for="item of maintainTypeList"
+                :key="item.id"
+                :label="item.type"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="维护人：" prop="executor" :rules="{ required: true, message: '请输入维护人姓名'}">
-              <el-input v-model="modal.maintainRecordInfo.executor"></el-input>
+          <el-form-item label="维护人：" prop="executor" :rules="{ required: true, message: '请填入维护人'}">
+              <el-select v-model="modal.maintainRecordInfo.executor" filterable allow-create placeholder="请选择">
+               <el-option
+                v-for="item of executorList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+              </el-select>
           </el-form-item>
           <el-form-item label="联系方式：" prop="extend.executorPhone">
               <el-input v-model="modal.maintainRecordInfo.extend.executorPhone"></el-input>
           </el-form-item>
-          <el-form-item label="当前状态：" prop="status" :rules="{ required: true, message: '请选择当前状态'}">
-              <el-input type="text" v-model="modal.maintainRecordInfo.status"></el-input>
+          <el-form-item label="当前状态：" prop="status">
+              <el-select v-model="modal.maintainRecordInfo.status"  placeholder="请选择">
+               <el-option
+                v-for="item of statusList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+              </el-select>
           </el-form-item>
-          <el-form-item label="下次保养时间：" prop="nextDt" :rules="{ required: true, message: '请选择下次保养时间'}">
+          <el-form-item label="下次保养时间：" prop="nextDt">
               <el-date-picker v-model="modal.maintainRecordInfo.nextDt" type="date"></el-date-picker>
           </el-form-item>
         </el-form>
@@ -104,6 +163,7 @@ import { Message } from 'element-ui';
 import { useConfirm, useLoading } from 'web-toolkit/src/service';
 import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import { DeviceList, DeviceTypeList, DeviceMaintenLatest, DeviceMaintenDel, DeviceMaintenAdd, DeviceMaintenList, DeviceMaintenListExecutor} from '@/dao/deviceDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -112,14 +172,20 @@ export default {
       maintainRecordInfo: null,
     });
     const deviceMaintenanceRecord = ref<any>();
-    const deviceTypeList = ref<any>();
-    const deviceType = ref<any>();
+    const deviceMaintenanceHistoryRecord = ref<any>();
+    const deviceTypeList = ref<any>([]);
+    const executorList = ref<any>([]);
+    const executorName = ref<any>();
     const deviceNameList = ref<any>();
     const deviceName = ref<any>();
     const maintainTypeList = ref<any>();
     const maintainType = ref<any>();
-    const maintainDt = '';
-    const remove = (row: any) => {
+    const maintainDt = ref<any>(null);
+    const statusList = ref<any>();
+    const remove = async (row: any) => {
+      await DeviceMaintenDel({id: row.id }),
+      await queryMaintainRecord();
+      await queryMaintainRecordHistory();
       Message.success('删除成功');
     };
     const form = ref<ElForm|null>(null);
@@ -127,7 +193,6 @@ export default {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
         data = deepClone(data);
-
       } else {
         data = initForm();
       }
@@ -135,71 +200,96 @@ export default {
       modal.value.visible = true;
     };
     async function update() {
-      const valid = true;
+      const valid = await (form.value as ElForm).validate();
       if (valid) {
-        const { id } = modal.value.maintainRecordInfo;
+        if (modal.value.maintainRecordInfo.restorationDt && modal.value.maintainRecordInfo.restorationDt instanceof Date) {
+          modal.value.maintainRecordInfo.restorationDt = modal.value.maintainRecordInfo.restorationDt.getTime();
+        }
+       if (modal.value.maintainRecordInfo.nextDt && modal.value.maintainRecordInfo.nextDt instanceof Date) {
+          modal.value.maintainRecordInfo.nextDt = modal.value.maintainRecordInfo.nextDt.getTime();
+        }
+        await DeviceMaintenAdd({
+          deviceId: modal.value.maintainRecordInfo.device.referencedColumnName,
+          type: modal.value.maintainRecordInfo.type,
+          executor: modal.value.maintainRecordInfo.executor,
+          status: modal.value.maintainRecordInfo.status? modal.value.maintainRecordInfo.status : null,
+          treatment: modal.value.maintainRecordInfo.treatment? modal.value.maintainRecordInfo.treatment : null,
+          restorationDt: modal.value.maintainRecordInfo.restorationDt,
+          nextDt: modal.value.maintainRecordInfo.nextDt? modal.value.maintainRecordInfo.nextDt : null,
+          extendJson: modal.value.maintainRecordInfo.extend? JSON.stringify(modal.value.maintainRecordInfo.extend) : null,
+        });
         modal.value.visible = false;
         Message.success('添加成功');
         await queryMaintainRecord();
       }
     }
     const queryMaintainRecord = async () => {
-      deviceMaintenanceRecord.value = [
-        {id: '38-36', device: {id: '001', name: '工控机', type: {id: '0', name: 'NLJT1'}}, type: '巡检', operator: '', executor: '小明', status: '正常', description: '', position: '', reason: '',
-        occurDt: '2016-10-21', treatment: '', restorationDt: '2016-10-21', nextDt: 10, extend: {executorPhone: ''}, createDt: '2016-09-21'},
-        {id: '38-37', device: {id: '002', name: '切削机', type: {id: '1', name: 'NLJT2'}}, type: '保养', operator: '', executor: '小明', status: '正常', description: '', position: '', reason: '',
-        occurDt: '2016-10-21', treatment: '', restorationDt: '2016-10-22', nextDt: 12, extend: {executorPhone: ''}, createDt: '2016-09-21'},
-        {id: '28-38', device: {id: '003', name: '磨光机', type: {id: '2', name: 'NLJT3'}}, type: '维修', operator: '', executor: '小明', status: '正常', description: '', position: '', reason: '',
-        occurDt: '2016-10-21', treatment: '', restorationDt: '2016-10-23', nextDt: 10, extend: {executorPhone: ''}, createDt: '2016-09-21'},
-        {id: '28-39', device: {id: '004', name: '切削机', type: {id: '3', name: 'NLJT4'}}, type: '巡检', operator: '', executor: '小明', status: '正常', description: '', position: '', reason: '',
-        occurDt: '2016-10-21', treatment: '', restorationDt: '2016-10-24', nextDt: 7, extend: {executorPhone: ''}, createDt: '2016-09-21'},
-        {id: '28-32', device: {id: '005', name: '切削机', type: {id: '4', name: 'NLJT5'}}, type: '维修', operator: '', executor: '小明', status: '正常', description: '', position: '', reason: '',
-        occurDt: '2016-10-21', treatment: '', restorationDt: '2016-10-25', nextDt: 17, extend: {executorPhone: ''}, createDt: '2016-09-21'},
-      ];
+      deviceMaintenanceRecord.value = await DeviceMaintenLatest();
     };
+    const queryMaintainRecordHistory = async () => {
+      deviceMaintenanceHistoryRecord.value = await DeviceMaintenList({
+        devicesJson: deviceName.value && deviceName.value.length > 0 ? JSON.stringify(deviceName.value) : null,
+        typesJson: maintainType.value && maintainType.value.length > 0 ? JSON.stringify(maintainType.value) : null,
+        executorsJson: executorName.value && executorName.value.length > 0 ? JSON.stringify(executorName.value) : null,
+        start: maintainDt.value && maintainDt.value[0] ? (maintainDt.value[0] as Date).getTime() : null,
+        end: maintainDt.value && maintainDt.value[1] ? (maintainDt.value[1] as Date).getTime() : null,
+      });
+    }
     onMounted(useLoading(loading, async () => {
       await queryMaintainRecord();
-      deviceTypeList.value = [
-          {id: '0', name: 'NLJT1', img: '', extend: {ctrName: ''}},
-          {id: '1', name: 'NLJT2', img: '', extend: {ctrName: ''}},
-          {id: '2', name: 'NLJT3', img: '', extend: {ctrName: ''}},
-          {id: '3', name: 'NLJT4', img: '', extend: {ctrName: ''}},
-          {id: '4', name: 'NLJT5', img: '', extend: {ctrName: ''}},
-      ];
-      deviceNameList.value = [
-        {id: '001', collector: '', name: '工控机', type: {id: '0', name: 'NLJT1', img: '', extend: {ctrName: ''}},
-        createDt: '', extend: {ip: '192.168.0.101', buyDt: '2019-12-23', keeper: '', maintenTime: '', address: '浙江自动化学院实验室01', price: '', producer: '浙江金华机床厂',
-        producerContact: '', producerTel: '18977538970'}},
-        {id: '002', collector: '', name: '切削机', type: {id: '1', name: 'NLJT2', img: '', extend: {ctrName: ''}},
-        createDt: '', extend: {ip: '192.168.0.102', buyDt: '2019-12-23', keeper: '', maintenTime: '', address: '浙江自动化学院实验室02', price: '', producer: '浙江金华机床厂',
-        producerContact: '', producerTel: '18977538970'}},
-        {id: '003', collector: '', name: '磨光机', type: {id: '2', name: 'NLJT3', img: '', extend: {ctrName: ''}},
-        createDt: '', extend: {ip: '192.168.0.103', buyDt: '2019-12-23', keeper: '', maintenTime: '', address: '浙江自动化学院实验室03', price: '', producer: '浙江金华机床厂',
-        producerContact: '', producerTel: '18977538970'}},
-      ];
+      await queryMaintainRecordHistory();
+      deviceTypeList.value = await DeviceTypeList();
+      executorList.value = await DeviceMaintenListExecutor();
+      deviceNameList.value = await DeviceList({
+        types: null,
+        start: null,
+        end: null,
+      });
       maintainTypeList.value = [
         {id: '0', type: '巡检'},
         {id: '1', type: '保养'},
         {id: '2', type: '维修'},
       ];
+      statusList.value = [
+        { value: '正常',
+          label: '正常' },
+        { value: '维护中',
+          label: '维护中' },
+        { value: '故障',
+          label: '故障' },
+        { value: '告警',
+          label: '告警' },
+        { value: '报废',
+          label: '报废' },
+      ]
     }));
     return{
-      deviceMaintenanceRecord, deviceTypeList, deviceType, deviceNameList, deviceName, maintainTypeList, maintainType, maintainDt, loading, modal,
+      deviceMaintenanceRecord, deviceTypeList, executorName, deviceNameList, deviceName, maintainTypeList, maintainType, maintainDt, loading, modal,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       update: useLoading(loading, update),
       showForm,
+      deviceMaintenanceHistoryRecord,
+      form,
+      executorList,
+      statusList,
+      queryMaintainRecordHistory: useLoading(loading, queryMaintainRecordHistory),
     };
   },
 };
 function initForm() {
   return {
-    id: '',
-    device: {name: '', type: {name: ''}},
-    restorationDt: '', nextDt: '', treatment: '',
-    type: '', status: '',
+    device: {
+      name: '',
+      referencedColumnName:'', 
+      deviceType: '' },
+    restorationDt: '', 
+    nextDt: '', 
+    treatment: '',
+    type: '', 
+    status: '',
     executor: '',
     extend: {executorPhone: ''},
-  };
+  }
 }
 </script>
 <style scoped lang="scss">
