@@ -274,10 +274,10 @@ export default {
       addClazInfo: '',
     });
     function firstTab(row: any) {
-      if(row.level=1){
-        keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
-      }
-      else if (row.level=2){
+      // if(row.level=1){
+      //   keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
+      // }
+      if (row.level=2){
         keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
       }
       
@@ -360,9 +360,6 @@ export default {
       }
     }
     async function showForm(row: any) {
-      // if (modal.value.studentInfo.extend.clasz=''){
-        console.log(row)
-      // }
       if (row) {
         row.pwd = '';
         (row as any).pwdCheck = '';
