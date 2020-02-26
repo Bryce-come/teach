@@ -5,8 +5,8 @@ import axios from 'axios';
  * 私有文件下载
  *
  */
-export function DownLoadPrivate( params: any ) {
-  return params;
+export async function DownLoadPrivate( path: string, filename: string ) {
+  await download('/rest/download', {name: path},{filename: filename});
 }
 
 /**

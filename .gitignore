@@ -7,7 +7,7 @@ yarn-error.log*
 weekly.*
 
 # Editor directories and files
-.idea
+.idea/
 *.suo
 *.ntvs*
 *.njsproj

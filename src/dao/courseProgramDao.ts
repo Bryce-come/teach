@@ -30,8 +30,8 @@ export async function CourseDel(params: any) {
 
 // 按label区分开,返回map
 export async function ProgramList() {
-  const {data: {map}} = await postService(urlMap.program_list.url);
-  return map;
+  const {data: {list}} = await postService(urlMap.program_list.url);
+  return list;
 }
 
 // params: *code, *name, purpose, principle, steps, results, label, stationJson, extendJson

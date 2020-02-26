@@ -90,7 +90,7 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {CourseList, CourseAdd, CourseUpdate, CourseDel, } from '@/dao/courseProgramDao';
+import {CourseList, CourseAdd, CourseUpdate, CourseDel } from '@/dao/courseProgramDao';
 import {TeacherList} from '@/dao/userDao';
 export default {
   setup() {
@@ -98,12 +98,12 @@ export default {
     const courseList = ref<any>([]);
     const [keywords, filtered] = useSearch(courseList, {
       includeProps: ['code', 'name', 'teacher.name'],
-    }); 
+    });
     const teacherList = ref<any>();
     const experimentList = ref<any>();
     const courseRemove = async (row: any) => {
       await CourseDel({
-        id: row.id
+        id: row.id,
       });
       courseList.value = await CourseList(true);
       Message.success('删除成功');
@@ -152,7 +152,7 @@ export default {
             name: courseModal.value.courseInfo.name,
             teacherId: courseModal.value.courseInfo.teacherId,
             extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
-            programJson: JSON.stringify(courseModal.value.courseInfo.program)
+            programJson: JSON.stringify(courseModal.value.courseInfo.program),
           });
         } else {
           await CourseUpdate({
@@ -161,7 +161,7 @@ export default {
             name: courseModal.value.courseInfo.name,
             teacherId: courseModal.value.courseInfo.teacherId,
             extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
-            programJson: JSON.stringify(courseModal.value.courseInfo.program)
+            programJson: JSON.stringify(courseModal.value.courseInfo.program),
           });
         }
         courseModal.value.visible = false;
