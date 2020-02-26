@@ -140,10 +140,10 @@ export default {
         id: 0 },
       { name: '借出',
         id: 1 },
-      { name: '还回', 
+      { name: '还回',
         id: 2 },
       { name: '报废',
-        id: 3 },                        
+        id: 3 },
     ]);
     const form1 = ref<ElForm|null>(null);
     const form2 = ref<ElForm|null>(null);
@@ -177,7 +177,7 @@ export default {
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
             dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
-          })
+          });
         }
         addModal.value.visible = false;
         Message.success('添加成功');
@@ -189,7 +189,7 @@ export default {
       await ComponentStoreDel({
         id: row.id,
       });
-      cutterList.value =await ComponentStoreList();
+      cutterList.value = await ComponentStoreList();
       Message.success('删除成功');
     };
     const storeRecordForm = async (data: any) => {
@@ -253,7 +253,7 @@ export default {
       storeRecordModal, storeRecordForm,
       storeRecordUpdate: useLoading(loading, storeRecordUpdate),
       storeHistoryModal, storeHistoryForm,
-      filterText, deviceComponentStoreRecord, deviceComponentStoreRecordList, componentID, storeTypeList, 
+      filterText, deviceComponentStoreRecord, deviceComponentStoreRecordList, componentID, storeTypeList,
     };
   },
 };

@@ -164,10 +164,10 @@ import { useSearch, useConfirm, useLoading } from 'web-toolkit/src/service';
 import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {ClassFreeze,ClassUnFreeze,ClassGroupDel,StudentList, UserAdd,RoleList,UserDel,UserUpdate,ClassList4Select,ClassList,ClassUpdate,ClassDel,ClassGroupUpdate} from '@/dao/userDao';
+import {ClassFreeze, ClassUnFreeze, ClassGroupDel, StudentList, UserAdd, RoleList, UserDel, UserUpdate, ClassList4Select, ClassList, ClassUpdate, ClassDel, ClassGroupUpdate} from '@/dao/userDao';
 export default {
   setup() {
-    const a=1;
+    const a = 1;
     const loading = ref(false);
     const tree = ref<ElTree<any, any>|null>(null);
     const filterText = ref<string|null>(null);
@@ -182,7 +182,7 @@ export default {
       label: 'name',
     });
     const append = async (row: any) => {
-        console.log(row)
+        console.log(row);
     };
     const remove = async (row: any) => {
         await UserDel({
@@ -191,74 +191,74 @@ export default {
         });
         await queryStudentList();
     };
-    const removeClass = async (row:any)=>{
+    const removeClass = async (row: any) => {
         await ClassDel({
-          id:row.id
-        })
+          id: row.id,
+        });
         await queryClassList();
         classList.value = await ClassList();
-    }
+    };
     watch(filterText, () => {
       if (tree.value) { (tree.value as ElTree<any, any>).filter(filterText.value); }
     });
-    const [keywords, filtered=ref<any>({clasz:[],
-        claszGroip:[]})] = useSearch(studentUserList, {
+    const [keywords, filtered= ref<any>({clasz: [],
+        claszGroip: []})] = useSearch(studentUserList, {
       includeProps: ['username', 'name', 'phone' , 'address', 'clasz', 'claszGroup'],
     });
-    async function chFiltered(){
-      const filGrp=ref<any>({
-        claszId:[],
-        claszGroipId:[],
-        claszIdN:[],
-        claszGroipIdNa:[],
-        claszGroipIdNb:[],
-        claszGroipIdNc:[],
-        claszGroipIdNd:[],
-        claszGroipIdNe:[],
-        claszGroipIndex:[],
-        claszGroipName:[],
-        claszIndex:[],
-        claszName:[]
-      })
-      for(let i=0;i<filtered.value.length;i++){
-        filGrp.value.claszId[i]=filtered.value[i].extend.clasz
-        filGrp.value.claszGroipId[i]=filtered.value[i].extend.claszGroup
+    async function chFiltered() {
+      const filGrp = ref<any>({
+        claszId: [],
+        claszGroipId: [],
+        claszIdN: [],
+        claszGroipIdNa: [],
+        claszGroipIdNb: [],
+        claszGroipIdNc: [],
+        claszGroipIdNd: [],
+        claszGroipIdNe: [],
+        claszGroipIndex: [],
+        claszGroipName: [],
+        claszIndex: [],
+        claszName: [],
+      });
+      for (let i = 0; i < filtered.value.length; i++) {
+        filGrp.value.claszId[i] = filtered.value[i].extend.clasz;
+        filGrp.value.claszGroipId[i] = filtered.value[i].extend.claszGroup;
       }
-      for(let i=0;i<list.value.length;i++){
-        filGrp.value.claszIdN[i]=list.value[i].id
+      for (let i = 0; i < list.value.length; i++) {
+        filGrp.value.claszIdN[i] = list.value[i].id;
       }
-      for(let i=0;i<filtered.value.length;i++){
-        filGrp.value.claszIndex[i]=filGrp.value.claszIdN.indexOf(filtered.value[i].extend.clasz)
+      for (let i = 0; i < filtered.value.length; i++) {
+        filGrp.value.claszIndex[i] = filGrp.value.claszIdN.indexOf(filtered.value[i].extend.clasz);
       }
-      for(let i=0;i<filGrp.value.claszIndex.length;i++){
-        filGrp.value.claszName[i]=list.value[filGrp.value.claszIndex[i]].name
+      for (let i = 0; i < filGrp.value.claszIndex.length; i++) {
+        filGrp.value.claszName[i] = list.value[filGrp.value.claszIndex[i]].name;
       }
-      for(let i=0;i<filtered.value.length;i++){
-        filtered.value[i].clasz=filGrp.value.claszName[i]
+      for (let i = 0; i < filtered.value.length; i++) {
+        filtered.value[i].clasz = filGrp.value.claszName[i];
       }
-      for(let i=0;i<list.value.length;i++){
-        filGrp.value.claszGroipIdNa[i]=[...list.value[i].children]
+      for (let i = 0; i < list.value.length; i++) {
+        filGrp.value.claszGroipIdNa[i] = [...list.value[i].children];
       }
-      for(let i=0;i<filGrp.value.claszGroipIdNa.length;i++){
-        filGrp.value.claszGroipIdNb[i]=[filGrp.value.claszGroipIdNa[i]]
+      for (let i = 0; i < filGrp.value.claszGroipIdNa.length; i++) {
+        filGrp.value.claszGroipIdNb[i] = [filGrp.value.claszGroipIdNa[i]];
       }
-      for(let i=0;i<filGrp.value.claszGroipIdNa.length;i++){
-        filGrp.value.claszGroipIdNd[i]=[filGrp.value.claszGroipIdNa[i]]
+      for (let i = 0; i < filGrp.value.claszGroipIdNa.length; i++) {
+        filGrp.value.claszGroipIdNd[i] = [filGrp.value.claszGroipIdNa[i]];
       }
-      for(let i=0;i<classList.value.length;i++){
-        for(let j=0;j<classList.value[i].groups.length;j++){
-          filGrp.value.claszGroipIdNb[i][j]=classList.value[i].groups[j].id
+      for (let i = 0; i < classList.value.length; i++) {
+        for (let j = 0; j < classList.value[i].groups.length; j++) {
+          filGrp.value.claszGroipIdNb[i][j] = classList.value[i].groups[j].id;
         }
       }
-      for(let i=0;i<classList.value.length;i++){
-        for(let j=0;j<classList.value[i].groups.length;j++){
-          filGrp.value.claszGroipIdNd[i][j]=classList.value[i].groups[j].name
+      for (let i = 0; i < classList.value.length; i++) {
+        for (let j = 0; j < classList.value[i].groups.length; j++) {
+          filGrp.value.claszGroipIdNd[i][j] = classList.value[i].groups[j].name;
         }
       }
-      filGrp.value.claszGroipIdNc=filGrp.value.claszGroipIdNb.reduce(function (a:any, b:any) { return a.concat(b)} );
-      filGrp.value.claszGroipIdNe=filGrp.value.claszGroipIdNd.reduce(function (a:any, b:any) { return a.concat(b)} );
-      for(let i=0;i<filGrp.value.claszGroipId.length;i++){
-        filtered.value[i].claszGroup=filGrp.value.claszGroipIdNe[filGrp.value.claszGroipIdNc.indexOf(filGrp.value.claszGroipId[i])]
+      filGrp.value.claszGroipIdNc = filGrp.value.claszGroipIdNb.reduce(function(a: any, b: any) { return a.concat(b); } );
+      filGrp.value.claszGroipIdNe = filGrp.value.claszGroipIdNd.reduce(function(a: any, b: any) { return a.concat(b); } );
+      for (let i = 0; i < filGrp.value.claszGroipId.length; i++) {
+        filtered.value[i].claszGroup = filGrp.value.claszGroipIdNe[filGrp.value.claszGroipIdNc.indexOf(filGrp.value.claszGroipId[i])];
       }
     }
     const form = ref<ElForm|null>(null);
@@ -293,84 +293,83 @@ export default {
       visible: false,
       addClazInfo: '',
     });
-    function showFormB(row:any){
+    function showFormB(row: any) {
       // 重复班级未修改
         addClazFlag.value.visible = !addClazFlag.value.visible;
     }
-    function firstTab(row:any){
-      const result=ref<any>();
-      keywords.value=row.data.id
+    function firstTab(row: any) {
+      const result = ref<any>();
+      keywords.value = row.data.id;
     }
-    const upgrpFlag=ref<any>({
-      visible:false,
-      upgrpInfo:'',
-      data:''
-    })
-    function updataGropFlag(row:any){
-      upgrpFlag.value.visible = true
-      upgrpFlag.value.data=row
-      upgrpFlag.value.upgrpInfo=row.data.name
-      console.log(upgrpFlag.value.data)
+    const upgrpFlag = ref<any>({
+      visible: false,
+      upgrpInfo: '',
+      data: '',
+    });
+    function updataGropFlag(row: any) {
+      upgrpFlag.value.visible = true;
+      upgrpFlag.value.data = row;
+      upgrpFlag.value.upgrpInfo = row.data.name;
+      console.log(upgrpFlag.value.data);
     }
-    const ForzenStatus=ref<any>({
-      isForzenStatus:false,
-      notForzenStatus:true
-    })
+    const ForzenStatus = ref<any>({
+      isForzenStatus: false,
+      notForzenStatus: true,
+    });
     // const some =ref<any>({
     //   classList[row.id].
     // })
-    async function FrozenClaz(row:any){
-      const result={
-        id:row.id,
-        off:1
-      }
-      ForzenStatus.value.isForzenStatus=true,
-      ForzenStatus.value.notForzenStatus=false,
-      await ClassFreeze(result)
+    async function FrozenClaz(row: any) {
+      const result = {
+        id: row.id,
+        off: 1,
+      };
+      ForzenStatus.value.isForzenStatus = true,
+      ForzenStatus.value.notForzenStatus = false,
+      await ClassFreeze(result);
       await queryClassList();
       classList.value = await ClassList();
     }
-    async function unFrozenClaz(row:any){
-      const result={
-        id:row.id,
-        off:2
-      }
-      ForzenStatus.value.notForzenStatus=true,
-      ForzenStatus.value.isForzenStatus=false,
-      await ClassUnFreeze(result)
+    async function unFrozenClaz(row: any) {
+      const result = {
+        id: row.id,
+        off: 2,
+      };
+      ForzenStatus.value.notForzenStatus = true,
+      ForzenStatus.value.isForzenStatus = false,
+      await ClassUnFreeze(result);
       await queryClassList();
       classList.value = await ClassList();
     }
-    async function addGrop(row:any){
-      const result={
-        cid:row.id,
-        name:`组${row.children.length+1}`
-      }
-      await ClassGroupUpdate(result)
+    async function addGrop(row: any) {
+      const result = {
+        cid: row.id,
+        name: `组${row.children.length + 1}`,
+      };
+      await ClassGroupUpdate(result);
       await queryClassList();
       classList.value = await ClassList();
     }
-    async function removeGrop(row:any){
-      const result={
-        id:row.id
-      }
-      await ClassGroupDel(result)
+    async function removeGrop(row: any) {
+      const result = {
+        id: row.id,
+      };
+      await ClassGroupDel(result);
       await queryClassList();
       classList.value = await ClassList();
     }
     // 重复名未定
-    async function addClaz(row: any){
-      if(addClazFlag.value.addClazInfo!=''){
-        const result={
-          name:addClazFlag.value.addClazInfo
-        }
-        await ClassUpdate(result)
+    async function addClaz(row: any) {
+      if (addClazFlag.value.addClazInfo != '') {
+        const result = {
+          name: addClazFlag.value.addClazInfo,
+        };
+        await ClassUpdate(result);
         addClazFlag.value.visible = !addClazFlag.value.visible;
         await queryClassList();
         classList.value = await ClassList();
-        addClazFlag.value.addClazInfo="";
-      }
-      else{
+        addClazFlag.value.addClazInfo = '';
+      } else {
         addClazFlag.value.visible = !addClazFlag.value.visible;
       }
     }
@@ -381,20 +380,20 @@ export default {
       }
       modal.value.studentInfo = row ? deepClone(row) : initForm();
       modal.value.visible = true;
-      await armasd(row.extend.clasz)
-        console.log(row)
+      await armasd(row.extend.clasz);
+      console.log(row);
       if (form.value) { (form.value as ElForm).clearValidate(); }
     }
-    async function upgrpDate(){
-      const result ={
-        cid:upgrpFlag.value.data.parent.data.id,
-        name:upgrpFlag.value.upgrpInfo,
-        id:upgrpFlag.value.data.data.id
-      }
-      if(result.name!=''){
-        await ClassGroupUpdate(result)
+    async function upgrpDate() {
+      const result = {
+        cid: upgrpFlag.value.data.parent.data.id,
+        name: upgrpFlag.value.upgrpInfo,
+        id: upgrpFlag.value.data.data.id,
+      };
+      if (result.name != '') {
+        await ClassGroupUpdate(result);
         await queryClassList();
-        await chFiltered()
+        await chFiltered();
         classList.value = await ClassList();
       }
       upgrpFlag.value.visible = false;
@@ -433,26 +432,26 @@ export default {
         studentUserList.value  = firstList;
         await ClassList();
     };
-    async function queryClassList(){
-      const aList=await ClassList();
-      list.value=[];
-      blist.value=[];
-      list.value.children=[];
-      blist.value.children=[];
-      for(let i=0;i<aList.length;i++){
-        list.value[i]={id:aList[i].id,name:aList[i].name,children:[...aList[i].groups]}
-        blist.value[i]={value:aList[i].name,label:aList[i].name,children:[...aList[i].groups]}
+    async function queryClassList() {
+      const aList = await ClassList();
+      list.value = [];
+      blist.value = [];
+      list.value.children = [];
+      blist.value.children = [];
+      for (let i = 0; i < aList.length; i++) {
+        list.value[i] = {id: aList[i].id, name: aList[i].name, children: [...aList[i].groups]};
+        blist.value[i] = {value: aList[i].name, label: aList[i].name, children: [...aList[i].groups]};
       }
     }
-    async function armasd(row:any){
-      modal.value.studentInfo.extend.claszGroup='';
+    async function armasd(row: any) {
+      modal.value.studentInfo.extend.claszGroup = '';
       const midList = ref<any>();
-      midList.value=[]
-      await queryClassList()
-      for(let i=0;i<classList.value.length;i++){
-        midList.value[i]=classList.value[i].id
+      midList.value = [];
+      await queryClassList();
+      for (let i = 0; i < classList.value.length; i++) {
+        midList.value[i] = classList.value[i].id;
       }
-      groupList.value = classList.value[midList.value.indexOf(row)].groups
+      groupList.value = classList.value[midList.value.indexOf(row)].groups;
     }
     onMounted(useLoading(loading, async () => {
       classList.value = await ClassList();
@@ -460,17 +459,17 @@ export default {
       await queryClassList();
       await chFiltered();
     }));
-    
+
     return{
-      loading, filterText, list, tree, props, studentUserList,filtered,keywords,blist,addClazFlag,
-      storeUserInfo,removeClass:useConfirm('确认删除？', useLoading(loading, removeClass)),
-      armasd,showFormB,upgrpFlag,
+      loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag,
+      storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
+      armasd, showFormB, upgrpFlag,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
-      queryStudentList,queryClassList,removeGrop:useConfirm('确认删除？', useLoading(loading, removeGrop)),
-      modal, form, showForm,addClaz,addGrop,upgrpDate,
-      update: useLoading(loading, update),updataGropFlag,ForzenStatus,chFiltered,
-      validator,classList,groupList,ctogList,append,FrozenClaz,unFrozenClaz,firstTab
+      queryStudentList, queryClassList, removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
+      modal, form, showForm, addClaz, addGrop, upgrpDate,
+      update: useLoading(loading, update), updataGropFlag, ForzenStatus, chFiltered,
+      validator, classList, groupList, ctogList, append, FrozenClaz, unFrozenClaz, firstTab,
     };
     return{
 

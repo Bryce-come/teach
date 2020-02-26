@@ -5,14 +5,14 @@
         <el-button type="primary">导入</el-button>
         <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
       </div>
-      <el-input placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="margin-bottom:10px;width:400px" clearable/>
+      <el-input class="search bar" v-model="keywords" placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="margin-bottom:10px;width:400px" clearable/>
     </div>
     <lkt-table
-      :data="courseList"
+      :data="filtered"
       style="width:100%">
       <el-table-column prop="code" label="课程代码"/>
       <el-table-column prop="name" label="课程名称"/>
-      <el-table-column prop="teacher" label="任课老师"/>
+      <el-table-column prop="teacher.name" label="任课老师"/>
       <el-table-column prop="extend.scoreRatio[0]" label="操作评分占比"/>
       <el-table-column prop="extend.scoreRatio[1]" label="报告评分占比"/>
       <el-table-column label="实验项目">
@@ -37,11 +37,17 @@
           <el-form-item label="课程名称：" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
               <el-input v-model="courseModal.courseInfo.name"></el-input>
           </el-form-item>
-          <el-form-item label="任课教师：" prop="teacher" :rules="{ required: true, message: '请输入任课教师'}">
-              <el-input v-model="courseModal.courseInfo.teacher"></el-input>
+          <el-form-item label="任课教师：" prop="teacherId" :rules="{ required: true, message: '请选择任课教师'}">
+              <el-select v-model="courseModal.courseInfo.teacherId">
+                <el-option
+                  v-for="item of teacherList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
           </el-form-item>
           <el-form-item label="实验项目：" prop="experiment" :rules="{ required: true, message: '请选择实验项目'}">
-              <lkt-select v-model="courseModal.courseInfo.experiment" multiple></lkt-select>
+              <lkt-select :list="experimentList" value-key="name" option-value-key="id" v-model="courseModal.courseInfo.experiment" multiple></lkt-select>
           </el-form-item>
           <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
               <el-input v-model="courseModal.courseInfo.extend.scoreRatio[0]"></el-input>
@@ -84,12 +90,22 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import {CourseList, CourseAdd, CourseUpdate, CourseDel, } from '@/dao/courseProgramDao';
+import {TeacherList} from '@/dao/userDao';
 export default {
   setup() {
     const loading = ref(false);
-    const courseList = ref<any>();
+    const courseList = ref<any>([]);
+    const [keywords, filtered] = useSearch(courseList, {
+      includeProps: ['code', 'name', 'teacher.name'],
+    }); 
+    const teacherList = ref<any>();
     const experimentList = ref<any>();
     const courseRemove = async (row: any) => {
+      await CourseDel({
+        id: row.id
+      });
+      courseList.value = await CourseList(true);
       Message.success('删除成功');
     };
     const experimentRemove = async (row: any) => {
@@ -99,6 +115,7 @@ export default {
     const courseModal = ref<any>({
       visible: false,
       courseInfo: null,
+      type: 'add',
     });
     const experimentModal = ref<any>({
       visible: false,
@@ -108,9 +125,10 @@ export default {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
         data = deepClone(data);
-
+        courseModal.value.type = 'update';
       } else {
         data = initCourseForm();
+        courseModal.value.type = 'add';
       }
       courseModal.value.courseInfo = data;
       courseModal.value.visible = true;
@@ -124,35 +142,59 @@ export default {
       await queryCourse();
     }
     async function courseUpdate() {
-      const valid = true;
+      const valid = await (form.value as ElForm).validate();
       if (valid) {
-        const { id, code, name, teacher, experiment, extend: {scoreRatio: []} } = courseModal.value.courseInfo;
+        if (courseModal.value.type === 'add') {
+          await CourseAdd({
+            // *code, *name, *teacherId, extendJson, programJson
+            // id: courseModal.value.courseInfo.id,
+            code: courseModal.value.courseInfo.code,
+            name: courseModal.value.courseInfo.name,
+            teacherId: courseModal.value.courseInfo.teacherId,
+            extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
+            programJson: JSON.stringify(courseModal.value.courseInfo.program)
+          });
+        } else {
+          await CourseUpdate({
+            // id: courseModal.value.courseInfo.id,
+            code: courseModal.value.courseInfo.code,
+            name: courseModal.value.courseInfo.name,
+            teacherId: courseModal.value.courseInfo.teacherId,
+            extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
+            programJson: JSON.stringify(courseModal.value.courseInfo.program)
+          });
+        }
         courseModal.value.visible = false;
-        Message.success(`${isUndefined(id) ? '添加' : '修改'}成功`);
+        Message.success(`${courseModal.value.type === 'add' ? '添加' : '修改'}成功`);
+        courseList.value = await CourseList(true);
         await queryCourse();
       }
     }
     const queryCourse = async () => {
-      courseList.value = [
-          {id: 0, code: '1000231', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-          {id: 1, code: '1000232', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-          {id: 2, code: '1000233', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-          {id: 3, code: '1000234', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-          {id: 4, code: '1000235', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
-      ];
+      // courseList.value = [
+      //     {id: 0, code: '1000231', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
+      //     {id: 1, code: '1000232', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
+      //     {id: 2, code: '1000233', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
+      //     {id: 3, code: '1000234', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
+      //     {id: 4, code: '1000235', name: 'xx', teacher: 'xx', extend: {examType: '', resultType: '', scoreRatio: ['60%', '40%']}, createDt: ''},
+      // ];
       experimentList.value = [
-        {id: 0, code: '', name: 'xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 1, code: '', name: 'xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 2, code: '', name: 'xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 3, code: '', name: 'xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
-        {id: 4, code: '', name: 'xx', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
+        {id: 0, code: '', name: '实验1', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
+        {id: 1, code: '', name: '实验2', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
+        {id: 2, code: '', name: '实验3', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
+        {id: 3, code: '', name: '实验4', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
+        {id: 4, code: '', name: '实验5', purpose: 'xx', principle: 'xxxxx', steps: '', results: 'xx', label: '', extend: {}, stations: [], attachment: [], createDt: ''},
       ];
     };
     onMounted(useLoading(loading, async () => {
         await queryCourse();
+        teacherList.value = await TeacherList();
+        courseList.value = await CourseList(true);
+        console.log(courseList.value);
+        console.log(teacherList.value);
     }));
     return{
-        loading, courseList, queryCourse,
+        loading, courseList, queryCourse, form, keywords, filtered, teacherList,
         courseRemove: useConfirm('确认删除？', useLoading(loading, courseRemove)),
         courseModal, showCourseForm,
         courseUpdate: useLoading(loading, courseUpdate),
@@ -164,7 +206,7 @@ export default {
 };
 function initCourseForm() {
     return {
-        name: '', code: '', teacher: '', experiment: '',
+        name: '', code: '', teacherId: '', experiment: '',
         extend: {scoreRatio: []},
     };
 }
