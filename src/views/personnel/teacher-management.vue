@@ -124,6 +124,9 @@ export default {
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (!valid) { return ; }
+      // if(addModal.value.studentInfo.phone===''){
+      //   addModal.value.studentInfo.phone=undefined
+      // }
       const result = {
         id: addModal.value.teacherInfo.id,
         // address: addModal.value.teacherInfo.address,
