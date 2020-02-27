@@ -51,8 +51,14 @@
         <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">附件</div>
+        <div style="font-weight:bold;margin: 10px 20px">课程附件</div>
         <el-button type="text" style="margin:20px" @click="download()">关键代码.nv</el-button>
+        <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
+      </div>
+      <div style="margin-top:20px">
+        <div style="font-weight:bold;margin: 10px 20px">项目附件</div>
+        <el-button type="text" style="margin:20px" @click="download()">关键代码.nv</el-button>
+        <div style="width:95%;height:1px;margin-left:30px;padding:0px;background-color:#D5D5D5;overflow:hidden;"></div>
       </div>
     </div>
   </div>

@@ -7,9 +7,9 @@
           <el-radio-button label="课内实验"></el-radio-button>
           <el-radio-button label="开放实验"></el-radio-button>
         </el-radio-group>
-        <el-button type="primary" @click="showForm()">添加实验</el-button>
+        <el-button type="success" @click="showForm()">添加实验</el-button>
       </div>
-      <el-input v-model="keywords" placeholder="输入关键字搜索" style="width:350px"></el-input>
+      <el-input v-model="keywords" placeholder="输入关键字搜索" style="margin-top:5px;width:350px"></el-input>
     </div>
     <lkt-table
       :data="filtered"

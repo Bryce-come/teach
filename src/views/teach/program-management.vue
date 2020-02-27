@@ -32,7 +32,7 @@
             <el-table-column label="设备编号"/>
             <el-table-column label="程序名称" prop="file"/>
             <el-table-column label="处理状态" prop="result">       
-              <el-button type="success" size="mini">通过审核</el-button>        
+              <el-tag type="success" size="mini">通过审核</el-tag>        
             </el-table-column>
             <el-table-column label="附件"/>
             <el-table-column label="操作">
@@ -55,8 +55,8 @@
           <el-row>
             <el-col :span="12">
               <div style="margin-left:20px;font-weight:bold">NC程序代码</div>
-              <el-input type="textarea" style="width:96%;margin:20px"></el-input>
-              <div class="flex end">
+              <el-input type="textarea" :rows="19" style="width:96%;margin:10px 10px 0 10px"></el-input>
+              <div class="flex start little-space" style="margin:5px">
                 <el-button type="primary" @click="download()">下载程序</el-button>
               </div>
             </el-col>
@@ -64,7 +64,7 @@
               <div style="font-weight:bold">提交历史记录</div>
               <el-table
                 :data="ncProgramList"
-                style="width:100%">
+                style="width:98%">
                 <el-table-column label="提交时间" prop="createDt"/>
                 <el-table-column label="程序名称" prop="file"/>
                 <el-table-column label="设备编号"/>                
@@ -77,13 +77,12 @@
                 </el-table-column>
               </el-table>
               <el-form>
-                <el-form-item label="修改意见:">
-                  <el-input type="textarea" style="width:500px"></el-input>
-                </el-form-item>
-                <el-form-item class="flex start">
+                <div>修改意见：</div>
+                <el-input type="textarea" :rows="3" style="width:98%"></el-input>
+                <div class="flex start little-space">
                   <el-button type="primary" @click="turn=true">通过审核同意加工</el-button>
-                  <el-button type="danger" style="margin-left:20px" @click="turn=true">退回修改</el-button>
-                </el-form-item>
+                  <el-button type="danger" @click="turn=true">退回修改</el-button>
+                </div>
               </el-form>
             </el-col>
           </el-row>
