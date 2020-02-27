@@ -3,18 +3,17 @@
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex between">上课班级信息</div>
         <el-form :inline="true" >
-            <el-form-item label="上课时间:" label-width="100px" v-if='lesson'>
-                <span>{{lesson.date}}</span>
+            <el-form-item label="上课时间:" label-width="100px" v-if='courseRecordInClass'>
+                <span>{{courseRecordInClass.startDt+' — '+courseRecordInClass.endDt}}</span>
             </el-form-item>
-            <el-form-item label="上课班级:" label-width="100px" v-if='lesson.extend' >
-                <span>{{lesson.extend.clasz}}</span>
+            <el-form-item label="上课班级:" label-width="100px" v-if='courseRecordInClass.clasz' >
+                <span>{{courseRecordInClass.clasz.name}}</span>
             </el-form-item> 
-            <el-form-item label="教学分组:" label-width="100px" v-if='lesson.extend'>
-               <span v-for="(item, i ) in lesson.extend.claszGroup" :key="i">
-                   {{item}}</span>
+            <el-form-item label="教学分组:" label-width="100px" v-if='courseRecordInClass.claszGroup'>
+               <span>{{courseRecordInClass.claszGroup.name}}</span>
             </el-form-item> 
             <el-form-item label="人数:" label-width="100px">
-                <span v-if="lesson.students">{{lesson.students.length}}人</span>
+                <span v-if="courseRecordInClass.studentList">{{courseRecordInClass.studentList.length}}人</span>
             </el-form-item>
         </el-form> 
     </div>
@@ -22,7 +21,7 @@
         <el-tabs type="card">
             <el-tab-pane label="按设备分">
                <div class="flex align-center wrap">
-                    <div v-for="(item, i) in lesson.stationList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
+                    <div v-for="(item, i) in stationList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
                         <div class="flex align-center">
                           <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
                          <div v-if="item.extend.student" class="flex end" style="width: 30%">
@@ -32,14 +31,17 @@
                            <el-button type="text"  @click="distribution()">分配学生</el-button>
                          </div>
                         </div>
-                        <div class="flex center" style="width:100%;margin:10px auto">
-                            <img :src='item.src'>
+                        <div class="flex center" style="width:80%;margin:10px auto">
+                            <img :src="img(item.deviceList[0].deviceType.img)" alt="">
                          </div>
-                        <div class="flex align-center wrap" v-if="item.extend.student">
-                            <div style="background-color:rgb(215, 235, 248); width:50%; text-align:center;height:2rem;line-height:2rem"
-                                 v-for="(sName, k) in item.extend.student" :key='k'>
+                        <div class="flex align-center wrap" >
+                            <div v-if="item.extend.student" style="background-color:rgb(215, 235, 248); width:50%; text-align:center;height:2rem;line-height:2rem"
+                                 >
+                                <div v-for="(sName, k) in item.extend.student" :key='k'>
                                 {{sName}}
+                                </div>
                             </div>
+                            <div v-else style="background-color:rgb(215, 235, 248); width:50%; text-align:center;height:2rem;line-height:2rem">--</div>
                         </div>
                     </div>
                </div>
@@ -72,7 +74,7 @@
       :modal="studentMode"
       :confirm="update"
       width="500px">
-      <div slot='title' v-if="studentMode.data">{{studentMode.data.extend.clasz+studentMode.data.extend.claszGroup}}详情</div>
+      <div slot='title' v-if="studentMode.data.extend">{{studentMode.data.extend.clasz+studentMode.data.extend.claszGroup}}详情</div>
       <div v-if="studentMode.data.students" class="flex align-center wrap">
          <div
               class="flex between align-center"
@@ -117,12 +119,15 @@ import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/c
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
 import monitor from '../laboratory/monitor.vue';
+import { CourseRecordInClass, CourseRecordUpdate } from '@/dao/courseRecordDao';
+import { StationList } from '@/dao/stationDao';
+import {ImageLink} from '@/dao/commonDao.ts';
 export default {
   setup() {
     const loading = ref(false);
     const lesson = ref<any>({});
-    const classList = ref<any>([]);
-    const classGroupList = ref<any>([]);
+    const stationList = ref<any>([]);
+    const studentsList = ref<any>([]);
     const studentMode = ref<any>({
         visible: false,
         data: '',
@@ -145,8 +150,7 @@ export default {
                 {id: 2,
                 name: '王力',
                 station: {
-                    id: 1,
-                    name: '操作台1'}},
+                    id: 1,}},
                 {id: 3,
                 name: '嘉华',
                 station: {
@@ -190,6 +194,25 @@ export default {
            },
        };
     };
+    const courseRecordInClass = ref<any>(); 
+    const queryStationList = async () => {
+        stationList.value = await StationList({
+            simple: false,
+        });
+        console.log(stationList.value);
+    };
+    const queryCourseInClass = async () => {
+        courseRecordInClass.value = await CourseRecordInClass();
+        console.log(courseRecordInClass.value);
+    };
+    function img(path: any) {
+      console.log('path');
+      console.log(path);
+      if (path) {
+        console.log(path);
+        return ImageLink(path);
+      }
+    }
     const distribution = async () => {
         studentMode.value.data = lesson.value;
         studentMode.value.visible = true;
@@ -204,13 +227,14 @@ export default {
     };
     onMounted(useLoading(loading, async () => {
       await query();
-
+      await queryCourseInClass();
+      await queryStationList();
     }));
     return{
      lesson,
      loading,
-     classList,
-     classGroupList,
+     stationList,
+     studentsList,
      distribution,
      query,
      update,
@@ -219,6 +243,9 @@ export default {
      checkList,
      distributionDevice,
      checkDeviceList,
+     courseRecordInClass,
+     queryCourseInClass,
+     img,
     };
   },
 };
@@ -227,5 +254,7 @@ export default {
 //  .card{
 //      background-color: rgb(215, 235, 248)
 //  }
- 
+ img{
+    height: 8rem;
+  }
 </style>
