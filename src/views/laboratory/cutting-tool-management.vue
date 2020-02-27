@@ -71,7 +71,7 @@
             <el-input v-model="storeRecordModal.storeInfo.extend.batchNo"></el-input>
           </el-form-item>
           <el-form-item label="数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-            <el-input v-model="storeRecordModal.storeInfo.quantity"></el-input>
+            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
           </el-form-item>
           <el-form-item label="厂商：" prop="extend.company">
             <el-input v-model="storeRecordModal.storeInfo.company"></el-input>
@@ -89,7 +89,7 @@
             <el-input v-model="storeRecordModal.storeInfo.extend.keeper"></el-input>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
-            <el-input v-model="storeRecordModal.storeInfo.remark"></el-input>
+            <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -103,6 +103,16 @@
         <lkt-table
           :data="deviceComponentStoreRecord"
           style="width:100%">
+            <el-table-column type="expand">
+              <div slot-scope="{ row }" class="flex around">
+                <el-form label-width="100px">
+                  <el-form-item label="批次:">{{row.extend.batchNo}}</el-form-item>
+                  <el-form-item label="厂商:">{{row.extend.company}}</el-form-item>
+                  <el-form-item label="供货商:">{{row.extend.supplier}}</el-form-item>                  
+                  <el-form-item label="厂商联系方式:">{{row.extend.supplierTel}}</el-form-item>
+                </el-form>
+              </div>
+          </el-table-column>
           <el-table-column prop="dt" label="时间"/>
           <el-table-column label="类型">
             <div slot-scope="{ row }">
@@ -112,6 +122,7 @@
           </el-table-column>
           <el-table-column prop="quantity" label="数量"/>
           <el-table-column prop="person" label="操作人"/>
+          <el-table-column prop="remark" label="备注" />
         </lkt-table>
     </kit-dialog-simple>
   </div>
@@ -227,7 +238,7 @@ export default {
           type: storeRecordModal.value.storeInfo.type,
           quantity: storeRecordModal.value.storeInfo.quantity,
           dt: storeRecordModal.value.storeInfo.extend.buyDt,
-          remark: storeRecordModal.value.storeInfo.remark ? storeRecordModal.value.storeInfo.quantity : null,
+          remark: storeRecordModal.value.storeInfo.remark ? storeRecordModal.value.storeInfo.remark : null,
           extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
         cutterList.value = await ComponentStoreList();
@@ -238,7 +249,8 @@ export default {
     }
     const query = async (data: any) => {
       deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
-        componentId: data.id});
+      componentId: data.id});
+      console.log(deviceComponentStoreRecord.value);
     };
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
