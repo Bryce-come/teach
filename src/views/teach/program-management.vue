@@ -13,7 +13,7 @@
           <span>{{courseNow.classGroupName}}</span>
         </el-form-item>
         <el-form-item label="学生人数：">
-          {{4}}<span>人</span>
+          {{courseNow.studentCount}}<span>人</span>
         </el-form-item>
       </el-form>
     </div>
@@ -21,23 +21,30 @@
       <div class="block_title flex between">NC程序审核</div>
         <div v-if="turn">
           <div style="display:flex;justify-content:flex-end">
-            <el-input style="margin: 10px;width:400px" placeholder="输入程序名查询"></el-input>
+            <el-input class="search-bar" style="margin: 10px;width:400px" v-model="keywords" placeholder="输入程序名查询"></el-input>
           </div>
           <lkt-table
-            :data="ncProgramList"
+            :data="filtered"
             style="width:100%">
             <el-table-column label="提交时间" prop="createDt"/>
-            <el-table-column label="提交人" prop="student"/>
-            <el-table-column label="已等待时间"/>
-            <el-table-column label="设备编号"/>
-            <el-table-column label="程序名称" prop="file"/>
-            <el-table-column label="处理状态" prop="result">       
-              <el-tag type="success" size="mini">通过审核</el-tag>        
+            <el-table-column label="提交人" prop="student.name"/>
+            <el-table-column label="操作台名称" prop="station.name"/>
+            <el-table-column label="程序名称">
+              <template slot-scope="{ row }">
+                <el-link type="primary" @click="downFile(row)">{{row.file.split("/")[row.file.split("/").length-1]}}</el-link>
+              </template>  
             </el-table-column>
-            <el-table-column label="附件"/>
+            <el-table-column label="处理状态">
+              <template slot-scope="{ row }">
+                <el-tag v-if="row.result === true" type="success">通过审核</el-tag>
+                <el-tag v-if="row.result === false" type="danger">未通过审核</el-tag>
+                <el-tag v-if="row.result === undefined" type="warning">未审核</el-tag>
+              </template>       
+              <el-button type="success" size="mini">通过审核</el-button>        
+            </el-table-column>
             <el-table-column label="操作">
               <div class="flex center little-space wrap" slot-scope="{ row }">
-                <el-button type="text" @click="turnToExamine();getDetail(row)">审核查看</el-button>
+                <el-button type="text" @click="turnToExamine();cheakDetail(row)">审核查看</el-button>
               </div>
               
             </el-table-column>
@@ -47,17 +54,17 @@
           <el-row>
             <div style="margin-left:20px;font-weight:bold">基本信息</div>
             <el-form :inline="true" label-width="120px">
-              <el-form-item label="操作台编号:">操作台-01</el-form-item>
-              <el-form-item label="操作学生:">张晓明 王小虎</el-form-item>
-              <el-form-item label="提交时间">{{'2020/01/02'}}</el-form-item>
+              <el-form-item label="操作台名称:">{{EtInfo.stationName}}</el-form-item>
+              <el-form-item label="操作学生:">{{EtInfo.workStudent}}</el-form-item>
+              <el-form-item label="提交时间">{{EtInfo.update}}</el-form-item>
             </el-form>
           </el-row>
           <el-row>
             <el-col :span="12">
               <div style="margin-left:20px;font-weight:bold">NC程序代码</div>
-              <el-input type="textarea" :rows="19" style="width:96%;margin:10px 10px 0 10px"></el-input>
-              <div class="flex start little-space" style="margin:5px">
-                <el-button type="primary" @click="download()">下载程序</el-button>
+              <el-input type="textarea" style="width:96%;margin:20px" v-model="EtInfo.contentWord"></el-input>
+              <div class="flex end">
+                <el-button type="primary" @click="downFile(EtInfo.data)">下载程序</el-button>
               </div>
             </el-col>
             <el-col :span="12">
@@ -66,23 +73,34 @@
                 :data="ncProgramList"
                 style="width:98%">
                 <el-table-column label="提交时间" prop="createDt"/>
-                <el-table-column label="程序名称" prop="file"/>
-                <el-table-column label="设备编号"/>                
-                <el-table-column label="处理状态" prop="result">       
+                <el-table-column label="程序名称" prop="file">
+                  <template slot-scope="{ row }">
+                    {{row.file.split("/")[row.file.split("/").length-1]}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作台名称" prop="station.name"/>                
+                <el-table-column label="处理状态">
+                  <template slot-scope="{ row }">
+                    <el-tag v-if="row.result === true" type="success">通过审核</el-tag>
+                    <el-tag v-if="row.result === false" type="danger">未通过审核</el-tag>
+                    <el-tag v-if="row.result === undefined" type="warning">未审核</el-tag>
+                  </template>       
                   <el-button type="success" size="mini">通过审核</el-button>        
                 </el-table-column>
-                <el-table-column label="附件"/>
                 <el-table-column label="操作">
-                  <el-button type="text">查看程序</el-button>
+                  <div class="flex center little-space wrap" slot-scope="{ row }">
+                  <el-button type="text" @click="cheakDetail(row)">查看程序</el-button>
+                  </div>
                 </el-table-column>
               </el-table>
               <el-form>
-                <div>修改意见：</div>
-                <el-input type="textarea" :rows="3" style="width:98%"></el-input>
-                <div class="flex start little-space">
-                  <el-button type="primary" @click="turn=true">通过审核同意加工</el-button>
-                  <el-button type="danger" @click="turn=true">退回修改</el-button>
-                </div>
+                <el-form-item label="修改意见:">
+                  <el-input type="textarea" style="width:500px" v-model="reviewInfo.remark"></el-input>
+                </el-form-item>
+                <el-form-item class="flex start">
+                  <el-button type="primary" @click="agreeUp()">通过审核同意加工</el-button>
+                  <el-button type="danger" style="margin-left:20px" @click="disAgreeUp()">退回修改</el-button>
+                </el-form-item>
               </el-form>
             </el-col>
           </el-row>
@@ -96,71 +114,48 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { NCExamList,NCExamDetail } from '../../dao/inClassDao'
+import { NCExamList,NCExamDetail,NCExamOperate } from '../../dao/inClassDao'
 import { CourseRecordInClass } from '../../dao/courseRecordDao'
 import { ClassList } from '../../dao/userDao'
+import { DownLoadPrivate } from '../../dao/commonDao'
 export default {
   setup() {
     const loading = ref(false);
     const turn = ref(true);
     const ncProgramList = ref<any>();
+    const [keywords, filtered] = useSearch(ncProgramList, {
+      includeProps: ['file'],
+    });
     const courseNow = ref<any>({
       date:'',
       className:'',
       classGroupName:'',
-      classPpNum:''
+      classPpNum:'',
+      studentCount:''
     })
     const query = async () => {
       const pum ={recordId:courseNow.value.id}
       const result = await NCExamList(pum)
-      
-      ncProgramList.value = [
-        {id: '0', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: true, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
-        {id: '1', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: false, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
-        {id: '2', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: false, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
-        {id: '3', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: true, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
-        {id: '4', courseRecord: '', station: '', file: '', student: '小明', operator: '', result: true, remark: '',
-        handleDt: '', createDt: '', extend: {cncLink: true, fileContent: ''}},
-      ];
+      ncProgramList.value=result
     };
     const turnToExamine = async () => {
       turn.value = false;
     };
-    const download = async () => {
-      Message.success('下载成功');
-    };
-    const groupList=ref<any>({
-      groupLista:[],
-      groupListb:[],
-      groupIdList:[],
-      groupNmaeList:[]
-    })
-    async function getGroupList(){
-        const result = await ClassList()
-        for(let i=0;i<result.length;i++){
-          groupList.value.groupLista[i]=[]
-          groupList.value.groupListb[i]=[]
-          for(let j=0;j<result[i].groups.length;j++){
-            groupList.value.groupLista[i][j]=result[i].groups[j].id
-            groupList.value.groupListb[i][j]=result[i].groups[j].name
-          }
-        }
-        groupList.value.groupIdList=groupList.value.groupLista.reduce(function (a:any, b:any) { return a.concat(b)} );
-        groupList.value.groupNmaeList=groupList.value.groupListb.reduce(function (a:any, b:any) { return a.concat(b)} );
-    } 
+    async function downFile(row:any){
+      const result={
+        path:row.file,
+        filename:row.file.split("/")[row.file.split("/").length-1]
+      }
+      await DownLoadPrivate(result.path,result.filename)
+    }
     async function getClassNow(){
       const result = await CourseRecordInClass()
       if(result!==null){
         courseNow.value.date=result.startDt
         courseNow.value.className=result.clasz.name
-        // courseNow.value.classGroupName=groupList.value.groupNmaeList[groupList.value.groupIdList.indexOf(result.extend.claszGroup)]
         courseNow.value.classGroupName=result.claszGroup.name
         courseNow.value.id=result.id
-        console.log(result)
+        courseNow.value.studentCount=result.studentList.length
       }
       else{
         courseNow.value.date=''
@@ -169,24 +164,60 @@ export default {
         courseNow.value.classPpNum=''
       }
     }
-    async function getDetail(row:any){
+    const EtInfo=ref<any>({
+      stationName:'',
+      workStudent:'',
+      update:'',
+      contentWord:'',
+      data:'',
+    })
+    const reviewInfo=ref<any>({
+      id:'',
+      result:'',
+      remark:''
+    })
+    async function cheakDetail(row:any){
       const pum = {
         id:row.id
       }
       const result = await NCExamDetail(pum)
-      console.log(row)
+      EtInfo.value.stationName=row.station.name
+      EtInfo.value.workStudent=row.student.name
+      EtInfo.value.update=row.createDt
+      EtInfo.value.contentWord=result.extend.fileContent
+      EtInfo.value.data=row
+      reviewInfo.value.id=result.id
+      reviewInfo.value.remark=result.remark
+    }
+    async function agreeUp(){
+      const result={
+        id:reviewInfo.value.id,
+        result:2
+      }
+      await NCExamOperate(result)
+      await query()
+      turn.value=true;
+    }
+    async function disAgreeUp(row:any){
+      const result={
+        id:reviewInfo.value.id,
+        remark:reviewInfo.value.remark,
+        result:0
+      }
+      await NCExamOperate(result)
+      await query()
+      turn.value=true;
     }
     onMounted(useLoading(loading, async () => {
-        await getGroupList()
         await getClassNow()
         await query();
     }));
     return {
-      getClassNow,courseNow,getGroupList,groupList,
-      loading, ncProgramList, query, turn,
+      getClassNow,courseNow,downFile,cheakDetail,EtInfo,reviewInfo,
+      loading, ncProgramList, query, turn,filtered,keywords,
       turnToExamine: useLoading(loading, turnToExamine),
-      getDetail,
-      download: useConfirm('确认下载？', useLoading(loading, download)),
+      agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
+      disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),
     };
   },
 };
