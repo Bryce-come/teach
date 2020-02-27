@@ -6,7 +6,7 @@ import axios from 'axios';
  *
  */
 export async function DownLoadPrivate( path: string, filename: string ) {
-  await download('/rest/download', {name: path},{filename: filename});
+  await download('/rest/download', {name: path}, {filename});
 }
 
 /**

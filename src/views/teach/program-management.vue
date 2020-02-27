@@ -113,10 +113,10 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { NCExamList,NCExamDetail,NCExamOperate } from '../../dao/inClassDao'
-import { CourseRecordInClass } from '../../dao/courseRecordDao'
-import { ClassList } from '../../dao/userDao'
-import { DownLoadPrivate } from '../../dao/commonDao'
+import { NCExamList, NCExamDetail, NCExamOperate } from '../../dao/inClassDao';
+import { CourseRecordInClass } from '../../dao/courseRecordDao';
+import { ClassList } from '../../dao/userDao';
+import { DownLoadPrivate } from '../../dao/commonDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -126,94 +126,93 @@ export default {
       includeProps: ['file'],
     });
     const courseNow = ref<any>({
-      date:'',
-      className:'',
-      classGroupName:'',
-      classPpNum:'',
-      studentCount:''
-    })
+      date: '',
+      className: '',
+      classGroupName: '',
+      classPpNum: '',
+      studentCount: '',
+    });
     const query = async () => {
-      const pum ={recordId:courseNow.value.id}
-      const result = await NCExamList(pum)
-      ncProgramList.value=result
+      const pum = {recordId: courseNow.value.id};
+      const result = await NCExamList(pum);
+      ncProgramList.value = result;
     };
     const turnToExamine = async () => {
       turn.value = false;
     };
-    async function downFile(row:any){
-      const result={
-        path:row.file,
-        filename:row.file.split("/")[row.file.split("/").length-1]
-      }
-      await DownLoadPrivate(result.path,result.filename)
+    async function downFile(row: any) {
+      const result = {
+        path: row.file,
+        filename: row.file.split('/')[row.file.split('/').length - 1],
+      };
+      await DownLoadPrivate(result.path, result.filename);
     }
-    async function getClassNow(){
-      const result = await CourseRecordInClass()
-      if(result!==null){
-        courseNow.value.date=result.startDt
-        courseNow.value.className=result.clasz.name
-        courseNow.value.classGroupName=result.claszGroup.name
-        courseNow.value.id=result.id
-        courseNow.value.studentCount=result.studentList.length
-      }
-      else{
-        courseNow.value.date=''
-        courseNow.value.className=''
-        courseNow.value.classGroupName=''
-        courseNow.value.classPpNum=''
+    async function getClassNow() {
+      const result = await CourseRecordInClass();
+      if (result !== null) {
+        courseNow.value.date = result.startDt;
+        courseNow.value.className = result.clasz.name;
+        courseNow.value.classGroupName = result.claszGroup.name;
+        courseNow.value.id = result.id;
+        courseNow.value.studentCount = result.studentList.length;
+      } else {
+        courseNow.value.date = '';
+        courseNow.value.className = '';
+        courseNow.value.classGroupName = '';
+        courseNow.value.classPpNum = '';
       }
     }
-    const EtInfo=ref<any>({
-      stationName:'',
-      workStudent:'',
-      update:'',
-      contentWord:'',
-      data:'',
-    })
-    const reviewInfo=ref<any>({
-      id:'',
-      result:'',
-      remark:''
-    })
-    async function cheakDetail(row:any){
+    const EtInfo = ref<any>({
+      stationName: '',
+      workStudent: '',
+      update: '',
+      contentWord: '',
+      data: '',
+    });
+    const reviewInfo = ref<any>({
+      id: '',
+      result: '',
+      remark: '',
+    });
+    async function cheakDetail(row: any) {
       const pum = {
-        id:row.id
-      }
-      const result = await NCExamDetail(pum)
-      EtInfo.value.stationName=row.station.name
-      EtInfo.value.workStudent=row.student.name
-      EtInfo.value.update=row.createDt
-      EtInfo.value.contentWord=result.extend.fileContent
-      EtInfo.value.data=row
-      reviewInfo.value.id=result.id
-      reviewInfo.value.remark=result.remark
+        id: row.id,
+      };
+      const result = await NCExamDetail(pum);
+      EtInfo.value.stationName = row.station.name;
+      EtInfo.value.workStudent = row.student.name;
+      EtInfo.value.update = row.createDt;
+      EtInfo.value.contentWord = result.extend.fileContent;
+      EtInfo.value.data = row;
+      reviewInfo.value.id = result.id;
+      reviewInfo.value.remark = result.remark;
     }
-    async function agreeUp(){
-      const result={
-        id:reviewInfo.value.id,
-        result:2
-      }
-      await NCExamOperate(result)
-      await query()
-      turn.value=true;
+    async function agreeUp() {
+      const result = {
+        id: reviewInfo.value.id,
+        result: 2,
+      };
+      await NCExamOperate(result);
+      await query();
+      turn.value = true;
     }
-    async function disAgreeUp(row:any){
-      const result={
-        id:reviewInfo.value.id,
-        remark:reviewInfo.value.remark,
-        result:0
-      }
-      await NCExamOperate(result)
-      await query()
-      turn.value=true;
+    async function disAgreeUp(row: any) {
+      const result = {
+        id: reviewInfo.value.id,
+        remark: reviewInfo.value.remark,
+        result: 0,
+      };
+      await NCExamOperate(result);
+      await query();
+      turn.value = true;
     }
     onMounted(useLoading(loading, async () => {
-        await getClassNow()
+        await getClassNow();
         await query();
     }));
     return {
-      getClassNow,courseNow,downFile,cheakDetail,EtInfo,reviewInfo,
-      loading, ncProgramList, query, turn,filtered,keywords,
+      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,
+      loading, ncProgramList, query, turn, filtered, keywords,
       turnToExamine: useLoading(loading, turnToExamine),
       agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
       disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),

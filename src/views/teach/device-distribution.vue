@@ -150,7 +150,7 @@ export default {
                 {id: 2,
                 name: '王力',
                 station: {
-                    id: 1,}},
+                    id: 1}},
                 {id: 3,
                 name: '嘉华',
                 station: {
@@ -194,7 +194,7 @@ export default {
            },
        };
     };
-    const courseRecordInClass = ref<any>(); 
+    const courseRecordInClass = ref<any>();
     const queryStationList = async () => {
         stationList.value = await StationList({
             simple: false,

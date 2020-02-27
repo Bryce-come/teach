@@ -47,7 +47,7 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {ReportTemplateList, ReportTemplateAdd, ReportTemplateDel} from '@/dao/reportDao'
+import {ReportTemplateList, ReportTemplateAdd, ReportTemplateDel} from '@/dao/reportDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -77,7 +77,7 @@ export default {
       const isLimit10M = file.size / 1024 / 1024 < 10;
       if (!isLimit10M) {
         Message.warning('上传实验报告模板大小不能超过10M！');
-        return false
+        return false;
       }
     };
     const download = async () => {

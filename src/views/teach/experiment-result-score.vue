@@ -87,7 +87,7 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { ReportList,ReportTemplateList} from '../../dao/reportDao'
+import { ReportList, ReportTemplateList} from '../../dao/reportDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -119,21 +119,21 @@ export default {
     const download = async () => {
       Message.success('下载成功');
     };
-    async function getReportList(){
-      const pum={
-      }
-      const result = await ReportList(pum)
-      console.log(result)
+    async function getReportList() {
+      const pum = {
+      };
+      const result = await ReportList(pum);
+      console.log(result);
     }
     const query = async () => {
-      await getReportList()
+      await getReportList();
       experimentReportList.value = [
         {id: '0', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
         note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
         {id: '1', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
         note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: null, score2: null, ratio1: 60, ratio2: 40}},
       ];
-      
+
     };
     const showAllScored = async () => {
       allScored.value = true;
@@ -154,7 +154,7 @@ export default {
       await query();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,
+      loading, experimentReportList, query, scoreModal, showScoreForm, getReportList,
       scoreUpdate: useLoading(loading, scoreUpdate),
       allScored, hasScored, noScored,
       showAllScored: useLoading(loading, showAllScored),
