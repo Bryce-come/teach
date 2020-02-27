@@ -255,15 +255,15 @@ export default {
     };
     const showInExp = async () => {
       const firstList = await ProgramList();
-      experimentList.value = firstList.filter(function (item: any) {
+      experimentList.value = firstList.filter(function(item: any) {
         return item.label === '课内实验';
-      })
+      });
     };
     const showOutExp = async () => {
       const secondList = await ProgramList();
-      experimentList.value = secondList.filter(function (item: any) {
+      experimentList.value = secondList.filter(function(item: any) {
         return item.label === '开放实验';
-      })
+      });
     };
     async function upload(option: any, row: any) {
       await ProgramUpload({

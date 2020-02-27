@@ -205,18 +205,18 @@ export default {
         if (modal.value.maintainRecordInfo.restorationDt && modal.value.maintainRecordInfo.restorationDt instanceof Date) {
           modal.value.maintainRecordInfo.restorationDt = modal.value.maintainRecordInfo.restorationDt.getTime();
         }
-       if (modal.value.maintainRecordInfo.nextDt && modal.value.maintainRecordInfo.nextDt instanceof Date) {
+        if (modal.value.maintainRecordInfo.nextDt && modal.value.maintainRecordInfo.nextDt instanceof Date) {
           modal.value.maintainRecordInfo.nextDt = modal.value.maintainRecordInfo.nextDt.getTime();
         }
         await DeviceMaintenAdd({
           deviceId: modal.value.maintainRecordInfo.device.referencedColumnName,
           type: modal.value.maintainRecordInfo.type,
           executor: modal.value.maintainRecordInfo.executor,
-          status: modal.value.maintainRecordInfo.status? modal.value.maintainRecordInfo.status : null,
-          treatment: modal.value.maintainRecordInfo.treatment? modal.value.maintainRecordInfo.treatment : null,
+          status: modal.value.maintainRecordInfo.status ? modal.value.maintainRecordInfo.status : null,
+          treatment: modal.value.maintainRecordInfo.treatment ? modal.value.maintainRecordInfo.treatment : null,
           restorationDt: modal.value.maintainRecordInfo.restorationDt,
-          nextDt: modal.value.maintainRecordInfo.nextDt? modal.value.maintainRecordInfo.nextDt : null,
-          extendJson: modal.value.maintainRecordInfo.extend? JSON.stringify(modal.value.maintainRecordInfo.extend) : null,
+          nextDt: modal.value.maintainRecordInfo.nextDt ? modal.value.maintainRecordInfo.nextDt : null,
+          extendJson: modal.value.maintainRecordInfo.extend ? JSON.stringify(modal.value.maintainRecordInfo.extend) : null,
         });
         modal.value.visible = false;
         Message.success('添加成功');
@@ -234,7 +234,7 @@ export default {
         start: maintainDt.value && maintainDt.value[0] ? (maintainDt.value[0] as Date).getTime() : null,
         end: maintainDt.value && maintainDt.value[1] ? (maintainDt.value[1] as Date).getTime() : null,
       });
-    }
+    };
     onMounted(useLoading(loading, async () => {
       await queryMaintainRecord();
       await queryMaintainRecordHistory();
@@ -261,7 +261,7 @@ export default {
           label: '告警' },
         { value: '报废',
           label: '报废' },
-      ]
+      ];
     }));
     return{
       deviceMaintenanceRecord, deviceTypeList, executorName, deviceNameList, deviceName, maintainTypeList, maintainType, maintainDt, loading, modal,
@@ -280,16 +280,16 @@ function initForm() {
   return {
     device: {
       name: '',
-      referencedColumnName:'', 
+      referencedColumnName: '',
       deviceType: '' },
-    restorationDt: '', 
-    nextDt: '', 
+    restorationDt: '',
+    nextDt: '',
     treatment: '',
-    type: '', 
+    type: '',
     status: '',
     executor: '',
     extend: {executorPhone: ''},
-  }
+  };
 }
 </script>
 <style scoped lang="scss">

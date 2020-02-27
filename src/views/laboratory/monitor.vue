@@ -28,7 +28,7 @@
             </div>
             <el-form-item label="本课程进度：">
               <div style="margin-top: 8px">
-                <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" status="success"/>
+                <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage()" status="success"/>
               </div>
             </el-form-item>
           </el-form>
@@ -41,21 +41,17 @@
             autoresize
             style="width:300px;height: 200px"
             :options="chart"/>
-          <el-form v-if="summary" label-width="80px" label-position="left">
-            <el-form-item label="开机：">{{ summary.on }}</el-form-item>
-            <el-form-item label="故障：">{{ summary.emergency }}</el-form-item>
-            <el-form-item label="离线：">{{ summary.offline }}</el-form-item>
-          </el-form>
         </div>
       </div>
     </div>
     <div class="card monitor-device">
       <div class="flex"><h3>操作台总览</h3></div>
       <div class="flex center wrap">
-        <div class="device-card"
-             @click="$router.push({name:'monitorDetail'})"
-             v-for="(item,i) in stationList" :key="i">
-          <div class="flex align-center">
+        <div class="device-card" v-for="(item,i) in stationList" :key="i">
+          <div
+            class="flex align-center"
+            style="cursor: pointer"
+            @click="$router.push({name:'monitorDetail', params:{id:item.id}})">
             <div class="device-img">
               <img class="image" :src='ImageLink(item.extend.deviceImg)'>
             </div>
@@ -64,13 +60,16 @@
               <div class="flex wrap">
                 <el-tag
                   style="margin-right: 5px"
-                  v-for=" s in item.extend.student"
-                  :key="s.id" type="primary" size="small" >s.name</el-tag>
+                  v-for=" s in item.extend.students"
+                  :key="s.id" type="primary" size="small" >{{s.name}}</el-tag>
               </div>
             </div>
           </div>
           <div class="device-time">
-
+            <v-chart
+              style="width:100%; height: 70px"
+              autoresize
+              :options="times[item.extend.deviceId]"/>
           </div>
         </div>
       </div>
@@ -79,30 +78,34 @@
 </template>
 <script lang="ts">
 import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
-import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
+import {useLoading, useConfirm} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
-import {ElForm} from 'element-ui/types/form';
-import {deepClone, leftFill0} from 'web-toolkit/src/utils';
+import {leftFill0} from 'web-toolkit/src/utils';
 import {statusMap} from '@/utils/device-utils';
 import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import {MonitorStationList} from '@/dao/monitorDao';
-import {ImageLink} from "@/dao/commonDao";
-import {AnalysisDeviceTimes} from "@/dao/analysisDao";
+import {ImageLink} from '@/dao/commonDao';
+import {AnalysisDeviceTimes} from '@/dao/analysisDao';
 import {timelineConfig} from 'web-toolkit/src/utils/echarts-helper';
 
 export default createComponent({
   name: 'monitor',
   props: {},
-  setup() {
+  setup(props:any, ctx:any) {
     const loading = ref(false);
     const courseRecord = ref<any>();
     const stationList = ref<any>([]);
     const chart = ref<any>({});
     const times = ref<any>({});
 
-    const devicesShow = ref<any>();
-    const stations = ref<any>();
-    const percentage = ref(0);
+    const percentage = ()=>{
+      let now = new Date().getTime();
+      let start = new Date(courseRecord.value.startDt).getTime();
+      let end = new Date(courseRecord.value.endDt).getTime();
+      let ratio = 100*(now-start)/(end-start);
+      if(ratio>100) ratio=100;
+      return ratio.toFixed(0);
+    };
     const timeDiff = (time2: any) => {
       if (!time2) { return ; }
       const dateDiff = time2.getTime() - new Date().getTime();
@@ -113,23 +116,23 @@ export default createComponent({
       const seconds = Math.round(leave2 / 1000);
       return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
-    function summaryHandle(summary:any, key:string){
-      if(summary[key]){
-        summary[key] = summary[key]+1;
-      }else {
-        summary[key]=1;
+    function summaryHandle(summary: any, key: string) {
+      if (summary[key]) {
+        summary[key] = summary[key] + 1;
+      } else {
+        summary[key] = 1;
       }
     }
-    async function fetchTimes(){
-      let d2 = new Date();
-      let d1 = new Date();
-      d1.setHours(d1.getHours()-1);
+    async function fetchTimes() {
+      const d2 = new Date();
+      const d1 = new Date();
+      d1.setHours(d1.getHours() - 1);
       const list = await AnalysisDeviceTimes({
         start: d1.getTime(),
         end: d2.getTime(),
-        needSummary: false
+        needSummary: false,
       });
-      for(let d of list){
+      for (const d of list) {
         const time = d.extend.times || [];
         times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true });
       }
@@ -139,41 +142,40 @@ export default createComponent({
         courseRecord.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
       ]);
-      let data = [];
-      let summary:any = {};
-      for(let station of stationList.value){
-        if(!station.deviceList || station.deviceList.length===0){
-          summaryHandle(summary,'offline');
-        }
-        else{
-          let device = station.deviceList[0];
-          if(device.extend.status){
-            summaryHandle(summary,device.extend.status);
-          }else{
-            summaryHandle(summary,'offline');
+      const data = [];
+      const summary: any = {};
+      for (const station of stationList.value) {
+        if (!station.deviceList || station.deviceList.length === 0) {
+          summaryHandle(summary, 'offline');
+        } else {
+          const device = station.deviceList[0];
+          if (device.extend.status) {
+            summaryHandle(summary, device.extend.status);
+          } else {
+            summaryHandle(summary, 'offline');
           }
           // 数据二次处理
           station.extend.deviceId = device.id;
           station.extend.deviceImg = device.deviceType.img;
-          if(station.stationBind && station.stationBind[station.id.toString()]){
+          if (station.stationBind && station.stationBind[station.id.toString()]) {
             station.extend.students = station.stationBind[station.id.toString()];
           }
         }
       }
-      for(let key of Object.keys(summary)){
+      for (const key of Object.keys(summary)) {
         data.push({
           name: statusMap(key).arrName,
-          itemStyle:{
-            color: statusMap(key).color
+          itemStyle: {
+            color: statusMap(key).color,
           },
           value: summary[key],
-        })
+        });
       }
       chart.value = {
         series: [{
           name: '设备数量',
           type: 'pie',
-          data: data,
+          data,
           radius: 50,
           label: {
             formatter: '{b}：{c}',
@@ -181,15 +183,14 @@ export default createComponent({
           },
         }],
       };
-      fetchTimes();
+      // todo times的异步动态添加无效
+      await fetchTimes();
     }));
     return {
       loading, courseRecord,
       timeDiff, chart, times,
       stationList,
       ImageLink,
-      devicesShow,
-      stations,
       percentage,
     };
   },
@@ -238,6 +239,9 @@ export default createComponent({
       .device-message {
         padding-left: 10px;
         width: 100px;
+      }
+      .device-time{
+        padding-right: 10px;
       }
     }
   }

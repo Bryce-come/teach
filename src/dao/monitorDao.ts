@@ -23,7 +23,7 @@ export async function MonitorStationList() {
 /**
  * 监控详情
  * RequestParam int stationId
- * 返回 station, record:CourseRecord
+ * 返回 station
  */
 export async function MonitorStationDetail(params: any) {
   const {data: {station}} = await postService('/rest/monitor/station/detail', params);

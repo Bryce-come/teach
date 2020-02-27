@@ -31,15 +31,6 @@ const userMng = {
 //     CName: '设备总览',
 //   },
 // };
-// const monitoring = {
-//   path: '/monitoring',
-//   name: 'monitoring',
-//   component: () => import('../views/monitor/monitoring.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_MONITOR],
-//     CName: '设备监控',
-//   },
-// };
 // const alarmRule = {
 //   path: '/alarm/rule',
 //   name: 'alarmRule',
@@ -58,17 +49,6 @@ const userMng = {
 //     privileges: [[PRIVILEGE.DEVICE_MONITOR, PRIVILEGE.MODE_ORDER]],
 //     CName: '工单延误提醒',
 //     parentCName: '报警提醒',
-//   },
-// };
-// const monitoringDetail = {
-//   path: '/monitoring/detail/:id',
-//   name: 'monitoringDetail',
-//   component: () => import('../views/monitor/monitoring-detail.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_MONITOR],
-//     CName: '监控详情',
-//     parentCName: '设备监控',
-//     parentName: 'monitoring',
 //   },
 // };
 
@@ -96,7 +76,6 @@ const workTop = {
   name: 'workTop',
   component: () => import('../views/laboratory/worktop.vue'),
   meta: {
-    authDisabled: true,
     CName: '操作台管理',
     parentCName: '实验室管理',
   },
@@ -106,7 +85,6 @@ const equipmentMaintenance = {
   name: 'equipmentMaintenance',
   component: () => import('../views/laboratory/equipment-maintenance.vue'),
   meta: {
-    authDisabled: true,
     CName: '设备保养维修',
     parentCName: '实验室管理',
   },
@@ -116,7 +94,6 @@ const cuttingToolManagement = {
   name: 'cuttingToolManagement',
   component: () => import('../views/laboratory/cutting-tool-management.vue'),
   meta: {
-    authDisabled: true,
     CName: '刀具管理',
     parentCName: '实验室管理',
   },
@@ -126,7 +103,6 @@ const monitor = {
   name: 'monitor',
   component: () => import('../views/laboratory/monitor.vue'),
   meta: {
-    authDisabled: true,
     CName: '实时监控',
     parentCName: '实验室管理',
   },
@@ -136,7 +112,6 @@ const monitorDetail = {
   name: 'monitorDetail',
   component: () => import('../views/laboratory/monitor-detail.vue'),
   meta: {
-    authDisabled: true,
     CName: '监控详情',
     parentCName: '实验室管理',
     parentName: 'monitor',
@@ -147,7 +122,6 @@ const usingProcess = {
   name: 'usingProcess',
   component: () => import('../views/laboratory/using-process.vue'),
   meta: {
-    authDisabled: true,
     CName: '使用过程分析',
     parentCName: '实验室管理',
   },
@@ -157,7 +131,6 @@ const processMonitorDetail = {
   name: 'processMonitorDetail',
   component: () => import('../views/laboratory/process-monitor-detail.vue'),
   meta: {
-    authDisabled: true,
     CName: '操作台详情',
     parentCName: '实验室管理',
     parentName: 'usingProcess',
@@ -168,7 +141,6 @@ const usageAnalysis = {
   name: 'usageAnalysis',
   component: () => import('../views/laboratory/usage-analysis.vue'),
   meta: {
-    authDisabled: true,
     CName: '使用情况分析',
     parentCName: '实验室管理',
   },
@@ -179,7 +151,6 @@ const courseScheduling = {
   component: () => import('../views/course/course-scheduling.vue'),
   // 这里都加上authDisabled，不用检验是否登录
   meta: {
-    authDisabled: true,
     CName: '实训排课',
     parentCName: '实验课程管理',
   },
@@ -189,7 +160,6 @@ const experiment = {
   name: 'experiment',
   component: () => import('../views/course/experiment.vue'),
   meta: {
-    authDisabled: true,
     CName: '实验项目',
     parentCName: '实验课程管理',
   },
@@ -199,7 +169,6 @@ const courseManagement = {
   name: 'courseManagement',
   component: () => import('../views/course/course-management.vue'),
   meta: {
-    authDisabled: true,
     CName: '课程管理',
     parentCName: '实验课程管理',
   },
@@ -209,7 +178,6 @@ const reportTemplateManagement = {
   name: 'reportTemplateManagement',
   component: () => import('../views/course/report-template-management.vue'),
   meta: {
-    authDisabled: true,
     CName: '报告模板管理',
     parentCName: '实验课程管理',
   },
@@ -220,7 +188,6 @@ const courseAppointment = {
   component: () => import('../views/course/course-appointment.vue'),
   // 这里都加上authDisabled，不用检验是否登录
   meta: {
-    authDisabled: true,
     CName: '预约审核',
     parentCName: '实验课程管理',
   },
@@ -230,7 +197,6 @@ const teacherManagement = {
   name: 'teacherManagement',
   component: () => import('../views/personnel/teacher-management.vue'),
   meta: {
-    authDisabled: true,
     CName: '教师管理',
     parentCName: '人员管理',
   },
@@ -240,7 +206,6 @@ const studentManagement = {
   name: 'studentManagement',
   component: () => import('../views/personnel/student-management.vue'),
   meta: {
-    authDisabled: true,
     CName: '学生管理',
     parentCName: '人员管理',
   },
@@ -250,7 +215,6 @@ const deviceAlarm = {
   name: 'deviceAlarm',
   component: () => import('../views/alarm/device-alarm.vue'),
   meta: {
-    authDisabled: true,
     CName: '设备报警',
     parentCName: '报警提醒',
   },
@@ -260,7 +224,6 @@ const disusingAlarm = {
   name: 'disusingAlarm',
   component: () => import('../views/alarm/disusing-alarm.vue'),
   meta: {
-    authDisabled: true,
     CName: '非法使用报警',
     parentCName: '报警提醒',
   },
@@ -270,7 +233,6 @@ const delayAlarm = {
   name: 'delayAlarm',
   component: () => import('../views/alarm/delay-alarm.vue'),
   meta: {
-    authDisabled: true,
     CName: '维保超期报警',
     parentCName: '报警提醒',
   },
@@ -280,7 +242,6 @@ const teachMonitor = {
   name: 'teachMonitor',
   component: () => import('../views/teach/teach-monitor.vue'),
   meta: {
-    authDisabled: true,
     CName: '现场监控',
     parentCName: '教学过程管理',
   },
@@ -290,7 +251,6 @@ const deviceDistribution = {
   name: 'deviceDistribution',
   component: () => import('../views/teach/device-distribution.vue'),
   meta: {
-    authDisabled: true,
     CName: '教学设备分配',
     parentCName: '教学过程管理',
   },
@@ -300,7 +260,6 @@ const programManagement = {
   name: 'programManagement',
   component: () => import('../views/teach/program-management.vue'),
   meta: {
-    authDisabled: true,
     CName: 'NC程序管理',
     parentCName: '教学过程管理',
   },
@@ -310,7 +269,6 @@ const experimentResultScore = {
   name: 'experimentResultScore',
   component: () => import('../views/teach/experiment-result-score.vue'),
   meta: {
-    authDisabled: true,
     CName: '实验结果及评分',
     parentCName: '教学过程管理',
   },
@@ -320,7 +278,6 @@ const gatewayChannelManagement = {
   name: 'gatewayChannelManagement',
   component: () => import('../views/teach/gateway-channel-management.vue'),
   meta: {
-    authDisabled: true,
     CName: '网关通道管理',
     parentCName: '教学过程管理',
   },
@@ -330,7 +287,6 @@ const systemOptionSetting = {
   name: 'systemOptionSetting',
   component: () => import('../views/system/system-option-setting.vue'),
   meta: {
-    authDisabled: true,
     CName: '系统选项设置',
     parentCName: '系统管理',
   },
@@ -340,7 +296,6 @@ const equipmentModelConfiguration = {
   name: 'equipmentModelConfiguration',
   component: () => import('../views/system/equipment-model-configuration.vue'),
   meta: {
-    authDisabled: true,
     CName: '设备型号配置',
     parentCName: '系统管理',
   },
@@ -350,7 +305,6 @@ const preview = {
   name: 'preview',
   component: () => import('../views/teach/preview.vue'),
   meta: {
-    authDisabled: true,
     CName: '课前预习',
   },
 };
@@ -359,23 +313,22 @@ const homework = {
   name: 'homework',
   component: () => import('../views/teach/homework.vue'),
   meta: {
-    authDisabled: true,
     CName: '课后作业',
   },
 };
 
+const test = {
+  path: '/test',
+  name: 'test',
+  component: () => import('../views/test.vue'),
+  meta: {
+    CName: 'test',
+    parentCName: '系统管理',
+  },
+};
 //
 // // 按顺序 用于菜单的排列
 const indexChildren = [
-//   indexPage,
-//   monitoring,
-//   monitoringDetail,
-// // 运行分析
-//   parameter,
-// // 报警提醒
-//   deviceAlarmRecord,
-//   analysisGuarantee,
-//   orderDelay,
   device,
   workTop,
   equipmentMaintenance,
@@ -409,6 +362,7 @@ const indexChildren = [
   equipmentModelConfiguration,
   userMng,
   roleMng,
+  test,
   // 课前预习
   preview,
   // 课后作业

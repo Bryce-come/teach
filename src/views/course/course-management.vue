@@ -121,7 +121,7 @@ export default {
     const experimentList = ref<any>([]);
     const expOfCourseList = ref<any>([]);
     const [keywords2, filtered2] = useSearch(expOfCourseList, {
-      includeProps: ['name',],
+      includeProps: ['name'],
     });
     const courseRemove = async (row: any) => {
       await CourseDel({
