@@ -133,7 +133,7 @@ export default {
     const deviceComponentStoreRecordList = ref<any>([]);
     const componentID = ref<any>();
     const [filterText, deviceComponentStoreRecord] = useSearch(deviceComponentStoreRecordList, {
-      includeProps: ['type', 'person'],
+      includeProps: ['dt', 'remark', 'person'],
     });
     const [keywords, cutterNameList] = useSearch(cutterList, {
       includeProps: ['dt', 'no', 'name'],
@@ -227,6 +227,7 @@ export default {
           type: storeRecordModal.value.storeInfo.type,
           quantity: storeRecordModal.value.storeInfo.quantity,
           dt: storeRecordModal.value.storeInfo.extend.buyDt,
+          remark: storeRecordModal.value.storeInfo.remark ? storeRecordModal.value.storeInfo.quantity : null,
           extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
         cutterList.value = await ComponentStoreList();

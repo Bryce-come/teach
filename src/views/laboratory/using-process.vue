@@ -165,6 +165,8 @@ export default createComponent({
     const oneDay = ref();
     const isshow = ref(false);
     const color = ref();
+    const tableX = ref(-1);
+    const tableY = ref(-1);
     const lessons = ref<any>();
     const chart: Ref<EChartOption> = ref({});
     const setChart = async () => {
@@ -380,15 +382,23 @@ export default createComponent({
              cells[j].onclick = function() {
                 if (!isshow.value) {
                     color.value = this.style.backgroundColor;
+                    tableX.value = i;
+                    tableY.value = j;
                 }
                 isshow.value = !isshow.value;
-                if (isshow.value && color.value !== 'white') {
-                     this.style.backgroundColor = 'darkorchid';
-                     showModal.value = true;
-                 } else {
-                   this.style.backgroundColor = color.value;
-                   showModal.value = false;
-                   }
+                if (tableX.value === i &&  tableY.value ===j){
+                  if (isshow.value && color.value !== 'white') {
+                      this.style.backgroundColor = 'darkorchid';
+                      showModal.value = true;
+                  } else {
+                    this.style.backgroundColor = color.value;
+                    showModal.value = false;
+                    }
+                }
+                else {
+                  alert('请在上一处再次点击');
+                  isshow.value = true;
+                };
              };
          }
        }
@@ -418,6 +428,8 @@ export default createComponent({
        isshow,
        tabCell,
        color,
+       tableX,
+       tableY,
     };
   },
 });

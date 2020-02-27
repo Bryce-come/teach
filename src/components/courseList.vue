@@ -111,13 +111,26 @@
       :modal="showModal"
       :confirm="update"
       width="500px">
-      <div slot='title'>{{showModal.oneLesson?'修改':'预约'}}课程</div>
+      <div slot='title'>{{showModal.oneLesson.id?'修改':'预约'}}课程</div>
       <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="120px" label-position="left" class="flex column between" style="width: 400px;margin: 0 auto">
+        <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
+          <el-select v-model="showModal.oneLesson.type" style="width:300px" :clearable="false" placeholder="请选择预约类型">
+            <el-option
+                v-for="item of courseAppointTypeList"
+                :key="item.id"
+                :label="item.type"
+                :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="课程名称：" prop="course.name" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
           <el-input style="width:300px" v-model="showModal.oneLesson.course.name"/>
         </el-form-item>
         <el-form-item label="授课教师：" prop="teacher.name">
           <el-input style="width:300px" v-model="showModal.oneLesson.teacher.name"/>
+        </el-form-item>
+        <el-form-item label="上课班级：" prop="extend.stations">
+          <el-input style="width:300px" v-model="showModal.oneLesson.extend.clasz"/>
         </el-form-item>
         <el-form-item label="实验项目：" prop="course.programList">
           <el-input style="width:300px" v-model="showModal.oneLesson.course.programList"/>
@@ -152,6 +165,9 @@ export default createComponent({
     const oneDay = ref();
     const isshow = ref(false);
     const color = ref();
+    const tableX = ref(-1);
+    const tableY = ref(-1);
+    const courseAppointTypeList = ref<any>();
     // 查看标志a
     const readModel = ref<any>(
       {
@@ -282,13 +298,21 @@ export default createComponent({
              cells[j].onclick = function() {
                 if (!isshow.value) {
                     color.value = this.style.backgroundColor;
-                    console.log(color);
+                    tableX.value = i;
+                    tableY.value = j;
+                    console.log(color.value);
                 }
                 isshow.value = !isshow.value;
-                if (isshow.value) {
-                     this.style.backgroundColor = 'darkorchid';
-                 } else { this.style.backgroundColor = color.value; }
-             };
+                if (tableX.value === i &&  tableY.value ===j){
+                    if (isshow.value) {
+                        this.style.backgroundColor = 'darkorchid';
+                    } else { this.style.backgroundColor = color.value; }
+                }
+                else {
+                  alert('请在上一处再次点击');
+                  isshow.value = true;
+                };
+             }
          }
        }
     };
@@ -320,6 +344,11 @@ export default createComponent({
     onMounted(useLoading(loading, async () => {
       await newList();
       await tabCell();
+      courseAppointTypeList.value = [
+        {id: '0', type: '正常课程'},
+        {id: '1', type: '授课预约'},
+        {id: '2', type: '个人预约'},
+      ];
     }));
 
     return{
@@ -342,6 +371,9 @@ export default createComponent({
       isshow,
       color,
       tabCell,
+      tableX,
+      tableY,
+      courseAppointTypeList,
     };
   },
 });
@@ -363,7 +395,7 @@ function initForm(): any {
         result: undefined,
         },
       lessons: undefined,
-      class: '',
+      clasz: '',
     },
     };
 }
