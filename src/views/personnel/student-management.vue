@@ -7,18 +7,18 @@
           <el-input  v-model="addClazFlag.addClazInfo" placeholder="请输入班级名称"></el-input>
           <el-button type="success" @click="addClaz(addClazFlag.addClazInfo)">确定</el-button>
         </div>
-        <el-tree 
-          class="filter-tree" 
-          :data="list" 
-          :props="props" 
+        <el-tree
+          class="filter-tree"
+          :data="list"
+          :props="props"
           node-key="id"
           default-expand-all
           ref="tree">
           <span class="custom-tree-node" slot-scope="{ node, data }" @click="() => firstTab(node)">
-            
+
             <!-- <span disabled="true">{{ node.label }}</span> -->
-            <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
-            class="tel" type="text" disabled="disabled" 
+            <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;"
+            class="tel" type="text" disabled="disabled"
             v-model="node.label">
             <span>
               <!-- <el-button
@@ -74,7 +74,7 @@
           </span>
         </el-tree>
       </el-col>
-      <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px">
+      <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right:100px">
         <div class="flex align-center between little-space">
           <el-button type="success" @click="showForm()">添加学生</el-button>
           <el-input class="search-bar" v-model="keywords" placeholder="请输入搜索内容" clearable/>
@@ -182,6 +182,7 @@ export default {
       label: 'name',
     });
     const append = async (row: any) => {
+      // todo
         console.log(row);
     };
     const remove = async (row: any) => {
@@ -277,7 +278,7 @@ export default {
         id: row.id,
         off: off === 0 ? 1 : 2,
       });
-      Message.success(`${off === Status.Normal ? '冻结' : '恢复'}成功`);
+      Message.success(`${off === 0 ? '冻结' : '恢复'}成功`);
       await queryStudentList();
     }
     function validator(rule: any, value: string, callback: Function) {
@@ -310,7 +311,6 @@ export default {
       upgrpFlag.value.visible = true;
       upgrpFlag.value.data = row;
       upgrpFlag.value.upgrpInfo = row.data.name;
-      console.log(upgrpFlag.value.data);
     }
     const ForzenStatus = ref<any>({
       isForzenStatus: false,
@@ -360,7 +360,7 @@ export default {
     }
     // 重复名未定
     async function addClaz(row: any) {
-      if (addClazFlag.value.addClazInfo != '') {
+      if (addClazFlag.value.addClazInfo !== '') {
         const result = {
           name: addClazFlag.value.addClazInfo,
         };
@@ -374,6 +374,7 @@ export default {
       }
     }
     async function showForm(row: any) {
+      if (form.value) { (form.value as ElForm).clearValidate(); }
       if (row) {
         row.pwd = '';
         (row as any).pwdCheck = '';
@@ -381,8 +382,6 @@ export default {
       modal.value.studentInfo = row ? deepClone(row) : initForm();
       modal.value.visible = true;
       await armasd(row.extend.clasz);
-      console.log(row);
-      if (form.value) { (form.value as ElForm).clearValidate(); }
     }
     async function upgrpDate() {
       const result = {
@@ -390,7 +389,7 @@ export default {
         name: upgrpFlag.value.upgrpInfo,
         id: upgrpFlag.value.data.data.id,
       };
-      if (result.name != '') {
+      if (result.name !== '') {
         await ClassGroupUpdate(result);
         await queryClassList();
         await chFiltered();
@@ -471,19 +470,12 @@ export default {
       update: useLoading(loading, update), updataGropFlag, ForzenStatus, chFiltered,
       validator, classList, groupList, ctogList, append, FrozenClaz, unFrozenClaz, firstTab,
     };
-    return{
-
-    };
   },
 };
-enum Status {
-  Normal = 0,
-  Frozen = 1,
-}
 function initForm() {
   return {
-    name: '', username: '', phone: '', status: '', role: 3, pwdCheck: '',
-    extend: {clasz: '', claszGroup: ''},
+    name: '', username: '', role: 3,
+    extend: {},
   };
 }
 </script>

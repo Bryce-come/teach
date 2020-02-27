@@ -1,45 +1,45 @@
 <template>
   <div v-loading="loading">
-    <div class="monitor flex align-center">
-      <div v-if="lesson" class="card monitor-left" ref="box">
-        <div class="flex align-center"><h3>上课班级信息</h3></div>
-        <div style="margin:auto">
+    <div class="monitor flex">
+      <div class="card monitor-left">
+        <div class="flex"><h3>上课班级信息</h3></div>
+        <div v-if="!courseRecord|| !courseRecord.course" style="color: grey;text-align: center">暂无上课信息</div>
+        <div v-else>
           <el-form label-width="110px" label-position="left" style="width:100%;margin-top:20px" >
             <div class="flex align-center wrap">
               <div class="form-line">
-                <el-form-item label="课程名称：">{{ lesson.course.name }}</el-form-item>
+                <el-form-item label="课程名称：">{{ courseRecord.course?courseRecord.course.name:'' }}</el-form-item>
               </div>
               <div class="form-line">
-                <el-form-item label="实验项目：">{{ lesson.course.programList }}</el-form-item>
+                <el-form-item label="实验项目：">{{ courseRecord.program?courseRecord.program.name:'' }}</el-form-item>
               </div>
               <div class="form-line">
-                <el-form-item label="授课老师：">{{ lesson.course.teacher.name }}</el-form-item>
+                <el-form-item label="授课老师：">{{ courseRecord.teacher.name }}</el-form-item>
               </div>
               <div class="form-line">
-                <el-form-item label="授课班级：">{{ lesson.extend.clasz }}</el-form-item>
+                <el-form-item label="授课班级分组：">{{ (courseRecord.clasz?courseRecord.clasz.name:'')+' '+(courseRecord.claszGroup?courseRecord.claszGroup.name:'') }}</el-form-item>
               </div>
               <div class="form-line">
-                <el-form-item label="上课人数：">{{ lesson.students.length }}</el-form-item>
+                <el-form-item label="上课人数：">{{ courseRecord.studentList?courseRecord.studentList.length:0 }}</el-form-item>
               </div>
               <div class="form-line">
-                <el-form-item label="距离下课时间：">{{ timeDiff(time, lesson.end) }}</el-form-item>
+                <el-form-item label="距离下课时间：">{{ timeDiff(new Date(courseRecord.endDt)) }}</el-form-item>
               </div>
             </div>
+            <el-form-item label="本课程进度：">
+              <div style="margin-top: 8px">
+                <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" status="success"/>
+              </div>
+            </el-form-item>
           </el-form>
-          <div class="flex align-center">
-                <div>本课程进度：</div>
-                <div style="width:200px">
-                  <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" status="success"></el-progress>
-                </div>
-            </div>
         </div>
       </div>
       <div class="card monitor-right">
-        <div class="flex align-center" style="margin:auto"><h3>设备状态统计</h3></div>
-        <div class="flex align-center">
+        <div class="flex" style="margin:auto"><h3>设备状态统计</h3></div>
+        <div class="flex align-center center">
           <v-chart
             autoresize
-            style="width:300px;height:200px;"
+            style="width:300px;height: 200px"
             :options="chart"/>
           <el-form v-if="summary" label-width="80px" label-position="left">
             <el-form-item label="开机：">{{ summary.on }}</el-form-item>
@@ -50,21 +50,23 @@
       </div>
     </div>
     <div class="card monitor-device">
-      <div style="margin:10px"><h3>操作台总览</h3></div>
+      <div class="flex"><h3>操作台总览</h3></div>
       <div class="flex center wrap">
         <div class="device-card"
              @click="$router.push({name:'monitorDetail'})"
-             v-for="(item,i) in stations" :key="i">
+             v-for="(item,i) in stationList" :key="i">
           <div class="flex align-center">
             <div class="device-img">
-              <!-- 我图片链接不出来 -->
-              <!-- <img class="image" :src="item.imgUrl"> -->
-              <img class="image" src='../../assets/u1630.png'>
+              <img class="image" :src='ImageLink(item.extend.deviceImg)'>
             </div>
             <div class="device-message">
-              <div>{{item.name}}</div>
-              <div>{{item.student.clasz.name}}</div>
-              <div>{{item.student.name}}</div>
+              <div style="font-size: 1.1em;font-weight: 600">{{item.name}}</div>
+              <div class="flex wrap">
+                <el-tag
+                  style="margin-right: 5px"
+                  v-for=" s in item.extend.student"
+                  :key="s.id" type="primary" size="small" >s.name</el-tag>
+              </div>
             </div>
           </div>
           <div class="device-time">
@@ -80,183 +82,112 @@ import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
 import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
-import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {lineConfig, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import {deepClone, leftFill0} from 'web-toolkit/src/utils';
 import {statusMap} from '@/utils/device-utils';
 import {CourseRecordInClass} from '@/dao/courseRecordDao';
+import {MonitorStationList} from '@/dao/monitorDao';
+import {ImageLink} from "@/dao/commonDao";
+import {AnalysisDeviceTimes} from "@/dao/analysisDao";
+import {timelineConfig} from 'web-toolkit/src/utils/echarts-helper';
 
 export default createComponent({
   name: 'monitor',
   props: {},
-  setup(props: any, ctx: any) {
+  setup() {
     const loading = ref(false);
     const courseRecord = ref<any>();
     const stationList = ref<any>([]);
-
-    const box = ref(null);
-    const lesson = ref<any>();
-    const time = ref<any>();
-    const summary = ref<any>();
     const chart = ref<any>({});
+    const times = ref<any>({});
+
     const devicesShow = ref<any>();
     const stations = ref<any>();
     const percentage = ref(0);
-    const query = async () => {
-      lesson.value = {
-        id: 1,
-        course: {
-          name: '自动化课程1',
-          programList: '切刀挂刀操作',
-          teacher: {
-            name: '玛丽',
-          },
-        },
-        start: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
-        end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
-        type: 0,
-        students: ['马丽', '李海'],
-        extend: {
-          appointRecord: {result: 1},
-          lessons: [1, 2, 3],
-          clasz: '自动化1801',
-          claszGroup: '自动化一组',
-        },
-      };
-      const num1 = lesson.value.end.getTime() - lesson.value.start.getTime();
-      const num2 = new Date().getTime() - lesson.value.start.getTime();
-      percentage.value = Math.round(100 * num2 / num1) ;
-    };
-    const timeDiff = (time1: any, time2: any) => {
-      const dateDiff = time2.getTime() - time1.getTime();
+    const timeDiff = (time2: any) => {
+      if (!time2) { return ; }
+      const dateDiff = time2.getTime() - new Date().getTime();
       const hours = Math.floor(dateDiff / (3600 * 1000));
       const leave1 = dateDiff % (3600 * 1000);
       const minutes = Math.floor(leave1 / (60 * 1000));
       const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
       const seconds = Math.round(leave2 / 1000);
-      return hours + '小时' + minutes + '分' + seconds + '秒';
+      return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
-    const setChart = async () => {
-      summary.value = {
-        emergency: 0,
-        offline: 1,
-        on: 9,
-      };
-      const xyData = Object.entries(summary.value);
+    function summaryHandle(summary:any, key:string){
+      if(summary[key]){
+        summary[key] = summary[key]+1;
+      }else {
+        summary[key]=1;
+      }
+    }
+    async function fetchTimes(){
+      let d2 = new Date();
+      let d1 = new Date();
+      d1.setHours(d1.getHours()-1);
+      const list = await AnalysisDeviceTimes({
+        start: d1.getTime(),
+        end: d2.getTime(),
+        needSummary: false
+      });
+      for(let d of list){
+        const time = d.extend.times || [];
+        times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true });
+      }
+    }
+    onMounted(useLoading(loading, async () => {
+      await Promise.all([
+        courseRecord.value = await CourseRecordInClass(),
+        stationList.value = await MonitorStationList(),
+      ]);
+      let data = [];
+      let summary:any = {};
+      for(let station of stationList.value){
+        if(!station.deviceList || station.deviceList.length===0){
+          summaryHandle(summary,'offline');
+        }
+        else{
+          let device = station.deviceList[0];
+          if(device.extend.status){
+            summaryHandle(summary,device.extend.status);
+          }else{
+            summaryHandle(summary,'offline');
+          }
+          // 数据二次处理
+          station.extend.deviceId = device.id;
+          station.extend.deviceImg = device.deviceType.img;
+          if(station.stationBind && station.stationBind[station.id.toString()]){
+            station.extend.students = station.stationBind[station.id.toString()];
+          }
+        }
+      }
+      for(let key of Object.keys(summary)){
+        data.push({
+          name: statusMap(key).arrName,
+          itemStyle:{
+            color: statusMap(key).color
+          },
+          value: summary[key],
+        })
+      }
       chart.value = {
         series: [{
           name: '设备数量',
           type: 'pie',
-          data: [
-            {value: 1, name: '故障'},
-            {value: 1, name: '离线'},
-            {value: 9, name: '开机'},
-          ],
-          // radius: document.querySelector('#index-pie')!.clientWidth * 0.25,
+          data: data,
           radius: 50,
           label: {
             formatter: '{b}：{c}',
             fontSize: 14,
           },
         }],
-        grid: {
-          height: 300,
-        },
-        color: getColors(),
       };
-    };
-    const setStation = async () => {
-      stations.value = [
-        {
-          id: 1,
-          name: '操作台1',
-          imgUrl: '../../assets/u1630.png',
-          student: {
-            id: 1,
-            name: '马利',
-            clasz: {
-              name: '自动化1801',
-            },
-          },
-        },
-        {
-          id: 2,
-          name: '操作台2',
-          imgUrl: '../../assets/u1630.png',
-          student: {
-            id: 1,
-            name: '马利',
-            clasz: {
-              name: '自动化1801',
-            },
-          },
-        },
-        {
-          id: 3,
-          name: '操作台3',
-          imgUrl: '../../assets/u1630.png',
-          student: {
-            id: 1,
-            name: '马利',
-            clasz: {
-              name: '自动化1801',
-            },
-          },
-        },
-        {
-          id: 4,
-          name: '操作台4',
-          imgUrl: '../../assets/u1630.png',
-          student: {
-            id: 1,
-            name: '马利',
-            clasz: {
-              name: '自动化1801',
-            },
-          },
-        },
-        {
-          id: 5,
-          name: '操作台5',
-          imgUrl: '../../assets/u1630.png',
-          student: {
-            id: 1,
-            name: '马利',
-            clasz: {
-              name: '自动化1801',
-            },
-          },
-        },
-        {
-          id: 6,
-          name: '操作台6',
-          imgUrl: '../../assets/u1630.png',
-          student: {
-            id: 1,
-            name: '马利',
-            clasz: {
-              name: '自动化1801',
-            },
-          },
-        },
-      ];
-    };
-    onMounted(useLoading(loading, async () => {
-      courseRecord.value = await CourseRecordInClass();
-      await query();
-      await setChart();
-      await setStation();
-      time.value = new Date();
+      fetchTimes();
     }));
     return {
       loading, courseRecord,
-      box,
-      time,
-      lesson,
-      query,
-      timeDiff,
-      summary,
-      chart,
-      setChart,
+      timeDiff, chart, times,
+      stationList,
+      ImageLink,
       devicesShow,
       stations,
       percentage,
@@ -266,56 +197,47 @@ export default createComponent({
 </script>
 <style scoped lang="scss">
   .monitor {
-    height: 21.5rem;
-
     .monitor-left {
       margin-right: 2%;
-      width: 49%;
-      height: 100%;
-      padding: 15px 20px;
-
+      width: 60%;
+      height: 270px;
+      padding: 10px 20px;
       .el-form * {
         font-size: 1rem;
       }
-
       .el-form-item {
         margin-bottom: 5px;
       }
     }
 
     .monitor-right {
-      width: 49%;
-      height: 100%;
-      padding: 15px 20px;
-
+      width: 39%;
+      height: 270px;
+      padding: 10px 20px;
       .el-form * {
         font-size: 1rem;
       }
-
       .el-form-item {
         margin-bottom: 5px;
       }
     }
-
   }
 
   .monitor-device {
     margin-top: 10px;
-
+    padding: 10px 20px;
     .device-card {
-      width: 30%;
-      margin-right: 10px;
-
+      width: 24%;
+      margin-right: 20px;
       .device-img {
-        width: 50%;
-
+        width: 150px;
         img {
           width: 100%;
         }
       }
-
       .device-message {
-        width: 50%;
+        padding-left: 10px;
+        width: 100px;
       }
     }
   }

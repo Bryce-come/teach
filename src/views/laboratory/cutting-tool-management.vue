@@ -172,7 +172,6 @@ export default {
       const valid = await (form1.value as ElForm).validate();
       if (valid) {
         if (addModal.value.type === 'add') {
-          // console.log(addModal.value.cutterInfo);
           await ComponentStoreAdd({
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
@@ -182,7 +181,6 @@ export default {
         addModal.value.visible = false;
         Message.success('添加成功');
         cutterList.value = await ComponentStoreList();
-        // console.log(cutterList.value);
       }
     }
     const remove = async (row: any) => {
@@ -237,12 +235,10 @@ export default {
     const query = async (data: any) => {
       deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
         componentId: data.id});
-      console.log(deviceComponentStoreRecordList);
     };
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
        deviceTypeList.value = await DeviceTypeList();
-       console.log(cutterList);
     }));
     return{
       loading, cutterNameList, keywords, cutterList, form1, form2,

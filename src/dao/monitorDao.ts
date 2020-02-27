@@ -16,8 +16,8 @@ export async function CameraRecordList(params: any) {
  * 返回list:List<ExpStation>, record:CourseRecord
  */
 export async function MonitorStationList() {
-  const {data} = await postService('/rest/monitor/station/list');
-  return data;
+  const {data: {list}} = await postService('/rest/monitor/station/list');
+  return list;
 }
 
 /**
@@ -26,6 +26,6 @@ export async function MonitorStationList() {
  * 返回 station, record:CourseRecord
  */
 export async function MonitorStationDetail(params: any) {
-  const {data} = await postService('/rest/monitor/station/detail', params);
-  return data;
+  const {data: {station}} = await postService('/rest/monitor/station/detail', params);
+  return station;
 }
