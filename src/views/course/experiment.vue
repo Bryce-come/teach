@@ -1,31 +1,35 @@
 <template>
   <div v-loading="loading" class="experiment">
-    <div style="display:flex;justify-content:flex-start;margin-bottom:10px">
-      <el-button :type="allExp?'primary':''" @click="showAllExp()">所有实验</el-button>
-      <el-button :type="inExp?'primary':''" style="margin-left:20px" @click="showInExp()">课内实验</el-button>
-      <el-button :type="outExp?'primary':''" style="margin-left:20px" @click="showOutExp()">开放实验</el-button>
-    </div>
-    <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
-      <div style="margin-bottom:10px">
-        <el-button type="primary">导入</el-button>
-        <el-button type="success" style="margin-left:10px" @click="showForm()">添加</el-button>
-      </div>      
-      <el-input class="search bar" v-model="keywords" placeholder="输入关键字搜索" style="margin-bottom:10px;width:350px"></el-input>    
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+      <el-radio-group v-model="tab" @change="changeTab">
+        <el-radio-button label="所有实验"></el-radio-button>
+        <el-radio-button label="课内实验"></el-radio-button>
+        <el-radio-button label="开放实验"></el-radio-button>
+        <el-radio-button label="添加实验"></el-radio-button>
+      </el-radio-group>
+      <el-input class="search bar" v-model="keywords" placeholder="输入关键字搜索" style="margin-bottom:10px;width:350px"></el-input>
     </div>
     <lkt-table
       :data="filtered"
       style="width:100%">
-      <el-table-column label="名称" prop="name"/>      
-      <el-table-column label="类型" prop="label"/>    
-      <el-table-column label="简介" prop="purpose"/>
-      <el-table-column label="关联操作台" prop="stations"/>
+      <el-table-column label="实验名称" prop="name"/>      
+      <el-table-column label="实验类型" prop="label"/>    
+      <el-table-column label="实验简介" prop="purpose"/>
+      <el-table-column label="关联操作台">
+        <div class="flex start" slot-scope="{row}" >
+           <div v-for="(item,i) in row.stationList" :key="i" style="padding: 0">
+             {{item.name + ','}}
+           </div>
+         </div>
+      </el-table-column>
       <el-table-column label="实验设备"/>
       <el-table-column label="附件" prop="attachment"/>
       <el-table-column label="操作" width="200px" align="center">
-        <div slot-scope="{row}">
+        <div class="flex center little-space wrap" slot-scope="{row}">
           <el-button type="warning" size="mini" @click="showForm(row)">修改</el-button>
-          <el-button type="danger" size="mini" style="margin-left:5px" @click="remove(row)">删除</el-button>
-          <el-button type="text" style="margin-left:5px" @click="detailForm(row)">查看详情</el-button>
+          <el-button type="text" @click="attachmentForm(row)">管理附件</el-button>
+          <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+          <el-button type="text" @click="detailForm(row)">查看详情</el-button>
         </div>
       </el-table-column>
     </lkt-table>
@@ -36,6 +40,18 @@
       <el-form v-if="modal.experimentInfo" ref="form" :model="modal.experimentInfo" label-width="120px" label-position="left" style="margin: 0 10px">
         <el-form-item label="实验名称：" prop="name" :rules="{ required: true, message: '请输入实验名称'}">
           <el-input v-model="modal.experimentInfo.name"></el-input>
+        </el-form-item>
+        <el-form-item label="实验类型：" prop="label" :rules="{ required: true, message: '请选择实验类型'}">
+          <el-select v-model="modal.experimentInfo.label">
+            <el-option
+              v-for="item of expTypeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"></el-option>
+          </el-select>  
+        </el-form-item>
+        <el-form-item label="项目编号：" prop="code" :rules="{ required: true, message: '请输入实验项目编号'}">
+          <el-input v-model="modal.experimentInfo.code"></el-input>
         </el-form-item>
         <el-form-item label="实验目的：" prop="purpose">
           <el-input v-model="modal.experimentInfo.purpose"></el-input>
@@ -50,9 +66,15 @@
           <el-input v-model="modal.experimentInfo.results"></el-input>
         </el-form-item>
         <el-form-item label="关联操作台：" prop="stations" :rules="{required: true, message: '请选择关联操作台'}">
-          <lkt-select :list="stationList" value-key="name" option-value-key="id" v-model="modal.experimentInfo.stations"></lkt-select>
+          <el-select multiple v-model="modal.experimentInfo.stations">
+            <el-option
+              v-for="item of stationList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="上传附件：" prop="attachment">
+        <!-- <el-form-item label="上传附件：" prop="attachment">
           <el-upload
             :http-request="(option)=>upload(option, row)"
             ref="upload"
@@ -61,7 +83,7 @@
             :auto-upload="false">
             <el-button type="primary" icon="el-icon-upload2">点击上传文件</el-button>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
@@ -84,12 +106,32 @@
           <div>{{detailModal.detailInfo.results}}</div>
         </el-form-item>
         <el-form-item label="关联操作台：">
-          <div>{{detailModal.detailInfo.stations}}</div>
+          <div class="flex start">
+            <div v-for="item of detailModal.detailInfo.stationList" :key="item.id">{{item.name + ','}}</div>
+          </div>
         </el-form-item>
         <el-form-item label="附件：">
           <div>{{detailModal.detailInfo.attachment}}</div>
         </el-form-item>
       </el-form>
+    </kit-dialog-simple>
+    <kit-dialog-simple
+      :modal="attachmentModal">
+      <div slot="title">管理附件</div>
+      <el-upload
+            :http-request="(option)=>upload(option, row)"
+            ref="upload"
+            action=""
+            :auto-upload="false">
+            <el-button type="primary" icon="el-icon-upload2">点击上传附件</el-button>
+      </el-upload>
+      <el-table>
+        <el-table-column label="附件名称"/>
+        <el-table-column label="附件大小"/>
+        <el-table-column label="操作">
+          <el-button type="danger" size="mini">删除</el-button>
+        </el-table-column>
+      </el-table>
     </kit-dialog-simple>
   </div>
 </template>
@@ -109,15 +151,28 @@ export default {
     const [keywords, filtered] = useSearch(experimentList, {
       includeProps: ['name'],
     });
-    const allExp = ref(true);
-    const inExp = ref(false);
-    const outExp = ref(false);
+    const tab = ref<'所有实验' | '课内实验' | '开放实验' | '添加实验'>('所有实验');
+    async function changeTab(tab: any) {
+      if (tab === '所有实验') {
+        await showAllExp();
+      } else if (tab === '课内实验') {
+        showInExp();
+      } else if (tab === '开放实验') {
+        showOutExp();
+      } else {
+        showForm();
+      }
+    }
+    const expTypeList = ref<any>([
+      {id: 0, name: '课内实验'},
+      {id: 1, name: '开放实验'},
+    ]);
     const remove = async (row: any) => {
       await ProgramDel({
         id: row.id,
       });
       Message.success('删除成功');
-      // await query();
+      // experimentList.value = await ProgramList();
       await showAllExp();
     };
     const modal = ref<any>({
@@ -146,7 +201,7 @@ export default {
         // *id, code, name, purpose, principle, steps, results, label, stationJson, extendJson
         if (modal.value.type === 'add') {
           await ProgramAdd({
-            id: modal.value.experimentInfo.id,
+            // id: modal.value.experimentInfo.id,
             code: modal.value.experimentInfo.code,
             name: modal.value.experimentInfo.name,
             purpose: modal.value.experimentInfo.purpose,
@@ -173,10 +228,8 @@ export default {
         }
         modal.value.visible = false;
         Message.success(`${modal.value.type === 'add' ? '添加' : '修改'}成功`);
-        // await query();
+        // experimentList.value = await ProgramList();
         await showAllExp();
-        // await showInExp();
-        // await showOutExp();
       }
     }
     const detailModal = ref<any>({
@@ -187,35 +240,30 @@ export default {
       detailModal.value.detailInfo = data;
       detailModal.value.visible = true;
     };
+    const form2 = ref<ElForm | null>(null);
+    const attachmentModal = ref<any>({
+      visible: false,
+      attachmentInfo: null,
+    });
+    const attachmentForm = async (data?: any) => {
+      attachmentModal.value.visible = true;
+      attachmentModal.value.attachmentInfo = data;
+    };
     const showAllExp = async () => {
-      allExp.value = true;
-      inExp.value = false;
-      outExp.value = false;
-      const firstList = await ProgramList();
-      // const inExpList = firstList.课内实验;
-      // const outExpList = firstList.开放实验;
-      // for(var i = 0;i < outExpList.length;i++) {
-      //     inExpList.push(outExpList[i])
-      //   }
-      // experimentList.value = inExpList;
-      console.log(firstList);
+      experimentList.value = await ProgramList();
+      console.log(experimentList.value);
     };
     const showInExp = async () => {
-      allExp.value = false;
-      inExp.value = true;
-      outExp.value = false;
-      // const firstList = await ProgramList();
-      // const inExpList = firstList.课内实验;
-      // experimentList.value = inExpList;
+      const firstList = await ProgramList();
+      experimentList.value = firstList.filter(function (item: any) {
+        return item.label === '课内实验';
+      })
     };
     const showOutExp = async () => {
-      allExp.value = false;
-      inExp.value = false;
-      outExp.value = true;
-      // const firstList = await ProgramList();
-      // const outExpList = firstList.开放实验;
-      // experimentList.value = outExpList;
-      // console.log(experimentList.value[0].stations);
+      const secondList = await ProgramList();
+      experimentList.value = secondList.filter(function (item: any) {
+        return item.label === '开放实验';
+      })
     };
     async function upload(option: any, row: any) {
       await ProgramUpload({
@@ -225,31 +273,31 @@ export default {
       await showAllExp();
     }
     onMounted(useLoading(loading, async () => {
-      // await query();
+      // experimentList.value = await ProgramList();
       await showAllExp();
       stationList.value = await StationList(true);
-      // console.log(stationList.value);
-      // await showInExp();
-      // await showOutExp();
+      console.log(stationList.value);
+      console.log(tab);
     }));
     return{
-      loading, experimentList, keywords, filtered,
+      loading, experimentList, keywords, filtered, expTypeList, tab,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       modal, showForm, form,
       update: useLoading(loading, update),
-      allExp, inExp, outExp,
       showAllExp: useLoading(loading, showAllExp),
       showInExp: useLoading(loading, showInExp),
       showOutExp: useLoading(loading, showOutExp),
       detailModal, detailForm,
       stationList,
       upload: useLoading(loading, upload),
+      changeTab: useLoading(loading, changeTab),
+      form2, attachmentModal, attachmentForm,
     };
   },
 };
 function initForm() {
   return {
-    id: '', code: '', name: '', purpose: '', principle: '', steps: '', results: '', attachment: '', extend: {},
+    id: '', code: '', name: '', label: '', purpose: '', principle: '', steps: '', results: '', extend: {},
   };
 }
 </script>

@@ -85,8 +85,8 @@ export async function DeviceMaintenLatest() {
  * RequestParam(required = false) Long start,
  * RequestParam(required = false) Long end
  */
-export async function DeviceMaintenList() {
-  const {data: {list}} = await postService('/rest/device/mainten/list');
+export async function DeviceMaintenList(params: any) {
+  const {data: {list}} = await postService('/rest/device/mainten/list', params);
   return list;
 }
 

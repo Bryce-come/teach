@@ -88,6 +88,9 @@
           <el-form-item label="保管人：" prop="extend.keeper">
             <el-input v-model="storeRecordModal.storeInfo.extend.keeper"></el-input>
           </el-form-item>
+          <el-form-item label="备注：" prop="remark">
+            <el-input v-model="storeRecordModal.storeInfo.remark"></el-input>
+          </el-form-item>
         </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
@@ -260,7 +263,7 @@ function initCutterForm() {
 }
 function initStoreRecordForm() {
   return {
-    type: '', quantity: '',
+    type: '', quantity: '', remark: '',
     extend: {batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
   };
 }
