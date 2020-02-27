@@ -136,7 +136,7 @@
               <el-input v-model="modal.studentInfo.name"></el-input>
           </el-form-item>
           <el-form-item label="班级" prop="extend.clasz" :rules="{ required: true, message: '请选择班级'}">
-              <el-select v-model="modal.studentInfo.extend.clasz" @click="armasd(modal.studentInfo.extend.clasz)" @change="armasd(modal.studentInfo.extend.clasz)">
+              <el-select v-model="modal.studentInfo.extend.clasz" @change="armasdb(modal.studentInfo.extend.clasz)">
                 <el-option v-for="clas in classList" :key="clas.id" :label="clas.name" :value="clas.id" />
               </el-select>
           </el-form-item>
@@ -312,6 +312,7 @@ export default {
       row.tagoff=true
       await ClassFreeze(result);
       await queryClassList();
+      await queryStudentList();
       classList.value = await ClassList();
       Message.success('冻结成功')
     }
@@ -323,6 +324,7 @@ export default {
       row.tagoff=false
       await ClassUnFreeze(result);
       await queryClassList();
+      await queryStudentList();
       classList.value = await ClassList();
       Message.success('解冻成功')
     }
@@ -367,6 +369,14 @@ export default {
       modal.value.studentInfo = row ? deepClone(row) : initForm();
       modal.value.visible = true;
       await armasd(row.extend.clasz);
+      // const midList = ref<any>();
+      // midList.value = [];
+      // await queryClassList();
+      // for (let i = 0; i < classList.value.length; i++) {
+      //   midList.value[i] = classList.value[i].id;
+      // }
+      // groupList.value = classList.value[midList.value.indexOf(row)].groups;
+      // console.log(groupList.value)
       if (form.value) { (form.value as ElForm).clearValidate(); }
     }
     async function upgrpDate() {
@@ -415,7 +425,7 @@ export default {
       const valid = await (form.value as ElForm).validate();
       if (!valid) { return ; }
       if(modal.value.studentInfo.phone===''){
-        modal.value.studentInfo.phone=undefined
+        modal.value.studentInfo.phone=null
       }
       const result = {
         id: modal.value.studentInfo.id,
@@ -474,6 +484,25 @@ export default {
       }
       groupList.value = classList.value[midList.value.indexOf(row)].groups;
     }
+    async function armasdb(row: any){
+      const midList = ref<any>();
+      midList.value = [];
+      await queryClassList();
+      for (let i = 0; i < classList.value.length; i++) {
+        midList.value[i] = classList.value[i].id;
+      }
+      groupList.value = classList.value[midList.value.indexOf(row)].groups;
+      console.log(classList.value[midList.value.indexOf(row)].groups.length)
+      
+      if(classList.value[midList.value.indexOf(row)].groups.length===0){
+        modal.value.studentInfo.extend.claszGroup=''
+      }
+      else{
+        modal.value.studentInfo.extend.claszGroup=groupList.value[0].name
+      }
+        
+      
+    }
     onMounted(useLoading(loading, async () => {
       classList.value = await ClassList();
       await queryStudentList();
@@ -485,7 +514,7 @@ export default {
           includeProps: ['username', 'name', 'phone' , 'address', 'clasz', 'claszGroup'],
       });
     return{
-      loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag,
+      loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag,armasdb,
       addNewGroup,addNewGroupDate,storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
       armasd, upgrpFlag,showFormB,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
