@@ -31,12 +31,12 @@ export async function AnalysisDeviceTimes(params: any) {
  * ApiParam(value = "抽样个数，不传或0代表不抽样")
  * RequestParam(required = false) Integer sampleNum
  */
-export async function AnalysisParams(params:any) {
-  const {data: {list}} = await postService('/rest/analysis/device/params/queryByKeys', params)
+export async function AnalysisParams(params: any) {
+  const {data: {list}} = await postService('/rest/analysis/device/params/queryByKeys', params);
   return list;
 }
 
-export async function AnalysisDeviceParam(params:any) {
-  const { data } = await mesPostUntilSuccess('/rest/monitor/station/device/detail/params',params);
+export async function AnalysisDeviceParam(params: any) {
+  const { data } = await mesPostUntilSuccess('/rest/monitor/station/device/detail/params', params);
   return data;
 }

@@ -386,7 +386,7 @@ export default createComponent({
                     tableY.value = j;
                 }
                 isshow.value = !isshow.value;
-                if (tableX.value === i &&  tableY.value ===j){
+                if (tableX.value === i &&  tableY.value === j) {
                   if (isshow.value && color.value !== 'white') {
                       this.style.backgroundColor = 'darkorchid';
                       showModal.value = true;
@@ -394,11 +394,10 @@ export default createComponent({
                     this.style.backgroundColor = color.value;
                     showModal.value = false;
                     }
-                }
-                else {
+                } else {
                   alert('请在上一处再次点击');
                   isshow.value = true;
-                };
+                }
              };
          }
        }

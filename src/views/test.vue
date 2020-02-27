@@ -168,20 +168,20 @@
   </div>
 </template>
 <script lang="ts">
-  import { ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
-  export default {
-    setup(){
-      onMounted(()=>{
-        console.log(document)
-        let l = document.scripts.length
-        console.log(document.scripts[l-1].src)
+import { ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
+export default {
+  setup() {
+    onMounted(() => {
+      console.log(document);
+      const l = document.scripts.length;
+      console.log(document.scripts[l - 1].src);
 
-      });
-      return{
+    });
+    return{
 
-      }
-    }
-  }
+    };
+  },
+};
 </script>
 <style lang="scss" scoped>
 

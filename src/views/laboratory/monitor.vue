@@ -91,19 +91,19 @@ import {timelineConfig} from 'web-toolkit/src/utils/echarts-helper';
 export default createComponent({
   name: 'monitor',
   props: {},
-  setup(props:any, ctx:any) {
+  setup(props: any, ctx: any) {
     const loading = ref(false);
     const courseRecord = ref<any>();
     const stationList = ref<any>([]);
     const chart = ref<any>({});
     const times = ref<any>({});
 
-    const percentage = ()=>{
-      let now = new Date().getTime();
-      let start = new Date(courseRecord.value.startDt).getTime();
-      let end = new Date(courseRecord.value.endDt).getTime();
-      let ratio = 100*(now-start)/(end-start);
-      if(ratio>100) ratio=100;
+    const percentage = () => {
+      const now = new Date().getTime();
+      const start = new Date(courseRecord.value.startDt).getTime();
+      const end = new Date(courseRecord.value.endDt).getTime();
+      let ratio = 100 * (now - start) / (end - start);
+      if (ratio > 100) { ratio = 100; }
       return ratio.toFixed(0);
     };
     const timeDiff = (time2: any) => {

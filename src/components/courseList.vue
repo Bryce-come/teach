@@ -303,16 +303,15 @@ export default createComponent({
                     console.log(color.value);
                 }
                 isshow.value = !isshow.value;
-                if (tableX.value === i &&  tableY.value ===j){
+                if (tableX.value === i &&  tableY.value === j) {
                     if (isshow.value) {
                         this.style.backgroundColor = 'darkorchid';
                     } else { this.style.backgroundColor = color.value; }
-                }
-                else {
+                } else {
                   alert('请在上一处再次点击');
                   isshow.value = true;
-                };
-             }
+                }
+             };
          }
        }
     };

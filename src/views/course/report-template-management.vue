@@ -77,7 +77,7 @@ export default {
       const isLimit10M = file.size / 1024 / 1024 < 10;
       if (!isLimit10M) {
         Message.warning('上传实验报告模板大小不能超过10M！');
-        return false
+        return false;
       }
     };
     const download = async () => {

@@ -83,13 +83,13 @@
 <script lang="ts">
 import { ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { router } from '@/main';
-import {leftFill0,sleep, formatTime} from 'web-toolkit/src/utils';
+import {leftFill0, sleep, formatTime} from 'web-toolkit/src/utils';
 import { useLoading } from 'web-toolkit/src/service';
-import {MonitorStationDetail} from "@/dao/monitorDao";
-import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from "@/dao/analysisDao";
-import {CourseRecordInClass} from "@/dao/courseRecordDao";
-import {statusMap} from "@/utils/device-utils";
-import {timelineConfig,getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import {MonitorStationDetail} from '@/dao/monitorDao';
+import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
+import {CourseRecordInClass} from '@/dao/courseRecordDao';
+import {statusMap} from '@/utils/device-utils';
+import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 import {Message} from 'element-ui';
 
 export default {
@@ -100,7 +100,7 @@ export default {
     const device = ref<any>();
     const courseRecord = ref<any>();
     const timeLine = ref<any>();
-    const line1= ref<any>(null);
+    const line1 = ref<any>(null);
     const disabled  = ref(true);
     const count = ref(0);
     const paramNameString = ref('');
@@ -139,17 +139,17 @@ export default {
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
-        station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id})
+        station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id}),
     ]);
       if (station.value.stationBind && station.value.stationBind[station.value.id.toString()]) {
         station.value.extend.students = station.value.stationBind[station.value.id.toString()];
       }
       device.value = station.value.deviceList[0];
-      if(device.value){
+      if (device.value) {
         const d1 = new Date();
         d1.setHours(d1.getHours() - 1);
         const list = await AnalysisDeviceTime({
-          start: courseRecord.value?new Date(courseRecord.value.startDt).getTime():d1.getTime(),
+          start: courseRecord.value ? new Date(courseRecord.value.startDt).getTime() : d1.getTime(),
           end: new Date().getTime(),
           deviceId: device.value.id,
         });
@@ -272,7 +272,7 @@ export default {
         deviceId: (device.value as any).id,
         keys: checkList.value,
       }];
-      let list = await AnalysisParams({
+      const list = await AnalysisParams({
         paramsJson: JSON.stringify(allParams),
         start: range[0].getTime(),
         end: range[1].getTime(),
@@ -315,10 +315,10 @@ export default {
         }
         option.series = series;
         line1.value = option;
-        let tt = JSON.stringify(line1.value);
-        console.log(tt)
-        console.log(tt.indexOf('in'))
-        console.log(tt.substring(tt.indexOf('in')))
+        const tt = JSON.stringify(line1.value);
+        console.log(tt);
+        console.log(tt.indexOf('in'));
+        console.log(tt.substring(tt.indexOf('in')));
         let str = '';
         for (const p of list[0].paramConfigs) {
           str += p.nameSimple + ' | ';
