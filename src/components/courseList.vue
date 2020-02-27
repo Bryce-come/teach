@@ -152,6 +152,8 @@ export default createComponent({
     const oneDay = ref();
     const isshow = ref(false);
     const color = ref();
+    const tableX = ref(-1);
+    const tableY = ref(-1);
     // 查看标志a
     const readModel = ref<any>(
       {
@@ -282,13 +284,21 @@ export default createComponent({
              cells[j].onclick = function() {
                 if (!isshow.value) {
                     color.value = this.style.backgroundColor;
-                    console.log(color);
+                    tableX.value = i;
+                    tableY.value = j;
+                    console.log(color.value);
                 }
                 isshow.value = !isshow.value;
-                if (isshow.value) {
-                     this.style.backgroundColor = 'darkorchid';
-                 } else { this.style.backgroundColor = color.value; }
-             };
+                if (tableX.value === i &&  tableY.value ===j){
+                    if (isshow.value) {
+                        this.style.backgroundColor = 'darkorchid';
+                    } else { this.style.backgroundColor = color.value; }
+                }
+                else {
+                  alert('请在上一处再次点击');
+                  isshow.value = true;
+                };
+             }
          }
        }
     };
@@ -342,6 +352,8 @@ export default createComponent({
       isshow,
       color,
       tabCell,
+      tableX,
+      tableY,
     };
   },
 });
