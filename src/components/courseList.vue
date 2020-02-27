@@ -111,7 +111,7 @@
       :modal="showModal"
       :confirm="update"
       width="500px">
-      <div slot='title'>{{showModal.oneLesson?'修改':'预约'}}课程</div>
+      <div slot='title'>{{showModal.oneLesson.id?'修改':'预约'}}课程</div>
       <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="120px" label-position="left" class="flex column between" style="width: 400px;margin: 0 auto">
         <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
           <el-select v-model="showModal.oneLesson.type" style="width:300px" :clearable="false" placeholder="请选择预约类型">
@@ -128,6 +128,9 @@
         </el-form-item>
         <el-form-item label="授课教师：" prop="teacher.name">
           <el-input style="width:300px" v-model="showModal.oneLesson.teacher.name"/>
+        </el-form-item>
+        <el-form-item label="上课班级：" prop="extend.stations">
+          <el-input style="width:300px" v-model="showModal.oneLesson.extend.clasz"/>
         </el-form-item>
         <el-form-item label="实验项目：" prop="course.programList">
           <el-input style="width:300px" v-model="showModal.oneLesson.course.programList"/>
@@ -392,7 +395,7 @@ function initForm(): any {
         result: undefined,
         },
       lessons: undefined,
-      class: '',
+      clasz: '',
     },
     };
 }
