@@ -1,4 +1,5 @@
-import {postService} from 'web-toolkit/src/case-main/index';
+import {postService, uploadService} from 'web-toolkit/src/case-main/index';
+// import {uploadService} from 'web-toolkit/src/case-main/index';
 
 /**
  * ApiParam(value = "学生端传course即可")
@@ -70,7 +71,7 @@ export async function ReportTemplateList(params: any) {
  * RequestParam MultipartFile file
  */
 export async function ReportTemplateAdd(params: any) {
-  await postService('/rest/program/report/template/add', params);
+  await uploadService('/rest/program/report/template/add', params);
 }
 
 /**

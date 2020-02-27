@@ -1,13 +1,15 @@
 <template>
   <div v-loading="loading" class="experiment">
-    <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-      <el-radio-group v-model="tab" @change="changeTab">
-        <el-radio-button label="所有实验"></el-radio-button>
-        <el-radio-button label="课内实验"></el-radio-button>
-        <el-radio-button label="开放实验"></el-radio-button>
-        <el-radio-button label="添加实验"></el-radio-button>
-      </el-radio-group>
-      <el-input class="search bar" v-model="keywords" placeholder="输入关键字搜索" style="margin-bottom:10px;width:350px"></el-input>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
+      <div class="flex start little-space wrap">
+        <el-radio-group v-model="tab" @change="changeTab">
+          <el-radio-button label="所有实验"></el-radio-button>
+          <el-radio-button label="课内实验"></el-radio-button>
+          <el-radio-button label="开放实验"></el-radio-button>
+        </el-radio-group>
+        <el-button type="primary" @click="showForm()">添加实验</el-button>
+      </div>
+      <el-input v-model="keywords" placeholder="输入关键字搜索" style="width:350px"></el-input>
     </div>
     <lkt-table
       :data="filtered"
@@ -151,16 +153,14 @@ export default {
     const [keywords, filtered] = useSearch(experimentList, {
       includeProps: ['name'],
     });
-    const tab = ref<'所有实验' | '课内实验' | '开放实验' | '添加实验'>('所有实验');
+    const tab = ref<'所有实验' | '课内实验' | '开放实验'>('所有实验');
     async function changeTab(tab: any) {
       if (tab === '所有实验') {
         await showAllExp();
       } else if (tab === '课内实验') {
         showInExp();
-      } else if (tab === '开放实验') {
+      } else  {
         showOutExp();
-      } else {
-        showForm();
       }
     }
     const expTypeList = ref<any>([

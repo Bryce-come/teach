@@ -81,17 +81,15 @@
         :data="filtered2"
         style="width:100%">
         <el-table-column label="实验名称" prop="name"/>
-        <el-table-column label="实验目的" prop="purpose"/>
-        <el-table-column label="实验原理" prop="principle"/>
-        <el-table-column label="实验步骤" prop="steps"/>
-        <el-table-column label="实验结果" prop="results"/>
-        <el-table-column label="关联操作台">
+        <el-table-column label="实验编号" prop="code"/>
+        <el-table-column label="实验类型" prop="label"/>
+        <!-- <el-table-column label="关联操作台">
           <div class="flex start" slot-scope="props" >
             <div v-for="(item,i) in props.row.stations" :key="i" style="padding: 0">
-              {{item.id + ','}}
+              {{item + ','}}
             </div>
           </div>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="附件" prop="attachment"/>
         <el-table-column label="操作">
           <div slot-scope="{row}">
@@ -121,7 +119,7 @@ export default {
     const experimentList = ref<any>([]);
     const expOfCourseList = ref<any>([]);
     const [keywords2, filtered2] = useSearch(expOfCourseList, {
-      includeProps: ['name',],
+      includeProps: ['name', 'code'],
     });
     const courseRemove = async (row: any) => {
       await CourseDel({
@@ -166,10 +164,7 @@ export default {
     const showExperimentForm = async (data?: any) => {
       if (data) {
         expOfCourseList.value = data.programList;
-        console.log(expOfCourseList.value);
-        // for(var i=0;i<expOfCourseList.value.length;i++) {
-        //   console.log(expOfCourseList.value[i].stations);
-        // }
+        // console.log(expOfCourseList.value);
       }
       experimentModal.value.visible = true;
     };
@@ -215,7 +210,7 @@ export default {
         courseList.value = await CourseList({
           containPrograms: true,
         });
-        console.log(teacherList.value);
+        // console.log(teacherList.value);
         console.log(courseList.value);
         console.log(experimentList.value);
     }));
@@ -233,7 +228,7 @@ export default {
 };
 function initCourseForm() {
     return {
-        name: '', code: '', teacher: {id: '', name: ''},
+        name: '', code: '', teacher: {id: '', name: ''}, program: [],
         extend: {scoreRatio: []},
     };
 }
