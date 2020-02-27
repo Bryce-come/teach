@@ -4,22 +4,30 @@
       <div class="block_title flex between">上课班级信息</div>
       <el-form label-width="100px" style="margin-top:10px" :inline="true">
         <el-form-item label="课程名称:">
-          <lkt-select/>
+          <el-select v-model="searchInfo.courseId" @change="setProgramList(searchInfo.courseId)">
+              <el-option v-for="clas in courseList.courseAllList" :key="clas.id" :label="clas.name" :value="clas.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="实验名称:">
-          <lkt-select/>
+          <el-select v-model="searchInfo.programId">
+              <el-option v-for="prog in courseList.programList" :key="prog.id" :label="prog.name" :value="prog.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="上课时间:">
           <lkt-date-picker style="width:350px"></lkt-date-picker>
         </el-form-item>
         <el-form-item label="上课班级:">
-          <lkt-select/>
+          <el-select v-model="searchInfo.claszId" @change="setGroupList(searchInfo.claszId)">
+              <el-option v-for="clas in claszList.claszAllList" :key="clas.id" :label="clas.name" :value="clas.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="上课分组:">
-          <lkt-select/>
+          <el-select v-model="searchInfo.groupId">
+              <el-option v-for="clas in claszList.groupList" :key="clas.id" :label="clas.name" :value="clas.id" />
+          </el-select>
         </el-form-item>
         <el-form-item style="margin-left:20px">
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="searchFList()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -31,14 +39,13 @@
           <el-button :type="hasScored?'primary':''" style="margin-left:5px" @click="showHasScored()">已评分</el-button>
           <el-button :type="noScored?'primary':''" style="margin-left:5px" @click="showNoScored()">未评分</el-button>
         </div>
-        <el-input placeholder="输入操作台/学生搜索" style="width:400px;margin:10px"></el-input>
+        <el-input placeholder="输入学生搜索" style="width:400px;margin:10px"></el-input>
       </div>
       <lkt-table
         :data="experimentReportList"
         style="width:100%">
-        <el-table-column label="学生" prop="student"/>
+        <el-table-column label="学生" prop="student.name"/>
         <el-table-column label="提交时间" prop="createDt"/>
-        <el-table-column label="操作台"/>
         <el-table-column label="状态">
           <div slot-scope="props">
             <div v-if="props.row.extend.score1 && props.row.extend.score2" style="color:green">已评分</div>
@@ -51,7 +58,7 @@
         <el-table-column label="操作评分" prop="extend.score1"/>
         <el-table-column label="实验报告">
           <div slot-scope="{row}">
-            <el-button type="text" @click="download(row)">{{'1.doc'}}</el-button>
+            <el-button type="text" @click="downFile(row)">{{row.attachment[0].split("/")[row.attachment[0].split("/").length-1]}}</el-button>
           </div>
         </el-table-column>
         <el-table-column label="报告评分" prop="extend.score2"/>
@@ -87,7 +94,12 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { ReportList, ReportTemplateList} from '../../dao/reportDao';
+import { ReportList,ReportTemplateList,ReportScore} from '../../dao/reportDao';
+import { DownLoadPrivate } from '../../dao/commonDao';
+import { CourseRecordList } from '../../dao/courseRecordDao';
+import { CourseList } from '../../dao/courseProgramDao';
+import { ProgramList } from '@/dao/courseProgramDao';
+import { ClassList } from '@/dao/userDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -99,6 +111,14 @@ export default {
       visible: false,
       scoreInfo: null,
     });
+    const searchInfo =ref<any>({
+      courseId:'',
+      programId:'',
+      claszId:'',
+      groupId:'',
+      start:'',
+      end:''
+    })
     const form = ref<ElForm | null>(null);
     const showScoreForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
@@ -113,27 +133,88 @@ export default {
     };
     async function scoreUpdate() {
       scoreModal.value.visible = false;
+      const result={
+        id:scoreModal.value.scoreInfo.id,
+        score1:scoreModal.value.scoreInfo.extend.score1,
+        score2:scoreModal.value.scoreInfo.extend.score2
+      }
+      await ReportScore(result)
       Message.success('评分成功');
       await query();
     }
-    const download = async () => {
-      Message.success('下载成功');
-    };
-    async function getReportList() {
-      const pum = {
-      };
-      const result = await ReportList(pum);
-      console.log(result);
+    async function downFile(row:any){
+      const result={
+        path:row.attachment[0],
+        filename:row.attachment[0].split("/")[row.attachment[0].split("/").length-1]
+      }
+      await DownLoadPrivate(result.path,result.filename)
+    }
+    const courseList=ref<any>({
+      courseIdList:[],
+      courseAllList:[],
+      programList:[],
+    })
+    async function getCourseList(){
+      courseList.value.courseAllList = await CourseList({containPrograms: true});
+      courseList.value.courseIdList=[];
+      for(let i=0;i<courseList.value.courseAllList.length;i++){
+        courseList.value.courseIdList[i]=courseList.value.courseAllList[i].id;
+      }
+    }
+    async function setProgramList(row:any){
+      searchInfo.value.programId=''
+      courseList.value.programList=[
+        {id:'',name:''}
+      ];
+      for(let i=0;i<courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList.length;i++){
+        courseList.value.programList[i]=
+        {id:courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList[i].id,
+        name:courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList[i].name}
+      }
+    }
+    const claszList = ref<any>({
+      claszIdList:[],
+      claszAllList:[],
+      groupList:[]
+    })
+    async function getClazList(){
+      claszList.value.claszAllList = await ClassList()
+      claszList.value.claszIdList = [];
+      for(let i=0;i<claszList.value.claszAllList.length;i++){
+        claszList.value.claszIdList[i]=claszList.value.claszAllList[i].id;
+      }
+    }
+    async function setGroupList(row:any){
+      searchInfo.value.groupId=''
+      claszList.value.groupList=[
+        {id:'',name:''}
+      ];
+      for(let i=0;i<claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups.length;i++){
+        claszList.value.groupList[i]=
+        {id:claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].id,
+        name:claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].name}
+      }
+      console.log(claszList.value.groupList)
+    }
+    async function searchFList(){
+      const pum={
+        courseId:searchInfo.value.courseId,
+        programId:searchInfo.value.programId,
+        claszId:searchInfo.value.claszId,
+        groupId:searchInfo.value.groupId,
+        start:'',
+        end:''
+      }
+      experimentReportList.value = await ReportList(pum)
+    }
+    async function getReportList(){
+      const pum={}
+      const result = await ReportList(pum)
+      return result
     }
     const query = async () => {
-      await getReportList();
-      experimentReportList.value = [
-        {id: '0', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
-        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
-        {id: '1', course: '', program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
-        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: null, score2: null, ratio1: 60, ratio2: 40}},
-      ];
-
+      const result = await getReportList()
+      experimentReportList.value = result
     };
     const showAllScored = async () => {
       allScored.value = true;
@@ -152,15 +233,16 @@ export default {
     };
     onMounted(useLoading(loading, async () => {
       await query();
+      await getCourseList();
+      await getClazList();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm, getReportList,
-      scoreUpdate: useLoading(loading, scoreUpdate),
-      allScored, hasScored, noScored,
+      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,searchInfo,claszList,
+      scoreUpdate: useLoading(loading, scoreUpdate),setProgramList,searchFList,getClazList,setGroupList,
+      allScored, hasScored, noScored,downFile,courseList,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),
-      download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
 };
