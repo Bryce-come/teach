@@ -62,8 +62,8 @@
           <el-row>
             <el-col :span="12">
               <div style="margin-left:20px;font-weight:bold">NC程序代码</div>
-              <el-input type="textarea" style="width:96%;margin:20px" v-model="EtInfo.contentWord"></el-input>
-              <div class="flex end">
+              <el-input type="textarea" :rows="16" style="width:96%;margin:10px 10px 0 10px" v-model="EtInfo.contentWord"></el-input>
+              <div class="flex start little-space" style="margin-left:10px">
                 <el-button type="primary" @click="downFile(EtInfo.data)">下载程序</el-button>
               </div>
             </el-col>
@@ -93,15 +93,14 @@
                   </div>
                 </el-table-column>
               </el-table>
-              <el-form>
-                <el-form-item label="修改意见:">
-                  <el-input type="textarea" style="width:500px" v-model="reviewInfo.remark"></el-input>
-                </el-form-item>
-                <el-form-item class="flex start">
+              <div>
+                <div>修改意见：</div>
+                <el-input type="textarea" :rows="4" style="width:98%" v-model="reviewInfo.remark"></el-input>
+                <div class="flex start little-space">
                   <el-button type="primary" @click="agreeUp()">通过审核同意加工</el-button>
                   <el-button type="danger" style="margin-left:20px" @click="disAgreeUp()">退回修改</el-button>
-                </el-form-item>
-              </el-form>
+                </div>
+              </div>
             </el-col>
           </el-row>
         </div>
