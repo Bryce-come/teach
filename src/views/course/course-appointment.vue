@@ -8,20 +8,28 @@
         <el-table-column fixed="left" width="100" label="预约人" prop="applicant.name" sortable ></el-table-column>
         <el-table-column label="角色" width="100" prop="applicant.role" sortable ></el-table-column>
         <el-table-column label="申请时间" width="100" prop="createDt" sortable ></el-table-column>
-        <el-table-column label="类型" width="100" sortable >
+        <el-table-column label="类型" width="100">
           <span slot-scope="{ row }">
             {{(row.type===1? '授课预约':'')+(row.type===2? '个人预约':'')}}
           </span>
         </el-table-column>
-        <el-table-column label="预约时间" width="120" prop="start" sortable ></el-table-column>
+        <el-table-column label="预约时间" width="120" prop="startDt" sortable ></el-table-column>
         <el-table-column label="课程" width="120" prop="course.name" sortable ></el-table-column>
-        <el-table-column label="实验项目" width="120" prop="course.programList" sortable ></el-table-column>    
+        <el-table-column label="实验项目" width="120" prop="program.name" sortable ></el-table-column>    
         <el-table-column label="指定教师" width="100" prop="teacher.name" sortable></el-table-column>
         <el-table-column label="参与人" width="100" prop="students" sortable></el-table-column>
+        <el-table-column label="审核结果" fixed="right" width="100" sortable>
+          <div slot-scope="{row}">
+            <el-tag v-if="row.result === 0" type="warning">未审核</el-tag>
+            <el-tag v-if="row.result === 1" type="success">已同意</el-tag>
+            <el-tag v-if="row.result === 2" type="danger">已拒绝</el-tag>
+            <el-tag v-if="row.result === 3" type="info">申请撤销</el-tag>
+          </div>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" sortable min-width="150">
           <div class="flex center little-space" slot-scope="{ row }" >
-          <el-button type="primary" size="mini" @click="agree(row)">同意</el-button>
-          <el-button type="danger" size="mini" @click="remove(row)">拒绝</el-button>
+          <el-button type="primary" size="mini" :disabled="row.result === 0?'false':'true'" @click="agreeAppoint(row)">同意</el-button>
+          <el-button type="danger" size="mini" :disabled="row.result === 0?'false':'true'" @click="disagreeAppoint(row)">拒绝</el-button>
         </div>
         </el-table-column>   
       </lkt-table>
@@ -33,64 +41,39 @@ import { ref, Ref, onMounted, createComponent } from '@vue/composition-api';
 import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import noactionCourseList from '../../components/noaction-courstList.vue';
+import {AppointList, AppointOperate} from '@/dao/appointRecordDao';
 export default createComponent({
   components: { noactionCourseList },
   setup() {
     const loading = ref(false);
     const appointRecords = ref<any>();
     const query = async () => {
-      appointRecords.value = [{
-        id: 1,
-        applicant: {
-          name: '王涵',
-          role: '教师',
-        },
-        createDt: '2020-01-02',
-        type: 1,
-        start: '2020-01-02',
-        course: {
-          name: '自动化课程',
-          programList: ['切刀挂刀操作'],
-        },
-        teacher: {
-          name: '王涵',
-        },
-        stationList: '',
-      },
-      {
-        id: 2,
-        applicant: {
-          name: 'mmei涵',
-          role: '教师',
-        },
-        createDt: '2020-01-02',
-        type: 1,
-        start: '2020-01-02',
-        course: {
-          name: '自动化课程',
-          programList: ['切刀挂刀操作'],
-        },
-        teacher: {
-          name: '王涵',
-        },
-        students: '',
-      }];
+      appointRecords.value = await AppointList({});
+      console.log(appointRecords.value);
     };
-    const agree = async (row: any) => {
-      Message.success('已同意');
+    const agreeAppoint = async (row: any) => {
+      await AppointOperate({
+        id: row.id,
+        result: 1,
+      });
+      Message.success('已同意申请');
+      await query();
     };
-    const remove = async (row: any) => {
-      Message.success('删除成功');
+    const disagreeAppoint = async (row: any) => {
+      await AppointOperate({
+        id: row.id,
+        result: 2,
+      });
+      Message.success('已拒绝申请');
+      await query();
     };
     onMounted(useLoading(loading, async () => {
       await query();
     }));
     return{
-    appointRecords,
-    loading,
-    query,
-    agree,
-    remove: useConfirm('确认拒绝？', useLoading(loading, remove)),
+    loading, appointRecords, query,
+    agreeAppoint,
+    disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
     };
   },
 });
