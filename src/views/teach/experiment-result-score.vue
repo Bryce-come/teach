@@ -110,6 +110,7 @@ export default {
     const [keywords, filtered] = useSearch(experimentReportList, {
       includeProps: ['student.name'],
     });
+    
     const scoreModal = ref<any>({
       visible: false,
       scoreInfo: null,
