@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上课时间:">
-          <lkt-date-picker style="width:350px"></lkt-date-picker>
+          <lkt-date-picker style="width:350px" type="daterange" v-model="searchInfo.inDt"></lkt-date-picker>
         </el-form-item>
         <el-form-item label="上课班级:">
           <el-select v-model="searchInfo.claszId" @change="setGroupList(searchInfo.claszId)">
@@ -39,10 +39,10 @@
           <el-button :type="hasScored?'primary':''" style="margin-left:5px" @click="showHasScored()">已评分</el-button>
           <el-button :type="noScored?'primary':''" style="margin-left:5px" @click="showNoScored()">未评分</el-button>
         </div>
-        <el-input placeholder="输入学生搜索" style="width:400px;margin:10px"></el-input>
+        <el-input class="search-bar"  v-model="keywords" placeholder="输入学生搜索" style="width:400px;margin:10px" clearable></el-input>
       </div>
       <lkt-table
-        :data="experimentReportList"
+        :data="filtered"
         style="width:100%">
         <el-table-column label="学生" prop="student.name"/>
         <el-table-column label="提交时间" prop="createDt"/>
@@ -107,18 +107,23 @@ export default {
     const allScored = ref(true);
     const hasScored = ref(false);
     const noScored = ref(false);
+    const [keywords, filtered] = useSearch(experimentReportList, {
+      includeProps: ['student.name'],
+    });
+    
     const scoreModal = ref<any>({
       visible: false,
       scoreInfo: null,
     });
-    const searchInfo = ref<any>({
-      courseId: '',
-      programId: '',
-      claszId: '',
-      groupId: '',
-      start: '',
-      end: '',
-    });
+    const searchInfo =ref<any>({
+      courseId:'',
+      programId:'',
+      claszId:'',
+      groupId:'',
+      // inDt:[],
+      start:'',
+      end:''
+    })
     const form = ref<ElForm | null>(null);
     const showScoreForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
@@ -192,18 +197,39 @@ export default {
         claszList.value.groupList[i] = {id: claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].id,
         name: claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].name};
       }
-      console.log(claszList.value.groupList);
     }
-    async function searchFList() {
-      const pum = {
-        courseId: searchInfo.value.courseId,
-        programId: searchInfo.value.programId,
-        claszId: searchInfo.value.claszId,
-        groupId: searchInfo.value.groupId,
-        start: '',
-        end: '',
-      };
-      experimentReportList.value = await ReportList(pum);
+    async function searchFList(){
+      if(searchInfo.value.inDt!=undefined){
+        const resulta = new Date(searchInfo.value.inDt[0])
+        const resultb = new Date(searchInfo.value.inDt[1])
+        searchInfo.value.start = Number(resulta)/1000
+        searchInfo.value.end = Number(resultb)/1000
+      }
+      else if(searchInfo.value.inDt===undefined){
+        searchInfo.value.start=null
+        searchInfo.value.end=null
+      }
+      if(searchInfo.value.courseId===''){
+        searchInfo.value.courseId=null
+      }
+      if(searchInfo.value.programId===''){
+        searchInfo.value.programId=null
+      }
+      if(searchInfo.value.claszId===''){
+        searchInfo.value.claszId=null
+      }
+      if(searchInfo.value.groupId===''){
+        searchInfo.value.groupId=null
+      }
+      const pum={
+        courseId:searchInfo.value.courseId,
+        programId:searchInfo.value.programId,
+        claszId:searchInfo.value.claszId,
+        groupId:searchInfo.value.groupId,
+        start:searchInfo.value.start,
+        end:searchInfo.value.end
+      }
+      experimentReportList.value = await ReportList(pum)
     }
     async function getReportList() {
       const pum = {};
@@ -235,9 +261,9 @@ export default {
       await getClazList();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList,
-      scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList,
-      allScored, hasScored, noScored, downFile, courseList,
+      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,searchInfo,claszList,keywords,
+      scoreUpdate: useLoading(loading, scoreUpdate),setProgramList,searchFList,getClazList,setGroupList,filtered,
+      allScored, hasScored, noScored,downFile,courseList,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),
