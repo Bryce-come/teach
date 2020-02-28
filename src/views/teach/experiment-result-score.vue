@@ -94,7 +94,7 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { ReportList,ReportTemplateList,ReportScore} from '../../dao/reportDao';
+import { ReportList, ReportTemplateList, ReportScore} from '../../dao/reportDao';
 import { DownLoadPrivate } from '../../dao/commonDao';
 import { CourseRecordList } from '../../dao/courseRecordDao';
 import { CourseList } from '../../dao/courseProgramDao';
@@ -111,14 +111,14 @@ export default {
       visible: false,
       scoreInfo: null,
     });
-    const searchInfo =ref<any>({
-      courseId:'',
-      programId:'',
-      claszId:'',
-      groupId:'',
-      start:'',
-      end:''
-    })
+    const searchInfo = ref<any>({
+      courseId: '',
+      programId: '',
+      claszId: '',
+      groupId: '',
+      start: '',
+      end: '',
+    });
     const form = ref<ElForm | null>(null);
     const showScoreForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
@@ -133,88 +133,86 @@ export default {
     };
     async function scoreUpdate() {
       scoreModal.value.visible = false;
-      const result={
-        id:scoreModal.value.scoreInfo.id,
-        score1:scoreModal.value.scoreInfo.extend.score1,
-        score2:scoreModal.value.scoreInfo.extend.score2
-      }
-      await ReportScore(result)
+      const result = {
+        id: scoreModal.value.scoreInfo.id,
+        score1: scoreModal.value.scoreInfo.extend.score1,
+        score2: scoreModal.value.scoreInfo.extend.score2,
+      };
+      await ReportScore(result);
       Message.success('评分成功');
       await query();
     }
-    async function downFile(row:any){
-      const result={
-        path:row.attachment[0],
-        filename:row.attachment[0].split("/")[row.attachment[0].split("/").length-1]
-      }
-      await DownLoadPrivate(result.path,result.filename)
+    async function downFile(row: any) {
+      const result = {
+        path: row.attachment[0],
+        filename: row.attachment[0].split('/')[row.attachment[0].split('/').length - 1],
+      };
+      await DownLoadPrivate(result.path, result.filename);
     }
-    const courseList=ref<any>({
-      courseIdList:[],
-      courseAllList:[],
-      programList:[],
-    })
-    async function getCourseList(){
+    const courseList = ref<any>({
+      courseIdList: [],
+      courseAllList: [],
+      programList: [],
+    });
+    async function getCourseList() {
       courseList.value.courseAllList = await CourseList({containPrograms: true});
-      courseList.value.courseIdList=[];
-      for(let i=0;i<courseList.value.courseAllList.length;i++){
-        courseList.value.courseIdList[i]=courseList.value.courseAllList[i].id;
+      courseList.value.courseIdList = [];
+      for (let i = 0; i < courseList.value.courseAllList.length; i++) {
+        courseList.value.courseIdList[i] = courseList.value.courseAllList[i].id;
       }
     }
-    async function setProgramList(row:any){
-      searchInfo.value.programId=''
-      courseList.value.programList=[
-        {id:'',name:''}
+    async function setProgramList(row: any) {
+      searchInfo.value.programId = '';
+      courseList.value.programList = [
+        {id: '', name: ''},
       ];
-      for(let i=0;i<courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList.length;i++){
-        courseList.value.programList[i]=
-        {id:courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList[i].id,
-        name:courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList[i].name}
+      for (let i = 0; i < courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList.length; i++) {
+        courseList.value.programList[i] = {id: courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList[i].id,
+        name: courseList.value.courseAllList[courseList.value.courseIdList.indexOf(row)].programList[i].name};
       }
     }
     const claszList = ref<any>({
-      claszIdList:[],
-      claszAllList:[],
-      groupList:[]
-    })
-    async function getClazList(){
-      claszList.value.claszAllList = await ClassList()
+      claszIdList: [],
+      claszAllList: [],
+      groupList: [],
+    });
+    async function getClazList() {
+      claszList.value.claszAllList = await ClassList();
       claszList.value.claszIdList = [];
-      for(let i=0;i<claszList.value.claszAllList.length;i++){
-        claszList.value.claszIdList[i]=claszList.value.claszAllList[i].id;
+      for (let i = 0; i < claszList.value.claszAllList.length; i++) {
+        claszList.value.claszIdList[i] = claszList.value.claszAllList[i].id;
       }
     }
-    async function setGroupList(row:any){
-      searchInfo.value.groupId=''
-      claszList.value.groupList=[
-        {id:'',name:''}
+    async function setGroupList(row: any) {
+      searchInfo.value.groupId = '';
+      claszList.value.groupList = [
+        {id: '', name: ''},
       ];
-      for(let i=0;i<claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups.length;i++){
-        claszList.value.groupList[i]=
-        {id:claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].id,
-        name:claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].name}
+      for (let i = 0; i < claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups.length; i++) {
+        claszList.value.groupList[i] = {id: claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].id,
+        name: claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].name};
       }
-      console.log(claszList.value.groupList)
+      console.log(claszList.value.groupList);
     }
-    async function searchFList(){
-      const pum={
-        courseId:searchInfo.value.courseId,
-        programId:searchInfo.value.programId,
-        claszId:searchInfo.value.claszId,
-        groupId:searchInfo.value.groupId,
-        start:'',
-        end:''
-      }
-      experimentReportList.value = await ReportList(pum)
+    async function searchFList() {
+      const pum = {
+        courseId: searchInfo.value.courseId,
+        programId: searchInfo.value.programId,
+        claszId: searchInfo.value.claszId,
+        groupId: searchInfo.value.groupId,
+        start: '',
+        end: '',
+      };
+      experimentReportList.value = await ReportList(pum);
     }
-    async function getReportList(){
-      const pum={}
-      const result = await ReportList(pum)
-      return result
+    async function getReportList() {
+      const pum = {};
+      const result = await ReportList(pum);
+      return result;
     }
     const query = async () => {
-      const result = await getReportList()
-      experimentReportList.value = result
+      const result = await getReportList();
+      experimentReportList.value = result;
     };
     const showAllScored = async () => {
       allScored.value = true;
@@ -237,9 +235,9 @@ export default {
       await getClazList();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,searchInfo,claszList,
-      scoreUpdate: useLoading(loading, scoreUpdate),setProgramList,searchFList,getClazList,setGroupList,
-      allScored, hasScored, noScored,downFile,courseList,
+      loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList,
+      scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList,
+      allScored, hasScored, noScored, downFile, courseList,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),

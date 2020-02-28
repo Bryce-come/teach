@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading" class="equipment-maintenance">
     <el-button type="primary" style="margin-bottom:5px" @click="showForm()">添加</el-button>
-    <el-tabs type="card">
+    <el-tabs type="border-card">
       <el-tab-pane label="当前维保记录">
         <lkt-table :data="deviceMaintenanceRecord" style="width:100%">          
           <el-table-column fixed="left" prop="device.name" label="设备名称"/>
@@ -9,7 +9,7 @@
           <el-table-column fixed="left" prop="device.deviceType.name" label="设备型号"/>
           <el-table-column prop="restorationDt" label="最近维保时间" width="120px">
             <div slot-scope="{ row }">
-              {{new Date(row.restorationDt) | date }}
+              <span v-if="row.restorationDt">{{new Date(row.restorationDt) | date }}</span>   
             </div>
           </el-table-column>
           <el-table-column prop="type" label="维保类型">
@@ -22,7 +22,7 @@
           <el-table-column prop="extend.executorPhone" label="联系方式" width="100px"/>
           <el-table-column fixed="right" prop="nextDt" label="距离下次维护时间" width="150px">
             <div slot-scope="{ row }">
-              {{new Date(row.nextDt) | date }}
+              <span v-if="row.nextDt">{{new Date(row.nextDt) | date }}</span>
             </div>
           </el-table-column>
           <el-table-column fixed="right" prop="status" label="当前状态">
@@ -87,12 +87,12 @@
           <el-table-column prop="extend.executorPhone" label="联系方式" width="100px"/>
           <el-table-column prop="restorationDt" label="最近维保时间" width="120px">
             <div slot-scope="{ row }">
-              {{new Date(row.restorationDt) | date }}
+              <span v-if="row.restorationDt">{{new Date(row.restorationDt) | date }}</span>   
             </div>
           </el-table-column>
           <el-table-column fixed="right" prop="nextDt" label="距离下次维护时间" width="150px">
             <div slot-scope="{ row }">
-              {{new Date(row.nextDt) | date }}
+              <span v-if="row.nextDt">{{new Date(row.nextDt) | date }}</span>
             </div>
           </el-table-column>
           <el-table-column fixed="right" prop="status" label="当前状态">
