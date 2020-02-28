@@ -27,14 +27,14 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import { CNCLinkStatus,CNCLinkSet } from '../../dao/inClassDao'
 export default {
   setup() {
     const loading = ref(false);
     const list = ref<any>();
     const query = async () => {
-      list.value = [
-        {id: '0', station: '操作台01', device: {id: '001', name: '磨光机', type: {id: '0', name: 'xxx'}}, lktMan: 'xxxx'},
-      ];
+      const result = await CNCLinkStatus()
+      list.value = result
     };
     onMounted(useLoading(loading, async () => {
       await query();

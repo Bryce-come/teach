@@ -201,13 +201,13 @@ export default {
       }
     }
     async function searchFList(){
-      if(searchInfo.value.start!=''&&searchInfo.value.end!=''){
+      if(searchInfo.value.inDt!=undefined){
         const resulta = new Date(searchInfo.value.inDt[0])
         const resultb = new Date(searchInfo.value.inDt[1])
         searchInfo.value.start = Number(resulta)/1000
         searchInfo.value.end = Number(resultb)/1000
       }
-      else if(searchInfo.value.start===''||searchInfo.value.end===''){
+      else if(searchInfo.value.inDt===undefined){
         searchInfo.value.start=null
         searchInfo.value.end=null
       }
