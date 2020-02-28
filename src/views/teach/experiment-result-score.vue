@@ -39,10 +39,10 @@
           <el-button :type="hasScored?'primary':''" style="margin-left:5px" @click="showHasScored()">已评分</el-button>
           <el-button :type="noScored?'primary':''" style="margin-left:5px" @click="showNoScored()">未评分</el-button>
         </div>
-        <el-input placeholder="输入学生搜索" style="width:400px;margin:10px"></el-input>
+        <el-input class="search-bar"  v-model="keywords" placeholder="输入学生搜索" style="width:400px;margin:10px" clearable></el-input>
       </div>
       <lkt-table
-        :data="experimentReportList"
+        :data="filtered"
         style="width:100%">
         <el-table-column label="学生" prop="student.name"/>
         <el-table-column label="提交时间" prop="createDt"/>
@@ -107,7 +107,9 @@ export default {
     const allScored = ref(true);
     const hasScored = ref(false);
     const noScored = ref(false);
-
+    const [keywords, filtered] = useSearch(experimentReportList, {
+      includeProps: ['student.name'],
+    });
     const scoreModal = ref<any>({
       visible: false,
       scoreInfo: null,
@@ -260,8 +262,8 @@ export default {
       await getClazList();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,searchInfo,claszList,
-      scoreUpdate: useLoading(loading, scoreUpdate),setProgramList,searchFList,getClazList,setGroupList,
+      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,searchInfo,claszList,keywords,
+      scoreUpdate: useLoading(loading, scoreUpdate),setProgramList,searchFList,getClazList,setGroupList,filtered,
       allScored, hasScored, noScored,downFile,courseList,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
