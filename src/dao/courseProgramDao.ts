@@ -1,4 +1,4 @@
-import {postService} from 'web-toolkit/src/case-main/index';
+import {postService, uploadService} from 'web-toolkit/src/case-main/index';
 import {urlMap} from '@/config';
 
 // params： containPrograms:boolean
@@ -28,6 +28,11 @@ export async function CourseDel(params: any) {
   await postService(urlMap.course_del.url, params);
 }
 
+// params: *courseId *programId
+export async function UnbindProgram(params: any) {
+  await postService('/rest/course/unbindProgram', params);
+}
+
 // 按label区分开,返回map
 export async function ProgramList() {
   const {data: {list}} = await postService(urlMap.program_list.url);
@@ -52,7 +57,7 @@ export async function ProgramDel(params: any) {
 // 上传附件-一个个传
 // *id, *file
 export async function ProgramUpload(params: any) {
-  await postService(urlMap.program_upload.url, params);
+  await uploadService(urlMap.program_upload.url, params);
 }
 
 // *id, *path
