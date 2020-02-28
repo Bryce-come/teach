@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上课时间:">
-          <lkt-date-picker style="width:350px"></lkt-date-picker>
+          <lkt-date-picker style="width:350px" type="daterange" v-model="searchInfo.inDt"></lkt-date-picker>
         </el-form-item>
         <el-form-item label="上课班级:">
           <el-select v-model="searchInfo.claszId" @change="setGroupList(searchInfo.claszId)">
@@ -107,6 +107,7 @@ export default {
     const allScored = ref(true);
     const hasScored = ref(false);
     const noScored = ref(false);
+
     const scoreModal = ref<any>({
       visible: false,
       scoreInfo: null,
@@ -116,6 +117,7 @@ export default {
       programId:'',
       claszId:'',
       groupId:'',
+      // inDt:[],
       start:'',
       end:''
     })
@@ -194,16 +196,37 @@ export default {
         {id:claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].id,
         name:claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].name}
       }
-      console.log(claszList.value.groupList)
     }
     async function searchFList(){
+      if(searchInfo.value.start!=''&&searchInfo.value.end!=''){
+        const resulta = new Date(searchInfo.value.inDt[0])
+        const resultb = new Date(searchInfo.value.inDt[1])
+        searchInfo.value.start = Number(resulta)/1000
+        searchInfo.value.end = Number(resultb)/1000
+      }
+      else if(searchInfo.value.start===''||searchInfo.value.end===''){
+        searchInfo.value.start=null
+        searchInfo.value.end=null
+      }
+      if(searchInfo.value.courseId===''){
+        searchInfo.value.courseId=null
+      }
+      if(searchInfo.value.programId===''){
+        searchInfo.value.programId=null
+      }
+      if(searchInfo.value.claszId===''){
+        searchInfo.value.claszId=null
+      }
+      if(searchInfo.value.groupId===''){
+        searchInfo.value.groupId=null
+      }
       const pum={
         courseId:searchInfo.value.courseId,
         programId:searchInfo.value.programId,
         claszId:searchInfo.value.claszId,
         groupId:searchInfo.value.groupId,
-        start:'',
-        end:''
+        start:searchInfo.value.start,
+        end:searchInfo.value.end
       }
       experimentReportList.value = await ReportList(pum)
     }
