@@ -2,21 +2,30 @@
   <div v-loading="loading" class="gateway-channel-management">
     <div class="flex between">
       <div class="flex center little-space wrap">
-        <el-button type="primary">批量开启</el-button>
-        <el-button type="danger">批量关闭</el-button>
+        <el-button type="primary" @click="openSomething()">批量开启</el-button>
+        <el-button type="danger" @click="closeSomething()">批量关闭</el-button>
       </div>
       <!-- <el-input placeholder="请输入操作台/设备名称/设备型号/设备编号/LKT-MAN编号搜索" style="width:500px;margin-top:5px"></el-input> -->
     </div>
     <el-table
-      :data="list">
-      <el-table-column type="selection"/>
-      <el-table-column label="操作台" prop="station"/>
-      <el-table-column label="设备名称" prop="device.name"/>
-      <el-table-column label="设备型号" prop="device.type.name"/>
-      <el-table-column label="设备编号" prop="device.id"/>
-      <el-table-column label="LKT-MAN编号" prop="lktMan"/>
-      <el-table-column label="网管通道">
-        <el-switch></el-switch>   
+      :data="list"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" :disabled='disabledMa'/>
+      <el-table-column label="操作台" prop="name"/>
+      <el-table-column label="设备名称" prop="deviceList[0].name"/>
+      <el-table-column label="设备型号" prop="deviceList[0].type"/>
+      <el-table-column label="设备编号" prop="deviceList[0].id"/>
+      <el-table-column label="LKT-MAN编号" prop="collector.id"/>
+      <el-table-column label="网管通道"> 
+        <template slot-scope="{ row }">
+            <el-switch 
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            v-model="row.off"
+            :disabled='row.disabledMa'
+            @change="toggleStatus(row)"
+            ></el-switch> 
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -32,15 +41,79 @@ export default {
   setup() {
     const loading = ref(false);
     const list = ref<any>();
+    const status = ref<any>({
+       statusList:[],
+       disabledList:[],
+       rowIDList:[]
+    })
+    function handleSelectionChange(row:any){
+      status.value.rowIDList=[]
+      for(let i=0;i<row.length;i++){
+        status.value.rowIDList[i]=row[i].id
+      }
+    }
+    async function closeSomething(){
+      const idList = JSON.stringify(status.value.rowIDList)
+      const result = {
+        stationJson:idList,
+        status:false
+      } 
+      await CNCLinkSet(result)
+    }
+    async function openSomething(){
+      const idList = JSON.stringify(status.value.rowIDList)
+      const result = {
+        stationJson:idList,
+        status:true
+      } 
+      await CNCLinkSet(result)
+    }
+    async function getStatusList(){
+      status.value.statusList=[]
+      status.value.disabledList=[]
+      for(let i=0;i<list.value.length;i++){
+        status.value.statusList[i]=list.value[i].extend.linkStatus
+      }
+      for(let i=0;i<status.value.statusList.length;i++){
+        if(status.value.statusList[i]===undefined){
+          status.value.disabledList[i]=true
+        }else{
+          status.value.disabledList[i]=false
+        }
+      }
+      for(let i=0;i<status.value.statusList.length;i++){
+        list.value[i].disabledMa=status.value.disabledList[i]
+      }
+    }
+    async function toggleStatus(row:any){
+      if(row.extend.linkStatus===true){
+        const id = [JSON.stringify(row.id)]
+        const result = {
+          stationJson:id,
+          status:false
+        }
+        await CNCLinkSet(result)
+      }
+      if(row.extend.linkStatus===false){
+        const id = [JSON.stringify(row.id)]
+        const result = {
+          stationJson:id,
+          status:true
+        }
+        await CNCLinkSet(result)
+      }
+    }
     const query = async () => {
       const result = await CNCLinkStatus()
-      list.value = result
+      list.value = result;
     };
     onMounted(useLoading(loading, async () => {
       await query();
+      await getStatusList();
     }));
     return {
-      loading, list, query,
+      loading, list, query,toggleStatus,status,getStatusList,handleSelectionChange,openSomething,
+      closeSomething,
     };
   },
 };
