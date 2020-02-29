@@ -525,8 +525,7 @@ export default {
       toggleStatus: useLoading(loading, toggleStatus),
       queryStudentList, queryClassList, removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
       modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,
-      update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,
-      // chFiltered,
+      update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,tableRowClassName,
       validator, classList, groupList, ctogList, append, FrozenClaz, unFrozenClaz, firstTab, grpandclzList,
     };
     return{

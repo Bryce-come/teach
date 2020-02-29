@@ -4,7 +4,7 @@
       <div class="block_title flex between">上课班级信息</div>
       <el-form label-width="100px" style="margin-top:10px" :inline="true">
         <el-form-item label="上课时间：">
-          <span>{{ courseNow.date }}</span>
+          <span>{{ courseNow.startdate + ' - ' + courseNow.enddate}}</span>
         </el-form-item>
         <el-form-item label="上课班级：">
           <span>{{ courseNow.className}}</span>
@@ -71,7 +71,8 @@
               <div style="font-weight:bold">提交历史记录</div>
               <el-table
                 :data="ncProgramList"
-                style="width:98%">
+                style="width:98%"
+                max-height="350">
                 <el-table-column label="提交时间" prop="createDt"/>
                 <el-table-column label="程序名称" prop="file">
                   <template slot-scope="{ row }">
@@ -89,11 +90,11 @@
                 </el-table-column>
                 <el-table-column label="操作">
                   <div class="flex center little-space wrap" slot-scope="{ row }">
-                  <el-button type="text" @click="cheakDetail(row)">查看程序</el-button>
+                  <el-button class="btn" type="text" @click="cheakDetail(row)">查看程序</el-button>
                   </div>
                 </el-table-column>
               </el-table>
-              <div>
+              <div style="margin-top:20px">
                 <div>修改意见：</div>
                 <el-input type="textarea" :rows="4" style="width:98%" v-model="reviewInfo.remark"></el-input>
                 <div class="flex start little-space">
@@ -111,7 +112,7 @@
 import { ref, Ref, onMounted } from '@vue/composition-api';
 import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
-import { Message } from 'element-ui';
+import { Message, Row } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import { NCExamList, NCExamDetail, NCExamOperate } from '../../dao/inClassDao';
 import { CourseRecordInClass } from '../../dao/courseRecordDao';
@@ -126,7 +127,8 @@ export default {
       includeProps: ['file'],
     });
     const courseNow = ref<any>({
-      date: '',
+      startdate: '',
+      enddate:'',
       className: '',
       classGroupName: '',
       classPpNum: '',
@@ -150,17 +152,24 @@ export default {
     async function getClassNow() {
       const result = await CourseRecordInClass();
       if (result !== null) {
-        courseNow.value.date = result.startDt;
+        courseNow.value.startdate = result.startDt;
+        courseNow.value.enddate = result.endDt;
         courseNow.value.className = result.clasz.name;
         courseNow.value.classGroupName = result.claszGroup.name;
         courseNow.value.id = result.id;
         courseNow.value.studentCount = result.studentList.length;
       } else {
-        courseNow.value.date = '';
-        courseNow.value.className = '';
-        courseNow.value.classGroupName = '';
-        courseNow.value.classPpNum = '';
+        courseNow.value.startdate = '当前无课';
+        courseNow.value.enddate = '当前无课';
+        courseNow.value.className = '当前无课';
+        courseNow.value.classGroupName = '当前无课';
+        courseNow.value.classPpNum = '当前无课';
       }
+    }
+    const cheakNow=ref<any>({
+      id:''
+    })
+    function tableRowClassName(){
     }
     const EtInfo = ref<any>({
       stationName: '',
@@ -175,6 +184,7 @@ export default {
       remark: '',
     });
     async function cheakDetail(row: any) {
+      cheakNow.value.id=row.id
       const pum = {
         id: row.id,
       };
@@ -188,15 +198,23 @@ export default {
       reviewInfo.value.remark = result.remark;
     }
     async function agreeUp() {
-      const result = {
+      console.log(EtInfo.value.data)
+      if(EtInfo.value.data.result===undefined){
+        const result = {
         id: reviewInfo.value.id,
         result: 2,
       };
       await NCExamOperate(result);
       await query();
+      }
+      else{
+        Message.error('已经过审核')
+      }
       turn.value = true;
     }
-    async function disAgreeUp(row: any) {
+    async function disAgreeUp() {
+      console.log(EtInfo.value.data)
+      if(EtInfo.value.data.result===undefined){
       const result = {
         id: reviewInfo.value.id,
         remark: reviewInfo.value.remark,
@@ -204,6 +222,10 @@ export default {
       };
       await NCExamOperate(result);
       await query();
+      }
+      else{
+        Message.error('已经过审核')
+      }
       turn.value = true;
     }
     onMounted(useLoading(loading, async () => {
@@ -212,7 +234,7 @@ export default {
     }));
     return {
       getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,
-      loading, ncProgramList, query, turn, filtered, keywords,
+      loading, ncProgramList, query, turn, filtered, keywords,tableRowClassName,
       turnToExamine: useLoading(loading, turnToExamine),
       agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
       disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),
@@ -221,5 +243,11 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+  .el-table .warning-row {
+    background: red;
+  }
 
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
 </style>

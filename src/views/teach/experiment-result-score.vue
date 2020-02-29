@@ -146,6 +146,7 @@ export default {
       await ReportScore(result);
       Message.success('评分成功');
       await query();
+      await getScorcedStatus()
     }
     async function downFile(row: any) {
       const result = {
@@ -239,30 +240,54 @@ export default {
       const result = await getReportList();
       experimentReportList.value = result;
     };
+    const scoreList=ref<any>({
+      allScore:[],
+      haveScore:[],
+      noScore:[]
+    })
+    const getScorcedStatus = async () => {
+      scoreList.value.allScore=experimentReportList.value
+      scoreList.value.haveScore=[]
+      scoreList.value.noScore=[]
+      for(let i=0;i<experimentReportList.value.length;i++){
+        if(experimentReportList.value[i].extend.score1&&experimentReportList.value[i].extend.score2){
+          scoreList.value.haveScore.push(experimentReportList.value[i])
+        }
+        else{
+          scoreList.value.noScore.push(experimentReportList.value[i])
+        }
+      }
+      console.log(scoreList.value.haveScore)
+      console.log(scoreList.value.noScore)
+    }
     const showAllScored = async () => {
       allScored.value = true;
       hasScored.value = false;
       noScored.value = false;
+      experimentReportList.value=scoreList.value.allScore
     };
     const showHasScored = async () => {
       allScored.value = false;
       hasScored.value = true;
       noScored.value = false;
+      experimentReportList.value=scoreList.value.haveScore
     };
     const showNoScored = async () => {
       allScored.value = false;
       hasScored.value = false;
       noScored.value = true;
+      experimentReportList.value=scoreList.value.noScore
     };
     onMounted(useLoading(loading, async () => {
       await query();
       await getCourseList();
       await getClazList();
+      await getScorcedStatus()
     }));
     return {
       loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList, keywords,
       scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList, filtered,
-      allScored, hasScored, noScored, downFile, courseList,
+      allScored, hasScored, noScored, downFile, courseList,getScorcedStatus,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),
@@ -271,7 +296,7 @@ export default {
 };
 function initForm() {
   return {
-    extend: {score1: 0, score2: 0},
+    extend: {score1: Number, score2: Number},
   };
 }
 </script>
