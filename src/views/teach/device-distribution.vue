@@ -132,7 +132,7 @@ export default {
     const stationList = ref<any>([]);
     const stationID = ref(-1);
     const studentID = ref(-1);
-    const stationExtend =ref<any>();
+    const stationExtend = ref<any>();
     const studentsList = ref<any>([]);
     const studentMode = ref<any>({
         visible: false,
@@ -209,7 +209,7 @@ export default {
     };
     const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
-        studentsList.value = courseRecordInClass.value.studentList?courseRecordInClass.value.studentList:null;
+        studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
         console.log(courseRecordInClass.value);
         // console.log(studentsList.value);
     };
@@ -218,29 +218,28 @@ export default {
         return ImageLink(path);
       }
     }
-    const distribution = async (id:any) => {
+    const distribution = async (id: any) => {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
         studentMode.value.visible = true;
-        if (courseRecordInClass.value.extend.stationBind){
+        if (courseRecordInClass.value.extend.stationBind) {
            stationExtend.value = courseRecordInClass.value.extend;
            console.log(stationExtend.value);
-        }
-        else stationExtend.value = initExtend(); 
+        } else { stationExtend.value = initExtend(); }
     };
     const distributionDevice = async () => {
         deviceMode.value.data = lesson.value;
         deviceMode.value.visible = true;
     };
     const update = async () => {
-        let obj1 = stationExtend.value.stationBind;
-        let obj = {} as any; 
-        let stationId = stationID.value; 
+        const obj1 = stationExtend.value.stationBind;
+        const obj = {} as any;
+        const stationId = stationID.value;
         obj[stationId.toString()] = checkList.value;
         stationExtend.value.stationBind = {
           ...obj1,
           ...obj,
-        }
+        };
         // console.log(checkList.value);
         // console.log(stationExtend.value);
         await courseRecordUpdate();
@@ -283,8 +282,8 @@ export default {
 };
 function initExtend() {
   return {
-      stationBind:{},
-  }
+      stationBind: {},
+  };
 }
 </script>
 <style scoped lang="scss">

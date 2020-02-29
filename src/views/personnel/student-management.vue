@@ -192,11 +192,11 @@ export default {
     });
     const append = async (row: any) => {
     };
-    function tableRowClassName(row:any){
-      if (row.off===1){
+    function tableRowClassName(row: any) {
+      if (row.off === 1) {
         return 'warning-row';
       }
-      return ''
+      return '';
     }
     const remove = async (row: any) => {
         await UserDel({

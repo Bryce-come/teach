@@ -40,7 +40,7 @@ export default {
   setup() {
     const loading = ref(false);
     const list = ref<any>({
-      disabledMa:''
+      disabledMa: '',
     });
     const status = ref<any>({
        statusList: [],
@@ -87,22 +87,22 @@ export default {
       for (let i = 0; i < status.value.statusList.length; i++) {
         list.value[i].disabledMa = status.value.disabledList[i];
       }
-      console.log(status.value.disabledList)
+      console.log(status.value.disabledList);
     }
     async function toggleStatus(row: any) {
-      status.value.rowIDList=[row.id]
-      const id = JSON.stringify(status.value.rowIDList)
-        const result = {
+      status.value.rowIDList = [row.id];
+      const id = JSON.stringify(status.value.rowIDList);
+      const result = {
           stationJson: id,
           status: row.extend.linkStatus,
         };
-        await CNCLinkSet(result);
-        await getStatusList()
+      await CNCLinkSet(result);
+      await getStatusList();
     }
     const query = async () => {
       const result = await CNCLinkStatus();
       list.value = result;
-      console.log(result)
+      console.log(result);
     };
     onMounted(useLoading(loading, async () => {
       // await query();
