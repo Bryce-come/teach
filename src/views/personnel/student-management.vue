@@ -1,68 +1,69 @@
 <template>
   <div v-loading="loading" class="student-management">
     <el-row :gutter="40" type="flex" justify="space-between">
-      <el-col :span="4">
-        <el-button type="success" @click="showFormB()">添加班级</el-button>
-        <el-tree 
-          class="filter-tree" 
-          :data="list" 
-          :props="props" 
-          node-key="id"
-          default-expand-all
-          :expand-on-click-node='false'
-          ref="tree">
-          <span class="custom-tree-node" slot-scope="{ node, data }" @click="() => firstTab(node)">
-            <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
-            class="tel" type="text" disabled="disabled" 
-            v-model="node.label">
-            <span>
-              <el-button
-                type="text"
-                size="mini"
-                v-if="node.level===1&&data.tagoff===false"
-                @click="() => FrozenClaz(data)">
-                <i class="iconfont icon-dongjie1" title="冻结"></i>
-              </el-button>
-              <el-button
-                type="text"
-                size="mini"
-                v-if="node.level===1&&data.tagoff===true"
-                @click="() => unFrozenClaz(data)">
-                <i class="iconfont icon-jiedong1" title="解冻"></i>
-              </el-button>
-              <el-button
-                type="text"
-                size="mini"
-                v-if='node.level===1'
-                @click="() => addNewGroup(node)">
-                <i class="el-icon-plus" title="增加"></i>
-              </el-button>
-              <el-button
-                type="text"
-                size="mini"
-                v-if="node.level===1"
-                @click="() => removeClass(data)">
-                <i class="el-icon-delete" title="删除"></i>
-              </el-button>
-              <el-button
-                type="text"
-                size="mini"
-                v-if="node.level===2"
-                @click="() => updataGropFlag(node)">
-                <i class="el-icon-edit" title="改名"></i>
-              </el-button>
-              <el-button
-                type="text"
-                size="mini"
-                v-if="node.level===2"
-                @click="() => removeGrop(data)">
-                <i class="el-icon-delete" title="删除"></i>
-              </el-button>
+      <el-col :span="4" class="treewidth">
+          <el-button type="success" @click="showFormB()">添加班级</el-button>
+          <el-tree 
+            class="filter-tree" 
+            :data="list" 
+            :props="props" 
+            node-key="id"
+            default-expand-all
+            :expand-on-click-node='false'
+            min-width="350px"
+            ref="tree">
+            <span class="custom-tree-node" slot-scope="{ node, data }" @click="() => firstTab(node)">
+              <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
+              class="tel" type="text" disabled="disabled" 
+              v-model="node.label">
+              <span>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if="node.level===1&&data.tagoff===false"
+                  @click="() => FrozenClaz(data)">
+                  <i class="iconfont icon-dongjie1" title="冻结"></i>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if="node.level===1&&data.tagoff===true"
+                  @click="() => unFrozenClaz(data)">
+                  <i class="iconfont icon-jiedong1" title="解冻"></i>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if='node.level===1'
+                  @click="() => addNewGroup(node)">
+                  <i class="el-icon-plus" title="增加"></i>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if="node.level===1"
+                  @click="() => removeClass(data)">
+                  <i class="el-icon-delete" title="删除"></i>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if="node.level===2"
+                  @click="() => updataGropFlag(node)">
+                  <i class="el-icon-edit" title="改名"></i>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if="node.level===2"
+                  @click="() => removeGrop(data)">
+                  <i class="el-icon-delete" title="删除"></i>
+                </el-button>
+              </span>
             </span>
-          </span>
-        </el-tree>
+          </el-tree>
       </el-col>
-      <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px">
+      <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px;background-color:withe">
         <div class="flex align-center between little-space">
           <el-button type="success" @click="showForm()">添加学生</el-button>
           <el-input class="search-bar" v-model="keywords" placeholder="请输入搜索内容" clearable/>
@@ -250,10 +251,8 @@ export default {
           studentUserList.value[i].claszGroup = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(studentUserList.value[i].extend.claszGroup)];
           studentUserList.value[i].clasz = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(studentUserList.value[i].extend.clasz)];
         }
-        console.log(grpandclzList)
     }
     const form = ref<ElForm|null>(null);
-    // const clazForm = ref<ElForm|null>(null);
     const modal = ref<any>({
       visible: false,
       studentInfo: null,
@@ -311,8 +310,6 @@ export default {
     function addNewGroup(row: any) {
       addNewGroupFlag.value.visible = true;
       addNewGroupFlag.value.data = row;
-      //班级信息
-      console.log(row)
     }
     async function FrozenClaz(row: any) {
       const result = {
@@ -360,6 +357,7 @@ export default {
         await ClassUpdate(result);
         await queryClassList();
         classList.value = await ClassList();
+        await getGroupList();
         addClazFlag.value.addClazInfo = '';
         addClazFlag.value.visible = false;
       } 
@@ -378,18 +376,9 @@ export default {
         row.pwd = '';
         (row as any).pwdCheck = '';
       }
-
       modal.value.studentInfo = row ? deepClone(row) : initForm();
       modal.value.visible = true;
       await armasd(row.extend.clasz);
-      // const midList = ref<any>();
-      // midList.value = [];
-      // await queryClassList();
-      // for (let i = 0; i < classList.value.length; i++) {
-      //   midList.value[i] = classList.value[i].id;
-      // }
-      // groupList.value = classList.value[midList.value.indexOf(row)].groups;
-      // console.log(groupList.value)
       if (form.value) { (form.value as ElForm).clearValidate(); }
     }
     async function upgrpDate() {
@@ -408,6 +397,7 @@ export default {
         await ClassGroupUpdate(result);
         await queryClassList();
         classList.value = await ClassList();
+        await getGroupList();
         upgrpFlag.value.visible = false;
         upgrpFlag.value.upgrpInfo=''
       }
@@ -427,6 +417,7 @@ export default {
         await ClassGroupUpdate(result);
         await queryClassList();
         classList.value = await ClassList();
+        await getGroupList();
         addNewGroupFlag.value.visible = false;
         addNewGroupFlag.value.addNewGroupInfo = ''
       }
@@ -549,6 +540,9 @@ function initForm() {
 }
 </script>
 <style scoped lang="scss">
+  .treewidth{
+    min-width: 250px;
+  }
   .custom-tree-node {
     flex: 1;
     display: flex;
