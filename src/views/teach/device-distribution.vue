@@ -1,5 +1,5 @@
 <template >
-  <div v-loading="loading"> 
+  <div v-loading="loading">
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex between">上课班级信息</div>
         <el-form :inline="true" >
@@ -8,14 +8,14 @@
             </el-form-item>
             <el-form-item label="上课班级:" label-width="100px" v-if='courseRecordInClass.clasz' >
                 <span>{{courseRecordInClass.clasz.name}}</span>
-            </el-form-item> 
+            </el-form-item>
             <el-form-item label="教学分组:" label-width="100px" v-if='courseRecordInClass.claszGroup'>
                <span>{{courseRecordInClass.claszGroup.name}}</span>
-            </el-form-item> 
+            </el-form-item>
             <el-form-item label="人数:" label-width="100px">
                 <span v-if="courseRecordInClass.studentList">{{courseRecordInClass.studentList.length}}人</span>
             </el-form-item>
-        </el-form> 
+        </el-form>
     </div>
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex between">操作台分配</div>
@@ -74,7 +74,7 @@
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
-import monitor from '../laboratory/monitor.vue';
+import monitor from '../monitor/monitor.vue';
 import { CourseRecordInClass, CourseRecordUpdate } from '@/dao/courseRecordDao';
 import { StationList } from '@/dao/stationDao';
 import {ImageLink} from '@/dao/commonDao.ts';
@@ -85,7 +85,7 @@ export default {
     const stationList = ref<any>([]);
     const stationID = ref(-1);
     const studentID = ref(-1);
-    const stationExtend =ref<any>();
+    const stationExtend = ref<any>();
     const studentsList = ref<any>([]);
     const studentMode = ref<any>({
         visible: false,
@@ -162,7 +162,7 @@ export default {
     };
     const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
-        studentsList.value = courseRecordInClass.value.studentList?courseRecordInClass.value.studentList:null;
+        studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
         console.log(courseRecordInClass.value);
         // console.log(studentsList.value);
     };
@@ -171,29 +171,28 @@ export default {
         return ImageLink(path);
       }
     }
-    const distribution = async (id:any) => {
+    const distribution = async (id: any) => {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
         studentMode.value.visible = true;
-        if (courseRecordInClass.value.extend.stationBind){
+        if (courseRecordInClass.value.extend.stationBind) {
            stationExtend.value = courseRecordInClass.value.extend;
            console.log(stationExtend.value);
-        }
-        else stationExtend.value = initExtend(); 
+        } else { stationExtend.value = initExtend(); }
     };
     const distributionDevice = async () => {
         deviceMode.value.data = lesson.value;
         deviceMode.value.visible = true;
     };
     const update = async () => {
-        let obj1 = stationExtend.value.stationBind;
-        let obj = {} as any; 
-        let stationId = stationID.value; 
+        const obj1 = stationExtend.value.stationBind;
+        const obj = {} as any;
+        const stationId = stationID.value;
         obj[stationId.toString()] = checkList.value;
         stationExtend.value.stationBind = {
           ...obj1,
           ...obj,
-        }
+        };
         // console.log(checkList.value);
         // console.log(stationExtend.value);
         await courseRecordUpdate();
@@ -246,8 +245,8 @@ export default {
 };
 function initExtend() {
   return {
-      stationBind:{},
-  }
+      stationBind: {},
+  };
 }
 </script>
 <style scoped lang="scss">

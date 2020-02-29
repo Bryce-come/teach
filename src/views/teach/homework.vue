@@ -77,7 +77,7 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {deepClone, formatDate} from 'web-toolkit/src/utils';
-import { ReportList,ReportTemplateList,ReportScore,ReportSubmit} from '../../dao/reportDao';
+import { ReportList, ReportTemplateList, ReportScore, ReportSubmit} from '../../dao/reportDao';
 import { CourseList } from '../../dao/courseProgramDao';
 import { DownLoadPrivate } from '../../dao/commonDao';
 export default {
@@ -114,24 +114,24 @@ export default {
     }
     const propsWord = ref<any>({
 
-    })
-    function setPorps(row:any){
-      propsWord.value=row
+    });
+    function setPorps(row: any) {
+      propsWord.value = row;
     }
     async function upload(option: any) {
       const result = {
-        courseId:propsWord.value.row.id,
-        programId:1,
-        file:option.file
-      }
-      await ReportSubmit(result)
-      await getReportList()
+        courseId: propsWord.value.row.id,
+        programId: 1,
+        file: option.file,
+      };
+      await ReportSubmit(result);
+      await getReportList();
     }
-    async function getTempList(){
+    async function getTempList() {
       const result = await ReportTemplateList();
-      experimentReportTemplateList.value=result;
+      experimentReportTemplateList.value = result;
     }
-    async function download(row:any){
+    async function download(row: any) {
       const result = {
         path: row.path,
         filename: row.name,
@@ -152,11 +152,11 @@ export default {
       // await query();
     }));
     return {
-      loading, experimentResultList,propsWord,setPorps,getTempList,
-      reportButton, templateButton,getReportList,
+      loading, experimentResultList, propsWord, setPorps, getTempList,
+      reportButton, templateButton, getReportList,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
-      experimentReportTemplateList,courseList,getCourseList,
+      experimentReportTemplateList, courseList, getCourseList,
       upload: useLoading(loading, upload),
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };

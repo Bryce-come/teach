@@ -17,13 +17,13 @@ export async function init(containId: string, windowType: number) {
       bDebugMode: false,  // js debug
       cbSelWnd(xmlDoc: XMLDocument) {
         // 选择窗口的
-        console.log('选中窗口：', xmlDoc.getElementsByTagName<any>('SelectWnd')[0].textContent);
+        // console.log('选中窗口：', xmlDoc.getElementsByTagName<any>('SelectWnd')[0].textContent);
       },
       cbEvent(iEventType: any, iParam1: any, iParam2: any) {
         if (2 == iEventType) {// 回放正常结束
-          console.log('窗口' + iParam1 + '回放结束！');
+          // console.log('窗口' + iParam1 + '回放结束！');
         } else if (-1 == iEventType) {
-          console.log('设备' + iParam1 + '网络错误！');
+          // console.log('设备' + iParam1 + '网络错误！');
         } else if (3001 == iEventType) {
           // clickStopRecord(g_szRecordType, iParam1);
         }
@@ -42,7 +42,7 @@ export async function login(ip: string, port: string, username: string, pwd: str
       ip, 1, port, username, pwd,
       {
         success(xmlDoc: any) {
-          console.log(' 登录成功！');
+          // console.log(' 登录成功！');
           resolve();
           //   getChannelInfo();
           //   getDevicePort();
@@ -52,7 +52,7 @@ export async function login(ip: string, port: string, username: string, pwd: str
         },
       });
     if (-1 == iRet) {
-      console.log(' 已登录过！');
+      // console.log(' 已登录过！');
       resolve();
     }
   });
@@ -62,7 +62,7 @@ export async function login(ip: string, port: string, username: string, pwd: str
 export async function startRealPlay(window: any, szDeviceIdentify: string, channelId: number) {
   return new Promise((resolve, reject) => {
     const oWndInfo = WebVideoCtrl.I_GetWindowStatus(window);
-    console.log('播放窗口：', window, oWndInfo);
+    // console.log('播放窗口：', window, oWndInfo);
     if (!oWndInfo) {
       WebVideoCtrl.I_StartRealPlay(szDeviceIdentify, {
         iWndIndex: window,
@@ -70,7 +70,7 @@ export async function startRealPlay(window: any, szDeviceIdentify: string, chann
         iChannelID: channelId,
         bZeroChannel: false,
         success() {
-          console.log('开始预览成功！');
+          // console.log('开始预览成功！');
           resolve();
         },
         error(status: any, xmlDoc: XMLDocument) {

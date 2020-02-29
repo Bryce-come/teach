@@ -1,11 +1,8 @@
 <template>
   <div class="header theme flex between">
-    <div class="brand flex column align-center" style="color: white">
-      <img :src="loginLogo" style="height: 23px; margin: 3px 0" />
+    <div class="brand flex align-center center" style="color: white">
+      <img :src="loginLogo" style="height: 20px; margin-right: 5px" />
       <span>{{loginTitle2}}</span>
-<!--      <div class="flex column align-center" style="color: white">-->
-<!--        <span>{{loginTitle1}}</span>-->
-<!--      </div>-->
     </div>
     <div class="header-menu-wrapper flex center">
     </div>
@@ -37,6 +34,9 @@ export default {
     background-color: $header-title;
     &.vertical {
       border-color: transparent;
+    }
+    span{
+      font-size: 1.2rem;
     }
   }
   .header {

@@ -48,7 +48,7 @@
         <el-table-column label="提交时间" prop="createDt"/>
         <el-table-column label="状态">
           <div slot-scope="props">
-            <div v-if="props.row.extend.score1 && props.row.extend.score2" style="color:green">已评分</div>
+            <div v-if="props.row.scoreSum!=null" style="color:green">已评分</div>
             <div v-else style="color:red">未评分</div>
           </div>
         </el-table-column>
@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column label="报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
-          <div slot-scope="props">{{props.row.extend.score1 + props.row.extend.score2}}</div>
+          <div slot-scope="props">{{props.row.scoreSum}}</div>
         </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="{row}">
@@ -137,15 +137,22 @@ export default {
       scoreModal.value.visible = true;
     };
     async function scoreUpdate() {
-      scoreModal.value.visible = false;
-      const result = {
-        id: scoreModal.value.scoreInfo.id,
-        score1: scoreModal.value.scoreInfo.extend.score1,
-        score2: scoreModal.value.scoreInfo.extend.score2,
-      };
-      await ReportScore(result);
-      Message.success('评分成功');
-      await query();
+      if(scoreModal.value.scoreInfo.extend.score1===''||scoreModal.value.scoreInfo.extend.score2===''){
+        scoreModal.value.visible = false;
+        Message.error('评分失败，请填写分数')
+      }
+      else{
+        scoreModal.value.visible = false;
+        const result = {
+          id: scoreModal.value.scoreInfo.id,
+          score1: scoreModal.value.scoreInfo.extend.score1,
+          score2: scoreModal.value.scoreInfo.extend.score2,
+        };
+        await ReportScore(result);
+        Message.success('评分成功');
+        await query();
+        await getScorcedStatus()
+      }
     }
     async function downFile(row: any) {
       const result = {
@@ -237,32 +244,55 @@ export default {
     }
     const query = async () => {
       const result = await getReportList();
+      console.log(result)
       experimentReportList.value = result;
     };
+    const scoreList=ref<any>({
+      allScore:[],
+      haveScore:[],
+      noScore:[]
+    })
+    const getScorcedStatus = async () => {
+      scoreList.value.allScore=experimentReportList.value
+      scoreList.value.haveScore=[]
+      scoreList.value.noScore=[]
+      for(let i=0;i<experimentReportList.value.length;i++){
+        if(experimentReportList.value[i].scoreSum!=null){
+          scoreList.value.haveScore.push(experimentReportList.value[i])
+        }
+        else{
+          scoreList.value.noScore.push(experimentReportList.value[i])
+        }
+      }
+    }
     const showAllScored = async () => {
       allScored.value = true;
       hasScored.value = false;
       noScored.value = false;
+      experimentReportList.value=scoreList.value.allScore
     };
     const showHasScored = async () => {
       allScored.value = false;
       hasScored.value = true;
       noScored.value = false;
+      experimentReportList.value=scoreList.value.haveScore
     };
     const showNoScored = async () => {
       allScored.value = false;
       hasScored.value = false;
       noScored.value = true;
+      experimentReportList.value=scoreList.value.noScore
     };
     onMounted(useLoading(loading, async () => {
       await query();
       await getCourseList();
       await getClazList();
+      await getScorcedStatus()
     }));
     return {
       loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList, keywords,
       scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList, filtered,
-      allScored, hasScored, noScored, downFile, courseList,
+      allScored, hasScored, noScored, downFile, courseList,getScorcedStatus,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),
@@ -271,7 +301,7 @@ export default {
 };
 function initForm() {
   return {
-    extend: {score1: 0, score2: 0},
+    extend: {score1: Number, score2: Number},
   };
 }
 </script>

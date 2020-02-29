@@ -284,10 +284,10 @@ export default {
        const valid1 =  await (form1.value as ElForm).validate();
        if (valid1) {
         console.log(addDeviceModal.value.deviceInfo.device.id);
-         await StationAddComponent({
+        await StationAddComponent({
           id: stationId.value,
           deviceId: addDeviceModal.value.deviceInfo.device.id ? addDeviceModal.value.deviceInfo.device.id : null,
-          adapterId: addDeviceModal.value.deviceInfo.collector.no ? addDeviceModal.value.deviceInfo.collector.no : null,});
+          adapterId: addDeviceModal.value.deviceInfo.collector.no ? addDeviceModal.value.deviceInfo.collector.no : null});
         addDeviceModal.value.visible = false;
         await query(stationId.value);
         console.log(expStationList.value);
@@ -299,7 +299,7 @@ export default {
        if (valid2) {
         await StationAddComponent({
           id: stationId.value,
-          pcJson: addPCModal.value.PCInfo ? JSON.stringify(addPCModal.value.PCInfo) : null,});
+          pcJson: addPCModal.value.PCInfo ? JSON.stringify(addPCModal.value.PCInfo) : null});
         addPCModal.value.visible = false;
         await query(stationId.value);
         Message.success('PC添加成功');
@@ -310,7 +310,7 @@ export default {
       if (valid3) {
         await StationAddComponent({
         id: stationId.value,
-        cameraJson: addCameraModal.value.cameraInfo ? JSON.stringify(addCameraModal.value.cameraInfo) : null,});
+        cameraJson: addCameraModal.value.cameraInfo ? JSON.stringify(addCameraModal.value.cameraInfo) : null});
         addCameraModal.value.visible = false;
         await query(stationId.value);
         Message.success('摄像头添加成功');

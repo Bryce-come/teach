@@ -278,7 +278,7 @@ export default {
       data.attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -302,7 +302,7 @@ export default {
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -337,7 +337,7 @@ export default {
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -346,7 +346,7 @@ export default {
     async function downFile(item: any) {
       const files = {
         path: item,
-        filename: item.split('/')[item.split('/').length-1],
+        filename: item.split('/')[item.split('/').length - 1],
       };
       await DownLoadPrivate(files.path, files.filename);
     }
@@ -366,7 +366,7 @@ export default {
       showInExp: useLoading(loading, showInExp),
       showOutExp: useLoading(loading, showOutExp),
       detailModal, detailForm, detailUpdate, downFile,
-      stationList,      
+      stationList,
       upload, form2, attachmentModal, attachmentForm, fileList, expID,
       attachmentUpdate: useLoading(loading, attachmentUpdate),
       attachmentList,
