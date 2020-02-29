@@ -1,5 +1,5 @@
 <template >
-  <div v-loading="loading"> 
+  <div v-loading="loading">
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex between">上课班级信息</div>
         <el-form :inline="true" >
@@ -8,14 +8,14 @@
             </el-form-item>
             <el-form-item label="上课班级:" label-width="100px" v-if='courseRecordInClass.clasz' >
                 <span>{{courseRecordInClass.clasz.name}}</span>
-            </el-form-item> 
+            </el-form-item>
             <el-form-item label="教学分组:" label-width="100px" v-if='courseRecordInClass.claszGroup'>
                <span>{{courseRecordInClass.claszGroup.name}}</span>
-            </el-form-item> 
+            </el-form-item>
             <el-form-item label="人数:" label-width="100px">
                 <span v-if="courseRecordInClass.studentList">{{courseRecordInClass.studentList.length}}人</span>
             </el-form-item>
-        </el-form> 
+        </el-form>
     </div>
     <div style="margin: 10px 0" class="card">
         <el-tabs type="card">
@@ -118,7 +118,7 @@
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { useLoading } from 'web-toolkit/src/service';
-import monitor from '../laboratory/monitor.vue';
+import monitor from '../monitor/monitor.vue';
 import { CourseRecordInClass, CourseRecordUpdate } from '@/dao/courseRecordDao';
 import { StationList } from '@/dao/stationDao';
 import {ImageLink} from '@/dao/commonDao.ts';

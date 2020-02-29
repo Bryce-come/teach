@@ -276,7 +276,7 @@ export default {
       data.attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -300,7 +300,7 @@ export default {
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -335,7 +335,7 @@ export default {
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;

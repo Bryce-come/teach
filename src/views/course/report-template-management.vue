@@ -7,7 +7,7 @@
         :show-file-list="false">
         <el-button type="primary" icon="el-icon-upload2">上传实验摸板</el-button>
       </el-upload>
-      <el-input v-model="keywords" placeholder="输入模板名称搜索" style="width:400px"></el-input>
+      <el-input v-model="keywords" placeholder="输入模板名称搜索" style="width:400px"/>
     </div>
     <lkt-table
       :data="filtered"
@@ -55,9 +55,7 @@ export default {
       await DownLoadPrivate(row.path, row.name);
     }
     const query = async () => {
-      experimentReportTemplateList.value = await ReportTemplateList({
-        file: '',
-      });
+      experimentReportTemplateList.value = await ReportTemplateList();
       console.log(experimentReportTemplateList.value);
     };
     onMounted(useLoading(loading, async () => {

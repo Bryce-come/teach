@@ -87,6 +87,30 @@
         </el-form-item>
       </el-form>
     </el-tab-pane>
+    <el-tab-pane label="NVR访问配置">
+      <el-form ref="form5" label-width="100px" style="width: 350px" :model="modal">
+        <el-form-item label="IP：" prop="nvrIp" :rules="{ required: true, message: '请填写' }">
+          <el-input v-model="modal.nvrIp"/>
+        </el-form-item>
+        <el-form-item label="端口：" prop="nvrPort" :rules="{ required: true, message: '请填写' }">
+          <el-input-number v-model="modal.nvrPort" controls-position="right" :min="1000" />
+        </el-form-item>
+        <el-form-item label="用户名：" prop="nvrUsername" :rules="{ required: true, message: '请填写' }">
+          <el-input v-model="modal.nvrUsername"/>
+        </el-form-item>
+        <el-form-item label="密码：" prop="nvrPwd" :rules="{ required: true, message: '请填写' }">
+          <el-input v-model="modal.nvrPwd" type="password"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateNVR({
+            nvrIp: modal.nvrIp,
+            nvrPort: modal.nvrPort,
+            nvrUsername: modal.nvrUsername,
+            nvrPwd: modal.nvrPwd,
+          })">保存设置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script lang="ts">
@@ -100,6 +124,7 @@ export default {
   setup() {
     const loading = ref(false);
     const form2 = ref<ElForm|null>(null);
+    const form5 = ref<ElForm|null>(null);
     const modal = ref<any>({
       termsDt: [null, null],
     });
@@ -115,9 +140,18 @@ export default {
       await SettingSet(params);
       Message.success('设置成功');
     }
+    async function updateNVR(params: any) {
+      const valid = await (form5.value as ElForm).validate();
+      if (!valid) {
+        return ;
+      }
+      await update(params);
+    }
     async function updateTerms() {
       const valid = await (form2.value as ElForm).validate();
-      if (!valid) { return ; }
+      if (!valid) {
+        return ;
+      }
       const params = { lessonNum: modal.value.lessonNum };
       let flagTime;
       for (let i = 1; i <= modal.value.lessonNum; i++) {
@@ -136,9 +170,10 @@ export default {
       await query();
     }));
     return{
-      loading, modal, form2,
+      loading, modal, form2, form5,
       update: useLoading(loading, update),
       updateTerms: useLoading(loading, updateTerms),
+      updateNVR: useLoading(loading, updateNVR),
     };
   },
 };

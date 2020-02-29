@@ -1,4 +1,4 @@
-import {postService} from 'web-toolkit/src/case-main/index';
+import {postService, uploadService} from 'web-toolkit/src/case-main/index';
 
 // 教学过程模块
 
@@ -75,7 +75,7 @@ export async function NCExamOperate(params: any) {
  * RequestParam MultipartFile file
  */
 export async function TempFileAdd(params: any) {
-  await postService('/rest/inClass/tempFile/add', params);
+  await uploadService('/rest/inClass/tempFile/add', params);
 }
 /**
  * RequestParam String path

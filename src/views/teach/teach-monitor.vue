@@ -1,10 +1,10 @@
 <template v-loading="loading">
-  <div>  
+  <div>
       <div class="flex end" style="margin-bottom:10px">
           <el-button type="primary" @click="delay()" style='margin-right:10px'>延迟</el-button>
           <el-button type="danger" @click="off()">下课</el-button>
       </div>
-      <monitor></monitor> 
+      <monitor></monitor>
       <kit-dialog-simple
       :modal="delayMode"
       :confirm="confirm"
@@ -14,7 +14,7 @@
         <el-input-number v-model="delayMode.data" :min="1" :max="60" controls-position="right"/>
         <span style="margin:0 30px 0 10px">分钟</span>
       </div>
-    </kit-dialog-simple> 
+    </kit-dialog-simple>
   </div>
 </template>
 <script lang="ts">
@@ -22,7 +22,7 @@ import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/c
 import { router } from '@/main';
 import { Message } from 'element-ui';
 import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
-import monitor from '../laboratory/monitor.vue';
+import monitor from '../monitor/monitor.vue';
 export default createComponent({
   components: { monitor },
   setup() {
@@ -54,5 +54,5 @@ export default createComponent({
 });
 </script>
 <style scoped lang="scss">
- 
+
 </style>

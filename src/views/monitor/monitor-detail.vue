@@ -91,6 +91,7 @@ import {statusMap} from '@/utils/device-utils';
 import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 import {Message} from 'element-ui';
 import {init, login, startRealPlay, stopPlay, fullScreen} from '@/utils/video';
+import {SettingGet} from '@/dao/settingDao';
 
 export default {
   setup() {
@@ -114,10 +115,6 @@ export default {
     const modalVideo = ref<any>({
       channelId: 1,  // todo 需要更改,当前显示的channel
       szDeviceIdentify: '',
-      ip: '112.17.133.224',
-      port: '11080',
-      username: 'admin',
-      pwd: 'lkt666666',
       start: '2020-02-26 07:00:00',
       end: '2020-02-26 14:11:11',
     });
@@ -167,6 +164,11 @@ export default {
         query();
       }
       // video
+      const setting = await SettingGet({onlyNVR: true});
+      modalVideo.value.ip = setting.nvrIp;
+      modalVideo.value.port = setting.nvrPort;
+      modalVideo.value.username = setting.nvrUsername;
+      modalVideo.value.pwd = setting.nvrPwd;
       await init('contain', 1);
       modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
       const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
