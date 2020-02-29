@@ -28,8 +28,8 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" sortable min-width="150">
           <div class="flex center little-space" slot-scope="{ row }" >
-          <el-button type="primary" size="mini" :disabled="row.result === 0?'false':'true'" @click="agreeAppoint(row)">同意</el-button>
-          <el-button type="danger" size="mini" :disabled="row.result === 0?'false':'true'" @click="disagreeAppoint(row)">拒绝</el-button>
+          <el-button type="primary" size="mini" :disabled="row.result === 0? false: true" @click="agreeAppoint(row)">同意</el-button>
+          <el-button type="danger" size="mini" :disabled="row.result === 0? false: true" @click="disagreeAppoint(row)">拒绝</el-button>
         </div>
         </el-table-column>   
       </lkt-table>

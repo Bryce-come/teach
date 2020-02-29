@@ -1,4 +1,4 @@
-import {postService} from 'web-toolkit/src/case-main/index';
+import {postService, uploadService} from 'web-toolkit/src/case-main/index';
 
 /**
  * 课表记录列表
@@ -46,7 +46,7 @@ export async function CourseRecordAdd(params: any) {
  * RequestParam MultipartFile file
  */
 export async function CourseRecordAttachAdd(params: any) {
-  await postService('/rest/course/record/attach/add', params);
+  await uploadService('/rest/course/record/attach/add', params);
 }
 
 /**

@@ -5,6 +5,7 @@
         <el-input placeholder="输入关键字搜索" v-model="filterText" style="margin-bottom:5px"></el-input>
         <div class='flex end' style="margin-bottom:5px">
           <el-button type="success" size="small" style="margin-left:5px" @click="showForm()">添加</el-button>
+          <el-button type="danger" size="small" style="margin-left:5px" @click="del()">删除</el-button>
         </div>
         <el-row>
           <el-card class="box-card">
@@ -131,7 +132,7 @@
               </el-option>
             </el-select>  
           </el-form-item>
-          <el-form-item label="LKT-MAN编号：" prop="collector.no">
+          <el-form-item label="LKT-MAN编号：" prop="collector.no" :rules="{ required: true, message: '请填入信息'}" >
             <el-input v-model="addDeviceModal.deviceInfo.collector.no"></el-input>
           </el-form-item>
         </el-form>
@@ -144,6 +145,9 @@
         <el-form v-if="addPCModal.PCInfo" ref="form2" :model="addPCModal.PCInfo" label-width="120px" label-position="left" style="width: 300px;margin: 0 auto">
           <el-form-item label="PC编号：" prop="PCNo" :rules="{ required: true, message: '请输入PC编号'}">
             <el-input v-model="addPCModal.PCInfo.PCNo"></el-input>
+          </el-form-item>
+          <el-form-item label="PC的IP:" prop="PCIP" :rules="{ required: true, message: '请输入PC编号'}">
+            <el-input v-model="addPCModal.PCInfo.PCIP"></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -217,6 +221,13 @@ export default {
         await queryStation();
       }
     }
+    const del = async () => {
+      await StationDel({
+        id: stationId.value,
+      });
+      await queryStation();
+      await query();
+    };
     //
     const addDeviceModal = ref<any>({
       visible: false,
@@ -273,16 +284,23 @@ export default {
     const deciceUpdate = async () => {
        const valid1 =  await (form1.value as ElForm).validate();
        if (valid1) {
-        await addComponent();
+        console.log(addDeviceModal.value.deviceInfo.device.id);
+        await StationAddComponent({
+          id: stationId.value,
+          deviceId: addDeviceModal.value.deviceInfo.device.id ? addDeviceModal.value.deviceInfo.device.id : null,
+          adapterId: addDeviceModal.value.deviceInfo.collector.no ? addDeviceModal.value.deviceInfo.collector.no : null});
         addDeviceModal.value.visible = false;
         await query(stationId.value);
+        console.log(expStationList.value);
         Message.success('设备添加成功');
        }
     };
     const PCUpdate = async () => {
        const valid2 =  await (form2.value as ElForm).validate();
        if (valid2) {
-        await addComponent();
+        await StationAddComponent({
+          id: stationId.value,
+          pcJson: addPCModal.value.PCInfo ? JSON.stringify(addPCModal.value.PCInfo) : null});
         addPCModal.value.visible = false;
         await query(stationId.value);
         Message.success('PC添加成功');
@@ -291,7 +309,9 @@ export default {
     const infoUpdate = async () => {
       const valid3 =  await (form3.value as ElForm).validate();
       if (valid3) {
-        await addComponent();
+        await StationAddComponent({
+        id: stationId.value,
+        cameraJson: addCameraModal.value.cameraInfo ? JSON.stringify(addCameraModal.value.cameraInfo) : null});
         addCameraModal.value.visible = false;
         await query(stationId.value);
         Message.success('摄像头添加成功');
@@ -302,7 +322,7 @@ export default {
         id: stationId.value,
         deviceId: row.id ? row.id : null,
         PCIP: row.PCIP ? row.PCIP : null,
-        cameraIP: row.id ? row.id : null,
+        cameraIP: row.ip ? row.ip : null,
       });
       await query(stationId.value);
       Message.success('删除成功');
@@ -349,6 +369,7 @@ export default {
       addDeviceModal, addPCModal, addCameraModal,
       form1, form2, form3, deviceNameList, infoUpdate,
       addComponent, deciceUpdate,  PCUpdate,
+      del: useConfirm('确认删除？', useLoading(loading, del)),
     };
   },
 };

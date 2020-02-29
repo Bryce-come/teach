@@ -1,9 +1,11 @@
 <template>
   <div v-loading="loading" class="preview">
     <div style="margin: 10px 0" class="block_background">
-      <div class="block_title flex start"><i class="iconfont icon-message4"></i>未来两天共有实验课程<span>{{4}}</span>门</div>
+      <div class="block_title flex start"><i class="iconfont icon-message4"></i>
+        未来两天共有实验课程<span>{{coursePreviewList.length}}</span>门
+      </div>
       <div class="wrapper">
-        <div class="wrapper-content" v-for="(item, id) in courseList" :key="id">
+        <div class="wrapper-content" v-for="(item, id) in coursePreviewList" :key="id">
           <div style="margin-left:50px">
             <i class="iconfont icon-manage2 i"></i>
             <span style="font-weight:bold;font-size:1.2rem;margin-left:5px">{{item.name + '：'}}</span>
@@ -67,17 +69,20 @@
 import {ref, Ref, onMounted} from '@vue/composition-api';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
+import { CourseList4Student} from '@/dao/courseProgramDao';
 export default {
   setup() {
     const loading = ref(false);
-    const courseList = ref<any>();
+    const coursePreviewList = ref<any>([]);
     const query = async () => {
-      courseList.value = [
-        {id: 0, name: '自动化原理与操作', time: '2月10日 周一 13：30~14：30'},
-        {id: 1, name: '自动化原理与操作', time: '2月11日 周二 13：30~14：30'},
-        {id: 2, name: '自动化原理与操作', time: '2月12日 周三 13：30~14：30'},
-        {id: 3, name: '自动化原理与操作', time: '2月13日 周四 13：30~14：30'},
-      ];
+      // courseList.value = [
+      //   {id: 0, name: '自动化原理与操作', time: '2月10日 周一 13：30~14：30'},
+      //   {id: 1, name: '自动化原理与操作', time: '2月11日 周二 13：30~14：30'},
+      //   {id: 2, name: '自动化原理与操作', time: '2月12日 周三 13：30~14：30'},
+      //   {id: 3, name: '自动化原理与操作', time: '2月13日 周四 13：30~14：30'},
+      // ];
+      coursePreviewList.value = await CourseList4Student();
+      console.log(coursePreviewList.value);
     };
     const download = async () => {
       Message.success('下载成功');
@@ -86,7 +91,7 @@ export default {
       await query();
     }));
     return {
-      loading, courseList, query,
+      loading, coursePreviewList, query,
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },

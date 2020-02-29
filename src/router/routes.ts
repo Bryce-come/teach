@@ -31,37 +31,6 @@ const userMng = {
 //     CName: '设备总览',
 //   },
 // };
-// const alarmRule = {
-//   path: '/alarm/rule',
-//   name: 'alarmRule',
-//   component: () => import('../views/alarm/alarm-rule.vue'),
-//   meta: {
-//     privileges: ['alarmRuleMng'],
-//     CName: '报警规则设定',
-//     parentCName: '系统管理',
-//   },
-// };
-// const orderDelay = {
-//   path: '/alarm/orderDelay',
-//   name: 'orderDelay',
-//   component: () => import('../views/alarm/order-delay.vue'),
-//   meta: {
-//     privileges: [[PRIVILEGE.DEVICE_MONITOR, PRIVILEGE.MODE_ORDER]],
-//     CName: '工单延误提醒',
-//     parentCName: '报警提醒',
-//   },
-// };
-
-// const parameter = {
-//   path: '/analysis/parameter',
-//   name: 'parameterAnalysis',
-//   component: () => import('../views/analysis/parameter.vue'),
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_ANALYSIS],
-//     CName: '参数历史统计',
-//     parentCName: '运行分析',
-//   },
-// };
 const device = {
   path: '/laboratory/device',
   name: 'device',
@@ -99,31 +68,41 @@ const cuttingToolManagement = {
   },
 };
 const monitor = {
-  path: '/laboratory/monitor',
+  path: '/monitor',
   name: 'monitor',
-  component: () => import('../views/laboratory/monitor.vue'),
+  component: () => import('../views/monitor/monitor.vue'),
   meta: {
     CName: '实时监控',
     parentCName: '实验室管理',
   },
 };
 const monitorDetail = {
-  path: '/laboratory/monitorDetail/:id',
+  path: '/monitor/detail/:id',
   name: 'monitorDetail',
-  component: () => import('../views/laboratory/monitor-detail.vue'),
+  component: () => import('../views/monitor/monitor-detail.vue'),
   meta: {
     CName: '监控详情',
     parentCName: '实验室管理',
     parentName: 'monitor',
   },
 };
-const usingProcess = {
-  path: '/laboratory/usingProcess',
-  name: 'usingProcess',
-  component: () => import('../views/laboratory/using-process.vue'),
+const monitorHistory = {
+  path: '/monitor/history',
+  name: 'monitorHistory',
+  component: () => import('../views/monitor/monitor-history.vue'),
   meta: {
     CName: '使用过程分析',
     parentCName: '实验室管理',
+  },
+};
+const monitorHistoryDetail = {
+  path: '/monitor/history/detail',
+  name: 'monitorHistoryDetail',
+  component: () => import('../views/monitor/monitor-history-detail.vue'),
+  meta: {
+    CName: '使用过程分析详情',
+    parentCName: '实验室管理',
+    parentName: 'monitorHistory',
   },
 };
 const processMonitorDetail = {
@@ -133,7 +112,7 @@ const processMonitorDetail = {
   meta: {
     CName: '操作台详情',
     parentCName: '实验室管理',
-    parentName: 'usingProcess',
+    parentName: 'monitorHistory',
   },
 };
 const usageAnalysis = {
@@ -335,7 +314,8 @@ const indexChildren = [
   cuttingToolManagement,
   monitor,
   monitorDetail,
-  usingProcess,
+  monitorHistory,
+  monitorHistoryDetail,
   processMonitorDetail,
   usageAnalysis,
   // 实验课程管理

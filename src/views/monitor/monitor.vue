@@ -1,30 +1,18 @@
 <template>
   <div v-loading="loading">
     <div class="monitor flex">
-      <div class="card monitor-left">
-        <div class="flex"><h3>上课班级信息</h3></div>
+      <div class="block-card monitor-left">
+        <div class="title">上课班级信息</div>
         <div v-if="!courseRecord|| !courseRecord.course" style="color: grey;text-align: center">暂无上课信息</div>
-        <div v-else>
+        <div v-else class="content">
           <el-form label-width="110px" label-position="left" style="width:100%;margin-top:20px" >
-            <div class="flex align-center wrap">
-              <div class="form-line">
-                <el-form-item label="课程名称：">{{ courseRecord.course?courseRecord.course.name:'' }}</el-form-item>
-              </div>
-              <div class="form-line">
-                <el-form-item label="实验项目：">{{ courseRecord.program?courseRecord.program.name:'' }}</el-form-item>
-              </div>
-              <div class="form-line">
-                <el-form-item label="授课老师：">{{ courseRecord.teacher.name }}</el-form-item>
-              </div>
-              <div class="form-line">
-                <el-form-item label="授课班级分组：">{{ (courseRecord.clasz?courseRecord.clasz.name:'')+' '+(courseRecord.claszGroup?courseRecord.claszGroup.name:'') }}</el-form-item>
-              </div>
-              <div class="form-line">
-                <el-form-item label="上课人数：">{{ courseRecord.studentList?courseRecord.studentList.length:0 }}</el-form-item>
-              </div>
-              <div class="form-line">
-                <el-form-item label="距离下课时间：">{{ timeDiff(new Date(courseRecord.endDt)) }}</el-form-item>
-              </div>
+            <div class="flex align-center wrap course-content">
+              <el-form-item label="课程名称：">{{ courseRecord.course?courseRecord.course.name:'' }}</el-form-item>
+              <el-form-item label="实验项目：">{{ courseRecord.program?courseRecord.program.name:'' }}</el-form-item>
+              <el-form-item label="授课老师：">{{ courseRecord.teacher.name }}</el-form-item>
+              <el-form-item label="授课班级分组：">{{ (courseRecord.clasz?courseRecord.clasz.name:'')+' '+(courseRecord.claszGroup?courseRecord.claszGroup.name:'') }}</el-form-item>
+              <el-form-item label="上课人数：">{{ courseRecord.studentList?courseRecord.studentList.length:'- -' }}</el-form-item>
+              <el-form-item label="距离下课时间：">{{ timeDiff(new Date(courseRecord.endDt)) }}</el-form-item>
             </div>
             <el-form-item label="本课程进度：">
               <div style="margin-top: 8px">
@@ -34,8 +22,8 @@
           </el-form>
         </div>
       </div>
-      <div class="card monitor-right">
-        <div class="flex" style="margin:auto"><h3>设备状态统计</h3></div>
+      <div class="block-card monitor-right">
+        <div class="title">设备状态统计</div>
         <div class="flex align-center center">
           <v-chart
             autoresize
@@ -44,16 +32,16 @@
         </div>
       </div>
     </div>
-    <div class="card monitor-device">
-      <div class="flex"><h3>操作台总览</h3></div>
-      <div class="flex center wrap">
+    <div class="block-card monitor-device">
+      <div class="title">操作台总览</div>
+      <div class="flex center wrap content">
         <div class="device-card" v-for="(item,i) in stationList" :key="i">
           <div
-            class="flex align-center"
+            class="flex align-center center"
             style="cursor: pointer"
             @click="$router.push({name:'monitorDetail', params:{id:item.id}})">
             <div class="device-img">
-              <img class="image" :src='ImageLink(item.extend.deviceImg)'>
+              <img class="image" :src='ImageLink(item.extend.deviceImg)' alt="">
             </div>
             <div class="device-message">
               <div style="font-size: 1.1em;font-weight: 600">{{item.name}}</div>
@@ -157,8 +145,8 @@ export default createComponent({
           // 数据二次处理
           station.extend.deviceId = device.id;
           station.extend.deviceImg = device.deviceType.img;
-          if (station.stationBind && station.stationBind[station.id.toString()]) {
-            station.extend.students = station.stationBind[station.id.toString()];
+          if (courseRecord.value.stationBind && courseRecord.value.stationBind[station.id.toString()]) {
+            station.extend.students = courseRecord.value.stationBind[station.id.toString()];
           }
         }
       }
@@ -202,19 +190,16 @@ export default createComponent({
       margin-right: 2%;
       width: 60%;
       height: 270px;
-      padding: 10px 20px;
       .el-form * {
         font-size: 1rem;
       }
-      .el-form-item {
-        margin-bottom: 5px;
+      .content{
+        padding-top: 0;
       }
     }
-
     .monitor-right {
       width: 39%;
       height: 270px;
-      padding: 10px 20px;
       .el-form * {
         font-size: 1rem;
       }
@@ -226,7 +211,6 @@ export default createComponent({
 
   .monitor-device {
     margin-top: 10px;
-    padding: 10px 20px;
     .device-card {
       width: 24%;
       margin-right: 20px;
@@ -245,8 +229,10 @@ export default createComponent({
       }
     }
   }
-  .form-line {
-    width: 48%;
-    margin-bottom: 10px;
+  .course-content{
+    .el-form-item{
+      width: 48%;
+      margin-bottom: 10px;
+    }
   }
 </style>

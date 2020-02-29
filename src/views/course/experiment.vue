@@ -120,7 +120,7 @@
           </div>
         </el-form-item>
         <el-form-item label="附件：">
-          <div v-for="(item,i) in detailModal.detailInfo.attachment" :key="i">{{item.split('/')[item.split('/').length-1]}}</div>
+          <el-link type="primary" v-for="(item,i) in detailModal.detailInfo.attachment" :key="i" @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}</el-link>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -131,6 +131,7 @@
       <el-upload
             :http-request="(option)=>upload(option)"
             action=""
+            multiple
             :file-list="fileList"
             :show-file-list="false"
             >
@@ -160,12 +161,13 @@ import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ProgramList, ProgramAdd, ProgramUpdate, ProgramDel, ProgramUpload, ProgramUploadDel} from '@/dao/courseProgramDao';
 import {StationList} from '@/dao/stationDao';
+import {DownLoadPrivate} from '@/dao/commonDao';
 export default {
   setup() {
     const loading = ref(false);
     const experimentList = ref<any>([]);
     const stationList = ref<any>();
-    const fileList = ref<any>();
+    const fileList = ref<any>([]);
     const expID = ref<any>();
     const attachmentList = ref<any>([]);
     const [keywords, filtered] = useSearch(experimentList, {
@@ -276,7 +278,7 @@ export default {
       data.attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -300,7 +302,7 @@ export default {
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -335,10 +337,18 @@ export default {
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        let obj = {id, name};
+        const obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
+      console.log(fileList.value);
+    }
+    async function downFile(item: any) {
+      const files = {
+        path: item,
+        filename: item.split('/')[item.split('/').length - 1],
+      };
+      await DownLoadPrivate(files.path, files.filename);
     }
     onMounted(useLoading(loading, async () => {
       // experimentList.value = await ProgramList();
@@ -355,7 +365,7 @@ export default {
       showAllExp: useLoading(loading, showAllExp),
       showInExp: useLoading(loading, showInExp),
       showOutExp: useLoading(loading, showOutExp),
-      detailModal, detailForm, detailUpdate,
+      detailModal, detailForm, detailUpdate, downFile,
       stationList,
       upload, form2, attachmentModal, attachmentForm, fileList, expID,
       attachmentUpdate: useLoading(loading, attachmentUpdate),
