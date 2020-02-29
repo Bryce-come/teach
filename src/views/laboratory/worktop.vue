@@ -61,11 +61,8 @@
             :data="expStationList.extend.PCs"
             style="width:100%">
             <el-table-column prop="PCNo" label="PC编号"/>
+            <el-table-column prop="PCIP" label="PC的IP"/>
             <el-table-column prop="belongDevice" label="所属设备编号"/>
-            <el-table-column prop="" label="网口1名称"/>
-            <el-table-column prop="" label="网口1地址"/>
-            <el-table-column prop="" label="网口2名称"/>
-            <el-table-column prop="" label="网口2地址"/>
             <el-table-column label="操作" width="160px">
               <div class="flex center little-space wrap" slot-scope="{ row }">
                 <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
@@ -82,7 +79,6 @@
             style="width:100%">
             <el-table-column prop="name" label="摄像头名称"/>
             <el-table-column prop="ip" label="摄像头IP"/>
-            <el-table-column prop="" label="所属设备编号"/>
             <el-table-column label="操作" width="160px">
               <div class="flex center little-space wrap" slot-scope="{ row }">
                 <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
@@ -148,6 +144,9 @@
           </el-form-item>
           <el-form-item label="PC的IP:" prop="PCIP" :rules="{ required: true, message: '请输入PC编号'}">
             <el-input v-model="addPCModal.PCInfo.PCIP"></el-input>
+          </el-form-item>
+          <el-form-item label="所属设备编号:" prop="belongDevice" :rules="{ required: true, message: '请输入所属设备编号'}">
+            <el-input v-model="addPCModal.PCInfo.belongDevice"></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -397,13 +396,14 @@ function initPCForm() {
   return {
     PCIP: '',
     PCNo: '',
+    belongDevice:'',
     remark: '',
   };
 }
 function initCameraForm() {
   return {
     name: '',
-    ip: '',
+    channelId: '',
     remark: ''};
 }
 </script>

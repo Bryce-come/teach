@@ -17,60 +17,34 @@
             </el-form-item>
         </el-form>
     </div>
-    <div style="margin: 10px 0" class="card">
-        <el-tabs type="card">
-            <el-tab-pane label="按设备分">
-               <div class="flex align-center wrap">
-                    <div v-for="(item, i) in stationList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
-                        <div class="flex align-center">
-                          <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
-                         <div v-if="courseRecordInClass.extend.stationBind" class="flex end" style="width: 30%">
-                           <el-button type="text" @click="distribution(item.id)">重新分配</el-button>
-                         </div>
-                        <div v-else class="flex end" style="width: 30%">
-                           <el-button type="text"  @click="distribution(item.id)">分配学生</el-button>
-                         </div>
-                        </div>
-                        <div class="flex center" style="width:80%;margin:10px auto" v-if="item.deviceList[0].deviceType">
-                            <img :src="img(item.deviceList[0].deviceType.img)" alt="">
-                         </div>
-                        <div class="flex align-center wrap" style="background-color:rgb(215, 235, 248);" v-if="courseRecordInClass.stationBind[item.id.toString()]">
-                          <div  
-                              v-for="(sName, k) in courseRecordInClass.stationBind[item.id.toString()]" :key='k'
-                              style=" width:50%; text-align:center;height:2rem;line-height:2rem">
-                              <div >
-                                {{sName.name}}
-                              </div>
-                          </div>
-                        </div>
-                         <div v-else style="background-color:rgb(215, 235, 248); width:100%; text-align:center;height:2rem;line-height:2rem">--</div>
+    <div style="margin: 10px 0" class="block_background">
+      <div class="block_title flex between">操作台分配</div>
+        <div class="flex align-center wrap">
+          <div v-for="(item, i) in stationList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
+              <div class="flex align-center">
+                <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
+                <div v-if="courseRecordInClass.stationBind[item.id.toString()]" class="flex end" style="width: 30%">
+                  <el-button type="text" @click="distribution(item.id)">重新分配</el-button>
+                </div>
+              <div v-else class="flex end" style="width: 30%">
+                  <el-button type="text"  @click="distribution(item.id)">分配学生</el-button>
+                </div>
+              </div>
+              <div class="flex center" style="width:80%;margin:10px auto" v-if="item.deviceList[0].deviceType">
+                  <img :src="img(item.deviceList[0].deviceType.img)" alt="">
+                </div>
+              <div class="flex align-center wrap" style="background-color:rgb(215, 235, 248);" v-if="courseRecordInClass.stationBind[item.id.toString()]">
+                <div  
+                    v-for="(sName, k) in courseRecordInClass.stationBind[item.id.toString()]" :key='k'
+                    style=" width:50%; text-align:center;height:2rem;line-height:2rem">
+                    <div >
+                      {{sName.name}}
                     </div>
-               </div>
-            </el-tab-pane>
-            <el-tab-pane label="按学生分">
-               <div class="flex align-center wrap">
-                    <div v-for="(item, i) in studentsList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
-                        <div class="flex end">
-                          <div v-if="courseRecordInClass.extend.stationBind" class="flex end" style="width: 30%;margin-right:10px;">
-                            <el-button type="text" @click="distributionDevice()">重新分配</el-button>
-                          </div>
-                          <div v-else class="flex end" style="width: 30%">
-                            <el-button type="text"  @click="distributionDevice()">分配设备</el-button>
-                          </div>
-                        </div>
-                        <div class="flex center" style="width:100%;font-weight: 700;font-size:2rem;line-height:3rem;height:3rem">
-                            {{item.name}}
-                         </div>
-                        <div class="flex align-center wrap" style="background-color:rgb(215, 235, 248);">
-                            <div  v-if="item.station" style="width:100%; text-align:center;height:2rem;line-height:2rem">
-                                {{item.station.name}}
-                            </div>
-                            <div v-else style="width:100%; text-align:center;height:2rem;line-height:2rem">--</div>
-                        </div>
-                    </div>
-               </div>
-            </el-tab-pane>
-        </el-tabs>
+                </div>
+              </div>
+                <div v-else style="background-color:rgb(215, 235, 248); width:100%; text-align:center;height:2rem;line-height:2rem">--</div>
+          </div>
+      </div>
     </div>
     <kit-dialog-simple
       :modal="studentMode"
@@ -89,27 +63,6 @@
                 style="min-width: 50%;font-weight: 700"
                 :label="param.id">
                 {{param.name}}
-              </el-checkbox>
-             </el-checkbox-group>
-         </div>
-      </div>
-    </kit-dialog-simple>
-    <kit-dialog-simple
-      :modal="deviceMode"
-      :confirm="update"
-      width="500px">
-      <div slot='title' v-if="deviceMode.data">{{deviceMode.data.extend.clasz+deviceMode.data.extend.claszGroup}}详情</div>
-      <div v-if="deviceMode.data.stationList" class="flex align-center wrap">
-         <div
-              class="flex between align-center"
-              v-for="(param,index) of deviceMode.data.stationList"
-              :key="index"
-              style="margin-right:10px;"
-             >
-             <el-checkbox-group class="flex little-space" style="padding: 5px 20px" v-model="checkDeviceList">
-              <el-checkbox
-                style="min-width: 50%;font-weight: 700"
-                :label="param.name">
               </el-checkbox>
              </el-checkbox-group>
          </div>
@@ -247,6 +200,11 @@ export default {
         deviceMode.value.visible = false;
         studentMode.value.visible = false;
     };
+    const StuUpdate = async () =>{
+        let obj3 = [[1],[3],[2,5]];
+        let obj4 = obj3.reduce((a,b) => a.concat(b),[] );
+        console.log(obj4);
+    };
     const courseRecordUpdate = async () => {
       await CourseRecordUpdate({
         id: courseRecordInClass.value.id,
@@ -254,10 +212,14 @@ export default {
         extendJson: JSON.stringify(stationExtend.value),
       });
     };
+    const ceshi = async () => {
+
+    }
     onMounted(useLoading(loading, async () => {
       await query();
       await queryCourseInClass();
       await queryStationList();
+      await StuUpdate();
     }));
     return{
      lesson,
@@ -277,6 +239,7 @@ export default {
      img,
      stationID, stationExtend, courseRecordUpdate,
      studentID,
+     StuUpdate,
     };
   },
 };

@@ -70,7 +70,7 @@
             <el-col :span="12">
               <div style="font-weight:bold">提交历史记录</div>
               <el-table
-                :data="ncProgramList"
+                :data="sameStudent.sameList"
                 style="width:98%"
                 max-height="350">
                 <el-table-column label="提交时间" prop="createDt"/>
@@ -90,16 +90,17 @@
                 </el-table-column>
                 <el-table-column label="操作">
                   <div class="flex center little-space wrap" slot-scope="{ row }">
-                  <el-button class="btn" type="text" @click="cheakDetail(row)">查看程序</el-button>
+                  <el-button class="btn" type="text" @click="cheakDetail(row),changeBKC(this)">查看程序</el-button>
                   </div>
                 </el-table-column>
               </el-table>
               <div style="margin-top:20px">
                 <div>修改意见：</div>
-                <el-input type="textarea" :rows="4" style="width:98%" v-model="reviewInfo.remark"></el-input>
+                <el-input type="textarea" :rows="2" style="width:98%" v-model="reviewInfo.remark"></el-input>
                 <div class="flex start little-space">
-                  <el-button type="primary" @click="agreeUp()">通过审核同意加工</el-button>
-                  <el-button type="danger" style="margin-left:20px" @click="disAgreeUp()">退回修改</el-button>
+                  <el-button type="primary" v-if="areThey.status" @click="agreeUp()">通过审核同意加工</el-button>
+                  <el-button type="danger" v-if="areThey.status" style="margin-left:20px" @click="disAgreeUp()">退回修改</el-button>
+                  <el-button type="success" style="margin-left:40px" @click="backUp()">返回总览</el-button>
                 </div>
               </div>
             </el-col>
@@ -134,6 +135,12 @@ export default {
       classPpNum: '',
       studentCount: '',
     });
+    const areThey = ref<any>({
+      status:true,
+    })
+    const sameStudent = ref<any>({
+      sameList:[],
+    })
     const query = async () => {
       const pum = {recordId: courseNow.value.id};
       const result = await NCExamList(pum);
@@ -196,6 +203,23 @@ export default {
       EtInfo.value.data = row;
       reviewInfo.value.id = result.id;
       reviewInfo.value.remark = result.remark;
+      const pumb = {
+        recordId: courseNow.value.id,
+        studentId: row.student.id
+      }
+      const resultb = await NCExamList(pumb);
+      sameStudent.value.sameList=resultb
+      if(row.result===true||row.result===false){
+        areThey.value.status=false
+      }else{
+        areThey.value.status=true
+      }
+    }
+    function backUp(){
+      turn.value=true
+    }
+    function changeBKC(row:any){
+      console.log(row)
     }
     async function agreeUp() {
       if(EtInfo.value.data.result===undefined){
@@ -231,9 +255,9 @@ export default {
         await query();
     }));
     return {
-      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,
-      loading, ncProgramList, query, turn, filtered, keywords,tableRowClassName,
-      turnToExamine: useLoading(loading, turnToExamine),
+      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,areThey,changeBKC,
+      loading, ncProgramList, query, turn, filtered, keywords,tableRowClassName,sameStudent,
+      turnToExamine: useLoading(loading, turnToExamine),backUp,
       agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
       disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),
     };
