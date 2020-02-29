@@ -311,6 +311,8 @@ export default {
     function addNewGroup(row: any) {
       addNewGroupFlag.value.visible = true;
       addNewGroupFlag.value.data = row;
+      //班级信息
+      console.log(row)
     }
     async function FrozenClaz(row: any) {
       const result = {
@@ -391,28 +393,28 @@ export default {
       if (form.value) { (form.value as ElForm).clearValidate(); }
     }
     async function upgrpDate() {
-      if (grpandclzList.value.groupIdList.indexOf(upgrpFlag.value.data.parent.data.id) != -1 || addNewGroupFlag.value.addNewGroupInfo === '') {
+      if (grpandclzList.value.groupListb[grpandclzList.value.claszIdList.indexOf(upgrpFlag.value.data.parent.data.id)].indexOf(upgrpFlag.value.upgrpInfo) != -1
+      || upgrpFlag.value.upgrpInfo === '') {
         upgrpFlag.value.visible = false;
         Message.error('请输入名称或该名称已存在');
         upgrpFlag.value.upgrpInfo=''
-      } else {
-          const result = {
-            cid: upgrpFlag.value.data.parent.data.id,
-            name: upgrpFlag.value.upgrpInfo,
-            id: upgrpFlag.value.data.data.id,
-          };
-          if ( upgrpFlag.value.upgrpInfo != '') {
-          await ClassGroupUpdate(result);
-          await queryClassList();
-          // await chFiltered();
-          classList.value = await ClassList();
-          upgrpFlag.value.visible = false;
-          upgrpFlag.value.upgrpInfo=''
-        }
+      } 
+      else {
+        const result = {
+          cid: upgrpFlag.value.data.parent.data.id,
+          name: upgrpFlag.value.upgrpInfo,
+          id: upgrpFlag.value.data.data.id,
+        };
+        await ClassGroupUpdate(result);
+        await queryClassList();
+        classList.value = await ClassList();
+        upgrpFlag.value.visible = false;
+        upgrpFlag.value.upgrpInfo=''
       }
     }
     async function addNewGroupDate() {
-      if (grpandclzList.value.groupIdList.indexOf(addNewGroupFlag.value.data.data.id) != -1 || addNewGroupFlag.value.addNewGroupInfo === '') {
+      if (grpandclzList.value.groupListb[grpandclzList.value.claszIdList.indexOf(addNewGroupFlag.value.data.data.id)].indexOf(addNewGroupFlag.value.addNewGroupInfo) != -1 
+      || addNewGroupFlag.value.addNewGroupInfo === '') {
         addNewGroupFlag.value.visible = false;
         Message.error('请输入名称或该名称已存在');
         addNewGroupFlag.value.addNewGroupInfo = ''
@@ -424,7 +426,6 @@ export default {
         };
         await ClassGroupUpdate(result);
         await queryClassList();
-        // await chFiltered();
         classList.value = await ClassList();
         addNewGroupFlag.value.visible = false;
         addNewGroupFlag.value.addNewGroupInfo = ''
