@@ -125,6 +125,7 @@ export default {
         file:option.file
       }
       await ReportSubmit(result)
+      await getReportList()
     }
     async function getTempList(){
       const result = await ReportTemplateList();
