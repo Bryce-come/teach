@@ -24,14 +24,14 @@
                     <div v-for="(item, i) in stationList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
                         <div class="flex align-center">
                           <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
-                         <div v-if="item.extend.student" class="flex end" style="width: 30%">
+                         <div v-if="courseRecordInClass.extend.stationBind" class="flex end" style="width: 30%">
                            <el-button type="text" @click="distribution(item.id)">重新分配</el-button>
                          </div>
                         <div v-else class="flex end" style="width: 30%">
                            <el-button type="text"  @click="distribution(item.id)">分配学生</el-button>
                          </div>
                         </div>
-                        <div class="flex center" style="width:80%;margin:10px auto" v-if="item.deviceList">
+                        <div class="flex center" style="width:80%;margin:10px auto" v-if="item.deviceList[0].deviceType">
                             <img :src="img(item.deviceList[0].deviceType.img)" alt="">
                          </div>
                         <div class="flex align-center wrap" style="background-color:rgb(215, 235, 248);" v-if="courseRecordInClass.stationBind[item.id.toString()]">
@@ -51,7 +51,7 @@
                <div class="flex align-center wrap">
                     <div v-for="(item, i) in studentsList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
                         <div class="flex end">
-                          <div v-if="item.station" class="flex end" style="width: 30%;margin-right:10px;">
+                          <div v-if="courseRecordInClass.extend.stationBind" class="flex end" style="width: 30%;margin-right:10px;">
                             <el-button type="text" @click="distributionDevice()">重新分配</el-button>
                           </div>
                           <div v-else class="flex end" style="width: 30%">
@@ -211,7 +211,7 @@ export default {
         courseRecordInClass.value = await CourseRecordInClass();
         studentsList.value = courseRecordInClass.value.studentList?courseRecordInClass.value.studentList:null;
         console.log(courseRecordInClass.value);
-        console.log(studentsList.value);
+        // console.log(studentsList.value);
     };
     function img(path: any) {
       if (path) {
@@ -222,19 +222,27 @@ export default {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
         studentMode.value.visible = true;
-        stationExtend.value = initExtend(); 
+        if (courseRecordInClass.value.extend.stationBind){
+           stationExtend.value = courseRecordInClass.value.extend;
+           console.log(stationExtend.value);
+        }
+        else stationExtend.value = initExtend(); 
     };
     const distributionDevice = async () => {
         deviceMode.value.data = lesson.value;
         deviceMode.value.visible = true;
     };
     const update = async () => {
+        let obj1 = stationExtend.value.stationBind;
         let obj = {} as any; 
         let stationId = stationID.value; 
         obj[stationId.toString()] = checkList.value;
-        stationExtend.value.extend.stationBind = obj;
-        console.log(checkList.value);
-        console.log(stationExtend.value);
+        stationExtend.value.stationBind = {
+          ...obj1,
+          ...obj,
+        }
+        // console.log(checkList.value);
+        // console.log(stationExtend.value);
         await courseRecordUpdate();
         await queryCourseInClass();
         deviceMode.value.visible = false;
@@ -244,7 +252,7 @@ export default {
       await CourseRecordUpdate({
         id: courseRecordInClass.value.id,
         type: courseRecordInClass.value.type,
-        extendJson: JSON.stringify(stationExtend.value.extend),
+        extendJson: JSON.stringify(stationExtend.value),
       });
     };
     onMounted(useLoading(loading, async () => {
@@ -275,9 +283,7 @@ export default {
 };
 function initExtend() {
   return {
-    extend:{
       stationBind:{},
-    }
   }
 }
 </script>
