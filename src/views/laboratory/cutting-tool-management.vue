@@ -103,9 +103,9 @@
         <lkt-table
           :data="deviceComponentStoreRecord"
           style="width:100%">
-            <el-table-column type="expand">
-              <div slot-scope="{ row }" class="flex around">
-                <el-form label-width="100px">
+            <el-table-column type="expand" >
+              <div slot-scope="{ row }">
+                <el-form label-width="120px" label-position="left"  class="demo-table-expand">
                   <el-form-item label="批次:">{{row.extend.batchNo}}</el-form-item>
                   <el-form-item label="厂商:">{{row.extend.company}}</el-form-item>
                   <el-form-item label="供货商:">{{row.extend.supplier}}</el-form-item>                  

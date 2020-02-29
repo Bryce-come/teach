@@ -50,9 +50,9 @@
             <el-select v-model="executorName" filterable allow-create multiple :clearable="false" placeholder="请选择维护人">
               <el-option
                 v-for="item of executorList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                :key="item"
+                :label="item"
+                :value="item">
               </el-option>
             </el-select>
           </el-form-item>
@@ -141,9 +141,9 @@
               <el-select v-model="modal.maintainRecordInfo.executor" filterable allow-create placeholder="请选择">
                <el-option
                 v-for="item of executorList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.name">
+                :key="item"
+                :label="item"
+                :value="item">
               </el-option>
               </el-select>
           </el-form-item>
@@ -257,6 +257,7 @@ export default {
         start: null,
         end: null,
       });
+      console.log(executorList.value);
       console.log(deviceNameList.value);
       maintainTypeList.value = [
         {id: '0', type: '巡检'},
