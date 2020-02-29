@@ -8,10 +8,17 @@
       <div style="margin-top:20px">
         <el-form class="flex between">
           <el-form-item label="课程名称" label-width="80px">
-            <lkt-select/>
+            <el-select v-model="courseList.keyinkey" placeholder="请选择">
+              <el-option
+                v-for="item in courseList.courseMixList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">查询</el-button>
+            <el-button type="primary" @click="getReportList()">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -34,7 +41,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="props">
-            <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''">提交报告</el-button>
+            <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="upReport(props)">提交报告</el-button>
           </div>
         </el-table-column>
       </lkt-table>
@@ -63,6 +70,8 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {deepClone, formatDate} from 'web-toolkit/src/utils';
+import { ReportList,ReportTemplateList,ReportScore} from '../../dao/reportDao';
+import { CourseList } from '../../dao/courseProgramDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -70,6 +79,34 @@ export default {
     const templateButton = ref(false);
     const experimentResultList = ref<any>();
     const experimentReportTemplateList = ref<any>();
+    const courseList=ref<any>({
+      courseIdList:[],
+      courseAllList:[],
+      courseNameList:[],
+      courseMixList:[],
+      keyinkey:'',
+    })
+    async function getCourseList(){
+      courseList.value.courseAllList = await CourseList({containPrograms: true});
+      courseList.value.courseIdList=[];
+      courseList.value.courseNameList=[];
+      courseList.value.courseMixList=[];
+      for(let i=0;i<courseList.value.courseAllList.length;i++){
+        courseList.value.courseIdList[i]=courseList.value.courseAllList[i].id;
+        courseList.value.courseNameList[i]=courseList.value.courseAllList[i].name;
+        courseList.value.courseMixList[i]={id:courseList.value.courseIdList[i],name:courseList.value.courseNameList[i]}
+      }
+    }
+    async function getReportList(){
+      const pum = {
+        courseId:courseList.value.keyinkey
+      }
+      const result = await ReportList(pum)
+      experimentResultList.value=result
+    }
+    async function upReport(row:any){
+      console.log(row)
+    }
     const query = async () => {
       experimentResultList.value = [
         {id: '0', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
@@ -97,14 +134,15 @@ export default {
       Message.success('下载成功');
     };
     onMounted(useLoading(loading, async () => {
+      await getCourseList()
       await query();
     }));
     return {
       loading, experimentResultList, query,
-      reportButton, templateButton,
+      reportButton, templateButton,getReportList,upReport,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
-      experimentReportTemplateList,
+      experimentReportTemplateList,courseList,getCourseList,
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },

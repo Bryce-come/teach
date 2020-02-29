@@ -74,7 +74,7 @@
       <div slot="title">实验项目详情</div>
       <el-form class="flex end">
         <el-form-item>
-          <el-input v-model="keywords2" placeholder="输入关键字搜索" style="width:300px"></el-input>
+          <el-input v-model="keywords2" placeholder="在结果中搜索：实验名称/实验编号" style="width:300px"></el-input>
         </el-form-item>
       </el-form>
       <lkt-table
@@ -83,14 +83,13 @@
         <el-table-column label="实验名称" prop="name"/>
         <el-table-column label="实验编号" prop="code"/>
         <el-table-column label="实验类型" prop="label"/>
-        <!-- <el-table-column label="关联操作台">
-          <div class="flex start" slot-scope="props" >
-            <div v-for="(item,i) in props.row.stations" :key="i" style="padding: 0">
-              {{item + ','}}
-            </div>
+        <el-table-column label="附件" prop="attachment">
+          <div slot-scope="{row}">
+          <div v-for="(item,i) in row.attachment" :key="i">
+            {{item.split('/')[item.split('/').length-1]}}
           </div>
-        </el-table-column> -->
-        <el-table-column label="附件" prop="attachment"/>
+        </div>
+        </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="{row}">
             <el-button type="danger" size="mini" @click="experimentRemove(row)">删除</el-button>
@@ -106,7 +105,7 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {CourseList, CourseAdd, CourseUpdate, CourseDel, ProgramList, ProgramDel } from '@/dao/courseProgramDao';
+import {CourseList, CourseAdd, CourseUpdate, CourseDel, ProgramList, UnbindProgram } from '@/dao/courseProgramDao';
 import {TeacherList} from '@/dao/userDao';
 export default {
   setup() {
@@ -118,6 +117,7 @@ export default {
     const teacherList = ref<any>();
     const experimentList = ref<any>([]);
     const expOfCourseList = ref<any>([]);
+    const courseID = ref<any>();
     const [keywords2, filtered2] = useSearch(expOfCourseList, {
       includeProps: ['name', 'code'],
     });
@@ -125,24 +125,15 @@ export default {
       await CourseDel({
         id: row.id,
       });
+      Message.success('删除成功');
       courseList.value = await CourseList({
         containPrograms: true,
       });
-      Message.success('删除成功');
-    };
-    const experimentRemove = async (row: any) => {
-      await ProgramDel({
-        id: row.id,
-      });
-      courseList.value = await CourseList({
-        containPrograms: true,
-      });
-      Message.success('删除成功');
     };
     const form = ref<ElForm|null>(null);
     const courseModal = ref<any>({
       visible: false,
-      courseInfo: null,
+      courseInfo: {name: '', teacher: {name: ''}, program: [], extend: {scoreRatio: []},},
       type: 'add',
     });
     const experimentModal = ref<any>({
@@ -153,26 +144,51 @@ export default {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
         data = deepClone(data);
-        courseModal.value.type = 'update';
+        courseModal.value.type = 'update';       
+        courseModal.value.courseInfo = data;
+        courseModal.value.courseInfo.program = data.programList.map((m: any)=>m.id);
+        // const arr = [];
+        // for (var i = 0;i < data.programList.length;i++) {
+        //   arr.push(data.programList[i].id);
+        // }
+        // courseModal.value.courseInfo.program = arr;
       } else {
         data = initCourseForm();
         courseModal.value.type = 'add';
-      }
-      courseModal.value.courseInfo = data;
+        courseModal.value.courseInfo = data;
+      }      
       courseModal.value.visible = true;
-    };
+    };    
     const showExperimentForm = async (data?: any) => {
       if (data) {
         expOfCourseList.value = data.programList;
-        // console.log(expOfCourseList.value);
+        courseID.value = data.id;
       }
       experimentModal.value.visible = true;
-    };
-    async function experimentUpdate() {
-      experimentModal.value.visible = false;
       courseList.value = await CourseList({
         containPrograms: true,
       });
+    };
+    const experimentRemove = async (row: any) => {
+      await UnbindProgram({
+        courseId: courseID.value,
+        programId:row.id,
+      });
+      Message.success('删除成功');
+      courseList.value = await CourseList({
+        containPrograms: true,
+      });
+      const updateExpList = courseList.value.filter(function(item: any) {
+        return item.id === courseID.value;
+      });
+      // console.log(updateExpList[0].programList);
+      expOfCourseList.value = updateExpList[0].programList;
+    };
+    async function experimentUpdate() {
+      courseList.value = await CourseList({
+        containPrograms: true,
+      });
+      experimentModal.value.visible = false;
     }
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
@@ -220,7 +236,7 @@ export default {
         courseModal, showCourseForm, experimentList,
         courseUpdate: useLoading(loading, courseUpdate),
         experimentModal, showExperimentForm, expOfCourseList,
-        keywords2, filtered2,
+        keywords2, filtered2, courseID,
         experimentUpdate: useLoading(loading, experimentUpdate),
         experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
     };
