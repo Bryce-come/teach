@@ -41,7 +41,14 @@
         </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="props">
-            <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="upReport(props)">提交报告</el-button>
+            <el-upload
+              action=""
+              :http-request="(option)=>upload(option)"
+              :show-file-list="false">
+              <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="setPorps(props)">提交报告</el-button>
+              <!-- <el-button type="primary" icon="el-icon-upload2">上传实验摸板</el-button> -->
+            </el-upload>
+            <!-- <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="upReport(props)">提交报告</el-button> -->
           </div>
         </el-table-column>
       </lkt-table>
@@ -70,7 +77,7 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {deepClone, formatDate} from 'web-toolkit/src/utils';
-import { ReportList,ReportTemplateList,ReportScore} from '../../dao/reportDao';
+import { ReportList,ReportTemplateList,ReportScore,ReportSubmit} from '../../dao/reportDao';
 import { CourseList } from '../../dao/courseProgramDao';
 export default {
   setup() {
@@ -104,8 +111,22 @@ export default {
       const result = await ReportList(pum)
       experimentResultList.value=result
     }
-    async function upReport(row:any){
-      console.log(row)
+    const propsWord = ref<any>({
+
+    })
+    function setPorps(row:any){
+      propsWord.value=row
+      console.log(propsWord.value.row.id)
+      console.log(propsWord.value.row.experiment_program.id)
+    }
+    async function upload(option: any) {
+      const result = {
+        courseId:propsWord.value.row.id,
+        programId:1,
+        file:option.file
+      }
+      await ReportSubmit(result)
+      console.log(option)
     }
     const query = async () => {
       experimentResultList.value = [
@@ -138,11 +159,12 @@ export default {
       await query();
     }));
     return {
-      loading, experimentResultList, query,
-      reportButton, templateButton,getReportList,upReport,
+      loading, experimentResultList, query,propsWord,setPorps,
+      reportButton, templateButton,getReportList,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList,courseList,getCourseList,
+      upload: useLoading(loading, upload),
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },

@@ -24,7 +24,7 @@ export const ReportList = async (params: any) => {
  *  RequestParam MultipartFile file
  */
 export async function ReportSubmit(params: any) {
-  await postService('/rest/program/report/submit', params);
+  await uploadService('/rest/program/report/submit', params);
 }
 
 /**
