@@ -36,75 +36,75 @@ import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { CNCLinkStatus,CNCLinkSet } from '../../dao/inClassDao'
+import { CNCLinkStatus, CNCLinkSet } from '../../dao/inClassDao';
 export default {
   setup() {
     const loading = ref(false);
     const list = ref<any>();
     const status = ref<any>({
-       statusList:[],
-       disabledList:[],
-       rowIDList:[]
-    })
-    function handleSelectionChange(row:any){
-      status.value.rowIDList=[]
-      for(let i=0;i<row.length;i++){
-        status.value.rowIDList[i]=row[i].id
+       statusList: [],
+       disabledList: [],
+       rowIDList: [],
+    });
+    function handleSelectionChange(row: any) {
+      status.value.rowIDList = [];
+      for (let i = 0; i < row.length; i++) {
+        status.value.rowIDList[i] = row[i].id;
       }
     }
-    async function closeSomething(){
-      const idList = JSON.stringify(status.value.rowIDList)
+    async function closeSomething() {
+      const idList = JSON.stringify(status.value.rowIDList);
       const result = {
-        stationJson:idList,
-        status:false
-      } 
-      await CNCLinkSet(result)
+        stationJson: idList,
+        status: false,
+      };
+      await CNCLinkSet(result);
     }
-    async function openSomething(){
-      const idList = JSON.stringify(status.value.rowIDList)
+    async function openSomething() {
+      const idList = JSON.stringify(status.value.rowIDList);
       const result = {
-        stationJson:idList,
-        status:true
-      } 
-      await CNCLinkSet(result)
+        stationJson: idList,
+        status: true,
+      };
+      await CNCLinkSet(result);
     }
-    async function getStatusList(){
-      status.value.statusList=[]
-      status.value.disabledList=[]
-      for(let i=0;i<list.value.length;i++){
-        status.value.statusList[i]=list.value[i].extend.linkStatus
+    async function getStatusList() {
+      status.value.statusList = [];
+      status.value.disabledList = [];
+      for (let i = 0; i < list.value.length; i++) {
+        status.value.statusList[i] = list.value[i].extend.linkStatus;
       }
-      for(let i=0;i<status.value.statusList.length;i++){
-        if(status.value.statusList[i]===undefined){
-          status.value.disabledList[i]=true
-        }else{
-          status.value.disabledList[i]=false
+      for (let i = 0; i < status.value.statusList.length; i++) {
+        if (status.value.statusList[i] === undefined) {
+          status.value.disabledList[i] = true;
+        } else {
+          status.value.disabledList[i] = false;
         }
       }
-      for(let i=0;i<status.value.statusList.length;i++){
-        list.value[i].disabledMa=status.value.disabledList[i]
+      for (let i = 0; i < status.value.statusList.length; i++) {
+        list.value[i].disabledMa = status.value.disabledList[i];
       }
     }
-    async function toggleStatus(row:any){
-      if(row.extend.linkStatus===true){
-        const id = [JSON.stringify(row.id)]
+    async function toggleStatus(row: any) {
+      if (row.extend.linkStatus === true) {
+        const id = [JSON.stringify(row.id)];
         const result = {
-          stationJson:id,
-          status:false
-        }
-        await CNCLinkSet(result)
+          stationJson: id,
+          status: false,
+        };
+        await CNCLinkSet(result);
       }
-      if(row.extend.linkStatus===false){
-        const id = [JSON.stringify(row.id)]
+      if (row.extend.linkStatus === false) {
+        const id = [JSON.stringify(row.id)];
         const result = {
-          stationJson:id,
-          status:true
-        }
-        await CNCLinkSet(result)
+          stationJson: id,
+          status: true,
+        };
+        await CNCLinkSet(result);
       }
     }
     const query = async () => {
-      const result = await CNCLinkStatus()
+      const result = await CNCLinkStatus();
       list.value = result;
     };
     onMounted(useLoading(loading, async () => {
@@ -112,7 +112,7 @@ export default {
       await getStatusList();
     }));
     return {
-      loading, list, query,toggleStatus,status,getStatusList,handleSelectionChange,openSomething,
+      loading, list, query, toggleStatus, status, getStatusList, handleSelectionChange, openSomething,
       closeSomething,
     };
   },

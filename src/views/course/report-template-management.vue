@@ -47,7 +47,7 @@ export default {
     };
     async function upload(option: any) {
       await ReportTemplateAdd({
-        file: option.file
+        file: option.file,
       });
       await query();
     }

@@ -133,7 +133,7 @@ export default {
     const form = ref<ElForm|null>(null);
     const courseModal = ref<any>({
       visible: false,
-      courseInfo: {name: '', teacher: {name: ''}, program: [], extend: {scoreRatio: []},},
+      courseInfo: {name: '', teacher: {name: ''}, program: [], extend: {scoreRatio: []}},
       type: 'add',
     });
     const experimentModal = ref<any>({
@@ -144,9 +144,9 @@ export default {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (data) {
         data = deepClone(data);
-        courseModal.value.type = 'update';       
+        courseModal.value.type = 'update';
         courseModal.value.courseInfo = data;
-        courseModal.value.courseInfo.program = data.programList.map((m: any)=>m.id);
+        courseModal.value.courseInfo.program = data.programList.map((m: any) => m.id);
         // const arr = [];
         // for (var i = 0;i < data.programList.length;i++) {
         //   arr.push(data.programList[i].id);
@@ -156,9 +156,9 @@ export default {
         data = initCourseForm();
         courseModal.value.type = 'add';
         courseModal.value.courseInfo = data;
-      }      
+      }
       courseModal.value.visible = true;
-    };    
+    };
     const showExperimentForm = async (data?: any) => {
       if (data) {
         expOfCourseList.value = data.programList;
@@ -172,7 +172,7 @@ export default {
     const experimentRemove = async (row: any) => {
       await UnbindProgram({
         courseId: courseID.value,
-        programId:row.id,
+        programId: row.id,
       });
       Message.success('删除成功');
       courseList.value = await CourseList({

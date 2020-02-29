@@ -77,7 +77,11 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {deepClone, formatDate} from 'web-toolkit/src/utils';
+<<<<<<< HEAD
 import { ReportList,ReportTemplateList,ReportScore,ReportSubmit} from '../../dao/reportDao';
+=======
+import { ReportList, ReportTemplateList, ReportScore} from '../../dao/reportDao';
+>>>>>>> db8af17c7ea0d3e274efe9387b13cd466e181507
 import { CourseList } from '../../dao/courseProgramDao';
 export default {
   setup() {
@@ -86,31 +90,32 @@ export default {
     const templateButton = ref(false);
     const experimentResultList = ref<any>();
     const experimentReportTemplateList = ref<any>();
-    const courseList=ref<any>({
-      courseIdList:[],
-      courseAllList:[],
-      courseNameList:[],
-      courseMixList:[],
-      keyinkey:'',
-    })
-    async function getCourseList(){
+    const courseList = ref<any>({
+      courseIdList: [],
+      courseAllList: [],
+      courseNameList: [],
+      courseMixList: [],
+      keyinkey: '',
+    });
+    async function getCourseList() {
       courseList.value.courseAllList = await CourseList({containPrograms: true});
-      courseList.value.courseIdList=[];
-      courseList.value.courseNameList=[];
-      courseList.value.courseMixList=[];
-      for(let i=0;i<courseList.value.courseAllList.length;i++){
-        courseList.value.courseIdList[i]=courseList.value.courseAllList[i].id;
-        courseList.value.courseNameList[i]=courseList.value.courseAllList[i].name;
-        courseList.value.courseMixList[i]={id:courseList.value.courseIdList[i],name:courseList.value.courseNameList[i]}
+      courseList.value.courseIdList = [];
+      courseList.value.courseNameList = [];
+      courseList.value.courseMixList = [];
+      for (let i = 0; i < courseList.value.courseAllList.length; i++) {
+        courseList.value.courseIdList[i] = courseList.value.courseAllList[i].id;
+        courseList.value.courseNameList[i] = courseList.value.courseAllList[i].name;
+        courseList.value.courseMixList[i] = {id: courseList.value.courseIdList[i], name: courseList.value.courseNameList[i]};
       }
     }
-    async function getReportList(){
+    async function getReportList() {
       const pum = {
-        courseId:courseList.value.keyinkey
-      }
-      const result = await ReportList(pum)
-      experimentResultList.value=result
+        courseId: courseList.value.keyinkey,
+      };
+      const result = await ReportList(pum);
+      experimentResultList.value = result;
     }
+<<<<<<< HEAD
     const propsWord = ref<any>({
 
     })
@@ -127,6 +132,10 @@ export default {
       }
       await ReportSubmit(result)
       console.log(option)
+=======
+    async function upReport(row: any) {
+      console.log(row);
+>>>>>>> db8af17c7ea0d3e274efe9387b13cd466e181507
     }
     const query = async () => {
       experimentResultList.value = [
@@ -155,16 +164,24 @@ export default {
       Message.success('下载成功');
     };
     onMounted(useLoading(loading, async () => {
-      await getCourseList()
+      await getCourseList();
       await query();
     }));
     return {
+<<<<<<< HEAD
       loading, experimentResultList, query,propsWord,setPorps,
       reportButton, templateButton,getReportList,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList,courseList,getCourseList,
       upload: useLoading(loading, upload),
+=======
+      loading, experimentResultList, query,
+      reportButton, templateButton, getReportList, upReport,
+      showReport: useLoading(loading, showReport),
+      showTemplate: useLoading(loading, showTemplate),
+      experimentReportTemplateList, courseList, getCourseList,
+>>>>>>> db8af17c7ea0d3e274efe9387b13cd466e181507
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
