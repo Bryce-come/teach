@@ -77,12 +77,9 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {deepClone, formatDate} from 'web-toolkit/src/utils';
-<<<<<<< HEAD
 import { ReportList,ReportTemplateList,ReportScore,ReportSubmit} from '../../dao/reportDao';
-=======
-import { ReportList, ReportTemplateList, ReportScore} from '../../dao/reportDao';
->>>>>>> db8af17c7ea0d3e274efe9387b13cd466e181507
 import { CourseList } from '../../dao/courseProgramDao';
+import { DownLoadPrivate } from '../../dao/commonDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -115,14 +112,11 @@ export default {
       const result = await ReportList(pum);
       experimentResultList.value = result;
     }
-<<<<<<< HEAD
     const propsWord = ref<any>({
 
     })
     function setPorps(row:any){
       propsWord.value=row
-      console.log(propsWord.value.row.id)
-      console.log(propsWord.value.row.experiment_program.id)
     }
     async function upload(option: any) {
       const result = {
@@ -131,27 +125,18 @@ export default {
         file:option.file
       }
       await ReportSubmit(result)
-      console.log(option)
-=======
-    async function upReport(row: any) {
-      console.log(row);
->>>>>>> db8af17c7ea0d3e274efe9387b13cd466e181507
     }
-    const query = async () => {
-      experimentResultList.value = [
-        {id: '0', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
-        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
-        {id: '1', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
-        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: null, score2: null, ratio1: 60, ratio2: 40}},
-      ];
-      experimentReportTemplateList.value = [
-        {id: '0', name: '自动化操作实验报告模板1', path: '', createDt: ''},
-        {id: '1', name: '自动化操作实验报告模板2', path: '', createDt: ''},
-        {id: '2', name: '自动化操作实验报告模板3', path: '', createDt: ''},
-        {id: '3', name: '自动化操作实验报告模板4', path: '', createDt: ''},
-        {id: '4', name: '自动化操作实验报告模板5', path: '', createDt: ''},
-      ];
-    };
+    async function getTempList(){
+      const result = await ReportTemplateList();
+      experimentReportTemplateList.value=result;
+    }
+    async function download(row:any){
+      const result = {
+        path: row.path,
+        filename: row.name,
+      };
+      await DownLoadPrivate(result.path, result.filename);
+    }
     const showReport = async () => {
       reportButton.value = true;
       templateButton.value = false;
@@ -160,28 +145,18 @@ export default {
       reportButton.value = false;
       templateButton.value = true;
     };
-    const download = async () => {
-      Message.success('下载成功');
-    };
     onMounted(useLoading(loading, async () => {
       await getCourseList();
-      await query();
+      await getTempList();
+      // await query();
     }));
     return {
-<<<<<<< HEAD
-      loading, experimentResultList, query,propsWord,setPorps,
+      loading, experimentResultList,propsWord,setPorps,getTempList,
       reportButton, templateButton,getReportList,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList,courseList,getCourseList,
       upload: useLoading(loading, upload),
-=======
-      loading, experimentResultList, query,
-      reportButton, templateButton, getReportList, upReport,
-      showReport: useLoading(loading, showReport),
-      showTemplate: useLoading(loading, showTemplate),
-      experimentReportTemplateList, courseList, getCourseList,
->>>>>>> db8af17c7ea0d3e274efe9387b13cd466e181507
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },

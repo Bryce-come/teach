@@ -59,10 +59,9 @@ export async function ReportNote(params: any) {
 
 /**
  * 模板-列表
- * RequestParam MultipartFile file
  */
-export async function ReportTemplateList(params: any) {
-  const {data: {list}} = await postService('/rest/program/report/template/list', params);
+export async function ReportTemplateList() {
+  const {data: {list}} = await postService('/rest/program/report/template/list');
   return list;
 }
 
