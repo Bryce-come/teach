@@ -382,7 +382,6 @@ export default {
   #contain{
     width: 100%;
     height: 500px;
-    background-color: #00aaee;
     margin-bottom: 10px;
   }
  .watch2 {
