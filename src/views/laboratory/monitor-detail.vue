@@ -15,49 +15,48 @@
         </div>
       </div>
     </div>
-    <div v-if="station">
-      <div class="flex align-center between">
-        <div class="watch1">
-        </div>
-        <div class="watch2">
-        </div>
-      </div>
+    <div v-if="station" style="min-width: 1300px">
       <div class="timeline">
         <v-chart
           style="width:100%; height: 70px"
           autoresize
           :options="timeLine"/>
       </div>
-      <div class="flex align-center between">
+      <div class="flex between" style="width: 100%">
         <div class="watch3">
-          <div v-if="device">
-            <div class="card-header">
-              实时参数列表
-              <el-button style="margin: 0 10px" type="success" size="mini" :disabled="disabled" @click="setAnalysisParam">显示参数实时曲线</el-button>
-              <el-button type="danger" size="mini" plain @click="clearSelect">清空选择</el-button>
-            </div>
-            <div class="monitor-detail-param-all flex wrap">
-              <div
-                class="monitor-detail--param-item flex between align-center"
-                v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false)"
-                :key="index"
-                :style="{ cursor: param.showAnalysis ? 'pointer' : 'default' }"
-                @change="isAbled()">
-                <el-checkbox-group v-if="param.showAnalysis" class="flex little-space" style="padding: 5px 20px" v-model="checkList">
-                  <el-checkbox
-                    style="min-width: 50%;"
-                    :label="param.keyFull">
-                    <span>{{ param.nameSimple }}：</span>
-                  </el-checkbox>
-                </el-checkbox-group>
-                <span v-else style="min-width: 50%;color:#303133;padding: 5px 40px">{{ param.nameSimple }}：</span>
-                <div style="text-align: center;color: #014cff;font-weight: 600;">{{ param.value }}</div>
-              </div>
+          <div class="card-header">
+            实时参数列表
+            <el-button style="margin: 0 10px" type="success" size="mini" :disabled="disabled" @click="setAnalysisParam">显示参数实时曲线</el-button>
+            <el-button type="danger" size="mini" plain @click="clearSelect">清空选择</el-button>
+          </div>
+          <div v-if="device" class="monitor-detail-param-all flex wrap">
+            <div
+              class="monitor-detail--param-item flex between align-center"
+              v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false)"
+              :key="index"
+              :style="{ cursor: param.showAnalysis ? 'pointer' : 'default' }"
+              @change="isAbled()">
+              <el-checkbox-group v-if="param.showAnalysis" class="flex little-space" style="padding: 5px 20px" v-model="checkList">
+                <el-checkbox
+                  style="min-width: 50%;"
+                  :label="param.keyFull">
+                  <span>{{ param.nameSimple }}：</span>
+                </el-checkbox>
+              </el-checkbox-group>
+              <span v-else style="min-width: 50%;color:#303133;padding: 5px 40px">{{ param.nameSimple }}：</span>
+              <div style="text-align: center;color: #014cff;font-weight: 600;">{{ param.value }}</div>
             </div>
           </div>
           <div v-else class="flex" style="font-size: 1.1em">无数据</div>
         </div>
-        <div class="watch2">
+        <div style="min-width: 900px;width: 58%">
+          <div class="flex little-space center">
+            <el-button type="success" plain @click="restartVideo(1)">通道1</el-button>
+            <el-button type="success" plain @click="restartVideo(1)">通道2</el-button>
+            <el-button type="primary" plain @click="fullScreen()">全屏</el-button>
+          </div>
+          <div id="contain"></div>
+          <div class="watch2" />
         </div>
       </div>
     </div>
@@ -91,6 +90,7 @@ import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import {statusMap} from '@/utils/device-utils';
 import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 import {Message} from 'element-ui';
+import {init, login, startRealPlay, stopPlay, fullScreen} from "@/utils/video";
 
 export default {
   setup() {
@@ -110,6 +110,16 @@ export default {
     const refreshTimeRatio = ref(false);
     const modal = ref({
       visible: false,
+    });
+    const modalVideo = ref<any>({
+      channelId: 1,  // todo 需要更改,当前显示的channel
+      szDeviceIdentify: '',
+      ip: '112.17.133.224',
+      port: '11080',
+      username: 'admin',
+      pwd: 'lkt666666',
+      start: '2020-02-26 07:00:00',
+      end: '2020-02-26 14:11:11'
     });
 
     const query = async () => {
@@ -156,11 +166,35 @@ export default {
         timeLine.value = timelineConfig(list, statusMap, { height: 30, dataZoom: false, showTime: true });
         query();
       }
-
+      // video
+      await init("contain",1);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip+"_"+modalVideo.value.port;
+      let msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if(msg){
+        alert(msg);
+        return ;
+      }
+      startVideo();
     }));
     onUnmounted(() => {
       over.value = true;
+      stopVideo();
     });
+    async function startVideo() {
+      const msg1 = await startRealPlay(0,modalVideo.value.szDeviceIndentify,1);
+      // const msg2 = await startRealPlay(1,modalVideo.value.szDeviceIndentify,1);
+      if(msg1){
+        alert(msg1);
+      }
+    }
+    async function stopVideo() {
+      await stopPlay(0);
+    }
+    async function restartVideo(id:any) {
+      await stopVideo();
+      if(id) modalVideo.value.channelId=id;
+      await startVideo();
+    }
     async function paramAnalysisMonitor() {
       while (modal.value.visible) {
         await sleep(2500);
@@ -337,44 +371,45 @@ export default {
       queryParamAnalysis: useLoading(loading, queryParamAnalysis),
       checkList, disabled,
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
+      restartVideo, fullScreen
     };
   },
 };
 </script>
 <style scoped lang="scss">
- .watch1 {
-   width: 49%;
-   margin-right: 20px;
-   height: 20rem;
-   background-color: darkcyan;
- }
-  .watch2 {
-   width: 49%;
-   height: 20rem;
+  #contain{
+    width: 100%;
+    height: 500px;
+    background-color: #00aaee;
+    margin-bottom: 10px;
+  }
+ .watch2 {
+   width: 100%;
+   height: 500px;
    background-color: rgb(210, 224, 85);
  }
  .watch3 {
-   width: 49%;
-   background-color: rgb(242, 243, 237);
-   margin-right: 20px;
-   .param-item{
-     width: 47%;
-     margin-left: 10px;
+   margin-right: 10px;
+   width: 40%;
+   min-width: 500px;
+   background-color: white;
+   border-radius: 20px;
+   box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
+   .monitor-detail--param-item {
+     width:40%;
+     height: auto;
+     padding: 3px 0px;
+     margin-left: 3%;
+     margin-right: 4%;
+   }
+   .monitor-detail-param-all{
+     width: 100%;
    }
  }
   .timeline{
     margin: 10px 0;
   }
- .monitor-detail--param-item {
-   width:40%;
-   height: auto;
-   padding: 3px 10px;
-   margin-left: 4%;
-   margin-right: 6%;
- }
- .monitor-detail-param-all{
-   width: 100%;
- }
+
   .el-checkbox{
     color: #303133;
   }

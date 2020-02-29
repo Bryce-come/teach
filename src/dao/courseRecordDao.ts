@@ -1,7 +1,7 @@
 import {postService} from 'web-toolkit/src/case-main/index';
 
 /**
- * 课表列表
+ * 课表记录列表
  * RequestParam long start,
  * RequestParam long end
  */

@@ -104,7 +104,7 @@ export default createComponent({
       const end = new Date(courseRecord.value.endDt).getTime();
       let ratio = 100 * (now - start) / (end - start);
       if (ratio > 100) { ratio = 100; }
-      return ratio.toFixed(0);
+      return parseInt(ratio.toFixed(0));
     };
     const timeDiff = (time2: any) => {
       if (!time2) { return ; }

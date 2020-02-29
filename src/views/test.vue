@@ -1,184 +1,63 @@
 <template>
-  <div>
-    <div class="left">
-      <div id="divPlugin" class="plugin"></div>
-      <fieldset class="login">
-        <legend>登录</legend>
-        <table cellpadding="0" cellspacing="3" border="0">
-          <tr>
-            <td class="tt">IP地址</td>
-            <td><input id="loginip" type="text" class="txt" value="192.168.0.95" /></td>
-            <td class="tt">端口号</td>
-            <td><input id="port" type="text" class="txt" value="80" /></td>
-          </tr>
-          <tr>
-            <td class="tt">用户名</td>
-            <td><input id="username" type="text" class="txt" value="admin" /></td>
-            <td class="tt">密码</td>
-            <td><input id="password" type="password" class="txt" value="lkt666666" /></td>
-          </tr>
-          <tr>
-            <td colspan="4">
-              <input type="button" class="btn" value="登录" onclick="clickLogin();" />
-              <input type="button" class="btn" value="退出" onclick="clickLogout();" />
-              <input type="button" class="btn2" value="获取基本信息" onclick="clickGetDeviceInfo();" />
-            </td>
-          </tr>
-          <tr>
-            <td class="tt">已登录设备</td>
-            <td>
-              <select id="ip" class="sel" onchange="getChannelInfo();getDevicePort();"></select>
-            </td>
-            <td class="tt">通道列表</td>
-            <td>
-              <select id="channels" class="sel"></select>
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-      <fieldset class="ipchannel">
-        <legend>数字通道</legend>
-        <table width="100%" cellpadding="0" cellspacing="3" border="0">
-          <tr>
-            <td><input type="button" class="btn" value="获取数字通道列表" onclick="clickGetDigitalChannelInfo();" /></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="digitaltdiv">
-                <table id="digitalchannellist" class="digitalchannellist" cellpadding="0" cellspacing="0" border="0"></table>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-    </div>
-    <div class="left">
-      <fieldset class="preview">
-        <legend>预览</legend>
-        <table cellpadding="0" cellspacing="3" border="0">
-          <tr>
-            <td class="tt">码流类型</td>
-            <td>
-              <select id="streamtype" class="sel">
-                <option value="1">主码流</option>
-                <option value="2">子码流</option>
-                <option value="3">第三码流</option>
-                <option value="4">转码码流</option>
-              </select>
-            </td>
-            <td>
-              <input type="button" class="btn" value="开始预览" onclick="clickStartRealPlay();" />
-              <input type="button" class="btn" value="停止预览" onclick="clickStopRealPlay();" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3">
-              <input type="button" class="btn" value="抓图" onclick="clickCapturePic();" />
-              <input type="button" class="btn" value="开始录像" onclick="clickStartRecord('realplay');" />
-              <input type="button" class="btn" value="停止录像" onclick="clickStopRecord('realplay');" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3">
-              <input type="button" class="btn2" value="启用电子放大" onclick="clickEnableEZoom();" />
-              <input type="button" class="btn2" value="禁用电子放大" onclick="clickDisableEZoom();" />
-              <input type="button" class="btn2" value="启用3D放大" onclick="clickEnable3DZoom();" />
-              <input type="button" class="btn2" value="禁用3D放大" onclick="clickDisable3DZoom();" />
-              <input type="button" class="btn" value="全屏" onclick="clickFullScreen();" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3">
-              分辨率：<input id="resolutionWidth" type="text" class="txt" /> x <input id="resolutionHeight" type="text" class="txt" />
-              <input type="button" class="btn" value="设备抓图" onclick="clickDeviceCapturePic();" />
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-      <fieldset class="playback">
-        <legend>回放</legend>
-        <table width="100%" cellpadding="0" cellspacing="3" border="0">
-          <tr>
-            <td class="tt">码流类型</td>
-            <td>
-              <select id="record_streamtype" class="sel">
-                <option value="1">主码流</option>
-                <option value="2">子码流</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td class="tt">开始时间</td>
-            <td>
-              <input id="starttime" type="text" class="txt" value="2020-02-21 00:00:00" />（时间格式：2013-11-11 12:34:56）
-            </td>
-          </tr>
-          <tr>
-            <td class="tt">结束时间</td>
-            <td>
-              <input id="endtime" type="text" class="txt" value="2020-02-25 23:59:59" />
-              <input type="button" class="btn" value="搜索" onclick="clickRecordSearch(0);" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <div id="searchdiv" class="searchdiv">
-                <table id="searchlist" class="searchlist" cellpadding="0" cellspacing="0" border="0"></table>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <input type="button" class="btn2" value="开始回放" onclick="clickStartPlayback();" />
-              <input type="button" class="btn2" value="停止回放" onclick="clickStopPlayback();" />
-              <input type="button" class="btn" value="倒放" onclick="clickReversePlayback();" />
-              <input type="button" class="btn" value="单帧" onclick="clickFrame();" />
-              <input id="transstream" type="checkbox" class="vtop" />&nbsp;启用转码码流
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <input type="button" class="btn" value="暂停" onclick="clickPause();" />
-              <input type="button" class="btn" value="恢复" onclick="clickResume();" />
-              <input type="button" class="btn" value="慢放" onclick="clickPlaySlow();" />
-              <input type="button" class="btn" value="快放" onclick="clickPlayFast();" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <input type="button" class="btn" value="抓图" onclick="clickCapturePic();" />
-              <input type="button" class="btn2" value="开始剪辑" onclick="clickStartRecord('playback');" />
-              <input type="button" class="btn2" value="停止剪辑" onclick="clickStopRecord('playback');" />
-              <input type="button" class="btn2" value="OSD时间" onclick="clickGetOSDTime();" />&nbsp;<input id="osdtime" type="text" class="txt" readonly />
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-    </div>
-    <div class="left">
-      <fieldset class="operate">
-        <legend>操作信息</legend>
-        <div id="opinfo" class="opinfo"></div>
-      </fieldset>
-      <fieldset class="callback">
-        <legend>事件回调信息</legend>
-        <div id="cbinfo" class="cbinfo"></div>
-      </fieldset>
+  <div class="flex center">
+    <div>
+      <div class="flex little-space center">
+        <el-button @click="restart()">重置播放</el-button>
+        <el-button @click="fullScreen()">全屏</el-button>
+      </div>
+      <div id="contain1" class="plugin" style="width: 1300px; height: 700px"></div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted} from '@vue/composition-api';
+import {init, login, startRealPlay, stopPlay, fullScreen} from "@/utils/video";
+import { sleep } from 'web-toolkit/src/utils'
+
 export default {
   setup() {
-    onMounted(() => {
-      console.log(document);
-      const l = document.scripts.length;
-      console.log(document.scripts[l - 1].src);
+    const modalVideo = ref<any>({
+      szDeviceIdentify: '',
+      ip: '112.17.133.224',
+      port: '11080',
+      username: 'admin',
+      pwd: 'lkt666666',
+      start: '2020-02-26 07:00:00',
+      end: '2020-02-26 14:11:11'
+    })
 
+    onMounted(async () => {
+      await init("contain1", 2);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip+"_"+modalVideo.value.port;
+      let msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if(msg){
+        alert(msg);
+        return ;
+      }
+      await sleep(1000);
+      await startVideo();
     });
+    async function startVideo() {
+      const msg1 = await startRealPlay(0,modalVideo.value.szDeviceIndentify,1);
+      const msg2 = await startRealPlay(1,modalVideo.value.szDeviceIndentify,1);
+      if(msg1){
+        alert(msg1);
+      }
+      if(msg2){
+        alert(msg2);
+      }
+    }
+    async function stopVideo() {
+      await stopPlay(0);
+      await stopPlay(1);
+    }
+    async function restart() {
+      await stopVideo();
+      await startVideo();
+    }
     return{
-
+      restart,
+      fullScreen
     };
   },
 };
