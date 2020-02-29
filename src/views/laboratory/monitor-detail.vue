@@ -90,7 +90,7 @@ import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import {statusMap} from '@/utils/device-utils';
 import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 import {Message} from 'element-ui';
-import {init, login, startRealPlay, stopPlay, fullScreen} from "@/utils/video";
+import {init, login, startRealPlay, stopPlay, fullScreen} from '@/utils/video';
 
 export default {
   setup() {
@@ -119,7 +119,7 @@ export default {
       username: 'admin',
       pwd: 'lkt666666',
       start: '2020-02-26 07:00:00',
-      end: '2020-02-26 14:11:11'
+      end: '2020-02-26 14:11:11',
     });
 
     const query = async () => {
@@ -167,10 +167,10 @@ export default {
         query();
       }
       // video
-      await init("contain",1);
-      modalVideo.value.szDeviceIndentify = modalVideo.value.ip+"_"+modalVideo.value.port;
-      let msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-      if(msg){
+      await init('contain', 1);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
+      const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if (msg) {
         alert(msg);
         return ;
       }
@@ -181,18 +181,18 @@ export default {
       stopVideo();
     });
     async function startVideo() {
-      const msg1 = await startRealPlay(0,modalVideo.value.szDeviceIndentify,1);
+      const msg1 = await startRealPlay(0, modalVideo.value.szDeviceIndentify, 1);
       // const msg2 = await startRealPlay(1,modalVideo.value.szDeviceIndentify,1);
-      if(msg1){
+      if (msg1) {
         alert(msg1);
       }
     }
     async function stopVideo() {
       await stopPlay(0);
     }
-    async function restartVideo(id:any) {
+    async function restartVideo(id: any) {
       await stopVideo();
-      if(id) modalVideo.value.channelId=id;
+      if (id) { modalVideo.value.channelId = id; }
       await startVideo();
     }
     async function paramAnalysisMonitor() {
@@ -371,7 +371,7 @@ export default {
       queryParamAnalysis: useLoading(loading, queryParamAnalysis),
       checkList, disabled,
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
-      restartVideo, fullScreen
+      restartVideo, fullScreen,
     };
   },
 };

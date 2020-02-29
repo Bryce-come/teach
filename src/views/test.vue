@@ -11,8 +11,8 @@
 </template>
 <script lang="ts">
 import { ref, onMounted, onUnmounted} from '@vue/composition-api';
-import {init, login, startRealPlay, stopPlay, fullScreen} from "@/utils/video";
-import { sleep } from 'web-toolkit/src/utils'
+import {init, login, startRealPlay, stopPlay, fullScreen} from '@/utils/video';
+import { sleep } from 'web-toolkit/src/utils';
 
 export default {
   setup() {
@@ -23,14 +23,14 @@ export default {
       username: 'admin',
       pwd: 'lkt666666',
       start: '2020-02-26 07:00:00',
-      end: '2020-02-26 14:11:11'
-    })
+      end: '2020-02-26 14:11:11',
+    });
 
     onMounted(async () => {
-      await init("contain1", 2);
-      modalVideo.value.szDeviceIndentify = modalVideo.value.ip+"_"+modalVideo.value.port;
-      let msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-      if(msg){
+      await init('contain1', 2);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
+      const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if (msg) {
         alert(msg);
         return ;
       }
@@ -38,12 +38,12 @@ export default {
       await startVideo();
     });
     async function startVideo() {
-      const msg1 = await startRealPlay(0,modalVideo.value.szDeviceIndentify,1);
-      const msg2 = await startRealPlay(1,modalVideo.value.szDeviceIndentify,1);
-      if(msg1){
+      const msg1 = await startRealPlay(0, modalVideo.value.szDeviceIndentify, 1);
+      const msg2 = await startRealPlay(1, modalVideo.value.szDeviceIndentify, 1);
+      if (msg1) {
         alert(msg1);
       }
-      if(msg2){
+      if (msg2) {
         alert(msg2);
       }
     }
@@ -57,7 +57,7 @@ export default {
     }
     return{
       restart,
-      fullScreen
+      fullScreen,
     };
   },
 };
