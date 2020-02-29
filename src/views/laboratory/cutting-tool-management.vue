@@ -95,14 +95,22 @@
           </el-form-item>
         </el-form>
         <el-form v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 1" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
-          <el-form-item label="借出数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
+          <el-form-item label="借出数量：" prop="extend.stationRecord.quantity" :rules="{ required: true, message: '请输入数量'}" v-if='storeRecordModal.storeInfo.extend.stationRecord'>
+            <el-input-number v-model="storeRecordModal.storeInfo.extend.stationRecord.quantity" :min="1" label="请输入数量">
+            </el-input-number>
           </el-form-item>
-          <el-form-item label="借用人：" prop="" :rules="{ required: true, message: '请输入借用人名称'}">
-            <el-input></el-input>
+          <el-form-item label="借用人：" prop="extend.person" :rules="{ required: true, message: '请输入借用人名称'}">
+            <el-input v-model="storeRecordModal.storeInfo.extend.person"></el-input>
           </el-form-item>
-          <el-form-item label="使用操作台（多选）：" prop="">
-            <el-select multiple></el-select>
+          <el-form-item label="使用操作台（多选）：" prop="extend.stationRecord.id" placeholder="请选择操作台" v-if='storeRecordModal.storeInfo.extend.stationRecord'>
+            <el-select multiple v-model="storeRecordModal.storeInfo.extend.stationRecord.id" >
+              <el-option
+                v-for="item of stationList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
@@ -112,7 +120,7 @@
           <el-form-item label="归还数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
             <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
           </el-form-item>
-          <el-form-item label="归还人：" prop="" :rules="{ required: true, message: '请输入归还人名称'}">
+          <el-form-item label="归还人：" prop="extend.person" :rules="{ required: true, message: '请输入归还人名称'}">
             <el-input></el-input>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
@@ -170,11 +178,13 @@ import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel, ComponentStoreRecordList } from '@/dao/componentStoreDao';
 import { DeviceTypeList} from '@/dao/deviceDao';
+import { StationList } from '@/dao/stationDao';
 export default {
   setup() {
     const loading = ref(false);
     const cutterList = ref<any>([]);
     const deviceTypeList = ref<any>();
+    const stationList = ref<any>([]);
     const deviceComponentStore = ref<any>();
     const deviceComponentStoreRecordList = ref<any>([]);
     const componentID = ref<any>();
@@ -251,6 +261,8 @@ export default {
         data = initStoreRecordForm();
       }
       storeRecordModal.value.storeInfo = data;
+      console.log("storeRecordModal.value.storeInfo");
+      console.log(storeRecordModal.value.storeInfo);
       storeRecordModal.value.visible = true;
     };
     const storeHistoryModal = ref<any>({
@@ -290,6 +302,12 @@ export default {
       componentId: data.id});
       console.log(deviceComponentStoreRecord.value);
     };
+    const queryStationList = async () => {
+      stationList.value = await StationList({
+          simple: false,
+      });
+      console.log(stationList.value);
+    };
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
        console.log(cutterList.value);
@@ -305,6 +323,7 @@ export default {
       storeRecordUpdate: useLoading(loading, storeRecordUpdate),
       storeHistoryModal, storeHistoryForm,
       filterText, deviceComponentStoreRecord, deviceComponentStoreRecordList, componentID, storeTypeList,
+      queryStationList, stationList,
     };
   },
 };
@@ -316,7 +335,19 @@ function initCutterForm() {
 function initStoreRecordForm() {
   return {
     type: '', quantity: '', remark: '',
-    extend: {batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
+    extend: {
+      person: '',
+      stationRecord: {
+        id: [], 
+        quantity: '',
+        },
+      batchNo: '', 
+      company: '',
+      supplier: '', 
+      supplierTel: '', 
+      buyDt: '',
+      keeper: ''
+    },
   };
 }
 </script>
