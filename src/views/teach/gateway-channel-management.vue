@@ -5,12 +5,11 @@
         <el-button type="primary" @click="openSomething()">批量开启</el-button>
         <el-button type="danger" @click="closeSomething()">批量关闭</el-button>
       </div>
-      <!-- <el-input placeholder="请输入操作台/设备名称/设备型号/设备编号/LKT-MAN编号搜索" style="width:500px;margin-top:5px"></el-input> -->
     </div>
     <el-table
       :data="list"
       @selection-change="handleSelectionChange">
-      <el-table-column type="selection" :disabled='disabledMa'/>
+      <el-table-column type="selection"/>
       <el-table-column label="操作台" prop="name"/>
       <el-table-column label="设备名称" prop="deviceList[0].name"/>
       <el-table-column label="设备型号" prop="deviceList[0].type"/>
@@ -19,10 +18,10 @@
       <el-table-column label="网管通道"> 
         <template slot-scope="{ row }">
             <el-switch 
+            :disabled='row.disabledMa'
             active-color="#13ce66"
             inactive-color="#ff4949"
-            v-model="row.off"
-            :disabled='row.disabledMa'
+            v-model="row.extend.linkStatus"
             @change="toggleStatus(row)"
             ></el-switch> 
         </template>
@@ -40,7 +39,9 @@ import { CNCLinkStatus, CNCLinkSet } from '../../dao/inClassDao';
 export default {
   setup() {
     const loading = ref(false);
-    const list = ref<any>();
+    const list = ref<any>({
+      disabledMa:''
+    });
     const status = ref<any>({
        statusList: [],
        disabledList: [],
@@ -69,6 +70,8 @@ export default {
       await CNCLinkSet(result);
     }
     async function getStatusList() {
+      const result = await CNCLinkStatus();
+      list.value = result;
       status.value.statusList = [];
       status.value.disabledList = [];
       for (let i = 0; i < list.value.length; i++) {
@@ -84,31 +87,25 @@ export default {
       for (let i = 0; i < status.value.statusList.length; i++) {
         list.value[i].disabledMa = status.value.disabledList[i];
       }
+      console.log(status.value.disabledList)
     }
     async function toggleStatus(row: any) {
-      if (row.extend.linkStatus === true) {
-        const id = [JSON.stringify(row.id)];
+      status.value.rowIDList=[row.id]
+      const id = JSON.stringify(status.value.rowIDList)
         const result = {
           stationJson: id,
-          status: false,
+          status: row.extend.linkStatus,
         };
         await CNCLinkSet(result);
-      }
-      if (row.extend.linkStatus === false) {
-        const id = [JSON.stringify(row.id)];
-        const result = {
-          stationJson: id,
-          status: true,
-        };
-        await CNCLinkSet(result);
-      }
+        await getStatusList()
     }
     const query = async () => {
       const result = await CNCLinkStatus();
       list.value = result;
+      console.log(result)
     };
     onMounted(useLoading(loading, async () => {
-      await query();
+      // await query();
       await getStatusList();
     }));
     return {

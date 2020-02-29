@@ -69,7 +69,8 @@
         </div>
         <lkt-table
           :data="filtered"
-          style="width:100%">
+          style="width:100%"
+          :row-class-name="tableRowClassName">
           <el-table-column prop="username" label="登录用户名" width="150px"/>
           <el-table-column prop="name" label="姓名" width="80px"/>
           <el-table-column prop="clasz" label="班级" width="100px"/>
@@ -191,6 +192,12 @@ export default {
     });
     const append = async (row: any) => {
     };
+    function tableRowClassName(row:any){
+      if (row.off===1){
+        return 'warning-row';
+      }
+      return ''
+    }
     const remove = async (row: any) => {
         await UserDel({
         id: row.id,
@@ -546,5 +553,8 @@ function initForm() {
     justify-content: space-between;
     font-size: 14px;
     padding-right: 8px;
+  }
+  .el-table .warning-row {
+    background: red;
   }
 </style>
