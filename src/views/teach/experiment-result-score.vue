@@ -257,8 +257,6 @@ export default {
           scoreList.value.noScore.push(experimentReportList.value[i])
         }
       }
-      console.log(scoreList.value.haveScore)
-      console.log(scoreList.value.noScore)
     }
     const showAllScored = async () => {
       allScored.value = true;

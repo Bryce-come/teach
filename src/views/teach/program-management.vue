@@ -198,7 +198,6 @@ export default {
       reviewInfo.value.remark = result.remark;
     }
     async function agreeUp() {
-      console.log(EtInfo.value.data)
       if(EtInfo.value.data.result===undefined){
         const result = {
         id: reviewInfo.value.id,
@@ -213,7 +212,6 @@ export default {
       turn.value = true;
     }
     async function disAgreeUp() {
-      console.log(EtInfo.value.data)
       if(EtInfo.value.data.result===undefined){
       const result = {
         id: reviewInfo.value.id,

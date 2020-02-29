@@ -87,7 +87,6 @@ export default {
       for (let i = 0; i < status.value.statusList.length; i++) {
         list.value[i].disabledMa = status.value.disabledList[i];
       }
-      console.log(status.value.disabledList);
     }
     async function toggleStatus(row: any) {
       status.value.rowIDList = [row.id];
@@ -102,7 +101,6 @@ export default {
     const query = async () => {
       const result = await CNCLinkStatus();
       list.value = result;
-      console.log(result);
     };
     onMounted(useLoading(loading, async () => {
       // await query();
