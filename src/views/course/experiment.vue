@@ -169,7 +169,7 @@ export default {
     const stationList = ref<any>();
     const fileList = ref<any>([]);
     const expID = ref<any>();
-    const attachmentList = ref<any>([]); 
+    const attachmentList = ref<any>([]);
     const [keywords, filtered] = useSearch(experimentList, {
       includeProps: ['name'],
     });
@@ -278,7 +278,7 @@ export default {
       data.attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        var obj = {id, name};
+        let obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -292,17 +292,17 @@ export default {
       await ProgramUploadDel({
         id: expID.value,
         path: row.name,
-      })
+      });
       await showAllExp();
       // 将附件字符串数组转化成对象，并更新附件列表
       const updateAttList = experimentList.value.filter(function(item: any) {
         return item.id === expID.value;
-      })
+      });
       const turnObj: any = [];
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        var obj = {id, name};
+        let obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
@@ -332,12 +332,12 @@ export default {
       // 将附件字符串数组转化成对象，并更新附件列表
       const updateAttList = experimentList.value.filter(function(item: any) {
         return item.id === expID.value;
-      })
+      });
       const turnObj: any = [];
       updateAttList[0].attachment.forEach((item: any, index: any) => {
         const id = index;
         const name = item;
-        var obj = {id, name};
+        let obj = {id, name};
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;

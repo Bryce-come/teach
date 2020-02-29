@@ -4,6 +4,7 @@ import {postService} from 'web-toolkit/src/case-main/index';
 
 /**
  * cnc网关连接状态
+ * extend.linkStatus, null/true/false
  */
 export async function CNCLinkStatus() {
   const {data: {list}} = await postService('/rest/inClass/link/status');

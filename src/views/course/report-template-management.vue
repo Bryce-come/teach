@@ -47,7 +47,7 @@ export default {
     };
     async function upload(option: any) {
       await ReportTemplateAdd({
-        file: option.file
+        file: option.file,
       });
       await query();
     }
@@ -55,9 +55,7 @@ export default {
       await DownLoadPrivate(row.path, row.name);
     }
     const query = async () => {
-      experimentReportTemplateList.value = await ReportTemplateList({
-        file: '',
-      });
+      experimentReportTemplateList.value = await ReportTemplateList();
       console.log(experimentReportTemplateList.value);
     };
     onMounted(useLoading(loading, async () => {
