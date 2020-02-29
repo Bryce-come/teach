@@ -14,7 +14,7 @@ const $statusMap: StatusMap = {
   },
   offline: {
     arrName: '离线',
-    color: '#868686',
+    color: '#454545',
     tag: 'info',
   },
   close: {

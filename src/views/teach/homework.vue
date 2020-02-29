@@ -41,7 +41,14 @@
         </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="props">
-            <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="upReport(props)">提交报告</el-button>
+            <el-upload
+              action=""
+              :http-request="(option)=>upload(option)"
+              :show-file-list="false">
+              <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="setPorps(props)">提交报告</el-button>
+              <!-- <el-button type="primary" icon="el-icon-upload2">上传实验摸板</el-button> -->
+            </el-upload>
+            <!-- <el-button type="text" :style="props.row.extend.score1 && props.row.extend.score2?'color:grey':''" @click="upReport(props)">提交报告</el-button> -->
           </div>
         </el-table-column>
       </lkt-table>
@@ -70,8 +77,9 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import {deepClone, formatDate} from 'web-toolkit/src/utils';
-import { ReportList,ReportTemplateList,ReportScore} from '../../dao/reportDao';
+import { ReportList,ReportTemplateList,ReportScore,ReportSubmit} from '../../dao/reportDao';
 import { CourseList } from '../../dao/courseProgramDao';
+import { DownLoadPrivate } from '../../dao/commonDao';
 export default {
   setup() {
     const loading = ref(false);
@@ -79,49 +87,57 @@ export default {
     const templateButton = ref(false);
     const experimentResultList = ref<any>();
     const experimentReportTemplateList = ref<any>();
-    const courseList=ref<any>({
-      courseIdList:[],
-      courseAllList:[],
-      courseNameList:[],
-      courseMixList:[],
-      keyinkey:'',
-    })
-    async function getCourseList(){
+    const courseList = ref<any>({
+      courseIdList: [],
+      courseAllList: [],
+      courseNameList: [],
+      courseMixList: [],
+      keyinkey: '',
+    });
+    async function getCourseList() {
       courseList.value.courseAllList = await CourseList({containPrograms: true});
-      courseList.value.courseIdList=[];
-      courseList.value.courseNameList=[];
-      courseList.value.courseMixList=[];
-      for(let i=0;i<courseList.value.courseAllList.length;i++){
-        courseList.value.courseIdList[i]=courseList.value.courseAllList[i].id;
-        courseList.value.courseNameList[i]=courseList.value.courseAllList[i].name;
-        courseList.value.courseMixList[i]={id:courseList.value.courseIdList[i],name:courseList.value.courseNameList[i]}
+      courseList.value.courseIdList = [];
+      courseList.value.courseNameList = [];
+      courseList.value.courseMixList = [];
+      for (let i = 0; i < courseList.value.courseAllList.length; i++) {
+        courseList.value.courseIdList[i] = courseList.value.courseAllList[i].id;
+        courseList.value.courseNameList[i] = courseList.value.courseAllList[i].name;
+        courseList.value.courseMixList[i] = {id: courseList.value.courseIdList[i], name: courseList.value.courseNameList[i]};
       }
     }
-    async function getReportList(){
+    async function getReportList() {
       const pum = {
-        courseId:courseList.value.keyinkey
+        courseId: courseList.value.keyinkey,
+      };
+      const result = await ReportList(pum);
+      experimentResultList.value = result;
+    }
+    const propsWord = ref<any>({
+
+    })
+    function setPorps(row:any){
+      propsWord.value=row
+    }
+    async function upload(option: any) {
+      const result = {
+        courseId:propsWord.value.row.id,
+        programId:1,
+        file:option.file
       }
-      const result = await ReportList(pum)
-      experimentResultList.value=result
+      await ReportSubmit(result)
+      await getReportList()
     }
-    async function upReport(row:any){
-      console.log(row)
+    async function getTempList(){
+      const result = await ReportTemplateList();
+      experimentReportTemplateList.value=result;
     }
-    const query = async () => {
-      experimentResultList.value = [
-        {id: '0', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
-        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: 60, score2: 24, ratio1: 60, ratio2: 40}},
-        {id: '1', course: '自动化操作', experiment_program: {id: '', name: '自动化操作及原理', label: '课内实验'}, program: '', student: '', content: '', attachment: '', scoreSum: '', comment: '',
-        note: '', teacher: '', createDt: '', handleDt: '', extend: {score1: null, score2: null, ratio1: 60, ratio2: 40}},
-      ];
-      experimentReportTemplateList.value = [
-        {id: '0', name: '自动化操作实验报告模板1', path: '', createDt: ''},
-        {id: '1', name: '自动化操作实验报告模板2', path: '', createDt: ''},
-        {id: '2', name: '自动化操作实验报告模板3', path: '', createDt: ''},
-        {id: '3', name: '自动化操作实验报告模板4', path: '', createDt: ''},
-        {id: '4', name: '自动化操作实验报告模板5', path: '', createDt: ''},
-      ];
-    };
+    async function download(row:any){
+      const result = {
+        path: row.path,
+        filename: row.name,
+      };
+      await DownLoadPrivate(result.path, result.filename);
+    }
     const showReport = async () => {
       reportButton.value = true;
       templateButton.value = false;
@@ -130,19 +146,18 @@ export default {
       reportButton.value = false;
       templateButton.value = true;
     };
-    const download = async () => {
-      Message.success('下载成功');
-    };
     onMounted(useLoading(loading, async () => {
-      await getCourseList()
-      await query();
+      await getCourseList();
+      await getTempList();
+      // await query();
     }));
     return {
-      loading, experimentResultList, query,
-      reportButton, templateButton,getReportList,upReport,
+      loading, experimentResultList,propsWord,setPorps,getTempList,
+      reportButton, templateButton,getReportList,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList,courseList,getCourseList,
+      upload: useLoading(loading, upload),
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },

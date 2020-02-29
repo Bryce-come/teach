@@ -362,7 +362,7 @@ const indexChildren = [
   equipmentModelConfiguration,
   userMng,
   roleMng,
-  test,
+  // test,
   // 课前预习
   preview,
   // 课后作业

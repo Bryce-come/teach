@@ -110,20 +110,20 @@ export default {
     const [keywords, filtered] = useSearch(experimentReportList, {
       includeProps: ['student.name'],
     });
-    
+
     const scoreModal = ref<any>({
       visible: false,
       scoreInfo: null,
     });
-    const searchInfo =ref<any>({
-      courseId:'',
-      programId:'',
-      claszId:'',
-      groupId:'',
+    const searchInfo = ref<any>({
+      courseId: '',
+      programId: '',
+      claszId: '',
+      groupId: '',
       // inDt:[],
-      start:'',
-      end:''
-    })
+      start: '',
+      end: '',
+    });
     const form = ref<ElForm | null>(null);
     const showScoreForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
@@ -198,38 +198,37 @@ export default {
         name: claszList.value.claszAllList[claszList.value.claszIdList.indexOf(row)].groups[i].name};
       }
     }
-    async function searchFList(){
-      if(searchInfo.value.inDt!=undefined){
-        const resulta = new Date(searchInfo.value.inDt[0])
-        const resultb = new Date(searchInfo.value.inDt[1])
-        searchInfo.value.start = Number(resulta)/1000
-        searchInfo.value.end = Number(resultb)/1000
+    async function searchFList() {
+      if (searchInfo.value.inDt != undefined) {
+        const resulta = new Date(searchInfo.value.inDt[0]);
+        const resultb = new Date(searchInfo.value.inDt[1]);
+        searchInfo.value.start = Number(resulta) / 1000;
+        searchInfo.value.end = Number(resultb) / 1000;
+      } else if (searchInfo.value.inDt === undefined) {
+        searchInfo.value.start = null;
+        searchInfo.value.end = null;
       }
-      else if(searchInfo.value.inDt===undefined){
-        searchInfo.value.start=null
-        searchInfo.value.end=null
+      if (searchInfo.value.courseId === '') {
+        searchInfo.value.courseId = null;
       }
-      if(searchInfo.value.courseId===''){
-        searchInfo.value.courseId=null
+      if (searchInfo.value.programId === '') {
+        searchInfo.value.programId = null;
       }
-      if(searchInfo.value.programId===''){
-        searchInfo.value.programId=null
+      if (searchInfo.value.claszId === '') {
+        searchInfo.value.claszId = null;
       }
-      if(searchInfo.value.claszId===''){
-        searchInfo.value.claszId=null
+      if (searchInfo.value.groupId === '') {
+        searchInfo.value.groupId = null;
       }
-      if(searchInfo.value.groupId===''){
-        searchInfo.value.groupId=null
-      }
-      const pum={
-        courseId:searchInfo.value.courseId,
-        programId:searchInfo.value.programId,
-        claszId:searchInfo.value.claszId,
-        groupId:searchInfo.value.groupId,
-        start:searchInfo.value.start,
-        end:searchInfo.value.end
-      }
-      experimentReportList.value = await ReportList(pum)
+      const pum = {
+        courseId: searchInfo.value.courseId,
+        programId: searchInfo.value.programId,
+        claszId: searchInfo.value.claszId,
+        groupId: searchInfo.value.groupId,
+        start: searchInfo.value.start,
+        end: searchInfo.value.end,
+      };
+      experimentReportList.value = await ReportList(pum);
     }
     async function getReportList() {
       const pum = {};
@@ -261,9 +260,9 @@ export default {
       await getClazList();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm,getReportList,searchInfo,claszList,keywords,
-      scoreUpdate: useLoading(loading, scoreUpdate),setProgramList,searchFList,getClazList,setGroupList,filtered,
-      allScored, hasScored, noScored,downFile,courseList,
+      loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList, keywords,
+      scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList, filtered,
+      allScored, hasScored, noScored, downFile, courseList,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),

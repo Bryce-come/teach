@@ -51,9 +51,9 @@ export async function StationDel(params: any) {
  * RequestParam int id,
  * RequestParam(required = false) String deviceId
  * RequestParam(required = false) String adapterId,
- * ApiParam(value = "[{PCIP，PCNo, remark}]")
+ * ApiParam(value = "{PCIP，PCNo, remark}")
  * RequestParam(required = false) String pcJson,
- * ApiParam(value = "[{ip,name,remark}]")
+ * ApiParam(value = "{ip,name,remark}")
  * RequestParam(required = false) String cameraJson,
  * RequestParam(required = false) String deviceIP
  */
