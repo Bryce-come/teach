@@ -103,7 +103,7 @@
       <div slot="title">修改小组名</div>
         <el-form v-if="upgrpFlag.visible" ref="form" :model="upgrpFlag.upgrpInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
           <el-form-item label="名称：" prop="name" :rules="{ required: true, message: '请输入名称'}">
-              <el-input v-model="upgrpFlag.upgrpInfo"></el-input>
+              <el-input v-model="upgrpFlag.upgrpInfo" clearable></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -113,7 +113,7 @@
       <div slot="title">增加新的小组</div>
         <el-form v-if="addNewGroupFlag.visible" ref="form" :model="addNewGroupFlag.addNewGroupInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
           <el-form-item label="名称：" prop="name" :rules="{ required: true, message: '请输入名称'}">
-              <el-input v-model="addNewGroupFlag.addNewGroupInfo"></el-input>
+              <el-input v-model="addNewGroupFlag.addNewGroupInfo" clearable></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -123,7 +123,7 @@
       <div slot="title">增加新的班级</div>
         <el-form v-if="addClazFlag.visible" ref="form" :model="addClazFlag.addClazInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
           <el-form-item label="名称：" prop="name" :rules="{ required: true, message: '请输入名称'}">
-              <el-input v-model="addClazFlag.addClazInfo"></el-input>
+              <el-input v-model="addClazFlag.addClazInfo" clearable></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -134,7 +134,7 @@
         <div slot="title">{{modal.studentInfo && modal.studentInfo.id ? '修改' : '录入'}}学生信息</div>
         <el-form v-if="modal.studentInfo" ref="form" :model="modal.studentInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
           <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
-              <el-input v-model="modal.studentInfo.name"></el-input>
+              <el-input v-model="modal.studentInfo.name" clearable></el-input>
           </el-form-item>
           <el-form-item label="班级" prop="extend.clasz" :rules="{ required: true, message: '请选择班级'}">
               <el-select v-model="modal.studentInfo.extend.clasz" @change="armasdb(modal.studentInfo.extend.clasz)">
@@ -147,19 +147,19 @@
               </el-select>
           </el-form-item>
           <el-form-item label="登录用户名" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
-              <el-input v-model="modal.studentInfo.username"></el-input>
+              <el-input v-model="modal.studentInfo.username" clearable></el-input>
           </el-form-item>
           <el-form-item :label="!modal.studentInfo.id ? '密码：' : '修改密码：'" prop="pwd" :rules="[{ required: !modal.studentInfo.id, message: '请填写密码' }, { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}]">
-          <el-input clearable v-model="modal.studentInfo.pwd" type="password" />
+          <el-input clearable v-model="modal.studentInfo.pwd" type="password"/>
           </el-form-item>
           <el-form-item label="确认密码：" prop="pwdCheck" :rules="{ required: !modal.studentInfo.id, validator: validator }">
             <el-input clearable v-model="modal.studentInfo.pwdCheck" type="password" />
           </el-form-item>
           <el-form-item label="联系方式：" prop="phone">
-              <el-input v-model="modal.studentInfo.phone" maxlength='11'></el-input>
+              <el-input v-model="modal.studentInfo.phone" maxlength='11' clearable></el-input>
           </el-form-item>
           <el-form-item label="邮箱地址" prop="extend.address">
-              <el-input v-model="modal.studentInfo.extend.address"></el-input>
+              <el-input v-model="modal.studentInfo.extend.address" clearable></el-input>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -250,6 +250,7 @@ export default {
           studentUserList.value[i].claszGroup = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(studentUserList.value[i].extend.claszGroup)];
           studentUserList.value[i].clasz = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(studentUserList.value[i].extend.clasz)];
         }
+        console.log(grpandclzList)
     }
     const form = ref<ElForm|null>(null);
     // const clazForm = ref<ElForm|null>(null);
@@ -296,6 +297,7 @@ export default {
       addClazFlag.value.visible = true;
     }
     function updataGropFlag(row: any) {
+
       upgrpFlag.value.visible = true;
       upgrpFlag.value.data = row;
       upgrpFlag.value.upgrpInfo = row.data.name;
@@ -349,7 +351,7 @@ export default {
       for (let i = 0; i < classList.value.length; i++) {
           claszList.value.claszNameList[i] = classList.value[i].name;
       }
-      if (addClazFlag.value.addClazInfo != '' && claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo) === -1) {
+      if (addClazFlag.value.addClazInfo != '' && (claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo) === -1)) {
         const result = {
           name: addClazFlag.value.addClazInfo,
         };
@@ -358,11 +360,14 @@ export default {
         classList.value = await ClassList();
         addClazFlag.value.addClazInfo = '';
         addClazFlag.value.visible = false;
-      } else if (addClazFlag.value.addClazInfo != '' && claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo) != -1) {
+      } 
+      else if (addClazFlag.value.addClazInfo != '' && (claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo) != -1)) {
         addClazFlag.value.visible = false;
+        addClazFlag.value.addClazInfo = '';
         Message.error('请输入名称或该名称已存在');
       } else if (addClazFlag.value.addClazInfo === '') {
         addClazFlag.value.visible = false;
+        addClazFlag.value.addClazInfo = '';
         Message.error('请输入名称或该名称已存在');
       }
     }
@@ -386,45 +391,44 @@ export default {
       if (form.value) { (form.value as ElForm).clearValidate(); }
     }
     async function upgrpDate() {
-      if (grpandclzList.value.claszIdList.indexOf(upgrpFlag.value.data.parent.data.id) != -1) {
+      if (grpandclzList.value.groupIdList.indexOf(upgrpFlag.value.data.parent.data.id) != -1 || addNewGroupFlag.value.addNewGroupInfo === '') {
         upgrpFlag.value.visible = false;
         Message.error('请输入名称或该名称已存在');
+        upgrpFlag.value.upgrpInfo=''
       } else {
           const result = {
-          cid: upgrpFlag.value.data.parent.data.id,
-          name: upgrpFlag.value.upgrpInfo,
-          id: upgrpFlag.value.data.data.id,
-        };
+            cid: upgrpFlag.value.data.parent.data.id,
+            name: upgrpFlag.value.upgrpInfo,
+            id: upgrpFlag.value.data.data.id,
+          };
           if ( upgrpFlag.value.upgrpInfo != '') {
           await ClassGroupUpdate(result);
           await queryClassList();
           // await chFiltered();
           classList.value = await ClassList();
           upgrpFlag.value.visible = false;
+          upgrpFlag.value.upgrpInfo=''
         }
       }
-
-
     }
     async function addNewGroupDate() {
-      if (grpandclzList.value.claszIdList.indexOf(addNewGroupFlag.value.data.data.id) != -1) {
+      if (grpandclzList.value.groupIdList.indexOf(addNewGroupFlag.value.data.data.id) != -1 || addNewGroupFlag.value.addNewGroupInfo === '') {
         addNewGroupFlag.value.visible = false;
         Message.error('请输入名称或该名称已存在');
-      } else {
+        addNewGroupFlag.value.addNewGroupInfo = ''
+      } 
+      else {
         const result = {
-        cid: addNewGroupFlag.value.data.data.id,
-        name: addNewGroupFlag.value.addNewGroupInfo,
-      };
-        if (addNewGroupFlag.value.addNewGroupInfo != '') {
+          cid: addNewGroupFlag.value.data.data.id,
+          name: addNewGroupFlag.value.addNewGroupInfo,
+        };
         await ClassGroupUpdate(result);
         await queryClassList();
         // await chFiltered();
         classList.value = await ClassList();
         addNewGroupFlag.value.visible = false;
+        addNewGroupFlag.value.addNewGroupInfo = ''
       }
-      }
-
-
     }
     async function update() {
       const valid = await (form.value as ElForm).validate();
@@ -497,7 +501,6 @@ export default {
         midList.value[i] = classList.value[i].id;
       }
       groupList.value = classList.value[midList.value.indexOf(row)].groups;
-      console.log(classList.value[midList.value.indexOf(row)].groups.length);
 
       if (classList.value[midList.value.indexOf(row)].groups.length === 0) {
         modal.value.studentInfo.extend.claszGroup = '';

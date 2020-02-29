@@ -96,7 +96,7 @@
               </el-table>
               <div style="margin-top:20px">
                 <div>修改意见：</div>
-                <el-input type="textarea" :rows="4" style="width:98%" v-model="reviewInfo.remark"></el-input>
+                <el-input type="textarea" :rows="2" style="width:98%" v-model="reviewInfo.remark"></el-input>
                 <div class="flex start little-space">
                   <el-button type="primary" @click="agreeUp()">通过审核同意加工</el-button>
                   <el-button type="danger" style="margin-left:20px" @click="disAgreeUp()">退回修改</el-button>
