@@ -16,20 +16,20 @@
       style="width:100%">
       <el-table-column label="实验名称" prop="name"/>      
       <el-table-column label="实验类型" prop="label"/>    
-      <el-table-column label="实验简介" prop="purpose"/>
-      <el-table-column label="关联操作台">
+      <el-table-column label="实验目的" prop="purpose"/>
+      <el-table-column label="关联操作台" width="150px">
         <div class="flex start" slot-scope="{row}" >
            <div v-for="(item,i) in row.stationList" :key="i" style="padding: 0">
-             {{item.name + ','}}
+             {{item.name + '，'}}
            </div>
          </div>
       </el-table-column>
       <!-- <el-table-column label="实验设备"/> -->
-      <el-table-column label="附件" prop="attachment" width="350px">
+      <el-table-column label="附件" prop="attachment" width="250px">
         <div slot-scope="{row}">
-          <div v-for="(item,i) in row.attachment" :key="i">
-            {{item.split('/')[item.split('/').length-1]}}
-          </div>
+          <el-link type="primary" v-for="(item,i) in row.attachment" :key="i" @click="downFile(item)">
+            {{item.split('/')[item.split('/').length-1] + '，'}}
+          </el-link>
         </div>
       </el-table-column>
       <el-table-column label="操作" width="200px" align="center">
@@ -101,6 +101,9 @@
       <el-form v-if="detailModal.detailInfo" ref="form" :model="detailModal.detailInfo" label-width="120px" label-position="left" style="margin: 0 10px">
         <el-form-item label="实验名称：">
           <div>{{detailModal.detailInfo.name}}</div>
+        </el-form-item>
+        <el-form-item label="实验类型：">
+          <div>{{detailModal.detailInfo.label}}</div>
         </el-form-item>
         <el-form-item label="实验目的：">
           <div>{{detailModal.detailInfo.purpose}}</div>

@@ -8,7 +8,7 @@
         <div class="wrapper-content" v-for="(item, id) in coursePreviewList" :key="id">
           <div style="margin-left:50px">
             <i class="iconfont icon-manage2 i"></i>
-            <span style="font-weight:bold;font-size:1.2rem;margin-left:5px">{{item.name + '：'}}</span>
+            <span style="font-size:1.2rem;margin-left:5px">{{item.name + '：'}}</span>
             <span>{{item.time}}</span>
           </div>
         </div>

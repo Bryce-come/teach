@@ -13,7 +13,8 @@
             {{(row.type===1? '授课预约':'')+(row.type===2? '个人预约':'')}}
           </span>
         </el-table-column>
-        <el-table-column label="预约时间" width="120" prop="startDt" sortable ></el-table-column>
+        <el-table-column label="开始时间" width="120" prop="startDt" sortable ></el-table-column>
+        <el-table-column label="结束时间" width="120" prop="endDt"></el-table-column>
         <el-table-column label="课程" width="120" prop="course.name" sortable ></el-table-column>
         <el-table-column label="实验项目" width="120" prop="program.name" sortable ></el-table-column>    
         <el-table-column label="指定教师" width="100" prop="teacher.name" sortable></el-table-column>

@@ -67,6 +67,8 @@
           <el-form-item label="出入库类型：" prop="type" :rules="{ required: true, message: '请选择出入库类型'}">
             <lkt-select :list="storeTypeList" value-key="name" option-value-key="id" v-model="storeRecordModal.storeInfo.type"></lkt-select>
           </el-form-item>
+        </el-form>
+        <el-form v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 0" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
           <el-form-item label="批次：" prop="extend.batchNo" :rules="{ required: true, message: '请输入批次'}">
             <el-input v-model="storeRecordModal.storeInfo.extend.batchNo"></el-input>
           </el-form-item>
@@ -87,6 +89,39 @@
           </el-form-item>
           <el-form-item label="保管人：" prop="extend.keeper">
             <el-input v-model="storeRecordModal.storeInfo.extend.keeper"></el-input>
+          </el-form-item>
+          <el-form-item label="备注：" prop="remark">
+            <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 1" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
+          <el-form-item label="借出数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
+          </el-form-item>
+          <el-form-item label="借用人：" prop="" :rules="{ required: true, message: '请输入借用人名称'}">
+            <el-input></el-input>
+          </el-form-item>
+          <el-form-item label="使用操作台（多选）：" prop="">
+            <el-select multiple></el-select>
+          </el-form-item>
+          <el-form-item label="备注：" prop="remark">
+            <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 2" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
+          <el-form-item label="归还数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
+          </el-form-item>
+          <el-form-item label="归还人：" prop="" :rules="{ required: true, message: '请输入归还人名称'}">
+            <el-input></el-input>
+          </el-form-item>
+          <el-form-item label="备注：" prop="remark">
+            <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 3" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
+          <el-form-item label="报废数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
@@ -154,7 +189,7 @@ export default {
         id: 0 },
       { name: '借出',
         id: 1 },
-      { name: '还回',
+      { name: '归还',
         id: 2 },
       { name: '报废',
         id: 3 },
@@ -168,7 +203,10 @@ export default {
     });
     const storeRecordModal = ref<any>({
       visible: false,
-      storeInfo: null,
+      storeInfo: {
+        type: '新购', quantity: '', remark: '',
+        extend: {batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
+      },
     });
     const cutterForm = async (data?: any) => {
       if (form1.value) { (form1.value as ElForm).clearValidate(); }
@@ -254,6 +292,7 @@ export default {
     };
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
+       console.log(cutterList.value);
        deviceTypeList.value = await DeviceTypeList();
     }));
     return{
