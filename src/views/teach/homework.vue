@@ -6,7 +6,8 @@
     </div>
     <div v-if="reportButton">
       <div style="margin-top:20px">
-        <el-form class="flex between">
+        <el-form class="flex between"
+        @submit.native.prevent>
           <el-form-item label="课程名称" label-width="80px">
             <el-select v-model="courseList.keyinkey" placeholder="请选择">
               <el-option
@@ -31,6 +32,9 @@
         <el-table-column label="实验类型" prop="experiment_program.label"/>
         <el-table-column label="操作过程评分" prop="extend.score1"/>
         <el-table-column label="实验报告" prop=""/>
+          <!-- <div slot-scope="{row}">
+            <el-button type="text" @click="downFile(row)">{{row.attachment[0].split("/")[row.attachment[0].split("/").length-1]}}</el-button>
+          </div> -->
         <el-table-column label="实验报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
           <div slot-scope="props">
@@ -115,6 +119,13 @@ export default {
     const propsWord = ref<any>({
 
     });
+    async function downFile(row: any) {
+      const result = {
+        path: row.attachment[0],
+        filename: row.attachment[0].split('/')[row.attachment[0].split('/').length - 1],
+      };
+      await DownLoadPrivate(result.path, result.filename);
+    }
     function setPorps(row: any) {
       propsWord.value = row;
     }
@@ -153,7 +164,7 @@ export default {
     }));
     return {
       loading, experimentResultList, propsWord, setPorps, getTempList,
-      reportButton, templateButton, getReportList,
+      reportButton, templateButton, getReportList,downFile,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList, courseList, getCourseList,

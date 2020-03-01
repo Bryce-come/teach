@@ -99,6 +99,7 @@
       </el-col>
     </el-row>
     <kit-dialog-simple
+      @submit.native.prevent
       :modal="upgrpFlag"
       :confirm="upgrpDate">
       <div slot="title">修改小组名</div>
@@ -109,6 +110,7 @@
         </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      @submit.native.prevent
       :modal="addNewGroupFlag"
       :confirm="addNewGroupDate">
       <div slot="title">增加新的小组</div>
@@ -119,6 +121,7 @@
         </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      @submit.native.prevent
       :modal="addClazFlag"
       :confirm="addClaz">
       <div slot="title">增加新的班级</div>

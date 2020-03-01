@@ -2,7 +2,7 @@
   <div v-loading="loading" class="preview">
     <div style="margin: 10px 0" class="block_background">
       <div class="block_title flex start"><i class="iconfont icon-message4"></i>
-        未来两天共有实验课程<span>{{coursePreviewList.length}}</span>门
+        当前共需预习<span>{{coursePreviewList.length}}</span>门实验课程
       </div>
       <div class="wrapper">
         <div class="wrapper-content" v-for="(item, id) in coursePreviewList" :key="id">
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div style="margin: 10px 0" class="block_background">
+    <div style="margin: 10px 0" class="block_background" v-show="coursePreviewList.lenth > 0">
       <div class="block_title flex start">课程详细信息</div>
       <div style="margin-top:20px">
           <div style="font-weight:bold;margin: 10px 20px">自动化原理与操作</div>

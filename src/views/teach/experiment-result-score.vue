@@ -75,14 +75,15 @@
     <kit-dialog-simple
       :modal="scoreModal"
       :confirm="scoreUpdate"
+      @submit.native.prevent
       width="400px">
       <div slot="title">实验评分</div>
       <el-form v-if="scoreModal.scoreInfo" ref="form" :model="scoreModal.scoreInfo" label-width="100px" label-position="left" style="margin: 0 10px">
         <el-form-item label="操作评分:" prop="extend.score1">
-          <el-input v-model="scoreModal.scoreInfo.extend.score1"></el-input>
+          <el-input v-model="scoreModal.scoreInfo.extend.score1" clearable></el-input>
         </el-form-item>
         <el-form-item label="报告评分:" prop="extend.score2">
-          <el-input v-model="scoreModal.scoreInfo.extend.score2"></el-input>
+          <el-input v-model="scoreModal.scoreInfo.extend.score2" clearable></el-input>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
