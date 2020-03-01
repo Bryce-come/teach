@@ -12,7 +12,7 @@
             :expand-on-click-node='false'
             min-width="350px"
             ref="tree">
-            <span class="custom-tree-node" slot-scope="{ node, data }" @click="() => firstTab(node)">
+            <span class="custom-tree-node" slot-scope="{ node, data }" @mousemove="moveNow(node)" @mouseleave="moveNotNow()" @click="firstTab(node)">
               <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
               class="tel" type="text" disabled="disabled" 
               v-model="node.label">
@@ -20,42 +20,42 @@
                 <el-button
                   type="text"
                   size="mini"
-                  v-if="node.level===1&&data.tagoff===false"
+                  v-if="node.level===1&&data.tagoff===false&&moveNowTrue.moveNowId===node.id"
                   @click="() => FrozenClaz(data)">
                   <i class="iconfont icon-dongjie1" title="冻结"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
-                  v-if="node.level===1&&data.tagoff===true"
+                  v-if="node.level===1&&data.tagoff===true&&moveNowTrue.moveNowId===node.id"
                   @click="() => unFrozenClaz(data)">
                   <i class="iconfont icon-jiedong1" title="解冻"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
-                  v-if='node.level===1'
+                  v-if='node.level===1&&moveNowTrue.moveNowId===node.id'
                   @click="() => addNewGroup(node)">
                   <i class="el-icon-plus" title="增加"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
-                  v-if="node.level===1"
+                  v-if="node.level===1&&moveNowTrue.moveNowId===node.id"
                   @click="() => removeClass(data)">
                   <i class="el-icon-delete" title="删除"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
-                  v-if="node.level===2"
+                  v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
                   @click="() => updataGropFlag(node)">
                   <i class="el-icon-edit" title="改名"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
-                  v-if="node.level===2"
+                  v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
                   @click="() => removeGrop(data)">
                   <i class="el-icon-delete" title="删除"></i>
                 </el-button>
@@ -279,6 +279,15 @@ export default {
       visible: false,
       addClazInfo: '',
     });
+    const moveNowTrue = ref<any>({
+      moveNowId:'',
+    })
+    function moveNow(row:any){
+      moveNowTrue.value.moveNowId=row.id
+    }
+    function moveNotNow(){
+      moveNowTrue.value.moveNowId=''
+    }
     function firstTab(row: any) {
       // if(row.level=1){
       //   keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
@@ -286,6 +295,7 @@ export default {
       // else if (row.level=2){
       //   keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
       // }
+      console.log(row)
     }
     const upgrpFlag = ref<any>({
       visible: false,
@@ -451,8 +461,7 @@ export default {
         Message.success('修改成功');
       }
       modal.value.visible = false;
-      await queryStudentList();
-      // await chFiltered();
+      await queryStudentList();;
     }
     const queryStudentList = async () => {
         const firstList = await StudentList();
@@ -476,7 +485,6 @@ export default {
 
     }
     async function armasd(row: any) {
-      // modal.value.studentInfo.extend.claszGroup = '';
       const midList = ref<any>();
       midList.value = [];
       await queryClassList();
@@ -499,14 +507,11 @@ export default {
       } else {
         modal.value.studentInfo.extend.claszGroup = groupList.value[0].name;
       }
-
-
     }
     onMounted(useLoading(loading, async () => {
       classList.value = await ClassList();
       await queryStudentList();
       await queryClassList();
-      // await chFiltered();
       await getGroupList();
     }));
     const [keywords, filtered] = useSearch(brigList, {
@@ -515,13 +520,16 @@ export default {
     return{
       loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag, armasdb,
       addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
-      armasd, upgrpFlag, showFormB,
+      armasd, upgrpFlag, showFormB,moveNow,moveNowTrue,moveNotNow,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
-      queryStudentList, queryClassList, removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
+      queryStudentList, queryClassList, 
+      removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
       modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,
       update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,tableRowClassName,
-      validator, classList, groupList, ctogList, append, FrozenClaz, unFrozenClaz, firstTab, grpandclzList,
+      validator, classList, groupList, ctogList, append, firstTab, grpandclzList,
+      FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)), 
+      unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)), 
     };
     return{
 
