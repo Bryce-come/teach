@@ -95,14 +95,25 @@
           </el-form-item>
         </el-form>
         <el-form v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 1" ref="form2" :model="storeRecordModal.storeInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
-          <el-form-item label="借出数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
+          <el-form-item label="借出数量："  prop="quantity"  :rules="{ required: true, message: '请输入数量'}" >
+            <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量">
+            </el-input-number>
           </el-form-item>
-          <el-form-item label="借用人：" prop="" :rules="{ required: true, message: '请输入借用人名称'}">
-            <el-input></el-input>
+          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
           </el-form-item>
-          <el-form-item label="使用操作台（多选）：" prop="">
-            <el-select multiple></el-select>
+          <el-form-item label="借用人：" prop="extend.person" :rules="{ required: true, message: '请输入借用人名称'}">
+            <el-input v-model="storeRecordModal.storeInfo.extend.person"></el-input>
+          </el-form-item>
+          <el-form-item label="使用操作台（多选）：" placeholder="请选择操作台" >
+            <el-select multiple :value-key="id" v-model="storeRecordModal.storeInfo.extend.stationRecord.id" >
+              <el-option
+                v-for="item of stationList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
@@ -112,8 +123,11 @@
           <el-form-item label="归还数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
             <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
           </el-form-item>
-          <el-form-item label="归还人：" prop="" :rules="{ required: true, message: '请输入归还人名称'}">
-            <el-input></el-input>
+          <el-form-item label="归还人：" prop="extend.person" :rules="{ required: true, message: '请输入归还人名称'}">
+            <el-input v-model="storeRecordModal.storeInfo.extend.person"></el-input>
+          </el-form-item>
+          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
@@ -145,10 +159,10 @@
                   <el-form-item label="厂商:">{{row.extend.company}}</el-form-item>
                   <el-form-item label="供货商:">{{row.extend.supplier}}</el-form-item>                  
                   <el-form-item label="厂商联系方式:">{{row.extend.supplierTel}}</el-form-item>
+                  <el-form-item label="保管人:">{{row.extend.keeper}}</el-form-item>
                 </el-form>
               </div>
-          </el-table-column>
-          <el-table-column prop="dt" label="时间"/>
+          </el-table-column>keeper
           <el-table-column label="类型">
             <div slot-scope="{ row }">
               {{row.type === 0 ?'新购': '' || row.type === 1 ?'借出': '' || row.type === 2 ?'还回': '' || row.type === 3 ?'报废': ''}}
@@ -156,7 +170,7 @@
             </div>
           </el-table-column>
           <el-table-column prop="quantity" label="数量"/>
-          <el-table-column prop="person" label="操作人"/>
+          <el-table-column prop="extend.person" label="操作人"/>
           <el-table-column prop="remark" label="备注" />
         </lkt-table>
     </kit-dialog-simple>
@@ -170,11 +184,13 @@ import {ElForm} from 'element-ui/types/form';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {ComponentStoreAdd, ComponentStoreUpdate, ComponentStoreDel, ComponentStoreList, ComponentStoreRecordAdd, ComponentStoreRecordUpdate, ComponentStoreRecordDel, ComponentStoreRecordList } from '@/dao/componentStoreDao';
 import { DeviceTypeList} from '@/dao/deviceDao';
+import { StationList } from '@/dao/stationDao';
 export default {
   setup() {
     const loading = ref(false);
     const cutterList = ref<any>([]);
     const deviceTypeList = ref<any>();
+    const stationList = ref<any>([]);
     const deviceComponentStore = ref<any>();
     const deviceComponentStoreRecordList = ref<any>([]);
     const componentID = ref<any>();
@@ -205,7 +221,12 @@ export default {
       visible: false,
       storeInfo: {
         type: '新购', quantity: '', remark: '',
-        extend: {batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
+        extend: {
+          person: '',
+          stationRecord: {
+            id: [], 
+            quantity: '',},
+          batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
       },
     });
     const cutterForm = async (data?: any) => {
@@ -246,11 +267,13 @@ export default {
       if (form2.value) { (form2.value as ElForm).clearValidate(); }
       if (data) {
         componentID.value = data.id;
-        data = deepClone(data);
-      } else {
+      //   data = deepClone(data);
+      // } else {
         data = initStoreRecordForm();
       }
       storeRecordModal.value.storeInfo = data;
+      console.log("storeRecordModal.value.storeInfo");
+      console.log(storeRecordModal.value.storeInfo);
       storeRecordModal.value.visible = true;
     };
     const storeHistoryModal = ref<any>({
@@ -290,10 +313,17 @@ export default {
       componentId: data.id});
       console.log(deviceComponentStoreRecord.value);
     };
+    const queryStationList = async () => {
+      stationList.value = await StationList({
+          simple: false,
+      });
+      console.log(stationList.value);
+    };
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
        console.log(cutterList.value);
        deviceTypeList.value = await DeviceTypeList();
+       await queryStationList();
     }));
     return{
       loading, cutterNameList, keywords, cutterList, form1, form2,
@@ -305,6 +335,7 @@ export default {
       storeRecordUpdate: useLoading(loading, storeRecordUpdate),
       storeHistoryModal, storeHistoryForm,
       filterText, deviceComponentStoreRecord, deviceComponentStoreRecordList, componentID, storeTypeList,
+      queryStationList, stationList,
     };
   },
 };
@@ -316,7 +347,19 @@ function initCutterForm() {
 function initStoreRecordForm() {
   return {
     type: '', quantity: '', remark: '',
-    extend: {batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
+    extend: {
+      person: '',
+      stationRecord: {
+        id: [], 
+        quantity: '',
+        },
+      batchNo: '', 
+      company: '',
+      supplier: '', 
+      supplierTel: '', 
+      buyDt: '',
+      keeper: ''
+    },
   };
 }
 </script>
