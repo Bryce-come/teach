@@ -21,7 +21,7 @@
       <div class="block_title flex between">NC程序审核</div>
         <div v-if="turn">
           <div style="display:flex;justify-content:flex-end">
-            <el-input class="search-bar" style="margin: 10px;width:400px" v-model="keywords" placeholder="输入程序名查询"></el-input>
+            <el-input class="search-bar" style="margin: 10px;width:400px" v-model="keywords" placeholder="输入程序名查询" clearable></el-input>
           </div>
           <lkt-table
             :data="filtered"
