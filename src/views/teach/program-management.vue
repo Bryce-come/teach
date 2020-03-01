@@ -44,7 +44,7 @@
             </el-table-column>
             <el-table-column label="操作">
               <div class="flex center little-space wrap" slot-scope="{ row }">
-                <el-button type="text" @click="turnToExamine();cheakDetail(row)">审核查看</el-button>
+                <el-button type="text" @click="turnToExamine();cheakDetail(row);moveNow(row)" >审核查看</el-button>
               </div>
 
             </el-table-column>
@@ -90,7 +90,9 @@
                 </el-table-column>
                 <el-table-column label="操作">
                   <div class="flex center little-space wrap" slot-scope="{ row }">
-                  <el-button class="btn" type="text" @click="cheakDetail(row),changeBKC(this)">查看程序</el-button>
+                  <el-button class="btn" type="text"
+                  :style="row.id===moveNowTrue.moveNowId?'color:green':''" 
+                  @click="cheakDetail(row);moveNow(row)">查看程序</el-button>
                   </div>
                 </el-table-column>
               </el-table>
@@ -141,6 +143,13 @@ export default {
     const sameStudent = ref<any>({
       sameList:[],
     })
+    const moveNowTrue = ref<any>({
+      moveNowId:'',
+    })
+    function moveNow(row:any){
+      moveNowTrue.value.moveNowId=row.id
+      console.log(row)
+    }
     const query = async () => {
       const pum = {recordId: courseNow.value.id};
       const result = await NCExamList(pum);
@@ -218,9 +227,6 @@ export default {
     function backUp(){
       turn.value=true
     }
-    function changeBKC(row:any){
-      console.log(row)
-    }
     async function agreeUp() {
       if(EtInfo.value.data.result===undefined){
         const result = {
@@ -255,8 +261,9 @@ export default {
         await query();
     }));
     return {
-      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,areThey,changeBKC,
+      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,areThey,
       loading, ncProgramList, query, turn, filtered, keywords,tableRowClassName,sameStudent,
+      moveNow,moveNowTrue,
       turnToExamine: useLoading(loading, turnToExamine),backUp,
       agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
       disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),
