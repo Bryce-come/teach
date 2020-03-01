@@ -32,9 +32,9 @@
         <el-table-column label="实验类型" prop="experiment_program.label"/>
         <el-table-column label="操作过程评分" prop="extend.score1"/>
         <el-table-column label="实验报告" prop=""/>
-          <div slot-scope="{row}">
+          <!-- <div slot-scope="{row}">
             <el-button type="text" @click="downFile(row)">{{row.attachment[0].split("/")[row.attachment[0].split("/").length-1]}}</el-button>
-          </div>
+          </div> -->
         <el-table-column label="实验报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
           <div slot-scope="props">
