@@ -289,13 +289,12 @@ export default {
       moveNowTrue.value.moveNowId=''
     }
     function firstTab(row: any) {
-      // if(row.level=1){
-      //   keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
-      // }
-      // else if (row.level=2){
-      //   keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
-      // }
-      console.log(row)
+      if(row.level===1){
+        keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
+      }
+      else if (row.level===2){
+        keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
+      }
     }
     const upgrpFlag = ref<any>({
       visible: false,
