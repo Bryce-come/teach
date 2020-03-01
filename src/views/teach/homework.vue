@@ -6,7 +6,8 @@
     </div>
     <div v-if="reportButton">
       <div style="margin-top:20px">
-        <el-form class="flex between">
+        <el-form class="flex between"
+        @submit.native.prevent>
           <el-form-item label="课程名称" label-width="80px">
             <el-select v-model="courseList.keyinkey" placeholder="请选择">
               <el-option

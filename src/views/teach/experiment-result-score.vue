@@ -75,6 +75,7 @@
     <kit-dialog-simple
       :modal="scoreModal"
       :confirm="scoreUpdate"
+      @submit.native.prevent
       width="400px">
       <div slot="title">实验评分</div>
       <el-form v-if="scoreModal.scoreInfo" ref="form" :model="scoreModal.scoreInfo" label-width="100px" label-position="left" style="margin: 0 10px">
