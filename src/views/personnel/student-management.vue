@@ -4,7 +4,6 @@
       <el-col :span="4" class="treewidth">
           <el-button type="success" @click="showFormB()">添加班级</el-button>
           <el-tree 
-            class="filter-tree" 
             :data="list" 
             :props="props" 
             node-key="id"
@@ -12,8 +11,10 @@
             :expand-on-click-node='false'
             min-width="350px"
             ref="tree">
-            <span class="custom-tree-node" slot-scope="{ node, data }" @mousemove="moveNow(node)" @mouseleave="moveNotNow()" @click="firstTab(node)">
+            <span class="custom-tree-node" slot-scope="{ node, data }" 
+              @mousemove="moveNow(node)" @mouseleave="moveNotNow()" @click="firstTab(node)">
               <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
+              :style="data.tagoff?'color:red':''"
               class="tel" type="text" disabled="disabled" 
               v-model="node.label">
               <span>
@@ -22,42 +23,42 @@
                   size="mini"
                   v-if="node.level===1&&data.tagoff===false&&moveNowTrue.moveNowId===node.id"
                   @click="() => FrozenClaz(data)">
-                  <i class="iconfont icon-dongjie1" title="冻结"></i>
+                  <i class="iconfont icon-dongjie1" title="冻结班级"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
                   v-if="node.level===1&&data.tagoff===true&&moveNowTrue.moveNowId===node.id"
                   @click="() => unFrozenClaz(data)">
-                  <i class="iconfont icon-jiedong1" title="解冻"></i>
+                  <i class="iconfont icon-jiedong1" title="解冻班级"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
                   v-if='node.level===1&&moveNowTrue.moveNowId===node.id'
                   @click="() => addNewGroup(node)">
-                  <i class="el-icon-plus" title="增加"></i>
+                  <i class="el-icon-plus" title="增加小组"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
                   v-if="node.level===1&&moveNowTrue.moveNowId===node.id"
                   @click="() => removeClass(data)">
-                  <i class="el-icon-delete" title="删除"></i>
+                  <i class="el-icon-delete" title="删除班级"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
                   v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
                   @click="() => updataGropFlag(node)">
-                  <i class="el-icon-edit" title="改名"></i>
+                  <i class="el-icon-edit" title="组名改名"></i>
                 </el-button>
                 <el-button
                   type="text"
                   size="mini"
                   v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
                   @click="() => removeGrop(data)">
-                  <i class="el-icon-delete" title="删除"></i>
+                  <i class="el-icon-delete" title="删除小组"></i>
                 </el-button>
               </span>
             </span>
@@ -70,8 +71,7 @@
         </div>
         <lkt-table
           :data="filtered"
-          style="width:100%"
-          :row-class-name="tableRowClassName">
+          style="width:100%">
           <el-table-column prop="username" label="登录用户名" width="150px"/>
           <el-table-column prop="name" label="姓名" width="80px"/>
           <el-table-column prop="clasz" label="班级" width="100px"/>
@@ -193,12 +193,6 @@ export default {
     });
     const append = async (row: any) => {
     };
-    function tableRowClassName(row: any) {
-      if (row.off === 1) {
-        return 'warning-row';
-      }
-      return '';
-    }
     const remove = async (row: any) => {
         await UserDel({
         id: row.id,
@@ -525,7 +519,7 @@ export default {
       queryStudentList, queryClassList, 
       removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
       modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,
-      update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,tableRowClassName,
+      update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,
       validator, classList, groupList, ctogList, append, firstTab, grpandclzList,
       FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)), 
       unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)), 
@@ -560,5 +554,9 @@ function initForm() {
   }
   .el-table .warning-row {
     background: red;
+  }
+
+  .el-table .success-row {
+    background: blue;
   }
 </style>
