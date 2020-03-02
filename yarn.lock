@@ -8657,7 +8657,7 @@ wcwidth@^1.0.1:
 
 "web-toolkit@git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git":
   version "0.1.0"
-  resolved "git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git#e3af57a20a69ce4dd2c66610cea803ec222bbe1a"
+  resolved "git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git#d17e2cf99fc7ef4ae23854fe63c6e900513f8894"
   dependencies:
     "@vue/composition-api" "^0.3.2"
     ali-oss "^6.2.1"
@@ -8899,13 +8899,6 @@ ws@^6.0.0, ws@^6.2.1:
   dependencies:
     async-limiter "~1.0.0"
 
-x2js@^3.3.1:
-  version "3.4.0"
-  resolved "https://registry.npm.taobao.org/x2js/download/x2js-3.4.0.tgz#1414ad99062705086a4838e8dde4ecd06e8bd3a9"
-  integrity sha1-FBStmQYnBQhqSDjo3eTs0G6L06k=
-  dependencies:
-    xmldom "^0.1.19"
-
 xml2js@^0.4.16:
   version "0.4.23"
   resolved "https://registry.npm.taobao.org/xml2js/download/xml2js-0.4.23.tgz?cache=0&sync_timestamp=1576776179444&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fxml2js%2Fdownload%2Fxml2js-0.4.23.tgz#a0c69516752421eb2ac758ee4d4ccf58843eac66"
@@ -8918,11 +8911,6 @@ xmlbuilder@~11.0.0:
   version "11.0.1"
   resolved "https://registry.npm.taobao.org/xmlbuilder/download/xmlbuilder-11.0.1.tgz#be9bae1c8a046e76b31127726347d0ad7002beb3"
   integrity sha1-vpuuHIoEbnazESdyY0fQrXACvrM=
-
-xmldom@^0.1.19:
-  version "0.1.31"
-  resolved "https://registry.npm.taobao.org/xmldom/download/xmldom-0.1.31.tgz?cache=0&sync_timestamp=1576802582827&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fxmldom%2Fdownload%2Fxmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
-  integrity sha1-t2yaG9nwqXN+WnLcNyMc84N14v8=
 
 xregexp@2.0.0:
   version "2.0.0"

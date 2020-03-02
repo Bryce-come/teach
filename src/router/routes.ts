@@ -161,10 +161,19 @@ const reportTemplateManagement = {
     parentCName: '实验课程管理',
   },
 };
-const courseAppointment = {
-  path: '/course/courseAppointment',
-  name: 'courseAppointment',
-  component: () => import('../views/course/course-appointment.vue'),
+const appointment = {
+  path: '/course/appointment',
+  name: 'appointment',
+  component: () => import('../views/course/appointment.vue'),
+  meta: {
+    CName: '实验室预约',
+    parentCName: '实验课程管理',
+  },
+};
+const appointmentExamine = {
+  path: '/course/appointmentExamine',
+  name: 'appointmentExamine',
+  component: () => import('../views/course/appointment-examine.vue'),
   // 这里都加上authDisabled，不用检验是否登录
   meta: {
     CName: '预约审核',
@@ -323,7 +332,8 @@ const indexChildren = [
   experiment,
   courseManagement,
   reportTemplateManagement,
-  courseAppointment,
+  appointment,
+  appointmentExamine,
   // 人员管理
   teacherManagement,
   studentManagement,

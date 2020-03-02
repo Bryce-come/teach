@@ -155,18 +155,25 @@ export default {
       checkList.value = [];
     };
     const update = async () => {
-        const obj1 = stationExtend.value.stationBind;
-        const obj = {} as any;
+
         const stationId = stationID.value;
         let flag = false;
         console.log(checkList.value);
         if (checkList.value && checkList.value.length !== 0) {
           for (const item of checkList.value) {
-            if (overStudentList.value.includes(item)) {
-              alert('含有重复分配学生，请先删除重复学生的分配');
-            } else { flag = true; }
-          }
-        } else { flag = true; }
+            if(stationExtend.value.stationBind){
+              for (let key in stationExtend.value.stationBind) {
+                 if (stationExtend.value.stationBind[key] && stationExtend.value.stationBind[key].includes(item)){
+                   stationExtend.value.stationBind[key].splice( stationExtend.value.stationBind[key].indexOf(item),1);
+                 }
+              }
+            }
+          };
+          flag = true;
+        } 
+        else{ flag = true; }
+        const obj1 = stationExtend.value.stationBind;
+        const obj = {} as any;
         if (flag) {
         obj[stationId.toString()] = checkList.value;
         stationExtend.value.stationBind = {
