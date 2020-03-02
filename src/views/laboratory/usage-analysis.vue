@@ -20,7 +20,6 @@
         <div>
           <span>{{deviceName + '-' + deviceParam}}</span>
         </div>
-        <el-button style="margin-right:20px" type="text">转换为散点</el-button>
       </div>
       <div class="block_content">
         <v-chart autoresize :options="chart" @datazoom="dataZoomEvent" style="width: 95%; height: 500px"/></div>    
