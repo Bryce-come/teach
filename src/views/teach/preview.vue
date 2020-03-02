@@ -1,20 +1,20 @@
 <template>
   <div v-loading="loading" class="preview">
-    <div style="margin: 10px 0" class="block_background">
-      <div class="block_title flex start"><i class="iconfont icon-message4"></i>
-        当前共需预习<span>{{coursePreviewList.length}}</span>门实验课程
-      </div>
-      <div class="wrapper">
-        <div class="wrapper-content" v-for="(item, id) in coursePreviewList" :key="id">
-          <div style="margin-left:50px">
-            <i class="iconfont icon-manage2 i"></i>
-            <span style="font-size:1.2rem;margin-left:5px">{{item.name + '：'}}</span>
-            <span>{{item.time}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin: 10px 0" class="block_background" v-show="coursePreviewList.lenth > 0">
+    <el-form :inline="true" class="flex start">
+      <el-form-item label="选择课程：">
+        <el-select v-model="coursePreview">
+          <el-option
+            v-for="item of coursePreviewList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="queryCourseInfo()">预习</el-button>
+      </el-form-item>
+    </el-form>
+    <div style="margin: 10px 0" class="block_background" v-show="coursePreviewList.length > 0">
       <div class="block_title flex start">课程详细信息</div>
       <div style="margin-top:20px">
           <div style="font-weight:bold;margin: 10px 20px">自动化原理与操作</div>
@@ -70,28 +70,34 @@ import {ref, Ref, onMounted} from '@vue/composition-api';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { CourseList4Student} from '@/dao/courseProgramDao';
+import { CourseRecordPreview} from '@/dao/courseRecordDao';
 export default {
   setup() {
     const loading = ref(false);
     const coursePreviewList = ref<any>([]);
-    const query = async () => {
-      // courseList.value = [
-      //   {id: 0, name: '自动化原理与操作', time: '2月10日 周一 13：30~14：30'},
-      //   {id: 1, name: '自动化原理与操作', time: '2月11日 周二 13：30~14：30'},
-      //   {id: 2, name: '自动化原理与操作', time: '2月12日 周三 13：30~14：30'},
-      //   {id: 3, name: '自动化原理与操作', time: '2月13日 周四 13：30~14：30'},
-      // ];
+    const coursePreview = ref<any>();
+    const courseInfo = ref<any>();
+    const queryCoursePreviewList = async () => {
       coursePreviewList.value = await CourseList4Student();
       console.log(coursePreviewList.value);
+    };
+    const queryCourseInfo = async () => {
+      const courseID = coursePreview.value;
+      courseInfo.value = await CourseRecordPreview({
+        courseId: courseID,
+      });
+      console.log(courseInfo.value);
     };
     const download = async () => {
       Message.success('下载成功');
     };
     onMounted(useLoading(loading, async () => {
-      await query();
+      await queryCoursePreviewList();
+      // await queryCourseInfo();
     }));
     return {
-      loading, coursePreviewList, query,
+      loading, coursePreviewList, queryCoursePreviewList, coursePreview,
+      queryCourseInfo, courseInfo,
       download: useConfirm('确认下载？', useLoading(loading, download)),
     };
   },
