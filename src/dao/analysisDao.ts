@@ -40,3 +40,18 @@ export async function AnalysisDeviceParam(params: any) {
   const { data } = await mesPostUntilSuccess('/rest/monitor/station/device/detail/params', params);
   return data;
 }
+
+/**
+ * 实验人时数
+ * 课程可筛选（多选），选择时间范围统计（daterange，一开始不填），将会统计这个时间范围内的课程的人时数，
+ * 返回list<Map>: [ { x:课程名, y:值 } ]
+ *
+ * ApiParam(value = "course id [] json")
+ * RequestParam(required = false) String courseJson,
+ * RequestParam long start,
+ * RequestParam long end
+ */
+export async function AnalysisCourseManClassHours(params:any) {
+  const {data:{list}} = await postService('/rest/analysis/classHours',params);
+  return list;
+}
