@@ -161,17 +161,16 @@ export default {
         console.log(checkList.value);
         if (checkList.value && checkList.value.length !== 0) {
           for (const item of checkList.value) {
-            if(stationExtend.value.stationBind){
-              for (let key in stationExtend.value.stationBind) {
-                 if (stationExtend.value.stationBind[key] && stationExtend.value.stationBind[key].includes(item)){
-                   stationExtend.value.stationBind[key].splice( stationExtend.value.stationBind[key].indexOf(item),1);
+            if (stationExtend.value.stationBind) {
+              for (const key in stationExtend.value.stationBind) {
+                 if (stationExtend.value.stationBind[key] && stationExtend.value.stationBind[key].includes(item)) {
+                   stationExtend.value.stationBind[key].splice( stationExtend.value.stationBind[key].indexOf(item), 1);
                  }
               }
             }
-          };
+          }
           flag = true;
-        } 
-        else{ flag = true; }
+        } else { flag = true; }
         const obj1 = stationExtend.value.stationBind;
         const obj = {} as any;
         if (flag) {

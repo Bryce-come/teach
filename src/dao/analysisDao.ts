@@ -51,7 +51,7 @@ export async function AnalysisDeviceParam(params: any) {
  * RequestParam long start,
  * RequestParam long end
  */
-export async function AnalysisCourseManClassHours(params:any) {
-  const {data:{list}} = await postService('/rest/analysis/classHours',params);
+export async function AnalysisCourseManClassHours(params: any) {
+  const {data: {list}} = await postService('/rest/analysis/classHours', params);
   return list;
 }

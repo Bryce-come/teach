@@ -22,8 +22,8 @@ export const MonitorAlarm = async () => {
  * RequestParam long start,
  * RequestParam long end
  */
-export async function AlarmDeviceHistory(params:any) {
-  const {data:{list}} = await postService('/rest/analysis/device/alarm/history',params);
+export async function AlarmDeviceHistory(params: any) {
+  const {data: {list}} = await postService('/rest/analysis/device/alarm/history', params);
   return list;
 }
 
@@ -36,7 +36,7 @@ export async function AlarmDeviceHistory(params:any) {
  * List<DeviceMaintenRecord>
  */
 export async function AlarmMaintenDelay() {
-  const {data:{list}} = await postService('/rest/device/mainten/alarm');
+  const {data: {list}} = await postService('/rest/device/mainten/alarm');
   return list;
 }
 
@@ -50,13 +50,13 @@ export async function AlarmMaintenDelay() {
  * RequestParam long start,
  * RequestParam long end
  */
-export async function AlarmUsageList(params:any) {
-  const {data:{list}} = await postService('/rest/alarm/usage/list',params);
+export async function AlarmUsageList(params: any) {
+  const {data: {list}} = await postService('/rest/alarm/usage/list', params);
   return list;
 }
 
 // todo 后续用于实时报警信息
 export async function AlarmUsageLatest() {
-  const {data:{list}} = await postService('/rest/alarm/usage/latest');
+  const {data: {list}} = await postService('/rest/alarm/usage/latest');
   return list;
 }

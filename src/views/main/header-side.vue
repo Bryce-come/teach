@@ -197,7 +197,7 @@ export default createComponent({
       updateStoreUserInfo(storeUserInfo as any);
       modalUpdateInfo.visible = false;
     }
-    const isNotStudent = computed(()=>{
+    const isNotStudent = computed(() => {
       // 如果是学生，有些不显示
       return storeUserInfo.user && storeUserInfo.user.role && storeUserInfo.user.role.department && storeUserInfo.user.role.department.id !== 2;
     });
@@ -205,7 +205,7 @@ export default createComponent({
       over.value = false;
       count.value = 0;
       while (!over.value) {
-        if(isNotStudent) await query();
+        if (isNotStudent) { await query(); }
         // count.value += 1;
         await sleep(15000);
       }
@@ -251,7 +251,7 @@ export default createComponent({
       updatePwd: useLoadingDirect(modalUpdatePwd.loading, updatePwd),
       updateInfo: useLoading(loading, updateInfo),
       query,
-      isNotStudent
+      isNotStudent,
     };
   },
 
