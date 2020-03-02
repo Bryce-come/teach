@@ -396,7 +396,7 @@ function initPCForm() {
   return {
     PCIP: '',
     PCNo: '',
-    belongDevice:'',
+    belongDevice: '',
     remark: '',
   };
 }

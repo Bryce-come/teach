@@ -122,10 +122,10 @@ export default {
         courseRecordInClass.value = await CourseRecordInClass();
         studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
         if (courseRecordInClass.value.extend.stationBind) {
-           let obj = Object.values(courseRecordInClass.value.extend.stationBind);
+           const obj = Object.values(courseRecordInClass.value.extend.stationBind);
            // @ts-ignore
-           overStudentList.value = obj.reduce((a,b) => a.concat(b),[]);
-        };
+           overStudentList.value = obj.reduce((a, b) => a.concat(b), []);
+        }
         console.log(courseRecordInClass.value);
         // console.log(overStudentList.value);
         // console.log(studentsList.value);
@@ -135,7 +135,7 @@ export default {
         return ImageLink(path);
       }
     }
-    //分配
+    // 分配
     const distribution = async (id: any) => {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
@@ -143,32 +143,31 @@ export default {
            stationExtend.value = courseRecordInClass.value.extend;
            if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {
               checkList.value = courseRecordInClass.value.extend.stationBind[id.toString()];
-           }else{
+           } else {
               checkList.value = [];
            }
           //  console.log(stationExtend.value);
-        } else { 
+        } else {
           stationExtend.value = initExtend(); }
-          studentMode.value.visible = true;
+        studentMode.value.visible = true;
     };
-    const delectClick = async () =>{
+    const delectClick = async () => {
       checkList.value = [];
-    }
+    };
     const update = async () => {
         const obj1 = stationExtend.value.stationBind;
         const obj = {} as any;
         const stationId = stationID.value;
         let flag = false;
         console.log(checkList.value);
-        if(checkList.value && checkList.value.length !== 0){
-          for (var item of checkList.value) {
-            if (overStudentList.value.includes(item)){
+        if (checkList.value && checkList.value.length !== 0) {
+          for (const item of checkList.value) {
+            if (overStudentList.value.includes(item)) {
               alert('含有重复分配学生，请先删除重复学生的分配');
-            }
-            else flag = true;
+            } else { flag = true; }
           }
-        }else flag = true;
-        if(flag){
+        } else { flag = true; }
+        if (flag) {
         obj[stationId.toString()] = checkList.value;
         stationExtend.value.stationBind = {
           ...obj1,
@@ -178,11 +177,11 @@ export default {
         // console.log(stationExtend.value);
         await courseRecordUpdate();
         await queryCourseInClass();
-        studentMode.value.visible = false;}
+        studentMode.value.visible = false; }
     };
-    const StuUpdate = async () =>{
-        let obj3 = [[1],[3],[2,5]];
-        let obj4 = obj3.reduce((a,b) => a.concat(b),[] );
+    const StuUpdate = async () => {
+        const obj3 = [[1], [3], [2, 5]];
+        const obj4 = obj3.reduce((a, b) => a.concat(b), [] );
         console.log(obj4);
     };
     const courseRecordUpdate = async () => {
@@ -194,7 +193,7 @@ export default {
     };
     const ceshi = async () => {
 
-    }
+    };
     onMounted(useLoading(loading, async () => {
       await queryCourseInClass();
       await queryStationList();

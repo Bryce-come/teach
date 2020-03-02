@@ -164,7 +164,7 @@ export default {
     }));
     return {
       loading, experimentResultList, propsWord, setPorps, getTempList,
-      reportButton, templateButton, getReportList,downFile,
+      reportButton, templateButton, getReportList, downFile,
       showReport: useLoading(loading, showReport),
       showTemplate: useLoading(loading, showTemplate),
       experimentReportTemplateList, courseList, getCourseList,

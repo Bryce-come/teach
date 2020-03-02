@@ -103,7 +103,7 @@ export default createComponent({
     const appointDt = ref<any>(null);
     const [keywords, flitered] = useSearch(appointRecords, {
       includeProps: ['applicant.name', 'applicant.role'],
-    })
+    });
     const query = async () => {
       appointRecords.value = await AppointList({
         typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
