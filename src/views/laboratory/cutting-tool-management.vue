@@ -346,7 +346,7 @@ function initCutterForm() {
 }
 function initStoreRecordForm() {
   return {
-    type: '', quantity: '', remark: '',
+    type: 1 , quantity: '', remark: '',
     extend: {
       person: '',
       stationRecord: {
