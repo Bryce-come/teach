@@ -3,19 +3,19 @@
     <el-row :gutter="40" type="flex" justify="space-between">
       <el-col :span="4" class="treewidth">
           <el-button type="success" @click="showFormB()">添加班级</el-button>
-          <el-tree 
-            :data="list" 
-            :props="props" 
+          <el-tree
+            :data="list"
+            :props="props"
             node-key="id"
             default-expand-all
             :expand-on-click-node='false'
             min-width="350px"
             ref="tree">
-            <span class="custom-tree-node" slot-scope="{ node, data }" 
+            <span class="custom-tree-node" slot-scope="{ node, data }"
               @mousemove="moveNow(node)" @mouseleave="moveNotNow()" @click="firstTab(node)">
-              <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;" 
+              <input style="background-color:transparent; width:80px;border-radius: 6px;height: 27px;border:none;"
               :style="data.tagoff?'color:red':''"
-              class="tel" type="text" disabled="disabled" 
+              class="tel" type="text" disabled="disabled"
               v-model="node.label">
               <span>
                 <el-button
@@ -156,7 +156,7 @@
           <el-form-item :label="!modal.studentInfo.id ? '密码：' : '修改密码：'" prop="pwd" :rules="[{ required: !modal.studentInfo.id, message: '请填写密码' }, { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}]">
           <el-input clearable v-model="modal.studentInfo.pwd" type="password"/>
           </el-form-item>
-          <el-form-item label="确认密码：" prop="pwdCheck" :rules="{ required: !modal.studentInfo.id, validator: validator }">
+          <el-form-item label="确认密码：" prop="pwdCheck" :rules="modal.studentInfo.pwd?{ required: true, validator: validator }:{required: false}">
             <el-input clearable v-model="modal.studentInfo.pwdCheck" type="password" />
           </el-form-item>
           <el-form-item label="联系方式：" prop="phone">
@@ -277,20 +277,19 @@ export default {
       addClazInfo: '',
     });
     const moveNowTrue = ref<any>({
-      moveNowId:'',
-    })
-    function moveNow(row:any){
-      moveNowTrue.value.moveNowId=row.id
+      moveNowId: '',
+    });
+    function moveNow(row: any) {
+      moveNowTrue.value.moveNowId = row.id;
     }
-    function moveNotNow(){
-      moveNowTrue.value.moveNowId=''
+    function moveNotNow() {
+      moveNowTrue.value.moveNowId = '';
     }
     function firstTab(row: any) {
-      if(row.level===1){
-        keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)]
-      }
-      else if (row.level===2){
-        keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)]
+      if (row.level === 1) {
+        keywords.value = grpandclzList.value.claszNameList[grpandclzList.value.claszIdList.indexOf(row.data.id)];
+      } else if (row.level === 2) {
+        keywords.value = grpandclzList.value.groupNameList[grpandclzList.value.groupIdList.indexOf(row.data.id)];
       }
     }
     const upgrpFlag = ref<any>({
@@ -366,8 +365,7 @@ export default {
         await getGroupList();
         addClazFlag.value.addClazInfo = '';
         addClazFlag.value.visible = false;
-      } 
-      else if (addClazFlag.value.addClazInfo != '' && (claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo) != -1)) {
+      } else if (addClazFlag.value.addClazInfo != '' && (claszList.value.claszNameList.indexOf(addClazFlag.value.addClazInfo) != -1)) {
         addClazFlag.value.visible = false;
         addClazFlag.value.addClazInfo = '';
         Message.error('请输入名称或该名称已存在');
@@ -378,10 +376,6 @@ export default {
       }
     }
     async function showForm(row: any) {
-      if (row) {
-        row.pwd = '';
-        (row as any).pwdCheck = '';
-      }
       modal.value.studentInfo = row ? deepClone(row) : initForm();
       modal.value.visible = true;
       await armasd(row.extend.clasz);
@@ -392,9 +386,8 @@ export default {
       || upgrpFlag.value.upgrpInfo === '') {
         upgrpFlag.value.visible = false;
         Message.error('请输入名称或该名称已存在');
-        upgrpFlag.value.upgrpInfo=''
-      } 
-      else {
+        upgrpFlag.value.upgrpInfo = '';
+      } else {
         const result = {
           cid: upgrpFlag.value.data.parent.data.id,
           name: upgrpFlag.value.upgrpInfo,
@@ -405,17 +398,16 @@ export default {
         classList.value = await ClassList();
         await getGroupList();
         upgrpFlag.value.visible = false;
-        upgrpFlag.value.upgrpInfo=''
+        upgrpFlag.value.upgrpInfo = '';
       }
     }
     async function addNewGroupDate() {
-      if (grpandclzList.value.groupListb[grpandclzList.value.claszIdList.indexOf(addNewGroupFlag.value.data.data.id)].indexOf(addNewGroupFlag.value.addNewGroupInfo) != -1 
+      if (grpandclzList.value.groupListb[grpandclzList.value.claszIdList.indexOf(addNewGroupFlag.value.data.data.id)].indexOf(addNewGroupFlag.value.addNewGroupInfo) != -1
       || addNewGroupFlag.value.addNewGroupInfo === '') {
         addNewGroupFlag.value.visible = false;
         Message.error('请输入名称或该名称已存在');
-        addNewGroupFlag.value.addNewGroupInfo = ''
-      } 
-      else {
+        addNewGroupFlag.value.addNewGroupInfo = '';
+      } else {
         const result = {
           cid: addNewGroupFlag.value.data.data.id,
           name: addNewGroupFlag.value.addNewGroupInfo,
@@ -425,7 +417,7 @@ export default {
         classList.value = await ClassList();
         await getGroupList();
         addNewGroupFlag.value.visible = false;
-        addNewGroupFlag.value.addNewGroupInfo = ''
+        addNewGroupFlag.value.addNewGroupInfo = '';
       }
     }
     async function update() {
@@ -457,7 +449,7 @@ export default {
         Message.success('修改成功');
       }
       modal.value.visible = false;
-      await queryStudentList();;
+      await queryStudentList();
     }
     const queryStudentList = async () => {
         const firstList = await StudentList();
@@ -516,19 +508,16 @@ export default {
     return{
       loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag, armasdb,
       addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
-      armasd, upgrpFlag, showFormB,moveNow,moveNowTrue,moveNotNow,
+      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
-      queryStudentList, queryClassList, 
+      queryStudentList, queryClassList,
       removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
       modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,
       update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,
       validator, classList, groupList, ctogList, append, firstTab, grpandclzList,
-      FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)), 
-      unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)), 
-    };
-    return{
-
+      FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
+      unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),
     };
   },
 };
@@ -538,8 +527,8 @@ enum Status {
 }
 function initForm() {
   return {
-    name: '', username: '', phone: '', status: '', role: 3, pwdCheck: '',
-    extend: {clasz: '', claszGroup: ''},
+    name: '', phone: '', role: 3,
+    extend: {},
   };
 }
 </script>

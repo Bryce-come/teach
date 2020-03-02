@@ -1,56 +1,74 @@
 <template >
   <div v-loading="loading">
-    <div style="margin: 10px 0" class="block_background">
-      <div class="block_title flex between">上课班级信息</div>
-        <el-form :inline="true" >
-            <el-form-item label="上课时间:" label-width="100px" v-if='courseRecordInClass'>
-                <span>{{courseRecordInClass.startDt+' — '+courseRecordInClass.endDt}}</span>
-            </el-form-item>
-            <el-form-item label="上课班级:" label-width="100px" v-if='courseRecordInClass.clasz' >
-                <span>{{courseRecordInClass.clasz.name}}</span>
-            </el-form-item>
-            <el-form-item label="教学分组:" label-width="100px" v-if='courseRecordInClass.claszGroup'>
-               <span>{{courseRecordInClass.claszGroup.name}}</span>
-            </el-form-item>
-            <el-form-item label="人数:" label-width="100px">
-                <span v-if="courseRecordInClass.studentList">{{courseRecordInClass.studentList.length}}人</span>
-            </el-form-item>
-        </el-form>
-    </div>
-    <div style="margin: 10px 0" class="block_background">
-      <div class="block_title flex between">操作台分配</div>
-        <div class="flex align-center wrap">
-          <div v-for="(item, i) in stationList" :key='i' style='width:23%; margin-left:10px;border:1px solid grey;border-radius:5px'>
-              <div class="flex align-center">
-                <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
-                <div v-if="courseRecordInClass.stationBind[item.id.toString()]" class="flex end" style="width: 30%">
-                  <el-button type="text" @click="distribution(item.id)">重新分配</el-button>
+    <div v-if="!courseRecordInClass" style="color: grey;text-align: center">暂无上课信息</div>
+    <div v-else>
+      <div style="margin: 10px 0" class="block_background">
+        <div class="block_title flex between">上课班级信息</div>
+          <el-form :inline="true" >
+              <el-form-item label="上课时间:" label-width="100px" v-if='courseRecordInClass'>
+                  <span>{{courseRecordInClass.startDt+' — '+courseRecordInClass.endDt}}</span>
+              </el-form-item>
+              <el-form-item label="上课班级:" label-width="100px" v-if='courseRecordInClass.clasz' >
+                  <span>{{courseRecordInClass.clasz.name}}</span>
+              </el-form-item>
+              <el-form-item label="教学分组:" label-width="100px" v-if='courseRecordInClass.claszGroup'>
+                  <span>{{courseRecordInClass.claszGroup.name}}</span>
+              </el-form-item>
+              <el-form-item label="人数:" label-width="100px">
+                  <span v-if="courseRecordInClass.studentList">{{courseRecordInClass.studentList.length}}人</span>
+              </el-form-item>
+          </el-form>
+      </div>
+      <div style="margin: 10px 0" class="block_background">
+        <div class="block_title flex between">操作台分配</div>
+        <div class="flex">
+           <div style="padding-left: 10px;width:20%;margin-top:10px">
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <span>未分配学生列表</span>
                 </div>
-              <div v-else class="flex end" style="width: 30%">
-                  <el-button type="text"  @click="distribution(item.id)">分配学生</el-button>
+                <div v-for="(item,i) in studentsList" :key="i" style="padding: 5px; text-align: left;">
+                  <div v-if="!overStudentList.includes(item.id)">{{item.name }}</div>
                 </div>
-              </div>
-              <div class="flex center" style="width:80%;margin:10px auto" v-if="item.deviceList[0].deviceType">
-                  <img :src="img(item.deviceList[0].deviceType.img)" alt="">
+          </el-card>
+           </div>
+           <div class="flex align-center wrap" style="padding-left: 10px;width:75%;">
+            <div v-for="(item, i) in stationList" :key='i' style='width:30%; margin-left:10px;margin-top:10px;border:1px solid grey;border-radius:5px'>
+                <div class="flex align-center">
+                  <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
+                  <div v-if="courseRecordInClass.stationBind[item.id.toString()] && courseRecordInClass.stationBind[item.id.toString()].length !== 0 " class="flex end" style="width: 30%">
+                    <el-button type="text" @click="distribution(item.id)">重新分配</el-button>
+                  </div>
+                  <div v-else class="flex end" style="width: 30%">
+                    <el-button type="text"  @click="distribution(item.id)">分配学生</el-button>
+                  </div>
                 </div>
-              <div class="flex align-center wrap" style="background-color:rgb(215, 235, 248);" v-if="courseRecordInClass.stationBind[item.id.toString()]">
-                <div  
-                    v-for="(sName, k) in courseRecordInClass.stationBind[item.id.toString()]" :key='k'
-                    style=" width:50%; text-align:center;height:2rem;line-height:2rem">
-                    <div >
-                      {{sName.name}}
+                <div class="flex align-center center">
+                  <div style="width:150px;margin-rignt:5px" v-if="item.deviceList[0].deviceType">
+                      <img :src="img(item.deviceList[0].deviceType.img)" alt="">
+                  </div>
+                  <div class="device-message" style="padding-left: 10px;width: 100px;">
+                    <div class="flex wrap">
+                      <el-tag 
+                      v-for="(sName, k) in courseRecordInClass.stationBind[item.id.toString()]" :key='k'
+                      style="margin-right: 5px "
+                      type="primary" size="small" effect="plain">
+                        {{sName.name}}
+                      </el-tag>
                     </div>
+                  </div>
                 </div>
-              </div>
-                <div v-else style="background-color:rgb(215, 235, 248); width:100%; text-align:center;height:2rem;line-height:2rem">--</div>
+            </div>
           </div>
+        </div>
       </div>
     </div>
     <kit-dialog-simple
       :modal="studentMode"
       :confirm="update"
-      width="500px">
-      <div slot='title'>学生列表</div>
+      width="600px">
+      <div class="flex center" ><span>学生列表</span></div>
+      <div class="flex"><el-button type='primary' icon="el-icon-delete"  @click="delectClick()">取消选择</el-button></div>
       <div v-if="studentMode.data" class="flex align-center wrap">
          <div
               class="flex between align-center"
@@ -81,78 +99,18 @@ import {ImageLink} from '@/dao/commonDao.ts';
 export default {
   setup() {
     const loading = ref(false);
-    const lesson = ref<any>({});
     const stationList = ref<any>([]);
     const stationID = ref(-1);
     const studentID = ref(-1);
     const stationExtend = ref<any>();
     const studentsList = ref<any>([]);
+    const overStudentList = ref<any>([]);
     const studentMode = ref<any>({
-        visible: false,
-        data: '',
-    });
-    const deviceMode = ref<any>({
         visible: false,
         data: '',
     });
     const checkList = ref([]);
     const checkDeviceList = ref([]);
-    const query = async () => {
-        lesson.value = {
-           date: '2020/02/23 周四 第1-3节',
-           students: [
-                {id: 1,
-                name: '马克',
-                station: {
-                    id: 1,
-                    name: '操作台1'}},
-                {id: 2,
-                name: '王力',
-                station: {
-                    id: 1}},
-                {id: 3,
-                name: '嘉华',
-                station: {
-                    id: 2,
-                    name: '操作台2'}},
-                {id: 4,
-                name: '德利',
-                station: {
-                    id: 2,
-                    name: '操作台2'}},
-           ],
-           stationList: [
-                {id: 1,
-                name: '操作台1',
-                src: '../../assets/u1630.png',
-                extend: {
-                    student: ['马克', '王力'],
-                }},
-                {id: 2,
-                name: '操作台2',
-                src: '../../assets/u1630.png',
-                extend: {
-                    student: ['马克', '王力'],
-                }},
-                {id: 3,
-                name: '操作台3',
-                src: '../../assets/u1630.png',
-                extend: {
-                    student: ['马克', '王力'],
-                }},
-                {id: 4,
-                name: '操作台4',
-                src: '../../assets/u1630.png',
-                extend: {
-                    student: ['马克', '王力'],
-                }},
-                ],
-           extend: {
-                clasz: '自动化1602',
-                claszGroup: [ '一组', '二组' ],
-           },
-       };
-    };
     const courseRecordInClass = ref<any>();
     const queryStationList = async () => {
         stationList.value = await StationList({
@@ -163,7 +121,13 @@ export default {
     const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
         studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
+        if (courseRecordInClass.value.extend.stationBind) {
+           const obj = Object.values(courseRecordInClass.value.extend.stationBind);
+           // @ts-ignore
+           overStudentList.value = obj.reduce((a, b) => a.concat(b), []);
+        }
         console.log(courseRecordInClass.value);
+        // console.log(overStudentList.value);
         // console.log(studentsList.value);
     };
     function img(path: any) {
@@ -171,23 +135,39 @@ export default {
         return ImageLink(path);
       }
     }
+    // 分配
     const distribution = async (id: any) => {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
-        studentMode.value.visible = true;
         if (courseRecordInClass.value.extend.stationBind) {
            stationExtend.value = courseRecordInClass.value.extend;
-           console.log(stationExtend.value);
-        } else { stationExtend.value = initExtend(); }
+           if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {
+              checkList.value = courseRecordInClass.value.extend.stationBind[id.toString()];
+           } else {
+              checkList.value = [];
+           }
+          //  console.log(stationExtend.value);
+        } else {
+          stationExtend.value = initExtend(); }
+        studentMode.value.visible = true;
     };
-    const distributionDevice = async () => {
-        deviceMode.value.data = lesson.value;
-        deviceMode.value.visible = true;
+    const delectClick = async () => {
+      checkList.value = [];
     };
     const update = async () => {
         const obj1 = stationExtend.value.stationBind;
         const obj = {} as any;
         const stationId = stationID.value;
+        let flag = false;
+        console.log(checkList.value);
+        if (checkList.value && checkList.value.length !== 0) {
+          for (const item of checkList.value) {
+            if (overStudentList.value.includes(item)) {
+              alert('含有重复分配学生，请先删除重复学生的分配');
+            } else { flag = true; }
+          }
+        } else { flag = true; }
+        if (flag) {
         obj[stationId.toString()] = checkList.value;
         stationExtend.value.stationBind = {
           ...obj1,
@@ -197,12 +177,11 @@ export default {
         // console.log(stationExtend.value);
         await courseRecordUpdate();
         await queryCourseInClass();
-        deviceMode.value.visible = false;
-        studentMode.value.visible = false;
+        studentMode.value.visible = false; }
     };
-    const StuUpdate = async () =>{
-        let obj3 = [[1],[3],[2,5]];
-        let obj4 = obj3.reduce((a,b) => a.concat(b),[] );
+    const StuUpdate = async () => {
+        const obj3 = [[1], [3], [2, 5]];
+        const obj4 = obj3.reduce((a, b) => a.concat(b), [] );
         console.log(obj4);
     };
     const courseRecordUpdate = async () => {
@@ -214,32 +193,29 @@ export default {
     };
     const ceshi = async () => {
 
-    }
+    };
     onMounted(useLoading(loading, async () => {
-      await query();
       await queryCourseInClass();
       await queryStationList();
-      await StuUpdate();
+      // await StuUpdate();
     }));
     return{
-     lesson,
      loading,
      stationList,
      studentsList,
      distribution,
-     query,
      update,
      studentMode,
-     deviceMode,
      checkList,
-     distributionDevice,
      checkDeviceList,
      courseRecordInClass,
      queryCourseInClass,
      img,
      stationID, stationExtend, courseRecordUpdate,
      studentID,
-     StuUpdate,
+     overStudentList,
+     delectClick,
+    //  StuUpdate,
     };
   },
 };

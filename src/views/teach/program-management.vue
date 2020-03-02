@@ -131,24 +131,24 @@ export default {
     });
     const courseNow = ref<any>({
       startdate: '',
-      enddate:'',
+      enddate: '',
       className: '',
       classGroupName: '',
       classPpNum: '',
       studentCount: '',
     });
     const areThey = ref<any>({
-      status:true,
-    })
+      status: true,
+    });
     const sameStudent = ref<any>({
-      sameList:[],
-    })
+      sameList: [],
+    });
     const moveNowTrue = ref<any>({
-      moveNowId:'',
-    })
-    function moveNow(row:any){
-      moveNowTrue.value.moveNowId=row.id
-      console.log(row)
+      moveNowId: '',
+    });
+    function moveNow(row: any) {
+      moveNowTrue.value.moveNowId = row.id;
+      console.log(row);
     }
     const query = async () => {
       const pum = {recordId: courseNow.value.id};
@@ -182,10 +182,10 @@ export default {
         courseNow.value.classPpNum = '当前无课';
       }
     }
-    const cheakNow=ref<any>({
-      id:''
-    })
-    function tableRowClassName(){
+    const cheakNow = ref<any>({
+      id: '',
+    });
+    function tableRowClassName() {
     }
     const EtInfo = ref<any>({
       stationName: '',
@@ -200,7 +200,7 @@ export default {
       remark: '',
     });
     async function cheakDetail(row: any) {
-      cheakNow.value.id=row.id
+      cheakNow.value.id = row.id;
       const pum = {
         id: row.id,
       };
@@ -214,35 +214,34 @@ export default {
       reviewInfo.value.remark = result.remark;
       const pumb = {
         recordId: courseNow.value.id,
-        studentId: row.student.id
-      }
+        studentId: row.student.id,
+      };
       const resultb = await NCExamList(pumb);
-      sameStudent.value.sameList=resultb
-      if(row.result===true||row.result===false){
-        areThey.value.status=false
-      }else{
-        areThey.value.status=true
+      sameStudent.value.sameList = resultb;
+      if (row.result === true || row.result === false) {
+        areThey.value.status = false;
+      } else {
+        areThey.value.status = true;
       }
     }
-    function backUp(){
-      turn.value=true
+    function backUp() {
+      turn.value = true;
     }
     async function agreeUp() {
-      if(EtInfo.value.data.result===undefined){
+      if (EtInfo.value.data.result === undefined) {
         const result = {
         id: reviewInfo.value.id,
         result: 2,
       };
-      await NCExamOperate(result);
-      await query();
-      }
-      else{
-        Message.error('已经过审核')
+        await NCExamOperate(result);
+        await query();
+      } else {
+        Message.error('已经过审核');
       }
       turn.value = true;
     }
     async function disAgreeUp() {
-      if(EtInfo.value.data.result===undefined){
+      if (EtInfo.value.data.result === undefined) {
       const result = {
         id: reviewInfo.value.id,
         remark: reviewInfo.value.remark,
@@ -250,9 +249,8 @@ export default {
       };
       await NCExamOperate(result);
       await query();
-      }
-      else{
-        Message.error('已经过审核')
+      } else {
+        Message.error('已经过审核');
       }
       turn.value = true;
     }
@@ -261,10 +259,10 @@ export default {
         await query();
     }));
     return {
-      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo,areThey,
-      loading, ncProgramList, query, turn, filtered, keywords,tableRowClassName,sameStudent,
-      moveNow,moveNowTrue,
-      turnToExamine: useLoading(loading, turnToExamine),backUp,
+      getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo, areThey,
+      loading, ncProgramList, query, turn, filtered, keywords, tableRowClassName, sameStudent,
+      moveNow, moveNowTrue,
+      turnToExamine: useLoading(loading, turnToExamine), backUp,
       agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
       disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),
     };

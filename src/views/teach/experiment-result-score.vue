@@ -138,11 +138,10 @@ export default {
       scoreModal.value.visible = true;
     };
     async function scoreUpdate() {
-      if(scoreModal.value.scoreInfo.extend.score1===''||scoreModal.value.scoreInfo.extend.score2===''){
+      if (scoreModal.value.scoreInfo.extend.score1 === '' || scoreModal.value.scoreInfo.extend.score2 === '') {
         scoreModal.value.visible = false;
-        Message.error('评分失败，请填写分数')
-      }
-      else{
+        Message.error('评分失败，请填写分数');
+      } else {
         scoreModal.value.visible = false;
         const result = {
           id: scoreModal.value.scoreInfo.id,
@@ -152,7 +151,7 @@ export default {
         await ReportScore(result);
         Message.success('评分成功');
         await query();
-        await getScorcedStatus()
+        await getScorcedStatus();
       }
     }
     async function downFile(row: any) {
@@ -245,55 +244,54 @@ export default {
     }
     const query = async () => {
       const result = await getReportList();
-      console.log(result)
+      console.log(result);
       experimentReportList.value = result;
     };
-    const scoreList=ref<any>({
-      allScore:[],
-      haveScore:[],
-      noScore:[]
-    })
+    const scoreList = ref<any>({
+      allScore: [],
+      haveScore: [],
+      noScore: [],
+    });
     const getScorcedStatus = async () => {
-      scoreList.value.allScore=experimentReportList.value
-      scoreList.value.haveScore=[]
-      scoreList.value.noScore=[]
-      for(let i=0;i<experimentReportList.value.length;i++){
-        if(experimentReportList.value[i].scoreSum!=null){
-          scoreList.value.haveScore.push(experimentReportList.value[i])
-        }
-        else{
-          scoreList.value.noScore.push(experimentReportList.value[i])
+      scoreList.value.allScore = experimentReportList.value;
+      scoreList.value.haveScore = [];
+      scoreList.value.noScore = [];
+      for (let i = 0; i < experimentReportList.value.length; i++) {
+        if (experimentReportList.value[i].scoreSum != null) {
+          scoreList.value.haveScore.push(experimentReportList.value[i]);
+        } else {
+          scoreList.value.noScore.push(experimentReportList.value[i]);
         }
       }
-    }
+    };
     const showAllScored = async () => {
       allScored.value = true;
       hasScored.value = false;
       noScored.value = false;
-      experimentReportList.value=scoreList.value.allScore
+      experimentReportList.value = scoreList.value.allScore;
     };
     const showHasScored = async () => {
       allScored.value = false;
       hasScored.value = true;
       noScored.value = false;
-      experimentReportList.value=scoreList.value.haveScore
+      experimentReportList.value = scoreList.value.haveScore;
     };
     const showNoScored = async () => {
       allScored.value = false;
       hasScored.value = false;
       noScored.value = true;
-      experimentReportList.value=scoreList.value.noScore
+      experimentReportList.value = scoreList.value.noScore;
     };
     onMounted(useLoading(loading, async () => {
       await query();
       await getCourseList();
       await getClazList();
-      await getScorcedStatus()
+      await getScorcedStatus();
     }));
     return {
       loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList, keywords,
       scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList, filtered,
-      allScored, hasScored, noScored, downFile, courseList,getScorcedStatus,
+      allScored, hasScored, noScored, downFile, courseList, getScorcedStatus,
       showAllScored: useLoading(loading, showAllScored),
       showHasScored: useLoading(loading, showHasScored),
       showNoScored: useLoading(loading, showNoScored),
