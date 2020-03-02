@@ -94,7 +94,7 @@ export default {
       const result = {
           stationJson: id,
           status: row.extend.linkStatus,
-          throwable:false
+          throwable: false,
         };
       CNCLinkSet(result);
       await getStatusList();

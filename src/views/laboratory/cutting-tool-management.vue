@@ -224,8 +224,8 @@ export default {
         extend: {
           person: '',
           stationRecord: {
-            id: [], 
-            quantity: '',},
+            id: [],
+            quantity: ''},
           batchNo: '', company: '', supplier: '', supplierTel: '', buyDt: '', keeper: ''},
       },
     });
@@ -272,7 +272,7 @@ export default {
         data = initStoreRecordForm();
       }
       storeRecordModal.value.storeInfo = data;
-      console.log("storeRecordModal.value.storeInfo");
+      console.log('storeRecordModal.value.storeInfo');
       console.log(storeRecordModal.value.storeInfo);
       storeRecordModal.value.visible = true;
     };
@@ -350,15 +350,15 @@ function initStoreRecordForm() {
     extend: {
       person: '',
       stationRecord: {
-        id: [], 
+        id: [],
         quantity: '',
         },
-      batchNo: '', 
+      batchNo: '',
       company: '',
-      supplier: '', 
-      supplierTel: '', 
+      supplier: '',
+      supplierTel: '',
       buyDt: '',
-      keeper: ''
+      keeper: '',
     },
   };
 }
