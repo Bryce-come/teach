@@ -5,7 +5,7 @@ Vue.filter('datetime', (value?: number | Date) => {
   if (isNumber(value)) {
     const date = new Date(value);
     if (date.toString().includes('Invalid')) {
-      return '- -';
+      return '-';
     } else {
       return formatDateTime(date);
     }

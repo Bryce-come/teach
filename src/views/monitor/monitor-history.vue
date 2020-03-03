@@ -18,7 +18,7 @@
     </div>
     <div class="block-card" v-if="courseRecord || courseRecordList">
       <div class="title">课程情况</div>
-      <div class="content" v-if="condition==='1'">
+      <div class="content" v-if="courseRecord">
         <el-form label-width="110px" label-position="left" style="width:100%" >
           <div class="flex align-center wrap course-content">
             <el-form-item label="课程名称：">{{ courseRecord.course?courseRecord.course.name:'' }}</el-form-item>
@@ -111,6 +111,7 @@ export default createComponent({
 
     async function query() {
       if (condition.value === '1') {
+        courseRecordList.value = null;
         dt.value[0] = new Date(courseRecord.value.startDt);
         dt.value[1] = new Date(courseRecord.value.endDt);
         // 补充那次课中的stationBind
@@ -121,11 +122,13 @@ export default createComponent({
             }
           }
         }
-      } else {
+      }
+      else {
         if (range.value.length !== 2) {
           Message.error('请选择时间范围');
           return;
         }
+        courseRecord.value = null;
         dt.value[0].setTime(range.value[0].getTime());
         dt.value[1].setTime(range.value[1].getTime());
         dt.value[0].setHours(0); dt.value[0].setMinutes(0); dt.value[0].setSeconds(0); dt.value[0].setMilliseconds(0);

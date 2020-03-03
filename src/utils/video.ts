@@ -77,6 +77,8 @@ export async function startRealPlay(window: any, szDeviceIdentify: string, chann
           reject('开始预览失败！' + status ? status : '');
         },
       });
+    }else {
+      resolve();
     }
   });
 }
@@ -84,7 +86,7 @@ export async function stopPlay(window: any) {
   return new Promise((resolve, reject) => {
     const oWndInfo = WebVideoCtrl.I_GetWindowStatus(window);
     if (oWndInfo) {
-      WebVideoCtrl.I_Stop({
+      const iRet = WebVideoCtrl.I_Stop({
         iWndIndex: window,
         success() {
           resolve();
@@ -93,6 +95,8 @@ export async function stopPlay(window: any) {
           reject('停止失败');
         },
       });
+    }else {
+      resolve();
     }
   });
 
@@ -115,6 +119,8 @@ export async function startPlayback(window: any, szDeviceIdentify: string, chann
           reject('开始回放失败 ' + status ? status : '');
         },
       });
+    }else {
+      resolve();
     }
   });
 }

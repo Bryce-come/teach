@@ -18,7 +18,7 @@
     <div v-if="station" style="min-width: 1300px">
       <div class="timeline">
         <v-chart
-          style="width:100%; height: 70px"
+          style="width:100%; height: 100px"
           autoresize
           :options="timeLine"/>
       </div>
@@ -47,12 +47,12 @@
               <div style="text-align: center;color: #014cff;font-weight: 600;">{{ param.value }}</div>
             </div>
           </div>
-          <div v-else class="flex" style="font-size: 1.1em">无数据</div>
+          <div v-else class="flex center" style="font-size: 1.2em;color: grey">无数据</div>
         </div>
         <div style="min-width: 900px;width: 58%">
           <div class="flex little-space center">
-            <el-button type="success" plain @click="restartVideo(1)">通道1</el-button>
-            <el-button type="success" plain @click="restartVideo(1)">通道2</el-button>
+            <el-button type="success" :plain="flag!==1" @click="restartVideo(videoChannel[0],1)">通道1</el-button>
+            <el-button type="success" :plain="flag!==2" @click="restartVideo(videoChannel[1],2)">通道2</el-button>
             <el-button type="primary" plain @click="fullScreen()">全屏</el-button>
           </div>
           <div id="contain"></div>
@@ -103,7 +103,7 @@ export default {
     const timeLine = ref<any>();
     const line1 = ref<any>(null);
     const disabled  = ref(true);
-    const count = ref(0);
+    const flag = ref<number>(1);
     const paramNameString = ref('');
     const refreshTime = ref('5分钟');
     const checkList = ref([]);
@@ -113,11 +113,11 @@ export default {
       visible: false,
     });
     const modalVideo = ref<any>({
-      channelId: 1,  // todo 需要更改,当前显示的channel
       szDeviceIdentify: '',
       start: '2020-02-26 07:00:00',
       end: '2020-02-26 14:11:11',
     });
+    const videoChannel = ref<any>([null, null]);
 
     const query = async () => {
       while (!over.value) {
@@ -146,10 +146,15 @@ export default {
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
-        station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id}),
+        station.value = await MonitorStationDetail({id: router.currentRoute.params.id}),
     ]);
-      if (station.value.stationBind && station.value.stationBind[station.value.id.toString()]) {
-        station.value.extend.students = station.value.stationBind[station.value.id.toString()];
+      const cameras = station.value.extend.cameras;
+      if(cameras && cameras.length>0){
+        videoChannel.value[0] = cameras[0].channelId;
+        if(cameras.length>1) videoChannel.value[1] = cameras[1].channelId;
+      }
+      if (courseRecord.value.stationBind && courseRecord.value.stationBind[station.value.id.toString()]) {
+        station.value.extend.students = courseRecord.value.stationBind[station.value.id.toString()];
       }
       device.value = station.value.deviceList[0];
       if (device.value) {
@@ -160,7 +165,7 @@ export default {
           end: new Date().getTime(),
           deviceId: device.value.id,
         });
-        timeLine.value = timelineConfig(list, statusMap, { height: 30, dataZoom: false, showTime: true });
+        timeLine.value = timelineConfig(list, statusMap, { height: 40, dataZoomTop: 70, dataZoom: true, showTime: true });
         query();
       }
       // video
@@ -176,14 +181,16 @@ export default {
         alert(msg);
         return ;
       }
-      startVideo();
+      startVideo(null);
     }));
     onUnmounted(() => {
       over.value = true;
       stopVideo();
     });
-    async function startVideo() {
-      const msg1 = await startRealPlay(0, modalVideo.value.szDeviceIndentify, 1);
+    async function startVideo(id:any) {
+      if(id===undefined || id===null) id=videoChannel.value[0];
+      if(id===undefined || id===null) return ;
+      const msg1 = await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
       // const msg2 = await startRealPlay(1,modalVideo.value.szDeviceIndentify,1);
       if (msg1) {
         alert(msg1);
@@ -192,10 +199,11 @@ export default {
     async function stopVideo() {
       await stopPlay(0);
     }
-    async function restartVideo(id: any) {
+    async function restartVideo(id: any, f:number) {
+      flag.value = f;
       await stopVideo();
-      if (id) { modalVideo.value.channelId = id; }
-      await startVideo();
+      console.log(id)
+      if(id) await startVideo(id);
     }
     async function paramAnalysisMonitor() {
       while (modal.value.visible) {
@@ -351,10 +359,6 @@ export default {
         }
         option.series = series;
         line1.value = option;
-        const tt = JSON.stringify(line1.value);
-        console.log(tt);
-        console.log(tt.indexOf('in'));
-        console.log(tt.substring(tt.indexOf('in')));
         let str = '';
         for (const p of list[0].paramConfigs) {
           str += p.nameSimple + ' | ';
@@ -374,6 +378,7 @@ export default {
       checkList, disabled,
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
       restartVideo, fullScreen,
+      videoChannel, flag
     };
   },
 };
@@ -394,7 +399,7 @@ export default {
    width: 40%;
    min-width: 500px;
    background-color: white;
-   border-radius: 20px;
+   border-radius: 10px;
    box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
    .monitor-detail--param-item {
      width:40%;

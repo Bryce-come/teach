@@ -2,7 +2,6 @@
   <div v-loading="loading" class="course-management">
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
       <div style="margin-bottom:10px">
-        <el-button type="primary">导入</el-button>
         <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
       </div>
       <el-input class="search bar" v-model="keywords" placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="margin-bottom:10px;width:400px" clearable/>
@@ -60,10 +59,10 @@
               </el-select>
           </el-form-item>
           <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
-              <el-input v-model="courseModal.courseInfo.extend.scoreRatio[0]"></el-input>
+            <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[0]"/>
           </el-form-item>
           <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, message: '请输入报告评分占比'}">
-              <el-input v-model="courseModal.courseInfo.extend.scoreRatio[1]"></el-input>
+            <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[1]"/>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
