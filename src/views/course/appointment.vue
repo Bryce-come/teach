@@ -28,7 +28,7 @@
           <el-table-column type="expand">
             <div slot-scope="props" class="flex start">
               <el-form label-width="100px">
-                <el-form-item label="预约课程：">{{props.row.course}}</el-form-item>
+                <el-form-item label="预约课程：">{{props.row.course.name}}</el-form-item>
                 <el-form-item label="预约实验：">{{props.row.program.name}}</el-form-item>
                 <el-form-item label="指定教师：">{{props.row.teacher.name}}</el-form-item>
                 <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?  props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}</el-form-item>
@@ -38,7 +38,7 @@
             </div>
           </el-table-column>
           <el-table-column label="预约人" prop="applicant.name" width="80"></el-table-column>
-          <el-table-column label="角色" width="80" prop="applicant.role"></el-table-column>
+          <el-table-column label="角色" width="80" prop="applicant.role.name"></el-table-column>
           <el-table-column label="申请时间" width="160" prop="createDt" sortable align="center"></el-table-column>
           <el-table-column label="预约类型" width="100">
             <span slot-scope="{ row }">
@@ -135,6 +135,9 @@
                 :label="item.name"
                 :value="item.id"></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="选择组别：" prop="extend.claszGroup">
+            <el-select v-model="appointModal.appointInfo.extend.claszGroup"></el-select>
           </el-form-item>
         </el-form>
       </kit-dialog-simple>
@@ -261,13 +264,14 @@ export default createComponent({
       revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
       form, appointModal, showAppointForm,
       appointUpdate: useLoading(loading, AppointUpdate),
-      appointTypeList, courseList, courseID, programList, teacherList, studentList, stationList,
+      appointTypeList, courseList, courseID, programList, teacherList, studentList, stationList, classList,
     };
   }
 });
 function initAppointForm() {
   return {
     type: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
+    extend: {},
   };
 }
 </script>
