@@ -100,13 +100,13 @@ export default {
         Message.success('删除成功');
     };
     const query = async () => {
-        deviceAlarmList.value = AlarmDeviceHistory({
+        deviceAlarmList.value = await AlarmDeviceHistory({
           deviceTypeJson:deviceType.value?JSON.stringify(deviceType.value):null,
           devicesJson:deviceName.value?JSON.stringify(deviceName.value):null,
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });
-        console.log(deviceAlarmList);
+        console.log(deviceAlarmList.value);
     };
     const snapshot = async (row: any) => {
       modal.value.data = row;
