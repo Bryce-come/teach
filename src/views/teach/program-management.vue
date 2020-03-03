@@ -62,7 +62,7 @@
           <el-row>
             <el-col :span="12">
               <div style="margin-left:20px;font-weight:bold">NC程序代码</div>
-              <el-input type="textarea" :rows="16" style="width:96%;margin:10px 10px 0 10px" v-model="EtInfo.contentWord"></el-input>
+              <el-input type="textarea" :rows="18" style="width:96%;margin:10px 10px 0 10px" v-model="EtInfo.contentWord"></el-input>
               <div class="flex start little-space" style="margin-left:10px">
                 <el-button type="primary" @click="downFile(EtInfo.data)">下载程序</el-button>
               </div>
@@ -71,8 +71,9 @@
               <div style="font-weight:bold">提交历史记录</div>
               <el-table
                 :data="sameStudent.sameList"
-                style="width:98%"
-                height="450">
+                style="width:98%;overflow:auto"
+                min-height="200"
+                height="300">
                 <el-table-column label="提交时间" prop="createDt"/>
                 <el-table-column label="程序名称" prop="file">
                   <template slot-scope="{ row }">
@@ -96,7 +97,7 @@
                   </div>
                 </el-table-column>
               </el-table>
-              <div style="margin-top:20px">
+              <div style="margin-top:10px">
                 <div>修改意见：</div>
                 <el-input type="textarea" :rows="2" style="width:98%" v-model="reviewInfo.remark"></el-input>
                 <div class="flex start little-space">
