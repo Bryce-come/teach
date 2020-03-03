@@ -2,21 +2,31 @@
   <div v-loading="loading">
     <el-form :inline="true">
         <el-form-item label="设备名称:" label-width="80px">
-            <lkt-select :list="devicesList" value-key="name" v-model="deviceName" multiple :clearable="false" placeholder="请选择设备名称"/>
+          <el-select v-model="deviceName" multiple :clearable="false" placeholder="请选择设备名称">
+            <el-option
+              v-for="item of devicesList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="设备型号:" label-width="80px">
-            <lkt-select :list="deviceTypeList" value-key="type" v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号"/>
+          <el-select v-model="deviceType" multiple :clearable="false" placeholder="请选择设备型号">
+            <el-option
+              v-for="item of deviceTypeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>        
         </el-form-item>
         <el-form-item label="发生时间:" label-width="80px">
-            <el-date-picker v-model="date" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期">
-            </el-date-picker>
-        </el-form-item>
-        <el-form-item label="请选择管理员:" label-width="100px">
-            <lkt-select :list="managerList" value-key="managerName" v-model="manager" multiple :clearable="false" placeholder="请选择管理员"/>
+            <lkt-date-picker v-model="date">
+            </lkt-date-picker>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" style="margin-left: 60px">查询</el-button>
-            <el-button style="margin-left: 20px">重置</el-button>
+            <el-button type="primary" style="margin-left: 60px" @click="query()">查询</el-button>
         </el-form-item>
     </el-form>  
     <div> 
@@ -69,17 +79,19 @@ import { EChartOption } from 'echarts';
 import {urlMap} from '@/config';
 import {statusMap} from '@/utils/device-utils';
 import {router} from '@/main';
+import { DeviceList, DeviceTypeList } from '@/dao/deviceDao';
+import { AlarmRecordConfirm, MonitorAlarm, AlarmDeviceHistory, AlarmMaintenDelay, AlarmUsageList, AlarmUsageLatest } from '@/dao/alarmDao';
 export default {
   setup() {
     const loading = ref(false);
     const deviceName = ref<any>();
-    const devicesList = ref<any>();
-    const deviceTypeList = ref<any>();
+    const devicesList = ref<any>([]);
+    const deviceTypeList = ref<any>([]);
     const deviceType = ref<any>();
     const manager = ref<any>();
     const managerList = ref<any>();
     const deviceAlarmList = ref<any>();
-    const date = '';
+    const date = ref([new Date(Date.now() - 3 * 24 * 3600000), new Date()]);
     const modal = ref<any>({
       visible: false,
       data: {},
@@ -88,26 +100,13 @@ export default {
         Message.success('删除成功');
     };
     const query = async () => {
-        deviceAlarmList.value = [
-            {
-                id: 1,
-                device: {
-                    name: '加工中心1',
-                    referencedColumnName: 'YC124245532',
-                },
-                type: 2,
-                position: 'XXX',
-                statues: '故障',
-                occurDt: '2019-2-19 08:23:09',
-                operator: {
-                    name: '玛丽',
-                },
-                description: '设备刀具磨损严重',
-                extend: {
-                    confirm: 1,
-                },
-            },
-        ];
+        deviceAlarmList.value = AlarmDeviceHistory({
+          deviceTypeJson:deviceType.value?JSON.stringify(deviceType.value):null,
+          devicesJson:deviceName.value?JSON.stringify(deviceName.value):null,
+          start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
+          end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
+        });
+        console.log(deviceAlarmList);
     };
     const snapshot = async (row: any) => {
       modal.value.data = row;
@@ -115,6 +114,14 @@ export default {
     };
     onMounted(useLoading(loading, async () => {
       await query();
+      deviceTypeList.value = await DeviceTypeList();
+      devicesList.value = await DeviceList({
+        types: null,
+        start: null,
+        end: null,
+      });
+      // console.log(devicesList.value);
+      // console.log(deviceTypeList.value);
     }));
     return{
         loading,
