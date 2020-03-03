@@ -72,7 +72,7 @@
               <el-table
                 :data="sameStudent.sameList"
                 style="width:98%"
-                max-height="350">
+                height="450">
                 <el-table-column label="提交时间" prop="createDt"/>
                 <el-table-column label="程序名称" prop="file">
                   <template slot-scope="{ row }">
@@ -92,7 +92,7 @@
                   <div class="flex center little-space wrap" slot-scope="{ row }">
                   <el-button class="btn" type="text"
                   :style="row.id===moveNowTrue.moveNowId?'color:green':''" 
-                  @click="cheakDetail(row);moveNow(row)">查看程序</el-button>
+                  @click="cheakDetail(row);moveNow(row)">{{row.id===moveNowTrue.moveNowId?'查看中':'查看程序'}}</el-button>
                   </div>
                 </el-table-column>
               </el-table>
@@ -148,7 +148,6 @@ export default {
     });
     function moveNow(row: any) {
       moveNowTrue.value.moveNowId = row.id;
-      console.log(row);
     }
     const query = async () => {
       const pum = {recordId: courseNow.value.id};
