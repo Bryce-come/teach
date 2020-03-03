@@ -1,6 +1,7 @@
 <template>
   <div class="theme flex center end align-center">
     <el-popover
+      v-if="isNotStudent"
       class="msg-panel"
       placement="bottom"
       width="500"
@@ -92,7 +93,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, reactive, onMounted, onUnmounted, createComponent } from '@vue/composition-api';
+import { ref, Ref, reactive, onMounted, onUnmounted, createComponent, computed } from '@vue/composition-api';
 import {rmStoreUserInfo, updateStoreUserInfo} from 'web-toolkit/src/case-main';
 import { sleep } from 'web-toolkit/src/utils';
 import {useLoading, useLoadingDirect} from 'web-toolkit/src/service';
@@ -196,11 +197,15 @@ export default createComponent({
       updateStoreUserInfo(storeUserInfo as any);
       modalUpdateInfo.visible = false;
     }
+    const isNotStudent = computed(() => {
+      // 如果是学生，有些不显示
+      return storeUserInfo.user && storeUserInfo.user.role && storeUserInfo.user.role.department && storeUserInfo.user.role.department.id !== 2;
+    });
     onMounted(async () => {
       over.value = false;
       count.value = 0;
       while (!over.value) {
-        await query();
+        if (isNotStudent) { await query(); }
         // count.value += 1;
         await sleep(15000);
       }
@@ -246,6 +251,7 @@ export default createComponent({
       updatePwd: useLoadingDirect(modalUpdatePwd.loading, updatePwd),
       updateInfo: useLoading(loading, updateInfo),
       query,
+      isNotStudent,
     };
   },
 

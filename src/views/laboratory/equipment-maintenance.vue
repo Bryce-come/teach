@@ -3,13 +3,13 @@
     <el-button type="primary" style="margin-bottom:5px" @click="showForm()">添加</el-button>
     <el-tabs type="border-card">
       <el-tab-pane label="当前维保记录">
-        <lkt-table :data="deviceMaintenanceRecord" style="width:100%">          
+        <lkt-table :data="deviceMaintenanceRecord" style="width:100%">
           <el-table-column fixed="left" prop="device.name" label="设备名称"/>
           <el-table-column fixed="left" prop="device.id" label="设备编号"/>
           <el-table-column fixed="left" prop="device.deviceType.name" label="设备型号"/>
           <el-table-column prop="restorationDt" label="最近维保时间" width="120px">
             <div slot-scope="{ row }">
-              <span v-if="row.restorationDt">{{new Date(row.restorationDt) | date }}</span>   
+              <span v-if="row.restorationDt">{{new Date(row.restorationDt) | date }}</span>
             </div>
           </el-table-column>
           <el-table-column prop="type" label="维保类型">
@@ -20,7 +20,7 @@
           <el-table-column prop="treatment" label="维保内容" width="100px"/>
           <el-table-column prop="executor" label="维护人"/>
           <el-table-column prop="extend.executorPhone" label="联系方式" width="100px"/>
-          <el-table-column fixed="right" prop="nextDt" label="距离下次维护时间" width="150px">
+          <el-table-column fixed="right" prop="nextDt" label="下次保养时间" width="150px">
             <div slot-scope="{ row }">
               <span v-if="row.nextDt">{{new Date(row.nextDt) | date }}</span>
             </div>
@@ -72,7 +72,7 @@
           <el-form-item>
             <el-button type="primary" @click="queryMaintainRecordHistory()">查询</el-button>
           </el-form-item>
-        </el-form> 
+        </el-form>
         <lkt-table :data="deviceMaintenanceHistoryRecord" style="width:100%">
           <el-table-column fixed="left" prop="device.name" label="设备名称"/>
           <el-table-column fixed="left" prop="device.id" label="设备编号"/>
@@ -87,7 +87,7 @@
           <el-table-column prop="extend.executorPhone" label="联系方式" width="100px"/>
           <el-table-column prop="restorationDt" label="最近维保时间" width="120px">
             <div slot-scope="{ row }">
-              <span v-if="row.restorationDt">{{new Date(row.restorationDt) | date }}</span>   
+              <span v-if="row.restorationDt">{{new Date(row.restorationDt) | date }}</span>
             </div>
           </el-table-column>
           <el-table-column fixed="right" prop="nextDt" label="距离下次维护时间" width="150px">
@@ -119,8 +119,8 @@
                 :label="item.name"
                 :value="item">
               </el-option>
-            </el-select>   
-          </el-form-item>      
+            </el-select>
+          </el-form-item>
           <el-form-item label="保养时间：" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
               <el-date-picker v-model="modal.maintainRecordInfo.restorationDt" type="date"></el-date-picker>
           </el-form-item>
@@ -148,7 +148,7 @@
               </el-select>
           </el-form-item>
           <el-form-item label="联系方式：" prop="extend.executorPhone">
-              <el-input v-model="modal.maintainRecordInfo.extend.executorPhone"></el-input>
+            <el-input v-model="modal.maintainRecordInfo.extend.executorPhone"/>
           </el-form-item>
           <el-form-item label="当前状态：" prop="status">
               <el-select v-model="modal.maintainRecordInfo.status"  placeholder="请选择">
@@ -160,8 +160,8 @@
               </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="下次保养时间：" prop="nextDt">
-              <el-date-picker v-model="modal.maintainRecordInfo.nextDt" type="date"></el-date-picker>
+          <el-form-item label="下次保养时间：" prop="nextDt" v-if="modal.maintainRecordInfo.type===1">
+            <el-date-picker v-model="modal.maintainRecordInfo.nextDt" type="date"/>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>

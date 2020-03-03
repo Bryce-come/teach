@@ -4,9 +4,9 @@
       <noaction-course-list></noaction-course-list>
     </div>
     <div style="width:100%;margin:20px auto">
-      <el-form :inline="true" class="flex between wrap">
+      <el-form :inline="true" class="flex start wrap">
         <el-form-item label="预约类型:" label-width="80px">
-          <el-select v-model="appointType" multiple collapse-tags :clearable="false" placeholder="请选择预约类型" style="width:180px">
+          <el-select v-model="appointType" multiple collapse-tags :clearable="false" placeholder="请选择预约类型" style="width:185px">
             <el-option
               v-for="item of appointTypeList"
               :key="item.id"
@@ -15,7 +15,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="预约结果:" label-width="80px">
-          <el-select v-model="appointResult" multiple collapse-tags :clearable="false" placeholder="请选择预约结果" style="width:180px">
+          <el-select v-model="appointResult" multiple collapse-tags :clearable="false" placeholder="请选择预约结果" style="width:185px">
             <el-option
               v-for="item of appointResultList"
               :key="item.id"
