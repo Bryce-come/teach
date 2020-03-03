@@ -9,6 +9,7 @@
             node-key="id"
             default-expand-all
             :expand-on-click-node='false'
+            style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-top:15px"
             min-width="350px"
             ref="tree">
             <span class="custom-tree-node" slot-scope="{ node, data }"
@@ -43,7 +44,7 @@
                   type="text"
                   size="mini"
                   v-if="node.level===1&&moveNowTrue.moveNowId===node.id"
-                  @click="() => removeClass(data)">
+                  @click="setRemoveName(data);removeClass(data)">
                   <i class="el-icon-delete" title="删除班级"></i>
                 </el-button>
                 <el-button
@@ -57,14 +58,14 @@
                   type="text"
                   size="mini"
                   v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
-                  @click="() => removeGrop(data)">
+                  @click="setRemoveName(data);removeGrop(data)">
                   <i class="el-icon-delete" title="删除小组"></i>
                 </el-button>
               </span>
             </span>
           </el-tree>
       </el-col>
-      <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px;background-color:withe">
+      <el-col :span="20" style="box-shadow:0 2px 12px 0 rgba(0, 0, 0, .12);margin-right：100px;background-color:white">
         <div class="flex align-center between little-space">
           <el-button type="success" @click="showForm()">添加学生</el-button>
           <el-input class="search-bar" v-model="keywords" placeholder="请输入搜索内容" clearable/>
@@ -92,7 +93,7 @@
                 size="mini" :type="row.off === 0 ? 'warning' : 'success'"
                 @click="toggleStatus(row)"
               >{{ row.off === 0 ? '冻结' : '恢复' }}</el-button>
-              <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+              <el-button type="danger" size="mini" @click="setRemoveName(row);remove(row)">删除</el-button>
             </div>
           </el-table-column>
         </lkt-table>
@@ -140,17 +141,17 @@
           <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
               <el-input v-model="modal.studentInfo.name" clearable></el-input>
           </el-form-item>
-          <el-form-item label="班级" prop="extend.clasz" :rules="{ required: true, message: '请选择班级'}">
+          <el-form-item label="班级：" prop="extend.clasz" :rules="{ required: true, message: '请选择班级'}">
               <el-select v-model="modal.studentInfo.extend.clasz" @change="armasdb(modal.studentInfo.extend.clasz)">
                 <el-option v-for="clas in classList" :key="clas.id" :label="clas.name" :value="clas.id" />
               </el-select>
           </el-form-item>
-          <el-form-item label="教学分组" prop="extend.claszGroup" :rules="{ required: true, message: '请选择分组'}">
+          <el-form-item label="教学分组：" prop="extend.claszGroup" :rules="{ required: true, message: '请选择分组'}">
               <el-select v-model="modal.studentInfo.extend.claszGroup">
                 <el-option v-for="grop in groupList" :key="grop.id" :label="grop.name" :value="grop.id" />
               </el-select>
           </el-form-item>
-          <el-form-item label="登录用户名" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
+          <el-form-item label="登录用户名：" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
               <el-input v-model="modal.studentInfo.username" clearable></el-input>
           </el-form-item>
           <el-form-item :label="!modal.studentInfo.id ? '密码：' : '修改密码：'" prop="pwd" :rules="[{ required: !modal.studentInfo.id, message: '请填写密码' }, { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}]">
@@ -162,7 +163,7 @@
           <el-form-item label="联系方式：" prop="phone">
               <el-input v-model="modal.studentInfo.phone" maxlength='11' clearable></el-input>
           </el-form-item>
-          <el-form-item label="邮箱地址" prop="extend.address">
+          <el-form-item label="邮箱地址：" prop="extend.address">
               <el-input v-model="modal.studentInfo.extend.address" clearable></el-input>
           </el-form-item>
         </el-form>
@@ -190,6 +191,13 @@ export default {
     const ctogList = ref<any>();
     const groupList = ref<any>();
     const blist = ref<any>();
+    const removeValue= ref<any>({
+      name:''
+    });
+    function setRemoveName(row:any){
+      removeValue.value.name=row.name
+      console.log(removeValue.value.name)
+    }
     const props = ref({
       children: 'children',
       label: 'name',
@@ -507,13 +515,13 @@ export default {
       });
     return{
       loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag, armasdb,
-      addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
-      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow,
-      remove: useConfirm('确认删除？', useLoading(loading, remove)),
+      addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
+      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow,setRemoveName,
+      remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
       queryStudentList, queryClassList,
-      removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
-      modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,
+      removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
+      modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,removeValue,
       update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,
       validator, classList, groupList, ctogList, append, firstTab, grpandclzList,
       FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),

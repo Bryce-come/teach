@@ -26,7 +26,7 @@
       width="700px">
         <div slot="title">录入授课教师信息</div>
         <el-form v-if="addModal.teacherInfo" ref="form" :model="addModal.teacherInfo" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="登录用户名" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
+          <el-form-item label="登录用户名：" prop="username" :rules="{ required: true, message: '请输入登录用户名'}">
               <el-input v-model="addModal.teacherInfo.username" clearable></el-input>
           </el-form-item>
           <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
@@ -48,10 +48,10 @@
                 </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="工号" prop="extend.no">
+          <el-form-item label="工号：" prop="extend.no">
               <el-input v-model="addModal.teacherInfo.extend.no" clearable></el-input>
           </el-form-item>
-          <el-form-item label="邮箱地址" prop="extend.address">
+          <el-form-item label="邮箱地址：" prop="extend.address">
               <el-input v-model="addModal.teacherInfo.extend.address" clearable></el-input>
           </el-form-item>
           <el-form-item label="联系电话：" prop="phone">
