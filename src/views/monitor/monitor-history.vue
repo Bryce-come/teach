@@ -122,8 +122,7 @@ export default createComponent({
             }
           }
         }
-      }
-      else {
+      } else {
         if (range.value.length !== 2) {
           Message.error('请选择时间范围');
           return;

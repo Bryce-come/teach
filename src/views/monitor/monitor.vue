@@ -186,7 +186,7 @@ export default createComponent({
       timeDiff, chart, times,
       stationList,
       ImageLink,
-      percentage, statusMap
+      percentage, statusMap,
     };
   },
 });
