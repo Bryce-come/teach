@@ -182,15 +182,15 @@ export default createComponent({
       type: 'add',
     });
     const showAppointForm = async (data?: any) => {
-      if(form.value) { (form.value as ElForm).clearValidate(); }
-      if(data) {
+      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (data) {
         data = deepClone(data);
         appointModal.value.type = 'update';
         // appointModal.value.appointInfo = data;
       } else {
         data = initAppointForm();
         appointModal.value.type = 'add';
-        
+
         // 获取当前选择课程id
         // courseID.value = data.course.id;
         // console.log(courseID.value);
@@ -200,11 +200,11 @@ export default createComponent({
     };
     async function appointUpdate() {
       const valid = await (form.value as ElForm).validate();
-      if(valid) {
-        if(appointModal.value.type === 'add') {
-          await AppointAdd({})
+      if (valid) {
+        if (appointModal.value.type === 'add') {
+          await AppointAdd({});
         } else {
-          await AppointUpdate({})
+          await AppointUpdate({});
         }
         appointModal.value.visible = false;
         Message.success(`${appointModal.value.type === 'add' ? '申请预约' : '修改预约'}成功`);
@@ -266,7 +266,7 @@ export default createComponent({
       appointUpdate: useLoading(loading, AppointUpdate),
       appointTypeList, courseList, courseID, programList, teacherList, studentList, stationList, classList,
     };
-  }
+  },
 });
 function initAppointForm() {
   return {

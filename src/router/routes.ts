@@ -70,6 +70,7 @@ const cuttingToolManagement = {
 const monitor = {
   path: '/monitor',
   name: 'monitor',
+  alias: '',
   component: () => import('../views/monitor/monitor.vue'),
   meta: {
     CName: '实时监控',
@@ -120,7 +121,7 @@ const usageAnalysis = {
   name: 'usageAnalysis',
   component: () => import('../views/laboratory/usage-analysis.vue'),
   meta: {
-    CName: '使用情况分析',
+    CName: '使用情况统计',
     parentCName: '实验室管理',
   },
 };
@@ -317,11 +318,11 @@ const test = {
 //
 // // 按顺序 用于菜单的排列
 const indexChildren = [
+  monitor,
   device,
   workTop,
   equipmentMaintenance,
   cuttingToolManagement,
-  monitor,
   monitorDetail,
   monitorHistory,
   monitorHistoryDetail,

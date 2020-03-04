@@ -101,8 +101,8 @@ export default {
     };
     const query = async () => {
         deviceAlarmList.value = await AlarmDeviceHistory({
-          deviceTypeJson:deviceType.value?JSON.stringify(deviceType.value):null,
-          devicesJson:deviceName.value?JSON.stringify(deviceName.value):null,
+          deviceTypeJson: deviceType.value ? JSON.stringify(deviceType.value) : null,
+          devicesJson: deviceName.value ? JSON.stringify(deviceName.value) : null,
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });

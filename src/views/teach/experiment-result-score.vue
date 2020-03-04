@@ -127,9 +127,9 @@ export default {
     });
     const form = ref<ElForm | null>(null);
     const showScoreForm = async (data?: any) => {
-      if(data.attachment[0]===undefined){
-        alert('该学生该还未提交')
-      }else{
+      if (data.attachment[0] === undefined) {
+        alert('该学生该还未提交');
+      } else {
         if (form.value) { (form.value as ElForm).clearValidate(); }
         if (data) {
           data = deepClone(data);
@@ -239,16 +239,16 @@ export default {
         end: searchInfo.value.end,
       };
       experimentReportList.value = await ReportList(pum);
-      console.log(experimentReportList.value)
+      console.log(experimentReportList.value);
     }
     const scoreList = ref<any>({
       allScore: [],
       haveScore: [],
       noScore: [],
-      showScore:[]
+      showScore: [],
     });
     const getScorcedStatus = async () => {
-      await searchFList()
+      await searchFList();
       scoreList.value.allScore = experimentReportList.value;
       scoreList.value.haveScore = [];
       scoreList.value.noScore = [];
@@ -264,25 +264,25 @@ export default {
       allScored.value = true;
       hasScored.value = false;
       noScored.value = false;
-      await getScorcedStatus()
-      experimentReportList.value= scoreList.value.allScore;
-      console.log(scoreList.value)
+      await getScorcedStatus();
+      experimentReportList.value = scoreList.value.allScore;
+      console.log(scoreList.value);
     };
     const showHasScored = async () => {
       allScored.value = false;
       hasScored.value = true;
       noScored.value = false;
-      await getScorcedStatus()
+      await getScorcedStatus();
       experimentReportList.value = scoreList.value.haveScore;
-      console.log(scoreList.value)
+      console.log(scoreList.value);
     };
     const showNoScored = async () => {
       allScored.value = false;
       hasScored.value = false;
       noScored.value = true;
-      await getScorcedStatus()
+      await getScorcedStatus();
       experimentReportList.value = scoreList.value.noScore;
-      console.log(scoreList.value)
+      console.log(scoreList.value);
     };
     onMounted(useLoading(loading, async () => {
       await getCourseList();

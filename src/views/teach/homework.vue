@@ -116,7 +116,7 @@ export default {
       };
       const result = await ReportList(pum);
       experimentResultList.value = result;
-      console.log(result)
+      console.log(result);
     }
     const propsWord = ref<any>({
 
@@ -130,7 +130,7 @@ export default {
     }
     function setPorps(row: any) {
       propsWord.value = row;
-      
+
     }
     async function upload(option: any) {
       const result = {
@@ -138,8 +138,8 @@ export default {
         programId: propsWord.value.row.program.id,
         file: option.file,
       };
-      console.log(propsWord.value)
-      console.log(option)
+      console.log(propsWord.value);
+      console.log(option);
       await ReportSubmit(result);
       await getReportList();
     }

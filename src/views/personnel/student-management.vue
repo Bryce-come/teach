@@ -191,12 +191,12 @@ export default {
     const ctogList = ref<any>();
     const groupList = ref<any>();
     const blist = ref<any>();
-    const removeValue= ref<any>({
-      name:''
+    const removeValue = ref<any>({
+      name: '',
     });
-    function setRemoveName(row:any){
-      removeValue.value.name=row.name
-      console.log(removeValue.value.name)
+    function setRemoveName(row: any) {
+      removeValue.value.name = row.name;
+      console.log(removeValue.value.name);
     }
     const props = ref({
       children: 'children',
@@ -516,12 +516,12 @@ export default {
     return{
       loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag, armasdb,
       addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
-      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow,setRemoveName,
+      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow, setRemoveName,
       remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
       queryStudentList, queryClassList,
       removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
-      modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,removeValue,
+      modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag, removeValue,
       update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,
       validator, classList, groupList, ctogList, append, firstTab, grpandclzList,
       FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
