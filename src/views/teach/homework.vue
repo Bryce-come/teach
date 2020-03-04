@@ -27,14 +27,15 @@
         :data="experimentResultList"
         style="width:100%">
         <el-table-column label="提交时间" prop="createDt" sortable/>
-        <el-table-column label="课程名称" prop="course"/>
-        <el-table-column label="实验名称" prop="experiment_program.name"/>
-        <el-table-column label="实验类型" prop="experiment_program.label"/>
+        <el-table-column label="课程名称" prop="course.name"/>
+        <el-table-column label="实验名称" prop="program.name"/>
+        <el-table-column label="实验类型" prop="program.label"/>
         <el-table-column label="操作过程评分" prop="extend.score1"/>
-        <el-table-column label="实验报告" prop=""/>
-          <!-- <div slot-scope="{row}">
-            <el-button type="text" @click="downFile(row)">{{row.attachment[0].split("/")[row.attachment[0].split("/").length-1]}}</el-button>
-          </div> -->
+        <el-table-column label="实验报告">
+          <div slot-scope="{row}">
+            <el-button type="text" @click="downFile(row)">{{row.attachment[0]?row.attachment[0].split("/")[row.attachment[0].split("/").length-1]:''}}</el-button>
+          </div>
+        </el-table-column>
         <el-table-column label="实验报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
           <div slot-scope="props">
@@ -115,6 +116,7 @@ export default {
       };
       const result = await ReportList(pum);
       experimentResultList.value = result;
+      console.log(result)
     }
     const propsWord = ref<any>({
 
@@ -128,13 +130,16 @@ export default {
     }
     function setPorps(row: any) {
       propsWord.value = row;
+      
     }
     async function upload(option: any) {
       const result = {
-        courseId: propsWord.value.row.id,
-        programId: 1,
+        courseId: propsWord.value.row.course.id,
+        programId: propsWord.value.row.program.id,
         file: option.file,
       };
+      console.log(propsWord.value)
+      console.log(option)
       await ReportSubmit(result);
       await getReportList();
     }

@@ -17,7 +17,7 @@
     <div style="margin: 10px 0" class="block_background" v-show="coursePreviewList.length > 0" v-if="courseInfo">
       <div class="block_title flex start">课程详细信息</div>
       <div style="margin-top:20px">
-          <div style="font-weight:bold;margin: 10px 20px">{{courseInfo.course.name}}</div>
+          <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-tickets" style="font-size:16px"></i>{{courseInfo.course.name}}</div>
           <el-form label-width="120px" class="flex between wrap" style="width:80%">
             <el-form-item label="上课时间：">{{courseInfo.startDt + '-' + courseInfo.endDt}}</el-form-item>
             <el-form-item label="授课教师：">{{courseInfo.teacher.name}}</el-form-item>
@@ -27,7 +27,7 @@
           <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">{{courseInfo.program.name}}</div>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-document-checked" style="font-size:16px"></i>{{courseInfo.program.name}}</div>
         <el-form label-width="120px" class="flex">
           <el-form-item label="实验类型：">{{courseInfo.program.label}}</el-form-item>
           <el-form-item label="操作台：">
@@ -37,36 +37,39 @@
         <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">实验目的</div>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-document" style="font-size:16px"></i>{{' 实验目的'}}</div>
         <div style="margin:20px 40px">{{courseInfo.program.purpose}}</div>
         <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">实验原理</div>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-notebook-1" style="font-size:16px"></i>{{' 实验原理'}}</div>
         <div style="margin:20px 40px">{{courseInfo.program.principle}}</div>
         <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">实验步骤</div>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-notebook-2" style="font-size:16px"></i>{{' 实验步骤'}}</div>
         <div style="margin: 20px 40px">{{courseInfo.program.steps}}</div>
         <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">实验结果</div>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-paperclip" style="font-size:16px"></i>{{' 实验结果'}}</div>
         <div style="margin:20px 40px">{{courseInfo.program.results}}</div>
         <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">课程附件</div>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-files" style="font-size:16px"></i>{{' 课程附件'}}</div>
         <el-link 
           type="primary" style="margin:20px 40px"
           v-for="(item,i) in courseInfo.attachment" :key="i" @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}
-          </el-link>
+        </el-link>
         <div class="liner"></div>
       </div>
       <div style="margin-top:20px">
-        <div style="font-weight:bold;margin: 10px 20px">项目附件</div>
-        <el-link type="primary" style="margin:20px 40px" @click="downFile()">关键代码.nv</el-link>
+        <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-files" style="font-size:16px"></i>{{' 项目附件'}}</div>
+        <el-link 
+          type="primary" style="margin:20px 40px"
+          v-for="(item,i) in courseInfo.program.attachment" :key="i" @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}
+        </el-link>
         <div class="liner"></div>
       </div>
     </div>
