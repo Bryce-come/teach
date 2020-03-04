@@ -1,11 +1,11 @@
 <template v-loading="loading">
   <div>
-      <div class="flex end" style="margin-bottom:10px">
-          <el-button type="primary" @click="delay()" style='margin-right:10px'>延迟</el-button>
-          <el-button type="danger" @click="off()">下课</el-button>
-      </div>
-      <monitor></monitor>
-      <kit-dialog-simple
+    <div class="flex end" style="margin-bottom:10px">
+      <el-button type="primary" @click="delay()" style='margin-right:10px'>延迟下课</el-button>
+      <el-button type="danger" v-if="linkOn" @click="off()">下课</el-button>
+    </div>
+    <monitor v-if="record" />
+    <kit-dialog-simple
       :modal="delayMode"
       :confirm="confirm"
       width="500px">
@@ -21,30 +21,45 @@
 import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { router } from '@/main';
 import { Message } from 'element-ui';
-import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
+import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import monitor from '../monitor/monitor.vue';
+import {ClassLengthen, ClassOver} from '@/dao/inClassDao';
+import {SettingGet} from '@/dao/settingDao';
+import {CourseRecordInClass} from '@/dao/courseRecordDao';
 export default createComponent({
   components: { monitor },
   setup() {
     const loading = ref(false);
     const delayMode = ref({
       visible: false,
-      data: '',
+      data: 5,
     });
+    const linkOn = ref<boolean>(false);
+    const record = ref<any>();
+
     const delay = async () => {
       delayMode.value.visible = true;
     };
     const confirm = async () => {
+      await ClassLengthen({
+        id: record.value.id,
+        minutes: delayMode.value.data,
+      });
       delayMode.value.visible = false;
+      Message.success('操作成功，即将刷新页面');
+      window.location.reload();
     };
     const off = async () => {
-      Message.success('断开连接');
+      await ClassOver();
+      Message.success('已下课并断开所有操作台网络');
     };
     onMounted(useLoading(loading, async () => {
-
+      const data = await SettingGet({onlyLinkOn: true});
+      linkOn.value = data.on;
+      record.value = await CourseRecordInClass();
     }));
     return{
-     loading,
+     loading, linkOn, record,
      delay,
      delayMode,
      off: useConfirm('点击“确定”按钮后将断开所有电脑与机床的通信连接,请确认所有学生完成机床操作！', useLoading(loading, off)),

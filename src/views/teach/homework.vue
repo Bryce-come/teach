@@ -27,14 +27,15 @@
         :data="experimentResultList"
         style="width:100%">
         <el-table-column label="提交时间" prop="createDt" sortable/>
-        <el-table-column label="课程名称" prop="course"/>
-        <el-table-column label="实验名称" prop="experiment_program.name"/>
-        <el-table-column label="实验类型" prop="experiment_program.label"/>
+        <el-table-column label="课程名称" prop="course.name"/>
+        <el-table-column label="实验名称" prop="program.name"/>
+        <el-table-column label="实验类型" prop="program.label"/>
         <el-table-column label="操作过程评分" prop="extend.score1"/>
-        <el-table-column label="实验报告" prop=""/>
-          <!-- <div slot-scope="{row}">
-            <el-button type="text" @click="downFile(row)">{{row.attachment[0].split("/")[row.attachment[0].split("/").length-1]}}</el-button>
-          </div> -->
+        <el-table-column label="实验报告">
+          <div slot-scope="{row}">
+            <el-button type="text" @click="downFile(row)">{{row.attachment[0]?row.attachment[0].split("/")[row.attachment[0].split("/").length-1]:''}}</el-button>
+          </div>
+        </el-table-column>
         <el-table-column label="实验报告评分" prop="extend.score2"/>
         <el-table-column label="总分">
           <div slot-scope="props">
@@ -76,15 +77,13 @@
   </div>
 </template>
 <script lang="ts">
-import {ref, Ref, onMounted} from '@vue/composition-api';
-import {useConfirm, useLoading} from 'web-toolkit/src/service';
-import {Message} from 'element-ui';
-import {ElForm} from 'element-ui/types/form';
-import {deepClone, formatDate} from 'web-toolkit/src/utils';
-import { ReportList, ReportTemplateList, ReportScore, ReportSubmit} from '../../dao/reportDao';
-import { CourseList } from '../../dao/courseProgramDao';
-import { DownLoadPrivate } from '../../dao/commonDao';
-export default {
+  import {onMounted, ref} from '@vue/composition-api';
+  import {useConfirm, useLoading} from 'web-toolkit/src/service';
+  import {ReportList, ReportSubmit, ReportTemplateList} from '../../dao/reportDao';
+  import {CourseList} from '../../dao/courseProgramDao';
+  import {DownLoadPrivate} from '../../dao/commonDao';
+
+  export default {
   setup() {
     const loading = ref(false);
     const reportButton = ref(true);
@@ -113,8 +112,7 @@ export default {
       const pum = {
         courseId: courseList.value.keyinkey,
       };
-      const result = await ReportList(pum);
-      experimentResultList.value = result;
+      experimentResultList.value = await ReportList(pum);
     }
     const propsWord = ref<any>({
 
@@ -128,19 +126,19 @@ export default {
     }
     function setPorps(row: any) {
       propsWord.value = row;
+
     }
     async function upload(option: any) {
       const result = {
-        courseId: propsWord.value.row.id,
-        programId: 1,
+        courseId: propsWord.value.row.course.id,
+        programId: propsWord.value.row.program.id,
         file: option.file,
       };
       await ReportSubmit(result);
       await getReportList();
     }
     async function getTempList() {
-      const result = await ReportTemplateList();
-      experimentReportTemplateList.value = result;
+      experimentReportTemplateList.value = await ReportTemplateList();
     }
     async function download(row: any) {
       const result = {

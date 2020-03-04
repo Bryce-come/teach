@@ -77,15 +77,15 @@ export default {
        {
          id: 'illegal_time',
         name: '非法时间内开启',
-       },{
+       }, {
          id: 'illegal_user',
         name: '未授权的使用者',
-       }
+       },
       ]);
     const query = async () => {
         usageAlarmList.value = AlarmUsageList({
-          typeJson: type.value?JSON.stringify(type.value):null,
-          stationJson: stationName.value?JSON.stringify(stationName.value):null,
+          typeJson: type.value ? JSON.stringify(type.value) : null,
+          stationJson: stationName.value ? JSON.stringify(stationName.value) : null,
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });

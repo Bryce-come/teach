@@ -45,11 +45,16 @@
             </div>
             <div class="device-message">
               <div style="font-size: 1.1em;font-weight: 600">{{item.name}}</div>
+              <el-tag style="margin-bottom: 5px" :type="statusMap(item.extend.status) && statusMap(item.extend.status).tag">{{ statusMap(item.extend.status) && statusMap(item.extend.status).arrName }}</el-tag>
               <div class="flex wrap">
-                <el-tag
-                  style="margin-right: 5px"
-                  v-for=" s in item.extend.students"
-                  :key="s.id" type="primary" size="small" >{{s.name}}</el-tag>
+                <div
+                  v-for="s in item.extend.students"
+                  :key="s.id"
+                  style="margin-right: 5px">{{s.name}}</div>
+<!--                <el-tag-->
+<!--                  style="margin-right: 5px"-->
+<!--                  v-for=" s in item.extend.students"-->
+<!--                  :key="s.id" type="primary" size="small" >{{s.name}}</el-tag>-->
               </div>
             </div>
           </div>
@@ -135,6 +140,7 @@ export default createComponent({
       for (const station of stationList.value) {
         if (!station.deviceList || station.deviceList.length === 0) {
           summaryHandle(summary, 'offline');
+          station.extend.status = 'offline';
         } else {
           const device = station.deviceList[0];
           if (device.extend.status) {
@@ -142,6 +148,7 @@ export default createComponent({
           } else {
             summaryHandle(summary, 'offline');
           }
+          station.extend.status = device.extend.status;
           // 数据二次处理
           station.extend.deviceId = device.id;
           station.extend.deviceImg = device.deviceType.img;
@@ -179,7 +186,7 @@ export default createComponent({
       timeDiff, chart, times,
       stationList,
       ImageLink,
-      percentage,
+      percentage, statusMap,
     };
   },
 });

@@ -2,7 +2,6 @@
   <div v-loading="loading" class="course-management">
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
       <div style="margin-bottom:10px">
-        <el-button type="primary">导入</el-button>
         <el-button type="success" style="margin-left:10px" @click="showCourseForm()">添加</el-button>
       </div>
       <el-input class="search bar" v-model="keywords" placeholder="在结果中搜索：课程代码/课程名称/任课老师" style="margin-bottom:10px;width:400px" clearable/>
@@ -34,10 +33,10 @@
         <div slot="title">{{courseModal.courseInfo && courseModal.courseInfo.id ? '修改' : '录入'}}课程信息</div>
         <el-form v-if="courseModal.courseInfo" ref="form" :model="courseModal.courseInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
           <el-form-item label="课程代码：" prop="code" :rules="{ required: true, message: '请输入课程代码'}">
-              <el-input v-model="courseModal.courseInfo.code"></el-input>
+            <el-input v-model="courseModal.courseInfo.code"/>
           </el-form-item>
           <el-form-item label="课程名称：" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
-              <el-input v-model="courseModal.courseInfo.name"></el-input>
+            <el-input v-model="courseModal.courseInfo.name"/>
           </el-form-item>
           <el-form-item label="任课教师：" prop="teacher.id" :rules="{ required: true, message: '请选择任课教师'}">
               <el-select v-model="courseModal.courseInfo.teacher.id">
@@ -60,10 +59,10 @@
               </el-select>
           </el-form-item>
           <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
-              <el-input v-model="courseModal.courseInfo.extend.scoreRatio[0]"></el-input>
+            <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[0]"/>
           </el-form-item>
           <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, message: '请输入报告评分占比'}">
-              <el-input v-model="courseModal.courseInfo.extend.scoreRatio[1]"></el-input>
+            <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[1]"/>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -74,7 +73,7 @@
       <div slot="title">实验项目详情</div>
       <el-form class="flex end">
         <el-form-item>
-          <el-input v-model="keywords2" placeholder="在结果中搜索：实验名称/实验编号" style="width:300px"></el-input>
+          <el-input v-model="keywords2" placeholder="在结果中搜索：实验名称/实验编号" style="width:300px"/>
         </el-form-item>
       </el-form>
       <lkt-table
@@ -145,13 +144,8 @@ export default {
       if (data) {
         data = deepClone(data);
         courseModal.value.type = 'update';
+        data.program = data.programList.map((m: any) => m.id);
         courseModal.value.courseInfo = data;
-        courseModal.value.courseInfo.program = data.programList.map((m: any) => m.id);
-        // const arr = [];
-        // for (var i = 0;i < data.programList.length;i++) {
-        //   arr.push(data.programList[i].id);
-        // }
-        // courseModal.value.courseInfo.program = arr;
       } else {
         data = initCourseForm();
         courseModal.value.type = 'add';
@@ -181,7 +175,6 @@ export default {
       const updateExpList = courseList.value.filter(function(item: any) {
         return item.id === courseID.value;
       });
-      // console.log(updateExpList[0].programList);
       expOfCourseList.value = updateExpList[0].programList;
     };
     async function experimentUpdate() {
@@ -226,9 +219,6 @@ export default {
         courseList.value = await CourseList({
           containPrograms: true,
         });
-        // console.log(teacherList.value);
-        console.log(courseList.value);
-        console.log(experimentList.value);
     }));
     return{
         loading, courseList, form, keywords, filtered, teacherList,

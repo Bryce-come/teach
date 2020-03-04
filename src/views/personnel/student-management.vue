@@ -44,7 +44,7 @@
                   type="text"
                   size="mini"
                   v-if="node.level===1&&moveNowTrue.moveNowId===node.id"
-                  @click="() => removeClass(data)">
+                  @click="setRemoveName(data);removeClass(data)">
                   <i class="el-icon-delete" title="删除班级"></i>
                 </el-button>
                 <el-button
@@ -58,7 +58,7 @@
                   type="text"
                   size="mini"
                   v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
-                  @click="() => removeGrop(data)">
+                  @click="setRemoveName(data);removeGrop(data)">
                   <i class="el-icon-delete" title="删除小组"></i>
                 </el-button>
               </span>
@@ -93,7 +93,7 @@
                 size="mini" :type="row.off === 0 ? 'warning' : 'success'"
                 @click="toggleStatus(row)"
               >{{ row.off === 0 ? '冻结' : '恢复' }}</el-button>
-              <el-button type="danger" size="mini" @click="remove(row)">删除</el-button>
+              <el-button type="danger" size="mini" @click="setRemoveName(row);remove(row)">删除</el-button>
             </div>
           </el-table-column>
         </lkt-table>
@@ -191,6 +191,13 @@ export default {
     const ctogList = ref<any>();
     const groupList = ref<any>();
     const blist = ref<any>();
+    const removeValue = ref<any>({
+      name: '',
+    });
+    function setRemoveName(row: any) {
+      removeValue.value.name = row.name;
+      console.log(removeValue.value.name);
+    }
     const props = ref({
       children: 'children',
       label: 'name',
@@ -508,13 +515,13 @@ export default {
       });
     return{
       loading, filterText, list, tree, props, studentUserList, filtered, keywords, blist, addClazFlag, armasdb,
-      addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm('确认删除？', useLoading(loading, removeClass)),
-      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow,
-      remove: useConfirm('确认删除？', useLoading(loading, remove)),
+      addNewGroup, addNewGroupDate, storeUserInfo, removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
+      armasd, upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow, setRemoveName,
+      remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
       toggleStatus: useLoading(loading, toggleStatus),
       queryStudentList, queryClassList,
-      removeGrop: useConfirm('确认删除？', useLoading(loading, removeGrop)),
-      modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag,
+      removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
+      modal, form, showForm, addClaz, upgrpDate, TreeBtnFlag, removeValue,
       update: useLoading(loading, update), updataGropFlag, getGroupList, addNewGroupFlag, chgTreeBtnFlag,
       validator, classList, groupList, ctogList, append, firstTab, grpandclzList,
       FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),

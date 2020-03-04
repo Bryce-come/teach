@@ -137,6 +137,9 @@
           <el-form-item label="报废数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
             <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
           </el-form-item>
+          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
+          </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
           </el-form-item>

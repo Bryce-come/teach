@@ -27,7 +27,7 @@
           </el-select>
         </el-form-item>
         <el-form-item style="margin-left:20px">
-          <el-button type="primary" @click="searchFList()">查询</el-button>
+          <el-button type="primary" @click="searchFList();showAllScored()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -58,7 +58,7 @@
         <el-table-column label="操作评分" prop="extend.score1"/>
         <el-table-column label="实验报告">
           <div slot-scope="{row}">
-            <el-button type="text" @click="downFile(row)">{{row.attachment[0].split("/")[row.attachment[0].split("/").length-1]}}</el-button>
+            <el-button type="text" @click="downFile(row)">{{row.attachment[0]?row.attachment[0].split("/")[row.attachment[0].split("/").length-1]:''}}</el-button>
           </div>
         </el-table-column>
         <el-table-column label="报告评分" prop="extend.score2"/>
@@ -127,15 +127,19 @@ export default {
     });
     const form = ref<ElForm | null>(null);
     const showScoreForm = async (data?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
-      if (data) {
-        data = deepClone(data);
-
+      if (data.attachment[0] === undefined) {
+        alert('该学生该还未提交');
       } else {
-        data = initForm();
+        if (form.value) { (form.value as ElForm).clearValidate(); }
+        if (data) {
+          data = deepClone(data);
+
+        } else {
+          data = initForm();
+        }
+        scoreModal.value.scoreInfo = data;
+        scoreModal.value.visible = true;
       }
-      scoreModal.value.scoreInfo = data;
-      scoreModal.value.visible = true;
     };
     async function scoreUpdate() {
       if (scoreModal.value.scoreInfo.extend.score1 === '' || scoreModal.value.scoreInfo.extend.score2 === '') {
@@ -150,7 +154,6 @@ export default {
         };
         await ReportScore(result);
         Message.success('评分成功');
-        await query();
         await getScorcedStatus();
       }
     }
@@ -237,22 +240,14 @@ export default {
       };
       experimentReportList.value = await ReportList(pum);
     }
-    async function getReportList() {
-      const pum = {};
-      const result = await ReportList(pum);
-      return result;
-    }
-    const query = async () => {
-      const result = await getReportList();
-      console.log(result);
-      experimentReportList.value = result;
-    };
     const scoreList = ref<any>({
       allScore: [],
       haveScore: [],
       noScore: [],
+      showScore: [],
     });
     const getScorcedStatus = async () => {
+      await searchFList();
       scoreList.value.allScore = experimentReportList.value;
       scoreList.value.haveScore = [];
       scoreList.value.noScore = [];
@@ -268,28 +263,30 @@ export default {
       allScored.value = true;
       hasScored.value = false;
       noScored.value = false;
+      await getScorcedStatus();
       experimentReportList.value = scoreList.value.allScore;
     };
     const showHasScored = async () => {
       allScored.value = false;
       hasScored.value = true;
       noScored.value = false;
+      await getScorcedStatus();
       experimentReportList.value = scoreList.value.haveScore;
     };
     const showNoScored = async () => {
       allScored.value = false;
       hasScored.value = false;
       noScored.value = true;
+      await getScorcedStatus();
       experimentReportList.value = scoreList.value.noScore;
     };
     onMounted(useLoading(loading, async () => {
-      await query();
       await getCourseList();
       await getClazList();
       await getScorcedStatus();
     }));
     return {
-      loading, experimentReportList, query, scoreModal, showScoreForm, getReportList, searchInfo, claszList, keywords,
+      loading, experimentReportList, scoreModal, showScoreForm, searchInfo, claszList, keywords,
       scoreUpdate: useLoading(loading, scoreUpdate), setProgramList, searchFList, getClazList, setGroupList, filtered,
       allScored, hasScored, noScored, downFile, courseList, getScorcedStatus,
       showAllScored: useLoading(loading, showAllScored),

@@ -27,8 +27,8 @@
                 <div slot="header" class="clearfix">
                   <span>未分配学生列表</span>
                 </div>
-                <div v-for="(item,i) in studentsList" :key="i" style="padding: 5px; text-align: left;">
-                  <div v-if="!overStudentList.includes(item.id)">{{item.name }}</div>
+                <div v-for="(item,i) in studentsList" :key="i" >
+                  <div style="padding: 5px; text-align: left;" v-if="!overStudentList.includes(item.id)">{{item.name }}</div>
                 </div>
           </el-card>
            </div>
@@ -76,9 +76,10 @@
               :key="index"
               style="margin-right:10px;"
              >
-             <el-checkbox-group class="flex little-space" style="padding: 5px 20px" v-model="checkList">
+             <el-checkbox-group class="flex little-space"  v-model="checkList">
               <el-checkbox
-                style="min-width: 50%;font-weight: 700"
+                style="min-width: 50%;font-weight: 700;padding: 5px 20px"
+                v-if=" courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
                 :label="param.id">
                 {{param.name}}
               </el-checkbox>
@@ -155,7 +156,6 @@ export default {
       checkList.value = [];
     };
     const update = async () => {
-
         const stationId = stationID.value;
         let flag = false;
         console.log(checkList.value);

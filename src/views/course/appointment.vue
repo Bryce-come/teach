@@ -200,8 +200,8 @@ export default createComponent({
     });
     const form = ref<ElForm | null>(null);
     const showAppointForm = async (data?: any) => {
-      if(form.value) { (form.value as ElForm).clearValidate(); }
-      if(data) {
+      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (data) {
         data = deepClone(data);
         appointModal.value.type = 'update';
         console.log(data.id);
@@ -315,7 +315,7 @@ export default createComponent({
       appointTypeList, courseList, programList, stationList,
       teacherList, studentList, otherStudentInClasz, classList, lessonList,
     };
-  }
+  },
 });
 function initAppointForm() {
   return {
