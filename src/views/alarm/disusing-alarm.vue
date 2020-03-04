@@ -83,12 +83,13 @@ export default {
        },
       ]);
     const query = async () => {
-        usageAlarmList.value = AlarmUsageList({
+        usageAlarmList.value = await AlarmUsageList({
           typeJson: type.value ? JSON.stringify(type.value) : null,
           stationJson: stationName.value ? JSON.stringify(stationName.value) : null,
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });
+          console.log( usageAlarmList.value);
     };
     onMounted(useLoading(loading, async () => {
       await query();

@@ -33,20 +33,31 @@
     <lkt-table
       :data="deviceAlarmList"
       style="width:100%">
-      <el-table-column prop="device.name" label="设备名称"/>
-      <el-table-column prop="device.referencedColumnName" label="设备编号"/>
-      <el-table-column prop="type" label="报警类型">
-          <el-tag slot-scope="{ row }">
-            {{(row.type===1? '保养':'')+(row.type===2? '维修':'')+(row.type===0? '巡检':'')}}
-          </el-tag>
+      <el-table-column prop="device.id" label="设备编号" sortable="custom" width="110"/>
+      <el-table-column prop="device.name" label="设备名称" sortable="custom" width="110"/>
+      <el-table-column prop="no" label="报警编号" sortable="custom" width="110"/>
+      <el-table-column prop="category" label="报警来源" sortable="custom" width="110">
+        <template slot-scope="{row}">
+          <div>{{ row.category==='device'?'设备采集':'设定规则' }}</div>
+        </template>
       </el-table-column>
-      <el-table-column prop="position" label="报警来源"/>
-      <el-table-column prop="statues" label="设备状态"/>
-      <el-table-column prop="occurDt" label="发生时间"/>
-      <el-table-column label="操作" width="220px">
-        <div slot-scope="{ row }" class="flex column" style="width:100px">
-        <el-button type="text" @click="snapshot(row)" style="width:85px">查看详情</el-button>
-        <el-tag v-if="row.extend.confirm" type="warning" style="width:85px">已被确认</el-tag>
+      <el-table-column prop="type" label="报警类型" width="100">
+        <template slot-scope="{row}">
+          <el-tag :type="row.type==='normal'?'warning':'danger'">{{ row.type === 'normal' ? '一般' : '严重' }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="msg" label="报警内容" min-width="100"/>
+      <!-- <el-table-column label="持续时间" sortable="custom" prop="duration" width="120">
+        <template slot-scope="{row}">
+          <el-tag type="danger" v-if="row.duration === undefined">报警中</el-tag>
+          <div v-else>{{ row.duration | HMS }}</div>
+        </template>
+      </el-table-column> -->
+      <el-table-column prop="createDt" label="发生时间" sortable="custom" width="170"/>
+      <el-table-column label="操作" align="center" width="120">
+        <div slot-scope="{ row }" class="flex column">
+          <el-tag v-if="row.extend.confirm" type="warning">已被确认</el-tag>
+          <el-button type="primary" size="mini" @click="snapshot(row)">设备参数快照</el-button>
         </div>
       </el-table-column>
     </lkt-table>
@@ -56,8 +67,7 @@
       :no-footer="true"
       width="60%">
       <div class="flex align-center">
-        <div style="font-weight: 700;padding: 5px 40px;width:45%" v-if="modal.data.operator">操作人：{{modal.data.operator.name }}</div>
-        <div style="text-align: center;font-weight: 600;">问题描述：{{ modal.data.description }}</div>
+        <div style="text-align: center;font-weight: 600;">问题描述：{{ modal.data.msg }}</div>
       </div>
       <div style="width:300px;height:200px;background-color:black;margin:auto">
       </div>
