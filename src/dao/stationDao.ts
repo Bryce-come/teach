@@ -51,9 +51,12 @@ export async function StationDel(params: any) {
  * RequestParam int id,
  * RequestParam(required = false) String deviceId
  * RequestParam(required = false) String adapterId,
+ * RequestParam(required = false) String deviceIP,
+ * RequestParam(required = false) String adapterOuterIP,
+ * RequestParam(required = false) String adapterInnerIP,
  * ApiParam(value = "{PCIP，PCNo, remark}")
  * RequestParam(required = false) String pcJson,
- * ApiParam(value = "{ip,name,remark}")
+ * ApiParam(value = "{channelId,name,remark}")
  * RequestParam(required = false) String cameraJson,
  * RequestParam(required = false) String deviceIP
  */
@@ -66,7 +69,7 @@ export async function StationAddComponent(params: any) {
  * RequestParam int id,
  * RequestParam(required = false) String deviceId,
  * RequestParam(required = false) String PCIP,
- * RequestParam(required = false) String cameraIP
+ * RequestParam(required = false) String cameraId
  */
 export async function StationDelComponent(params: any) {
   await postService('/rest/expStation/delComponent', params);
