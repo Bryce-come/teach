@@ -2,8 +2,12 @@
   <div v-loading="loading">
     <div class="flex between align-center" style="margin-bottom: 10px">
       <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()">返回</el-button>
-      <div v-if="station" class="flex center" style="font-size: 1.2rem;margin-right: 10%">
-        <div>操作台名称：{{station.name}}</div>
+      <div v-if="station" class="flex center align-center" style="font-size: 1.2rem;margin-right: 10%">
+        <div style="margin-right: 10px">操作台名称：{{station.name}}</div>
+        <el-tag
+          v-if="device && device.extend && device.extend.status"
+          style="margin-bottom: 5px"
+          :type="statusMap(device.extend.status) && statusMap(device.extend.status).tag">{{ statusMap(device.extend.status) && statusMap(device.extend.status).arrName }}</el-tag>
         <div style="margin-left: 2rem">
           <span>学生：</span>
           <span v-if="!station.extend.students || station.extend.students.length===0">无</span>
@@ -146,7 +150,7 @@ export default {
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
-        station.value = await MonitorStationDetail({id: router.currentRoute.params.id}),
+        station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id}),
     ]);
       const cameras = station.value.extend.cameras;
       if(cameras && cameras.length>0){
@@ -378,7 +382,7 @@ export default {
       checkList, disabled,
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
       restartVideo, fullScreen,
-      videoChannel, flag
+      videoChannel, flag, statusMap
     };
   },
 };

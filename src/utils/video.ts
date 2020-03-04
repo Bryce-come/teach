@@ -62,7 +62,6 @@ export async function login(ip: string, port: string, username: string, pwd: str
 export async function startRealPlay(window: any, szDeviceIdentify: string, channelId: number) {
   return new Promise((resolve, reject) => {
     const oWndInfo = WebVideoCtrl.I_GetWindowStatus(window);
-    // console.log('播放窗口：', window, oWndInfo);
     if (!oWndInfo) {
       WebVideoCtrl.I_StartRealPlay(szDeviceIdentify, {
         iWndIndex: window,

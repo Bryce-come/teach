@@ -17,24 +17,16 @@
       </div>
       <div class="flex between" style="width: 100%">
         <div class="watch3">
-          <div class="card-header">
-            操作台：{{station.name}}
+          <div class="card-header flex">
+            <div style="margin-right: 2rem">操作台：{{station.name}}</div>
+            <el-tag :type="statusMap(status) && statusMap(status).tag">{{ statusMap(status) && statusMap(status).arrName }}</el-tag>
           </div>
           <div v-if="paramsMap" class="monitor-detail-param-all flex wrap">
             <div
               class="monitor-detail--param-item flex between align-center"
               v-for="(param,index) of paramsMap.filter(p => p.available !== false)"
-              :key="index"
-              :style="{ cursor: param.showAnalysis ? 'pointer' : 'default' }"
-              @change="isAbled()">
-              <el-checkbox-group v-if="param.showAnalysis" class="flex little-space" style="padding: 5px 20px" v-model="checkList">
-                <el-checkbox
-                  style="min-width: 50%;"
-                  :label="param.keyFull">
-                  <span>{{ param.nameSimple }}：</span>
-                </el-checkbox>
-              </el-checkbox-group>
-              <span v-else style="min-width: 50%;color:#303133;padding: 5px 40px">{{ param.nameSimple }}：</span>
+              :key="index">
+              <span style="min-width: 50%;color:#303133;padding: 5px 40px">{{ param.nameSimple }}：</span>
               <div style="text-align: center;color: #014cff;font-weight: 600;">{{ param.value }}</div>
             </div>
           </div>
@@ -61,7 +53,7 @@
   import { router } from '@/main';
   import {leftFill0, sleep, formatDateTime} from 'web-toolkit/src/utils';
   import { useLoading } from 'web-toolkit/src/service';
-  import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
+  import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams, AnalysisParamSnapshot} from '@/dao/analysisDao';
   import {statusMap} from '@/utils/device-utils';
   import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
   import {Message} from 'element-ui';
@@ -87,6 +79,7 @@
       });
       const videoChannel = ref<any>([null, null]);
       const paramsMap = ref<any>();
+      const status = ref<string>('offline');
       // 时间总范围
       const startTimestamp = ref<any>();
       const endTimestamp = ref<any>();
@@ -168,6 +161,7 @@
         if(videoChannel.value[flag.value]===null || videoChannel.value[flag.value]===undefined){
           return ;
         }
+        console.log("start video", starting.value)
         const msg1 = await startPlayback(0, modalVideo.value.szDeviceIndentify, videoChannel.value[flag.value], formatDateTime(new Date(start.value)), formatDateTime(new Date(end.value)));
         if (msg1) {
           alert(msg1);
@@ -192,33 +186,44 @@
           end.value = parseInt(slide.value[1]*dif/100+startTimestamp.value);
         }
       });
-      watch(starting, ()=>{
+      watch(starting, async ()=>{
         if(starting.value){
           if(startingClock.value){
             clearInterval(startingClock.value);
           }
-          startingClock.value = setInterval(function () {
-            let arr = [slide.value[0], slide.value[1]];
-            start.value = start.value+3000;
-            console.log(new Date(start.value));
-            let s = parseInt((start.value-startTimestamp.value)*100/(endTimestamp.value-startTimestamp.value) as any);
-            if(s>slide.value[1]){
-              s=slide.value[1];
-            }
-            if(start.value >= parseInt((endTimestamp.value-startTimestamp.value)*slide.value[1]/100+startTimestamp.value)){
-              close();
-              return;
-            }
-            arr[0] = s;
-            slide.value = arr;
-            // todo get params
-          },3000)
+          await monitor();
+          startingClock.value = setInterval(monitor,3500)
         }else{
           if(startingClock.value){
             clearInterval(startingClock.value);
           }
         }
       });
+      async function monitor() {
+        let arr = [slide.value[0], slide.value[1]];
+        start.value = start.value+3000;
+        // console.log(new Date(start.value));
+        let s = parseInt((start.value-startTimestamp.value)*100/(endTimestamp.value-startTimestamp.value) as any);
+        if(s>slide.value[1]){
+          s=slide.value[1];
+        }
+        if(start.value >= parseInt((endTimestamp.value-startTimestamp.value)*slide.value[1]/100+startTimestamp.value)){
+          close();
+          return;
+        }
+        arr[0] = s;
+        slide.value = arr;
+        //  get status record
+        if(device.value){
+          let record = await AnalysisParamSnapshot({
+            deviceId: device.value.id,
+            dt: start.value,
+            minutes: 30
+          });
+          paramsMap.value = record.extend.paramsMap;
+          status.value = record.status;
+        }
+      }
       return{
         loading, modal,
         station, timeLine, slide,
@@ -227,7 +232,7 @@
         videoChannel, flag, paramsMap,
         startTimestamp, endTimestamp,
         start,end, starting,
-        open, close, formatDateTime
+        open, close, formatDateTime, status, statusMap
       };
     },
   };
