@@ -87,14 +87,15 @@
                 :label="item.name"
                 :value="item"></el-option>
             </el-select>
+            <!-- <lkt-select :list="courseList" value-key="name" option-value-key="id" v-model="appointModal.appointInfo.course.id"/> -->
           </el-form-item>
-          <el-form-item label="选择实验：" prop="program">
-            <el-select v-model="appointModal.appointInfo.program" value-key="id">
+          <el-form-item label="选择实验：" prop="program.id">
+            <el-select v-model="appointModal.appointInfo.program.id">
               <el-option
-                v-for="item of appointModal.appointInfo.course ? appointModal.appointInfo.course.programList : programList"
+                v-for="item of appointModal.appointInfo.course.id ? appointModal.appointInfo.course.programList : programList"
                 :key="item.id"
                 :label="item.name"
-                :value="item"></el-option>
+                :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="选择指定教师：" prop="teacher.id" v-if="appointModal.appointInfo.type === 1">
@@ -124,8 +125,11 @@
                 :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="申请时间范围：" prop="appointDt">
-            <lkt-date-picker v-model="appointModal.appointInfo.appointDt"/>
+          <el-form-item label="选择开始时间：" prop="startDt">
+            <el-date-picker v-model="appointModal.appointInfo.startDt" type="datetime"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="选择结束时间：" prop="endDt">
+            <el-date-picker v-model="appointModal.appointInfo.endDt" type="datetime"></el-date-picker>
           </el-form-item>
           <el-form-item label="选择课时：" prop="extend.lessons" :rules="{ required: true, message: '请选择预约课时'}">
             <el-select v-model="appointModal.appointInfo.extend.lessons" multiple collapse-tags>
@@ -204,7 +208,7 @@ export default createComponent({
       if (data) {
         data = deepClone(data);
         appointModal.value.type = 'update';
-        console.log(data.id);
+        console.log(data);
       } else {
         data = initAppointForm();
         appointModal.value.type = 'add';
@@ -217,6 +221,13 @@ export default createComponent({
       const valid = await (form.value as ElForm).validate();
       console.log(valid);
       if (valid) {
+        // 时间格式转化
+        if (appointModal.value.appointInfo.startDt && appointModal.value.appointInfo.startDt instanceof Date) {
+          appointModal.value.appointInfo.startDt = appointModal.value.appointInfo.startDt.getTime();
+        }
+        if (appointModal.value.appointInfo.endDt && appointModal.value.appointInfo.endDt instanceof Date) {
+          appointModal.value.appointInfo.endDt = appointModal.value.appointInfo.endDt.getTime();
+        }
         if(appointModal.value.type === 'add') {
           await AppointAdd({
             type: appointModal.value.appointInfo.type,
@@ -225,8 +236,8 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
-            start: appointModal.value.appointInfo.appointDt[0].getTime(),
-            end: appointModal.value.appointInfo.appointDt[1].getTime(),
+            startDt: appointModal.value.appointInfo.startDt,
+            endDt: appointModal.value.appointInfo.endDt, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
@@ -238,8 +249,8 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
-            start: appointModal.value.appointInfo.appointDt[0].getTime(),
-            end: appointModal.value.appointInfo.appointDt[1].getTime(),
+            startDt: appointModal.value.appointInfo.startDt,
+            endDt: appointModal.value.appointInfo.endDt,
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }
@@ -319,8 +330,8 @@ export default createComponent({
 });
 function initAppointForm() {
   return {
-    id: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
-    extend: {},
+    id: '', type: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
+    extend: {clasz: {}, claszGroup: {}},
   };
 }
 </script>
