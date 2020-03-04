@@ -153,9 +153,9 @@ export default {
         station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id}),
     ]);
       const cameras = station.value.extend.cameras;
-      if(cameras && cameras.length>0){
+      if (cameras && cameras.length > 0) {
         videoChannel.value[0] = cameras[0].channelId;
-        if(cameras.length>1) videoChannel.value[1] = cameras[1].channelId;
+        if (cameras.length > 1) { videoChannel.value[1] = cameras[1].channelId; }
       }
       if (courseRecord.value.stationBind && courseRecord.value.stationBind[station.value.id.toString()]) {
         station.value.extend.students = courseRecord.value.stationBind[station.value.id.toString()];
@@ -191,9 +191,9 @@ export default {
       over.value = true;
       stopVideo();
     });
-    async function startVideo(id:any) {
-      if(id===undefined || id===null) id=videoChannel.value[0];
-      if(id===undefined || id===null) return ;
+    async function startVideo(id: any) {
+      if (id === undefined || id === null) { id = videoChannel.value[0]; }
+      if (id === undefined || id === null) { return ; }
       const msg1 = await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
       // const msg2 = await startRealPlay(1,modalVideo.value.szDeviceIndentify,1);
       if (msg1) {
@@ -203,11 +203,11 @@ export default {
     async function stopVideo() {
       await stopPlay(0);
     }
-    async function restartVideo(id: any, f:number) {
+    async function restartVideo(id: any, f: number) {
       flag.value = f;
       await stopVideo();
-      console.log(id)
-      if(id) await startVideo(id);
+      console.log(id);
+      if (id) { await startVideo(id); }
     }
     async function paramAnalysisMonitor() {
       while (modal.value.visible) {
@@ -382,7 +382,7 @@ export default {
       checkList, disabled,
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
       restartVideo, fullScreen,
-      videoChannel, flag, statusMap
+      videoChannel, flag, statusMap,
     };
   },
 };

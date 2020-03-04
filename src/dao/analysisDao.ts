@@ -48,8 +48,8 @@ export async function AnalysisDeviceParam(params: any) {
  * ApiParam(value = "用于判断数据无效的时间差（从dt时间点向前找有效数据点），默认无")
  * RequestParam(required = false) Long minutes
  */
-export async function AnalysisParamSnapshot(params:any) {
-  const {data: {record}} = await postService('/rest/analysis/device/params/snapshot',params);
+export async function AnalysisParamSnapshot(params: any) {
+  const {data: {record}} = await postService('/rest/analysis/device/params/snapshot', params);
   return record;
 }
 

@@ -49,193 +49,193 @@
   </div>
 </template>
 <script lang="ts">
-  import { ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
-  import { router } from '@/main';
-  import {leftFill0, sleep, formatDateTime} from 'web-toolkit/src/utils';
-  import { useLoading } from 'web-toolkit/src/service';
-  import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams, AnalysisParamSnapshot} from '@/dao/analysisDao';
-  import {statusMap} from '@/utils/device-utils';
-  import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
-  import {Message} from 'element-ui';
-  import {init, login, startPlayback, stopPlay, fullScreen} from '@/utils/video';
-  import {SettingGet} from '@/dao/settingDao';
-  import {StationInfo} from "@/dao/stationDao";
+import { ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { router } from '@/main';
+import {leftFill0, sleep, formatDateTime} from 'web-toolkit/src/utils';
+import { useLoading } from 'web-toolkit/src/service';
+import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams, AnalysisParamSnapshot} from '@/dao/analysisDao';
+import {statusMap} from '@/utils/device-utils';
+import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import {Message} from 'element-ui';
+import {init, login, startPlayback, stopPlay, fullScreen} from '@/utils/video';
+import {SettingGet} from '@/dao/settingDao';
+import {StationInfo} from '@/dao/stationDao';
 
-  export default {
-    setup() {
-      const loading = ref(false);
-      const over = ref(false);
-      const station = ref<any>();
-      const device = ref<any>();
-      const timeLine = ref<any>();
-      const flag = ref<number>(0);
-      const modal = ref({
-        visible: false,
-      });
-      const modalVideo = ref<any>({
-        szDeviceIdentify: '',
-        start: '2020-02-26 07:00:00',
-        end: '2020-02-26 14:11:11',
-      });
-      const videoChannel = ref<any>([null, null]);
-      const paramsMap = ref<any>();
-      const status = ref<string>('offline');
-      // 时间总范围
-      const startTimestamp = ref<any>();
-      const endTimestamp = ref<any>();
-      // 实际范围
-      const start = ref<any>();
-      const end = ref<any>();
-      // 滑块位置
-      const slide = ref<any>([0,100]);
-      // 是否在播放
-      const starting = ref<any>(false);
-      const startingClock = ref<any>();
+export default {
+  setup() {
+    const loading = ref(false);
+    const over = ref(false);
+    const station = ref<any>();
+    const device = ref<any>();
+    const timeLine = ref<any>();
+    const flag = ref<number>(0);
+    const modal = ref({
+      visible: false,
+    });
+    const modalVideo = ref<any>({
+      szDeviceIdentify: '',
+      start: '2020-02-26 07:00:00',
+      end: '2020-02-26 14:11:11',
+    });
+    const videoChannel = ref<any>([null, null]);
+    const paramsMap = ref<any>();
+    const status = ref<string>('offline');
+    // 时间总范围
+    const startTimestamp = ref<any>();
+    const endTimestamp = ref<any>();
+    // 实际范围
+    const start = ref<any>();
+    const end = ref<any>();
+    // 滑块位置
+    const slide = ref<any>([0, 100]);
+    // 是否在播放
+    const starting = ref<any>(false);
+    const startingClock = ref<any>();
 
-      const query = async () => {
-        while (!over.value) {
-          await sleep(1500);
-          const data = await AnalysisDeviceParam({
-            deviceId: device.value.id,
-          });
-          for (const key of Object.keys(data.record)) {
-            (device.value as any).extend[key] = data.record[key];
-          }
-          if (data.status) {
-            (device.value as any).extend.status = data.status;
-          }
+    const query = async () => {
+      while (!over.value) {
+        await sleep(1500);
+        const data = await AnalysisDeviceParam({
+          deviceId: device.value.id,
+        });
+        for (const key of Object.keys(data.record)) {
+          (device.value as any).extend[key] = data.record[key];
         }
-      };
-      onMounted(useLoading(loading, async () => {
-        if(!router.currentRoute.query.id || !router.currentRoute.query.start || !router.currentRoute.query.end){
-          Message.error("页面参数缺失");
-          return ;
+        if (data.status) {
+          (device.value as any).extend.status = data.status;
         }
-        startTimestamp.value = parseInt(router.currentRoute.query.start as any);
-        endTimestamp.value = parseInt(router.currentRoute.query.end as any);
-        if(startTimestamp.value>endTimestamp.value){
-          Message.error("页面参数中时间范围错误");
-          return ;
-        }
-        start.value = startTimestamp.value;
-        end.value = endTimestamp.value;
-        station.value = await StationInfo({id: router.currentRoute.query.id});
-        const cameras = station.value.extend.cameras;
-        if(cameras && cameras.length>0){
-          videoChannel.value[0] = cameras[0].channelId;
-          if(cameras.length>1) videoChannel.value[1] = cameras[1].channelId;
-        }
-        device.value = station.value.deviceList[0];
-        if (device.value) {
-          const list = await AnalysisDeviceTime({
-            start: startTimestamp.value,
-            end: endTimestamp.value,
-            deviceId: device.value.id,
-          });
-          timeLine.value = timelineConfig(list, statusMap, { height: 40, dataZoomTop: 70, dataZoom: true, showTime: true });
-        }
-        // video
-        const setting = await SettingGet({onlyNVR: true});
-        modalVideo.value.ip = setting.nvrIp;
-        modalVideo.value.port = setting.nvrPort;
-        modalVideo.value.username = setting.nvrUsername;
-        modalVideo.value.pwd = setting.nvrPwd;
-        await init('contain', 1);
-        modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
-        const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-        if (msg) {
-          alert(msg);
-          return ;
-        }
-        open();
-      }));
-      onUnmounted(() => {
-        over.value = true;
-        if(startingClock.value){
+      }
+    };
+    onMounted(useLoading(loading, async () => {
+      if (!router.currentRoute.query.id || !router.currentRoute.query.start || !router.currentRoute.query.end) {
+        Message.error('页面参数缺失');
+        return ;
+      }
+      startTimestamp.value = parseInt(router.currentRoute.query.start as any);
+      endTimestamp.value = parseInt(router.currentRoute.query.end as any);
+      if (startTimestamp.value > endTimestamp.value) {
+        Message.error('页面参数中时间范围错误');
+        return ;
+      }
+      start.value = startTimestamp.value;
+      end.value = endTimestamp.value;
+      station.value = await StationInfo({id: router.currentRoute.query.id});
+      const cameras = station.value.extend.cameras;
+      if (cameras && cameras.length > 0) {
+        videoChannel.value[0] = cameras[0].channelId;
+        if (cameras.length > 1) { videoChannel.value[1] = cameras[1].channelId; }
+      }
+      device.value = station.value.deviceList[0];
+      if (device.value) {
+        const list = await AnalysisDeviceTime({
+          start: startTimestamp.value,
+          end: endTimestamp.value,
+          deviceId: device.value.id,
+        });
+        timeLine.value = timelineConfig(list, statusMap, { height: 40, dataZoomTop: 70, dataZoom: true, showTime: true });
+      }
+      // video
+      const setting = await SettingGet({onlyNVR: true});
+      modalVideo.value.ip = setting.nvrIp;
+      modalVideo.value.port = setting.nvrPort;
+      modalVideo.value.username = setting.nvrUsername;
+      modalVideo.value.pwd = setting.nvrPwd;
+      await init('contain', 1);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
+      const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if (msg) {
+        alert(msg);
+        return ;
+      }
+      open();
+    }));
+    onUnmounted(() => {
+      over.value = true;
+      if (startingClock.value) {
+        clearInterval(startingClock.value);
+      }
+      stopPlay(0);
+    });
+    async function open() {
+      await stopPlay(0);
+      if (videoChannel.value[flag.value] === null || videoChannel.value[flag.value] === undefined) {
+        return ;
+      }
+      console.log('start video', starting.value);
+      const msg1 = await startPlayback(0, modalVideo.value.szDeviceIndentify, videoChannel.value[flag.value], formatDateTime(new Date(start.value)), formatDateTime(new Date(end.value)));
+      if (msg1) {
+        alert(msg1);
+      } else {
+        starting.value = true;
+      }
+    }
+    async function close() {
+      starting.value = false;
+      await stopPlay(0);
+    }
+    async function paramAnalysisMonitor() {
+      while (modal.value.visible) {
+        await sleep(2500);
+      }
+    }
+    watch(slide, () => {
+      if (!starting.value) {
+        // console.log(slide.value)
+        const dif = endTimestamp.value - startTimestamp.value;
+        start.value = parseInt(slide.value[0] * dif / 100 + startTimestamp.value);
+        end.value = parseInt(slide.value[1] * dif / 100 + startTimestamp.value);
+      }
+    });
+    watch(starting, async () => {
+      if (starting.value) {
+        if (startingClock.value) {
           clearInterval(startingClock.value);
         }
-        stopPlay(0);
-      });
-      async function open() {
-        await stopPlay(0);
-        if(videoChannel.value[flag.value]===null || videoChannel.value[flag.value]===undefined){
-          return ;
-        }
-        console.log("start video", starting.value)
-        const msg1 = await startPlayback(0, modalVideo.value.szDeviceIndentify, videoChannel.value[flag.value], formatDateTime(new Date(start.value)), formatDateTime(new Date(end.value)));
-        if (msg1) {
-          alert(msg1);
-        }else{
-          starting.value = true;
+        await monitor();
+        startingClock.value = setInterval(monitor, 3500);
+      } else {
+        if (startingClock.value) {
+          clearInterval(startingClock.value);
         }
       }
-      async function close(){
-        starting.value = false;
-        await stopPlay(0);
+    });
+    async function monitor() {
+      const arr = [slide.value[0], slide.value[1]];
+      start.value = start.value + 3000;
+      // console.log(new Date(start.value));
+      let s = parseInt((start.value - startTimestamp.value) * 100 / (endTimestamp.value - startTimestamp.value) as any);
+      if (s > slide.value[1]) {
+        s = slide.value[1];
       }
-      async function paramAnalysisMonitor() {
-        while (modal.value.visible) {
-          await sleep(2500);
-        }
+      if (start.value >= parseInt((endTimestamp.value - startTimestamp.value) * slide.value[1] / 100 + startTimestamp.value)) {
+        close();
+        return;
       }
-      watch(slide, ()=>{
-        if(!starting.value){
-          // console.log(slide.value)
-          const dif = endTimestamp.value-startTimestamp.value;
-          start.value = parseInt(slide.value[0]*dif/100+startTimestamp.value);
-          end.value = parseInt(slide.value[1]*dif/100+startTimestamp.value);
-        }
-      });
-      watch(starting, async ()=>{
-        if(starting.value){
-          if(startingClock.value){
-            clearInterval(startingClock.value);
-          }
-          await monitor();
-          startingClock.value = setInterval(monitor,3500)
-        }else{
-          if(startingClock.value){
-            clearInterval(startingClock.value);
-          }
-        }
-      });
-      async function monitor() {
-        let arr = [slide.value[0], slide.value[1]];
-        start.value = start.value+3000;
-        // console.log(new Date(start.value));
-        let s = parseInt((start.value-startTimestamp.value)*100/(endTimestamp.value-startTimestamp.value) as any);
-        if(s>slide.value[1]){
-          s=slide.value[1];
-        }
-        if(start.value >= parseInt((endTimestamp.value-startTimestamp.value)*slide.value[1]/100+startTimestamp.value)){
-          close();
-          return;
-        }
-        arr[0] = s;
-        slide.value = arr;
-        //  get status record
-        if(device.value){
-          let record = await AnalysisParamSnapshot({
-            deviceId: device.value.id,
-            dt: start.value,
-            minutes: 30
-          });
-          paramsMap.value = record.extend.paramsMap;
-          status.value = record.status;
-        }
+      arr[0] = s;
+      slide.value = arr;
+      //  get status record
+      if (device.value) {
+        const record = await AnalysisParamSnapshot({
+          deviceId: device.value.id,
+          dt: start.value,
+          minutes: 30,
+        });
+        paramsMap.value = record.extend.paramsMap;
+        status.value = record.status;
       }
-      return{
-        loading, modal,
-        station, timeLine, slide,
-        query,
-        fullScreen,
-        videoChannel, flag, paramsMap,
-        startTimestamp, endTimestamp,
-        start,end, starting,
-        open, close, formatDateTime, status, statusMap
-      };
-    },
-  };
+    }
+    return{
+      loading, modal,
+      station, timeLine, slide,
+      query,
+      fullScreen,
+      videoChannel, flag, paramsMap,
+      startTimestamp, endTimestamp,
+      start, end, starting,
+      open, close, formatDateTime, status, statusMap,
+    };
+  },
+};
 </script>
 <style scoped lang="scss">
   #contain{

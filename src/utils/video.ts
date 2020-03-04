@@ -76,7 +76,7 @@ export async function startRealPlay(window: any, szDeviceIdentify: string, chann
           reject('开始预览失败！' + status ? status : '');
         },
       });
-    }else {
+    } else {
       resolve();
     }
   });
@@ -94,7 +94,7 @@ export async function stopPlay(window: any) {
           reject('停止失败');
         },
       });
-    }else {
+    } else {
       resolve();
     }
   });
@@ -118,7 +118,7 @@ export async function startPlayback(window: any, szDeviceIdentify: string, chann
           reject('开始回放失败 ' + status ? status : '');
         },
       });
-    }else {
+    } else {
       resolve();
     }
   });
