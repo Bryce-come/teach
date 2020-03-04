@@ -23,9 +23,9 @@ import { router } from '@/main';
 import { Message } from 'element-ui';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import monitor from '../monitor/monitor.vue';
-import {ClassLengthen, ClassOver} from "@/dao/inClassDao";
-import {SettingGet} from "@/dao/settingDao";
-import {CourseRecordInClass} from "@/dao/courseRecordDao";
+import {ClassLengthen, ClassOver} from '@/dao/inClassDao';
+import {SettingGet} from '@/dao/settingDao';
+import {CourseRecordInClass} from '@/dao/courseRecordDao';
 export default createComponent({
   components: { monitor },
   setup() {
@@ -43,10 +43,10 @@ export default createComponent({
     const confirm = async () => {
       await ClassLengthen({
         id: record.value.id,
-        minutes: delayMode.value.data
+        minutes: delayMode.value.data,
       });
       delayMode.value.visible = false;
-      Message.success("操作成功，即将刷新页面");
+      Message.success('操作成功，即将刷新页面');
       window.location.reload();
     };
     const off = async () => {
@@ -54,7 +54,7 @@ export default createComponent({
       Message.success('已下课并断开所有操作台网络');
     };
     onMounted(useLoading(loading, async () => {
-      let data = await SettingGet({onlyLinkOn:true});
+      const data = await SettingGet({onlyLinkOn: true});
       linkOn.value = data.on;
       record.value = await CourseRecordInClass();
     }));

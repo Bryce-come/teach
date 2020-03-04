@@ -239,7 +239,6 @@ export default {
         end: searchInfo.value.end,
       };
       experimentReportList.value = await ReportList(pum);
-      console.log(experimentReportList.value);
     }
     const scoreList = ref<any>({
       allScore: [],
@@ -266,7 +265,6 @@ export default {
       noScored.value = false;
       await getScorcedStatus();
       experimentReportList.value = scoreList.value.allScore;
-      console.log(scoreList.value);
     };
     const showHasScored = async () => {
       allScored.value = false;
@@ -274,7 +272,6 @@ export default {
       noScored.value = false;
       await getScorcedStatus();
       experimentReportList.value = scoreList.value.haveScore;
-      console.log(scoreList.value);
     };
     const showNoScored = async () => {
       allScored.value = false;
@@ -282,7 +279,6 @@ export default {
       noScored.value = true;
       await getScorcedStatus();
       experimentReportList.value = scoreList.value.noScore;
-      console.log(scoreList.value);
     };
     onMounted(useLoading(loading, async () => {
       await getCourseList();

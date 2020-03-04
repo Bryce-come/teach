@@ -7,7 +7,7 @@
             v-for="item of coursePreviewList"
             :key="item.id"
             :label="item.name"
-            :value="item.id"></el-option>
+            :value="item.id"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -58,7 +58,7 @@
       </div>
       <div style="margin-top:20px">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-files" style="font-size:16px"></i>{{' 课程附件'}}</div>
-        <el-link 
+        <el-link
           type="primary" style="margin:20px 40px"
           v-for="(item,i) in courseInfo.attachment" :key="i" @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}
         </el-link>
@@ -66,7 +66,7 @@
       </div>
       <div style="margin-top:20px">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-files" style="font-size:16px"></i>{{' 项目附件'}}</div>
-        <el-link 
+        <el-link
           type="primary" style="margin:20px 40px"
           v-for="(item,i) in courseInfo.program.attachment" :key="i" @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}
         </el-link>
@@ -90,14 +90,12 @@ export default {
     const courseInfo = ref<any>();
     const queryCoursePreviewList = async () => {
       coursePreviewList.value = await CourseList4Student();
-      console.log(coursePreviewList.value);
     };
     const queryCourseInfo = async () => {
       const courseID = coursePreview.value;
       courseInfo.value = await CourseRecordPreview({
         courseId: courseID,
       });
-      console.log(courseInfo.value);
     };
     async function downFile(item: any) {
       const files = {

@@ -180,273 +180,273 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, onMounted, watch} from '@vue/composition-api';
-  import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
-  import {ElTree} from 'element-ui/types/tree';
-  import {ElForm} from 'element-ui/types/form';
-  import {Message} from 'element-ui';
-  import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-  import {
-    StationList,
-    StationInfo,
-    StationAdd,
-    StationUpdate,
-    StationDel,
-    StationAddComponent,
-    StationDelComponent
-  } from '@/dao/stationDao';
-  import {DeviceList} from '@/dao/deviceDao';
+import {ref, onMounted, watch} from '@vue/composition-api';
+import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
+import {ElTree} from 'element-ui/types/tree';
+import {ElForm} from 'element-ui/types/form';
+import {Message} from 'element-ui';
+import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import {
+  StationList,
+  StationInfo,
+  StationAdd,
+  StationUpdate,
+  StationDel,
+  StationAddComponent,
+  StationDelComponent,
+} from '@/dao/stationDao';
+import {DeviceList} from '@/dao/deviceDao';
 
-  export default {
-    setup() {
-      const loading = ref(false);
-      const tree = ref<ElTree<any, any> | null>(null);
-      const form = ref<ElForm | null>(null);
-      const form1 = ref<ElForm | null>(null);
-      const form2 = ref<ElForm | null>(null);
-      const form3 = ref<ElForm | null>(null);
-      const list = ref<any>();
-      const [filterText, stationList] = useSearch(list, {
-        includeProps: ['name'],
-      });
-      const stationId = ref<any>(null);
-      const stationModel = ref<any>(
-        {
-          visible: false,
-          stationInfo: null,
-        }
-      );
-      const expStationList = ref<any>();
-      const deviceNameList = ref<any>();
-      const devicesList = ref<any>([]);
-      const props = ref({
-        children: 'children',
-        label: 'name',
-      });
-      const modal = ref<any>({
+export default {
+  setup() {
+    const loading = ref(false);
+    const tree = ref<ElTree<any, any> | null>(null);
+    const form = ref<ElForm | null>(null);
+    const form1 = ref<ElForm | null>(null);
+    const form2 = ref<ElForm | null>(null);
+    const form3 = ref<ElForm | null>(null);
+    const list = ref<any>();
+    const [filterText, stationList] = useSearch(list, {
+      includeProps: ['name'],
+    });
+    const stationId = ref<any>(null);
+    const stationModel = ref<any>(
+      {
         visible: false,
-        workTopInfo: null,
-      });
-      // 添加操作台
-      const showForm = async (data?: any) => {
-        if (form.value) {
-          (form.value as ElForm).clearValidate();
-        }
-        if (data) {
-          data = deepClone(data);
-        } else {
-          data = initForm();
-        }
-        modal.value.workTopInfo = data;
-        modal.value.visible = true;
-      };
-
-      async function update() {
-        const valid = await (form.value as ElForm).validate();
-        if (valid) {
-          await StationAdd({
-            name: modal.value.workTopInfo.name,
-          });
-          modal.value.visible = false;
-          Message.success('添加成功');
-          await queryStation();
-        }
+        stationInfo: null,
+      },
+    );
+    const expStationList = ref<any>();
+    const deviceNameList = ref<any>();
+    const devicesList = ref<any>([]);
+    const props = ref({
+      children: 'children',
+      label: 'name',
+    });
+    const modal = ref<any>({
+      visible: false,
+      workTopInfo: null,
+    });
+    // 添加操作台
+    const showForm = async (data?: any) => {
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
       }
-
-      const del = async () => {
-        stationModel.value.stationInfo = expStationList.value;
-        stationModel.value.visible = true;
+      if (data) {
+        data = deepClone(data);
+      } else {
+        data = initForm();
       }
+      modal.value.workTopInfo = data;
+      modal.value.visible = true;
+    };
 
-      const confirmStation = async () => {
-        await StationDel({
-          id: stationModel.value.stationInfo.id,
+    async function update() {
+      const valid = await (form.value as ElForm).validate();
+      if (valid) {
+        await StationAdd({
+          name: modal.value.workTopInfo.name,
         });
+        modal.value.visible = false;
+        Message.success('添加成功');
         await queryStation();
-        await query();
-        stationModel.value.visible = false;
-      };
-      //
-      const addDeviceModal = ref<any>({
-        visible: false,
-        deviceInfo: null,
+      }
+    }
+
+    const del = async () => {
+      stationModel.value.stationInfo = expStationList.value;
+      stationModel.value.visible = true;
+    };
+
+    const confirmStation = async () => {
+      await StationDel({
+        id: stationModel.value.stationInfo.id,
       });
-      const showDeviceForm = async (data?: any) => {
-        if (form1.value) {
-          (form1.value as ElForm).clearValidate();
-        }
-        if (data) {
-          data = deepClone(data);
-        } else {
-          data = initDeviceForm();
-        }
-        addDeviceModal.value.deviceInfo = data;
-        addDeviceModal.value.visible = true;
-      };
-      const addPCModal = ref<any>({
-        visible: false,
-        PCInfo: null,
-      });
-      const showPCForm = async (data?: any) => {
-        if (form2.value) {
-          (form2.value as ElForm).clearValidate();
-        }
-        if (data) {
-          data = deepClone(data);
-        } else {
-          data = initPCForm();
-        }
-        addPCModal.value.PCInfo = data;
-        addPCModal.value.visible = true;
-      };
-      const addCameraModal = ref<any>({
-        visible: false,
-        cameraInfo: null,
-      });
-      const showCameraForm = async (data?: any) => {
-        if (form3.value) {
-          (form3.value as ElForm).clearValidate();
-        }
-        if (data) {
-          data = deepClone(data);
-        } else {
-          data = initPCForm();
-        }
-        addCameraModal.value.cameraInfo = data;
-        addCameraModal.value.visible = true;
-      };
-      const deviceUpdate = async () => {
-        const valid1 = await (form1.value as ElForm).validate();
-        if (valid1) {
-          await StationAddComponent({
-            id: stationId.value,
-            deviceId: addDeviceModal.value.deviceInfo.device.id ,
-            adapterId: addDeviceModal.value.deviceInfo.collector.id,
-            deviceIP: addDeviceModal.value.deviceInfo.device.extend.ip,
-            adapterOuterIP: addDeviceModal.value.deviceInfo.collector.extend.outerIp,
-            adapterInnerIP: addDeviceModal.value.deviceInfo.collector.extend.innerIp,
-          });
-          addDeviceModal.value.visible = false;
-          await query(stationId.value);
-          Message.success('设备添加成功');
-        }
-      };
-      const PCUpdate = async () => {
-        const valid2 = await (form2.value as ElForm).validate();
-        if (valid2) {
-          await StationAddComponent({
-            id: stationId.value,
-            pcJson: addPCModal.value.PCInfo ? JSON.stringify(addPCModal.value.PCInfo) : null
-          });
-          addPCModal.value.visible = false;
-          await query(stationId.value);
-          Message.success('PC添加成功');
-        }
-      };
-      const infoUpdate = async () => {
-        const valid3 = await (form3.value as ElForm).validate();
-        if (valid3) {
-          await StationAddComponent({
-            id: stationId.value,
-            cameraJson: addCameraModal.value.cameraInfo ? JSON.stringify(addCameraModal.value.cameraInfo) : null
-          });
-          await query(stationId.value);
-          addCameraModal.value.visible = false;
-          Message.success('摄像头添加成功');
-        }
-      };
-      const remove = async (row: any) => {
-        await StationDelComponent({
+      await queryStation();
+      await query();
+      stationModel.value.visible = false;
+    };
+    //
+    const addDeviceModal = ref<any>({
+      visible: false,
+      deviceInfo: null,
+    });
+    const showDeviceForm = async (data?: any) => {
+      if (form1.value) {
+        (form1.value as ElForm).clearValidate();
+      }
+      if (data) {
+        data = deepClone(data);
+      } else {
+        data = initDeviceForm();
+      }
+      addDeviceModal.value.deviceInfo = data;
+      addDeviceModal.value.visible = true;
+    };
+    const addPCModal = ref<any>({
+      visible: false,
+      PCInfo: null,
+    });
+    const showPCForm = async (data?: any) => {
+      if (form2.value) {
+        (form2.value as ElForm).clearValidate();
+      }
+      if (data) {
+        data = deepClone(data);
+      } else {
+        data = initPCForm();
+      }
+      addPCModal.value.PCInfo = data;
+      addPCModal.value.visible = true;
+    };
+    const addCameraModal = ref<any>({
+      visible: false,
+      cameraInfo: null,
+    });
+    const showCameraForm = async (data?: any) => {
+      if (form3.value) {
+        (form3.value as ElForm).clearValidate();
+      }
+      if (data) {
+        data = deepClone(data);
+      } else {
+        data = initPCForm();
+      }
+      addCameraModal.value.cameraInfo = data;
+      addCameraModal.value.visible = true;
+    };
+    const deviceUpdate = async () => {
+      const valid1 = await (form1.value as ElForm).validate();
+      if (valid1) {
+        await StationAddComponent({
           id: stationId.value,
-          deviceId: row.id ? row.id : null,
-          PCIP: row.PCIP ? row.PCIP : null,
-          cameraId: row.channelId ? row.channelId : null,
+          deviceId: addDeviceModal.value.deviceInfo.device.id ,
+          adapterId: addDeviceModal.value.deviceInfo.collector.id,
+          deviceIP: addDeviceModal.value.deviceInfo.device.extend.ip,
+          adapterOuterIP: addDeviceModal.value.deviceInfo.collector.extend.outerIp,
+          adapterInnerIP: addDeviceModal.value.deviceInfo.collector.extend.innerIp,
+        });
+        addDeviceModal.value.visible = false;
+        await query(stationId.value);
+        Message.success('设备添加成功');
+      }
+    };
+    const PCUpdate = async () => {
+      const valid2 = await (form2.value as ElForm).validate();
+      if (valid2) {
+        await StationAddComponent({
+          id: stationId.value,
+          pcJson: addPCModal.value.PCInfo ? JSON.stringify(addPCModal.value.PCInfo) : null,
+        });
+        addPCModal.value.visible = false;
+        await query(stationId.value);
+        Message.success('PC添加成功');
+      }
+    };
+    const infoUpdate = async () => {
+      const valid3 = await (form3.value as ElForm).validate();
+      if (valid3) {
+        await StationAddComponent({
+          id: stationId.value,
+          cameraJson: addCameraModal.value.cameraInfo ? JSON.stringify(addCameraModal.value.cameraInfo) : null,
         });
         await query(stationId.value);
-        Message.success('删除成功');
-      };
-      const query = async (id?: any) => {
-        if (id) {
-          stationId.value = id;
-        } else {
-          if (list.value) {
-            stationId.value = list.value[0].id;
-          }
-        }
-        if (stationId.value !== null) {
-          expStationList.value = await StationInfo({
-            id: stationId.value,
-          });
-          devicesList.value = expStationList.value.deviceList;
-        }
-      };
-      const queryStation = async () => {
-        list.value = await StationList({
-          simple: true,
-        });
-      };
-      onMounted(useLoading(loading, async () => {
-        deviceNameList.value = await DeviceList({
-          types: null,
-          start: null,
-          end: null,
-        });
-        await queryStation();
-        await query();
-      }));
-      return {
-        loading, expStationList, list, tree, props, filterText, stationList,
-        query:useLoading(loading,query),
-        modal, form, showForm,
-        remove: useConfirm('确认删除？', useLoading(loading, remove)),
-        update: useLoading(loading, update),
-        queryStation: useLoading(loading, queryStation),
-        stationId,
-        showDeviceForm, showPCForm, showCameraForm,
-        addDeviceModal, addPCModal, addCameraModal,
-        form1, form2, form3, deviceNameList,
-        infoUpdate: useLoading(loading, infoUpdate),
-        deviceUpdate: useLoading(loading, deviceUpdate),
-        PCUpdate: useLoading(loading, PCUpdate),
-        del: useLoading(loading, del),
-        stationModel,
-        confirmStation: useLoading(loading, confirmStation),
-        devicesList,
-      };
-    },
-  };
-
-  function initForm() {
-    return {
-      id: '', name: '', devices: [], deviceList: [], off: '',
-      extend: {PCs: [], remark: '', cameras: []},
-    };
-  }
-
-  function initDeviceForm() {
-    return {
-      device:{
-        extend:{}
-      },
-      collector:{
-        extend:{}
+        addCameraModal.value.visible = false;
+        Message.success('摄像头添加成功');
       }
     };
-  }
-
-  function initPCForm() {
-    return {
-      remark: '',
+    const remove = async (row: any) => {
+      await StationDelComponent({
+        id: stationId.value,
+        deviceId: row.id ? row.id : null,
+        PCIP: row.PCIP ? row.PCIP : null,
+        cameraId: row.channelId ? row.channelId : null,
+      });
+      await query(stationId.value);
+      Message.success('删除成功');
     };
-  }
-
-  function initCameraForm() {
-    return {
-      name: '',
-      channelId: '',
-      remark: ''
+    const query = async (id?: any) => {
+      if (id) {
+        stationId.value = id;
+      } else {
+        if (list.value) {
+          stationId.value = list.value[0].id;
+        }
+      }
+      if (stationId.value !== null) {
+        expStationList.value = await StationInfo({
+          id: stationId.value,
+        });
+        devicesList.value = expStationList.value.deviceList;
+      }
     };
-  }
+    const queryStation = async () => {
+      list.value = await StationList({
+        simple: true,
+      });
+    };
+    onMounted(useLoading(loading, async () => {
+      deviceNameList.value = await DeviceList({
+        types: null,
+        start: null,
+        end: null,
+      });
+      await queryStation();
+      await query();
+    }));
+    return {
+      loading, expStationList, list, tree, props, filterText, stationList,
+      query: useLoading(loading, query),
+      modal, form, showForm,
+      remove: useConfirm('确认删除？', useLoading(loading, remove)),
+      update: useLoading(loading, update),
+      queryStation: useLoading(loading, queryStation),
+      stationId,
+      showDeviceForm, showPCForm, showCameraForm,
+      addDeviceModal, addPCModal, addCameraModal,
+      form1, form2, form3, deviceNameList,
+      infoUpdate: useLoading(loading, infoUpdate),
+      deviceUpdate: useLoading(loading, deviceUpdate),
+      PCUpdate: useLoading(loading, PCUpdate),
+      del: useLoading(loading, del),
+      stationModel,
+      confirmStation: useLoading(loading, confirmStation),
+      devicesList,
+    };
+  },
+};
+
+function initForm() {
+  return {
+    id: '', name: '', devices: [], deviceList: [], off: '',
+    extend: {PCs: [], remark: '', cameras: []},
+  };
+}
+
+function initDeviceForm() {
+  return {
+    device: {
+      extend: {},
+    },
+    collector: {
+      extend: {},
+    },
+  };
+}
+
+function initPCForm() {
+  return {
+    remark: '',
+  };
+}
+
+function initCameraForm() {
+  return {
+    name: '',
+    channelId: '',
+    remark: '',
+  };
+}
 </script>
 <style scoped lang="scss">
 

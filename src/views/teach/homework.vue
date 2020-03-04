@@ -77,15 +77,13 @@
   </div>
 </template>
 <script lang="ts">
-import {ref, Ref, onMounted} from '@vue/composition-api';
-import {useConfirm, useLoading} from 'web-toolkit/src/service';
-import {Message} from 'element-ui';
-import {ElForm} from 'element-ui/types/form';
-import {deepClone, formatDate} from 'web-toolkit/src/utils';
-import { ReportList, ReportTemplateList, ReportScore, ReportSubmit} from '../../dao/reportDao';
-import { CourseList } from '../../dao/courseProgramDao';
-import { DownLoadPrivate } from '../../dao/commonDao';
-export default {
+  import {onMounted, ref} from '@vue/composition-api';
+  import {useConfirm, useLoading} from 'web-toolkit/src/service';
+  import {ReportList, ReportSubmit, ReportTemplateList} from '../../dao/reportDao';
+  import {CourseList} from '../../dao/courseProgramDao';
+  import {DownLoadPrivate} from '../../dao/commonDao';
+
+  export default {
   setup() {
     const loading = ref(false);
     const reportButton = ref(true);
@@ -114,9 +112,7 @@ export default {
       const pum = {
         courseId: courseList.value.keyinkey,
       };
-      const result = await ReportList(pum);
-      experimentResultList.value = result;
-      console.log(result);
+      experimentResultList.value = await ReportList(pum);
     }
     const propsWord = ref<any>({
 
@@ -138,14 +134,11 @@ export default {
         programId: propsWord.value.row.program.id,
         file: option.file,
       };
-      console.log(propsWord.value);
-      console.log(option);
       await ReportSubmit(result);
       await getReportList();
     }
     async function getTempList() {
-      const result = await ReportTemplateList();
-      experimentReportTemplateList.value = result;
+      experimentReportTemplateList.value = await ReportTemplateList();
     }
     async function download(row: any) {
       const result = {
