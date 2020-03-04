@@ -1,8 +1,5 @@
 <template>
   <div  v-loading="loading">
-    <!-- <div class="flex center">
-      <noaction-course-list></noaction-course-list>
-    </div> -->
     <div style="width:100%;margin:20px auto">
       <div class="flex align-center" style="margin: 5px 0">
         <div class="flex align-center">
@@ -26,7 +23,7 @@
           </el-select>
         </div>
       </div>
-      <div class="flex align-center" style="margin: 5px 0">
+      <div class="flex align-center wrap" style="margin: 5px 0">
         <div class="flex align-center" style="width:60%">
           <span>申请时间：</span>        
           <lkt-date-picker v-model="appointDt"/>     
@@ -70,13 +67,21 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" min-width="150">
           <div class="flex center little-space wrap" slot-scope="{ row }" >
-            <el-button type="warning" size="mini">对比课表</el-button>
+            <el-button type="warning" size="mini" @click="courseVisible = true">对比课表</el-button>
             <el-button type="primary" size="mini" :disabled="row.result === 0? false: true" @click="agreeAppoint(row)">同意</el-button>
             <el-button type="danger" size="mini" :disabled="row.result === 0? false: true" @click="disagreeAppoint(row)">拒绝</el-button>
           </div>
         </el-table-column>   
       </lkt-table>
     </div>
+    <el-dialog
+      title="对比课表"
+      :visible.sync="courseVisible"
+      width="80%">
+      <div class="flex center">
+        <noaction-course-list></noaction-course-list>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -106,6 +111,7 @@ export default createComponent({
     const [keywords, flitered] = useSearch(appointRecords, {
       includeProps: ['applicant.name', 'applicant.role'],
     });
+    const courseVisible = ref(false);
     const query = async () => {
       appointRecords.value = await AppointList({
         typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
@@ -135,7 +141,7 @@ export default createComponent({
       await query();
     }));
     return{
-    loading, appointRecords, query,
+    loading, appointRecords, query, courseVisible,
     agreeAppoint,
     disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
     appointTypeList, appointType, appointResultList, appointResult, appointDt,

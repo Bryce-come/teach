@@ -19,7 +19,7 @@
             <el-button type="primary" @click="queryAppointRecordList()">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-input placeholder="输入搜索：" style="width:440px"></el-input>
+            <el-input placeholder="输入搜索：" style="width:420px"></el-input>
           </el-form-item>
         </el-form>
         <lkt-table
@@ -58,7 +58,7 @@
           </el-table-column>
           <el-table-column label="操作" fixed="right" align="center" min-width="150">
             <div class="flex center little-space" slot-scope="{row}">
-              <el-button type="warning" size="mini" :disabled="row.result === 0? false: true" @click="showAppointForm(row)">修改</el-button>
+              <el-button type="warning" size="mini" @click="showAppointForm(row)">修改</el-button>
               <el-button type="danger" size="mini" :disabled="row.result === 0? false: true" @click="revokeAppoint(row)">撤销</el-button>
             </div>
           </el-table-column>
@@ -79,25 +79,25 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择课程：" prop="course.id">
-            <el-select v-model="appointModal.appointInfo.course.id">
+          <el-form-item label="选择课程：" prop="course">
+            <el-select v-model="appointModal.appointInfo.course" value-key="id">
               <el-option
                 v-for="item of courseList"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"></el-option>
+                :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择实验：" prop="program.id">
-            <el-select v-model="appointModal.appointInfo.program.id">
+          <el-form-item label="选择实验：" prop="program">
+            <el-select v-model="appointModal.appointInfo.program" value-key="id">
               <el-option
-                v-for="item of programList"
+                v-for="item of appointModal.appointInfo.course ? appointModal.appointInfo.course.programList : programList"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"></el-option>
+                :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择指定教师：" prop="teacher.id">
+          <el-form-item label="选择指定教师：" prop="teacher.id" v-if="appointModal.appointInfo.type === 1">
             <el-select v-model="appointModal.appointInfo.teacher.id">
               <el-option 
                 v-for="item of teacherList"
@@ -106,10 +106,10 @@
                 :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择参与人：" prop="students">
+          <el-form-item label="选择其他参与人：" prop="students" v-if="appointModal.appointInfo.type === 2">
             <el-select v-model="appointModal.appointInfo.students" multiple collapse-tags>
               <el-option
-                v-for="item of studentList"
+                v-for="item of otherStudentInClasz"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id"></el-option>
@@ -127,17 +127,32 @@
           <el-form-item label="申请时间范围：" prop="appointDt">
             <lkt-date-picker v-model="appointModal.appointInfo.appointDt"/>
           </el-form-item>
-          <el-form-item label="选择班级：" prop="extend.clasz">
-            <el-select v-model="appointModal.appointInfo.extend.clasz">
+          <el-form-item label="选择课时：" prop="extend.lessons" :rules="{ required: true, message: '请选择预约课时'}">
+            <el-select v-model="appointModal.appointInfo.extend.lessons" multiple collapse-tags>
+              <el-option
+                v-for="item in lessonList.lessonNum"
+                :key="item"
+                :label="'第' + item + '节课'"
+                :value="item"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="选择班级：" prop="extend.clasz" v-if="appointModal.appointInfo.type === 1">
+            <el-select v-model="appointModal.appointInfo.extend.clasz" value-key="id">
               <el-option
                 v-for="item of classList"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"></el-option>
+                :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择组别：" prop="extend.claszGroup">
-            <el-select v-model="appointModal.appointInfo.extend.claszGroup"></el-select>
+          <el-form-item label="选择组别：" prop="extend.claszGroup" v-if="appointModal.appointInfo.type === 1">
+            <el-select v-model="appointModal.appointInfo.extend.claszGroup" value-key="id">
+              <el-option
+                v-for="item of appointModal.appointInfo.extend.clasz ? appointModal.appointInfo.extend.clasz.groups : []"
+                :key="item.id"
+                :label="item.name"
+                :value="item"></el-option>
+            </el-select>
           </el-form-item>
         </el-form>
       </kit-dialog-simple>
@@ -151,6 +166,8 @@ import { AppointListMine, AppointAdd, AppointUpdate, AppointOperate} from '@/dao
 import { CourseList, ProgramList} from '@/dao/courseProgramDao';
 import { TeacherList, StudentList, ClassList} from '@/dao/userDao';
 import { StationList} from '@/dao/stationDao';
+import { SettingGet} from '@/dao/settingDao';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import {ElForm} from 'element-ui/types/form';
 import { deepClone } from 'web-toolkit/src/utils';
@@ -172,42 +189,62 @@ export default createComponent({
     const programList = ref<any>([]);
     const teacherList = ref<any>([]);
     const studentList = ref<any>([]);
+    const otherStudentInClasz = ref<any>();
     const stationList = ref<any>([]);
     const classList = ref<any>([]);
-    const courseID = ref<any>();
-    const form = ref<ElForm|null>(null);
+    const lessonList = ref<any>();
     const appointModal = ref<any>({
       visible: false,
       appointInfo: null,
       type: 'add',
     });
+    const form = ref<ElForm | null>(null);
     const showAppointForm = async (data?: any) => {
       if(form.value) { (form.value as ElForm).clearValidate(); }
       if(data) {
         data = deepClone(data);
         appointModal.value.type = 'update';
-        // appointModal.value.appointInfo = data;
+        console.log(data.id);
       } else {
         data = initAppointForm();
         appointModal.value.type = 'add';
-        
-        // 获取当前选择课程id
-        // courseID.value = data.course.id;
-        // console.log(courseID.value);
       }
+      // console.log(appointModal.value.type);
       appointModal.value.appointInfo = data;
       appointModal.value.visible = true;
     };
     async function appointUpdate() {
       const valid = await (form.value as ElForm).validate();
-      if(valid) {
+      console.log(valid);
+      if (valid) {
         if(appointModal.value.type === 'add') {
-          await AppointAdd({})
+          await AppointAdd({
+            type: appointModal.value.appointInfo.type,
+            courseId: appointModal.value.appointInfo.course.id,
+            programId: appointModal.value.appointInfo.program.id,
+            teacherId: appointModal.value.appointInfo.teacher.id,
+            studentJson: JSON.stringify(appointModal.value.appointInfo.students),
+            stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
+            start: appointModal.value.appointInfo.appointDt[0].getTime(),
+            end: appointModal.value.appointInfo.appointDt[1].getTime(),
+            extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
+          });
         } else {
-          await AppointUpdate({})
+          await AppointUpdate({
+            id: appointModal.value.appointInfo.id,
+            type: appointModal.value.appointInfo.type,
+            courseId: appointModal.value.appointInfo.course.id,
+            programId: appointModal.value.appointInfo.program.id,
+            teacherId: appointModal.value.appointInfo.teacher.id,
+            studentJson: JSON.stringify(appointModal.value.appointInfo.students),
+            stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
+            start: appointModal.value.appointInfo.appointDt[0].getTime(),
+            end: appointModal.value.appointInfo.appointDt[1].getTime(),
+            extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
+          });
         }
         appointModal.value.visible = false;
-        Message.success(`${appointModal.value.type === 'add' ? '申请预约' : '修改预约'}成功`);
+        Message.success(`${appointModal.value.type === 'add' ? '已申请预约' : '已修改预约'}`);
         await queryAppointRecordList();
       }
     }
@@ -245,18 +282,28 @@ export default createComponent({
       teacherList.value = await TeacherList();
       console.log(teacherList.value);
       studentList.value = await StudentList();
+      console.log(studentList.value);
       stationList.value = await StationList({
         simple: true,
       });
       classList.value = await ClassList();
       console.log(classList.value);
-      // 获取当前选择课程的实验列表
-      // const course = courseList.value.filter(function(item: any) {
-      //   return item.id = courseID.value;
-      // })
-      // programList.value = course.programList;
-      // console.log(course);
-      // console.log(programList.value);
+      lessonList.value = await SettingGet({
+        onlyLesson: true,
+      });
+      // console.log(lessonList.value);
+      //console.log(storeUserInfo.user);
+      if (storeUserInfo.user) {
+        const claszId = storeUserInfo.user.extend.clasz;
+        const studentInClasz = studentList.value.filter(function(item: any) {
+          return item.extend.clasz === claszId;
+        })
+        const userId = storeUserInfo.user.id;
+        otherStudentInClasz.value = studentInClasz.filter(function(item: any) {
+          return item.id !== userId;
+        })
+        // console.log(otherStudentInClasz.value);
+      }
     }));
     return {
       loading, courseButton, appointButton, showCourse, showAppoint,
@@ -264,13 +311,15 @@ export default createComponent({
       revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
       form, appointModal, showAppointForm,
       appointUpdate: useLoading(loading, AppointUpdate),
-      appointTypeList, courseList, courseID, programList, teacherList, studentList, stationList, classList,
+      storeUserInfo,
+      appointTypeList, courseList, programList, stationList,
+      teacherList, studentList, otherStudentInClasz, classList, lessonList,
     };
   }
 });
 function initAppointForm() {
   return {
-    type: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
+    id: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
     extend: {},
   };
 }
