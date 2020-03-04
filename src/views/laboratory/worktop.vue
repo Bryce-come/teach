@@ -146,7 +146,14 @@
             <el-input v-model="addPCModal.PCInfo.PCIP"></el-input>
           </el-form-item>
           <el-form-item label="所属设备编号:" prop="belongDevice" :rules="{ required: true, message: '请输入所属设备编号'}">
-            <el-input v-model="addPCModal.PCInfo.belongDevice"></el-input>
+            <el-select v-model="addPCModal.PCInfo.belongDevice" placeholder="请选择设备编号">
+            <el-option
+              v-for="item of devicesList"
+              :key="item.id"
+              :label="item.id"
+              :value="item.id">
+            </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
@@ -163,6 +170,14 @@
             <el-input v-model="addCameraModal.cameraInfo.ip"></el-input>
           </el-form-item>
         </el-form>
+    </kit-dialog-simple>
+      <kit-dialog-simple
+      :modal="stationModel"
+      :confirm="confirmStation"
+      width="400px">
+        <div class="flex center" v-if="stationModel.stationInfo">
+          <span>{{'确认删除'+ stationModel.stationInfo.name}}</span>
+        </div>
     </kit-dialog-simple>
   </div>
 </template>
@@ -188,8 +203,15 @@ export default {
       includeProps: ['name'],
     });
     const stationId = ref<any>(null);
+    const stationModel = ref<any>(
+      {
+        visible: false,
+        stationInfo: null,
+      }
+    );
     const expStationList = ref<any>();
     const deviceNameList = ref<any>();
+    const devicesList = ref<any>([]);
     const props = ref({
       children: 'children',
       label: 'name',
@@ -221,11 +243,18 @@ export default {
       }
     }
     const del = async () => {
+      stationModel.value.stationInfo = expStationList.value;
+      stationModel.value.visible = true;
+      console.log(stationModel.value.stationInfo);
+      }
+    
+    const confirmStation = async () => {
       await StationDel({
-        id: stationId.value,
+        id: stationModel.value.stationInfo.id,
       });
       await queryStation();
       await query();
+      stationModel.value.visible = false;
     };
     //
     const addDeviceModal = ref<any>({
@@ -339,6 +368,7 @@ export default {
         expStationList.value = await StationInfo({
           id: stationId.value,
         });
+        devicesList.value = expStationList.value.deviceList;
         console.log(expStationList.value);
       }
     };
@@ -368,7 +398,8 @@ export default {
       addDeviceModal, addPCModal, addCameraModal,
       form1, form2, form3, deviceNameList, infoUpdate,
       addComponent, deciceUpdate,  PCUpdate,
-      del: useConfirm('确认删除？', useLoading(loading, del)),
+      del: useLoading(loading, del),
+      stationModel, confirmStation, devicesList,
     };
   },
 };
