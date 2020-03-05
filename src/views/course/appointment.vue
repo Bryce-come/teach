@@ -29,7 +29,7 @@
             <div slot-scope="props" class="flex start">
               <el-form label-width="100px">
                 <el-form-item label="预约课程：">{{props.row.course ? props.row.course.name : ''}}</el-form-item>
-                <el-form-item label="预约实验：">{{props.row.program.name}}</el-form-item>
+                <el-form-item label="预约实验：">{{props.row.program ? props.row.program.name : ''}}</el-form-item>
                 <el-form-item label="指定教师：">{{props.row.teacher ? props.row.teacher.name : ''}}</el-form-item>
                 <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?  props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}</el-form-item>
                 <el-form-item label="处理人：">{{props.row.operator ? props.row.operator.name : ''}}</el-form-item>
@@ -103,7 +103,7 @@
                   :value="item"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="选择指定教师：" prop="teacher.id" v-if="appointModal.appointInfo.type === 1">
+            <el-form-item label="选择指定教师：" prop="teacher.id">
               <el-select v-model="appointModal.appointInfo.teacher.id">
                 <el-option 
                   v-for="item of teacherList"
@@ -293,26 +293,26 @@ export default createComponent({
         if(appointModal.value.type === 'add') {
           await AppointAdd({
             type: appointModal.value.appointInfo.type,
-            courseId: appointModal.value.appointInfo.course.id,
-            programId: appointModal.value.appointInfo.program.id,
-            teacherId: appointModal.value.appointInfo.teacher.id,
-            studentJson: JSON.stringify(appointModal.value.appointInfo.students),
-            stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
-            start: appointModal.value.appointInfo.startDt,
-            end: appointModal.value.appointInfo.endDt, 
+            courseId: appointModal.value.appointInfo.course.id ? appointModal.value.appointInfo.course.id : null,
+            programId: appointModal.value.appointInfo.program.id ? appointModal.value.appointInfo.program.id : null,
+            teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
+            studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
+            stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
+            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
+            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
           await AppointUpdate({
             id: appointModal.value.appointInfo.id,
             type: appointModal.value.appointInfo.type,
-            courseId: appointModal.value.appointInfo.course.id,
-            programId: appointModal.value.appointInfo.program.id,
-            teacherId: appointModal.value.appointInfo.teacher.id,
-            studentJson: JSON.stringify(appointModal.value.appointInfo.students),
-            stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
-            start: appointModal.value.appointInfo.startDt,
-            end: appointModal.value.appointInfo.endDt,
+            courseId: appointModal.value.appointInfo.course.id ? appointModal.value.appointInfo.course.id : null,
+            programId: appointModal.value.appointInfo.program.id ? appointModal.value.appointInfo.program.id : null,
+            teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
+            studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
+            stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
+            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
+            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }

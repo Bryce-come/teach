@@ -38,7 +38,7 @@
           <div slot-scope="props" class="flex start">
             <el-form label-width="100px">
               <el-form-item label="预约课程：">{{props.row.course ? props.row.course.name : ''}}</el-form-item>
-              <el-form-item label="预约实验：">{{props.row.program.name}}</el-form-item>
+              <el-form-item label="预约实验：">{{props.row.program ? props.row.program.name : ''}}</el-form-item>
               <el-form-item label="指定教师：">{{props.row.teacher ? props.row.teacher.name : ''}}</el-form-item>
               <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?  props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}</el-form-item>
               <el-form-item label="处理人：">{{props.row.operator ? props.row.operator.name : ''}}</el-form-item>
