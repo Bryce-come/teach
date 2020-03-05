@@ -26,12 +26,13 @@
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { ElForm } from 'element-ui/types/form';
 import { useLoading } from 'web-toolkit/src/service';
-import { storeUserInfo, updateStoreUserInfo } from 'web-toolkit/src/case-main';
+import { storeUserInfo, storePageMenu, updateStoreUserInfo } from 'web-toolkit/src/case-main';
 import {loginTitle1, loginTitle2, loginLogo, scheme} from '@/config';
 import {router} from '@/main';
 import { Route } from 'vue-router';
 import {assert} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
+import {Department} from "@/types/privilege";
 
 export default createComponent({
   setup() {
@@ -64,8 +65,7 @@ export default createComponent({
       });
       updateStoreUserInfo(data);
       // 设置登录后回到登录前页面
-      // @ts-ignore
-      const redirect: Route = {
+      const redirect: any = {
         name: 'index',
         query: {},
       };

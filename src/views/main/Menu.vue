@@ -9,14 +9,14 @@
     @select="routeTo">
     <template v-for="(item, index) of storePageMenu">
       <el-menu-item
-        v-if="item && item.name && contains(item.privileges)"
+        v-if="item && item.name && contains(item)"
         :key="index"
         :index="item.name">
         <i :class="'iconfont ' + item.icon"/>
         <span class="title">{{ item.title }}</span>
       </el-menu-item>
       <el-submenu
-        v-if="item && !item.name && item.children && item.children.length > 0 && contains(item.privileges)"
+        v-if="item && !item.name && item.children && item.children.length > 0 && contains(item)"
         popper-class="my-el-menu-popper"
         :key="index"
         :index="item.title">
@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { ref, onMounted, computed, watch } from '@vue/composition-api';
-import {checkPrivilege, storePageMenu, storeUserInfo, storeCurrentRoute} from 'web-toolkit/src/case-main';
+import {checkPrivilegeAuthDepartments, storePageMenu, storeUserInfo, storeCurrentRoute} from 'web-toolkit/src/case-main';
 import {router} from '@/main';
 export default {
   props: {
@@ -56,16 +56,14 @@ export default {
       return undefined;
     });
     function menuItemFilter(itemChildren: any[]) {
-      return itemChildren.filter((child) => contains(child.privileges));
+      return itemChildren.filter((child) => contains(child));
     }
     function routeTo(name: string) {
       router.push({ name });
     }
-    function contains(privileges: any[]) {
-      // todo
+    function contains(item:any) {
       if (!storeUserInfo.user) { return true; }
-      const all = storeUserInfo.user.role.privileges;
-      return checkPrivilege(all, privileges);
+      return checkPrivilegeAuthDepartments(item);
     }
     return{
       storePageMenu, storeCurrentRoute,

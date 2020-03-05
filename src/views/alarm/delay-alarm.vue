@@ -32,7 +32,7 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
 import { Filter } from '@/types/filter';
-import {PRIVILEGE} from '@/types/privilege';
+
 export default {
   setup() {
     const loading = ref(false);
