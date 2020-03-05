@@ -24,12 +24,12 @@
       <el-col :span="19">
         <div class="block-card">
           <div class="title flex between" style="font-size: 1.1em">
-            <div>{{expStationList.name +' > 关联设备信息'}}</div>
+            <div>{{expStation.name +' > 关联设备信息'}}</div>
             <el-button type="success" size="mini" @click="showDeviceForm()">添加</el-button>
           </div>
           <div class="content">
             <el-table
-              :data="expStationList.deviceList"
+              :data="expStation.deviceList"
               style="width:100%">
               <el-table-column prop="id" label="设备编号"/>
               <el-table-column prop="name" label="设备名称"/>
@@ -48,12 +48,12 @@
         </div>
         <div class="block-card">
           <div class="title flex between" style="font-size: 1.1em">
-            <div>{{expStationList.name + ' > PC信息'}}</div>
+            <div>{{expStation.name + ' > PC信息'}}</div>
             <el-button type="success" size="mini" @click="showPCForm()">添加</el-button>
           </div>
           <div class="content">
             <el-table
-              :data="expStationList.extend.PCs"
+              :data="expStation.extend.PCs"
               style="width:100%">
               <el-table-column prop="PCNo" label="PC编号"/>
               <el-table-column prop="PCIP" label="PC IP"/>
@@ -68,12 +68,12 @@
         </div>
         <div class="block-card">
           <div class="title flex between" style="font-size: 1.1em">
-            <div>{{expStationList.name + ' > 摄像头信息'}}</div>
+            <div>{{expStation.name + ' > 摄像头信息'}}</div>
             <el-button type="success" size="mini" @click="showCameraForm()">添加</el-button>
           </div>
           <div class="content">
             <el-table
-              :data="expStationList.extend.cameras"
+              :data="expStation.extend.cameras"
               style="width:100%">
               <el-table-column prop="name" label="摄像头名称"/>
               <el-table-column prop="channelId" label="摄像头通道号"/>
@@ -205,7 +205,7 @@ export default {
     const form1 = ref<ElForm | null>(null);
     const form2 = ref<ElForm | null>(null);
     const form3 = ref<ElForm | null>(null);
-    const list = ref<any>();
+    const list = ref<any>([]);
     const [filterText, stationList] = useSearch(list, {
       includeProps: ['name'],
     });
@@ -216,8 +216,8 @@ export default {
         stationInfo: null,
       },
     );
-    const expStationList = ref<any>();
-    const deviceNameList = ref<any>();
+    const expStation = ref<any>({extend:{}});
+    const deviceNameList = ref<any>([]);
     const devicesList = ref<any>([]);
     const props = ref({
       children: 'children',
@@ -254,7 +254,7 @@ export default {
     }
 
     const del = async () => {
-      stationModel.value.stationInfo = expStationList.value;
+      stationModel.value.stationInfo = expStation.value;
       stationModel.value.visible = true;
     };
 
@@ -358,9 +358,9 @@ export default {
     const remove = async (row: any) => {
       await StationDelComponent({
         id: stationId.value,
-        deviceId: row.id ? row.id : null,
-        PCIP: row.PCIP ? row.PCIP : null,
-        cameraId: row.channelId ? row.channelId : null,
+        deviceId: row.id,
+        PCIP: row.PCIP,
+        cameraId: row.channelId
       });
       await query(stationId.value);
       Message.success('删除成功');
@@ -374,10 +374,10 @@ export default {
         }
       }
       if (stationId.value !== null) {
-        expStationList.value = await StationInfo({
+        expStation.value = await StationInfo({
           id: stationId.value,
         });
-        devicesList.value = expStationList.value.deviceList;
+        devicesList.value = expStation.value.deviceList;
       }
     };
     const queryStation = async () => {
@@ -395,7 +395,7 @@ export default {
       await query();
     }));
     return {
-      loading, expStationList, list, tree, props, filterText, stationList,
+      loading, expStation, list, tree, props, filterText, stationList,
       query: useLoading(loading, query),
       modal, form, showForm,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
