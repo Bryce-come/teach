@@ -32,19 +32,26 @@
     <lkt-table
       :data="usageAlarmList"
       style="width:100%">
-      <el-table-column prop="createDt" label="报警时间"/>
-      <el-table-column prop="type" label="报警类型">
+      <el-table-column prop="createDt" label="报警时间" sortable="custom"/>
+      <el-table-column prop="type" label="报警类型" sortable="custom">
           <el-tag slot-scope="{ row }">
             {{(row.type==="illegal_time"? '非法时间内开启':'')+(row.type==="illegal_user"? '未授权的使用者':'')}}
           </el-tag>
       </el-table-column>
       <el-table-column prop="users.name" label="人员"/>
-      <el-table-column prop="duration" label="持续时间"/>
+      <el-table-column prop="duration" label="持续时间" sortable="custom">
+          <template slot-scope="{row}">
+          <el-tag type="danger" v-if="row.duration === undefined">报警中</el-tag>
+          <div v-else>{{ row.duration | HMS }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="stations.name" label="操作台">
       </el-table-column>
-      <el-table-column label="操作" >
-        <el-tag slot-scope="{ row }" v-if="row.extend.confirm" type="warning">已被确认</el-tag>
-      </el-table-column>
+      <!-- <el-table-column label="操作" >
+        <div slot-scope="{ row }" class="flex column" >
+         <el-tag v-if="row.extend.confirm" type="warning">已被确认</el-tag>
+        </div>
+      </el-table-column> -->
     </lkt-table>
   </div>
 </template>
@@ -89,7 +96,7 @@ export default {
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });
-          console.log( usageAlarmList.value);
+        console.log( usageAlarmList.value);
     };
     onMounted(useLoading(loading, async () => {
       await query();

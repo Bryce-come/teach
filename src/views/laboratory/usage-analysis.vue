@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading" class="usage-analysis">
     <el-form :inline="true">
-      <el-form-item label="设备名称" label-width="80px">
+      <el-form-item label="设备名称" label-width="80px" v-if='deviceParam.id === 2'>
         <lkt-select :list="deviceNameList" value-key="name" v-model="deviceName" :clearable="false" placeholder="请选择设备名称"/>
       </el-form-item>
       <el-form-item label="属性参数" label-width="80px">
@@ -12,10 +12,9 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="margin-left:15px" @click="query()">查询</el-button>
-        <el-button type="success" style="margin-left:15px">导出原始Excel</el-button>
       </el-form-item>
     </el-form>
-    <div style="margin: 10px 0" class="block_background" v-loading="loading">
+    <div v-if='deviceParam.id === 1' style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
         <div>
           <span>{{deviceName + '-' + deviceParam}}</span>
@@ -23,6 +22,16 @@
       </div>
       <div class="block_content">
         <v-chart autoresize :options="chart" @datazoom="dataZoomEvent" style="width: 95%; height: 500px"/></div>    
+    </div>
+    <div v-if='deviceParam.id === 2' style="margin: 10px 0" class="block_background" v-loading="loading">
+      <div class="block_title flex between">
+        <div>
+          <span>{{deviceName + '-' + deviceParam}}</span>
+        </div>
+      </div> 
+      <div class="block_content">
+        22222
+      </div>
     </div>
   </div>
 </template>
@@ -48,7 +57,9 @@ export default createComponent({
     const deviceNameList = ref<any>();
     const deviceName = ref<any>();
     const deviceParamList = ref<any>();
-    const deviceParam = ref<any>();
+    const deviceParam = ref<any>({
+      id: 1, param: '实验人时数',
+    });
     const timeRange = '';
     const chart: Ref<EChartOption | void> = ref(undefined);
     const zoomRange: Ref<Date[]> = ref([]);
@@ -70,7 +81,7 @@ export default createComponent({
         producerContact: '', producerTel: '18977538970'}},
       ];
       deviceParamList.value = [
-        {id: '1', param: '实验人时数'}, {id: '2', param: '运行时间'},
+        {id: 1, param: '实验人时数'}, {id: 2, param: '运行时间'},
       ];
       const option: any = getOption();
     };
@@ -178,6 +189,7 @@ export default createComponent({
     }
     onMounted(useLoading(loading, async () => {
       await query();
+
     }));
     return{
       loading, deviceNameList, deviceName, deviceParamList, deviceParam, timeRange, query,
