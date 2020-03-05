@@ -38,7 +38,7 @@
                <div>第<span>{{i+1}}</span>节课</div>
              </th>
              <td v-for="(lessonItem, j) in item.lesson" :key="j" 
-                 :rowspan="lessonItem != ''? lessonItem.extend.lessonInt:''"
+                 :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
                  :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
                 >
                   <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
@@ -152,6 +152,8 @@ import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
+import { CourseRecordList } from '../dao/courseRecordDao';
+import { SettingGet } from '../dao/settingDao'
 export default createComponent({
   name: 'courseList',
   props: { },
@@ -186,6 +188,36 @@ export default createComponent({
       lessonNum: 7,
     });
     const lessons = ref<any>();
+    const originList = ref<any>({
+      originLessonsList:[
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+      ],
+      lessonsList: [
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['', '', '', '', '', '']},
+      ],
+    })
     function getColors(lessonOne: any, defaultColor: any) {
       const type = lessonOne.type;
       if (type === 0 || lessonOne === '') {
@@ -205,83 +237,85 @@ export default createComponent({
     }
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
     function digital2Chinese(num: any, identifier: any) {
-      const character = ['零', '一', '二', '三', '四', '五', '六', '七'];
-      return identifier === 'week' && (num === 0 || num === 7) ? '日' : character[num];
+      const character = ['一', '二', '三', '四', '五', '六', '七'];
+      return identifier === 'week' && num === 6 ? '日' : character[num];
     }
     // 重新排列数据
     const newList = async () => {
-      lessons.value = [
-        {lesson: ['', '', '',
-          {
-            id: 1,
-            course: {
-              name: '自动化课程1',
-              programList: ['切刀挂刀操作'] },
-            teacher: {
-              name: '玛丽'},
-            type: 1,
-            stations: ['操作台1'],
-            students: '马丽',
-            extend: {
-              lessonInt: 3,
-              appointRecord: {result: 1},
-              lessons: [1, 2, 3],
-              class: '自动化1801'},
-          }, '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '',
-          {
-            id: 2,
-            course: {
-              name: '自动化课程2',
-              programList: ['切刀挂刀操作'] },
-            teacher: {
-              name: '玛丽'},
-            type: 0,
-            stations: ['操作台1'],
-            students: '马丽',
-            extend: {
-              lessonInt: 1,
-              lessons: [4],
-              class: '自动化1801'},
-          }, '']},
-        {lesson: ['', '', '', '', '',
-          {
-            id: 3,
-            course: {
-              name: '自动化课程3',
-              programList: ['切刀挂刀操作'] },
-            teacher: {
-              name: '玛丽'},
-            type: 1,
-            stations: ['操作台1'],
-            students: '马丽',
-            extend: {
-              lessonInt: 1,
-              appointRecord: {result: 2},
-              lessons: [5],
-              class: '自动化1801'},
-          }, '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['',
-          {
-            id: 4,
-            course: {
-              name: '自动化课程4',
-              programList: ['切刀挂刀操作'] },
-            teacher: {
-              name: '玛丽'},
-            type: 2,
-            stations: ['操作台1'],
-            students: '马丽',
-            extend: {
-              lessonInt: 1,
-              appointRecord: {result: 1},
-              lessons: [7],
-              class: '自动化1801'},
-          }, '', '', '', '', '']},
-      ];
+      lessons.value = 
+      originList.value.lessonsList
+      // [
+      //   {lesson: ['', '', '',
+      //     {
+      //       id: 1,
+      //       course: {
+      //         name: '自动化课程1',
+      //         programList: ['切刀挂刀操作'] },
+      //       teacher: {
+      //         name: '玛丽'},
+      //       type: 1,
+      //       stations: ['操作台1'],
+      //       students: '马丽',
+      //       extend: {
+      //         lessonInt: 3,
+      //         appointRecord: {result: 1},
+      //         lessons: [1, 2, 3],
+      //         class: '自动化1801'},
+      //     }, '', '', '']},
+      //   {lesson: ['', '', '', '', '', '']},
+      //   {lesson: ['', '', '', '', '', '']},
+      //   {lesson: ['', '', '', '', '',
+      //     {
+      //       id: 2,
+      //       course: {
+      //         name: '自动化课程2',
+      //         programList: ['切刀挂刀操作'] },
+      //       teacher: {
+      //         name: '玛丽'},
+      //       type: 0,
+      //       stations: ['操作台1'],
+      //       students: '马丽',
+      //       extend: {
+      //         lessonInt: 1,
+      //         lessons: [4],
+      //         class: '自动化1801'},
+      //     }, '']},
+      //   {lesson: ['', '', '', '', '',
+      //     {
+      //       id: 3,
+      //       course: {
+      //         name: '自动化课程3',
+      //         programList: ['切刀挂刀操作'] },
+      //       teacher: {
+      //         name: '玛丽'},
+      //       type: 1,
+      //       stations: ['操作台1'],
+      //       students: '马丽',
+      //       extend: {
+      //         lessonInt: 1,
+      //         appointRecord: {result: 2},
+      //         lessons: [5],
+      //         class: '自动化1801'},
+      //     }, '']},
+      //   {lesson: ['', '', '', '', '', '', '']},
+      //   {lesson: ['',
+      //     {
+      //       id: 4,
+      //       course: {
+      //         name: '自动化课程4',
+      //         programList: ['切刀挂刀操作'] },
+      //       teacher: {
+      //         name: '玛丽'},
+      //       type: 2,
+      //       stations: ['操作台1'],
+      //       students: '马丽',
+      //       extend: {
+      //         lessonInt: 1,
+      //         appointRecord: {result: 1},
+      //         lessons: [7],
+      //         class: '自动化1801'},
+      //     }, '', '', '', '', '']},
+      // ];
     };
     const readLesson = async (lessonItem: any) => {
         readModel.value.visible = true;
@@ -340,17 +374,34 @@ export default createComponent({
     const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
+    async function getOriginCourseRecordList(){
+      const result = await CourseRecordList({end:1582473599000,start:1581868800000,})
+      // for(let i=0;i<result.length;i++){
+        // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(i,1,result[i])
+        originList.value.lessonsList[0].lesson.splice(0,1,result[0])
+        originList.value.lessonsList[3].lesson.splice(1,1,result[1])
+      // }
+      console.log(originList.value.lessonsList)
+      console.log(result)
+    }
+    // async function getOnlyLesson(){
+    //   const result = await SettingGet({onlyLesson:true})
+    //   // console.log(result)
+    // }
     onMounted(useLoading(loading, async () => {
       await newList();
       await tabCell();
+      await getOriginCourseRecordList();
+      // await getOnlyLesson()
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
         {id: '2', type: '个人预约'},
       ];
     }));
-
     return{
+      getOriginCourseRecordList,
+      // getOnlyLesson,
       loading,
       oneDay: new Date(),
       list: useLoading(loading, list),

@@ -37,12 +37,12 @@
         <el-table-column type="expand">
           <div slot-scope="props" class="flex start">
             <el-form label-width="100px">
-              <el-form-item label="预约课程：">{{props.row.course.name}}</el-form-item>
-              <el-form-item label="预约实验：">{{props.row.program.name}}</el-form-item>
-              <el-form-item label="指定教师：">{{props.row.teacher.name}}</el-form-item>
+              <el-form-item label="预约课程：">{{props.row.course ? props.row.course.name : ''}}</el-form-item>
+              <el-form-item label="预约实验：">{{props.row.program ? props.row.program.name : ''}}</el-form-item>
+              <el-form-item label="指定教师：">{{props.row.teacher ? props.row.teacher.name : ''}}</el-form-item>
               <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?  props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}</el-form-item>
-              <el-form-item label="处理人：">{{props.row.operator.name}}</el-form-item>
-              <el-form-item label="处理时间：">{{props.row.handleDt}}</el-form-item>
+              <el-form-item label="处理人：">{{props.row.operator ? props.row.operator.name : ''}}</el-form-item>
+              <el-form-item label="处理时间：">{{props.row.handleDt ? props.row.handleDt : ''}}</el-form-item>
             </el-form>
           </div>
         </el-table-column>
@@ -54,7 +54,13 @@
             {{(row.type===1? '授课预约':'')+(row.type===2? '个人预约':'')}}
           </span>
         </el-table-column>
-        <el-table-column label="预约课时" prop=""></el-table-column>
+        <el-table-column label="预约课时">
+          <div class="flex start" slot-scope="{row}">
+            <div v-for="(item, i) in row.extend.lessons" :key="i">
+              {{item + ','}}
+            </div>
+          </div>
+        </el-table-column>
         <el-table-column label="开始时间" width="160" prop="startDt" align="center"></el-table-column>
         <el-table-column label="结束时间" width="160" prop="endDt" align="center"></el-table-column>
         <el-table-column label="审核结果" fixed="right" width="100">
