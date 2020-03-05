@@ -27,5 +27,5 @@ export const PRIVILEGE = {
 export const Department = {
   Admin: 0,
   Teacher: 1,
-  Student: 2
+  Student: 2,
 };

@@ -31,7 +31,6 @@ import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
 import { Filter } from '@/types/filter';
-import {PRIVILEGE} from '@/types/privilege';
 import { AlarmRecordConfirm, MonitorAlarm, AlarmDeviceHistory, AlarmMaintenDelay, AlarmUsageList, AlarmUsageLatest } from '@/dao/alarmDao';
 export default {
   setup() {

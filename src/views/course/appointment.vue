@@ -270,7 +270,7 @@ export default createComponent({
       console.log(data);
       if (data) {
         data = deepClone(data);
-        appointModal.value.type = 'update';        
+        appointModal.value.type = 'update';
       } else {
         data = initAppointForm();
         appointModal.value.type = 'add';
@@ -290,7 +290,7 @@ export default createComponent({
         if (appointModal.value.appointInfo.endDt && appointModal.value.appointInfo.endDt instanceof Date) {
           appointModal.value.appointInfo.endDt = appointModal.value.appointInfo.endDt.getTime();
         }
-        if(appointModal.value.type === 'add') {
+        if (appointModal.value.type === 'add') {
           await AppointAdd({
             type: appointModal.value.appointInfo.type,
             courseId: appointModal.value.appointInfo.course.id ? appointModal.value.appointInfo.course.id : null,
@@ -299,7 +299,7 @@ export default createComponent({
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
             start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
-            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null, 
+            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
@@ -312,7 +312,7 @@ export default createComponent({
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
             start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
-            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null, 
+            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }
@@ -365,16 +365,16 @@ export default createComponent({
         onlyLesson: true,
       });
       // console.log(lessonList.value);
-      //console.log(storeUserInfo.user);
+      // console.log(storeUserInfo.user);
       if (storeUserInfo.user) {
         const claszId = storeUserInfo.user.extend.clasz;
         const studentInClasz = studentList.value.filter(function(item: any) {
           return item.extend.clasz === claszId;
-        })
+        });
         const userId = storeUserInfo.user.id;
         otherStudentInClasz.value = studentInClasz.filter(function(item: any) {
           return item.id !== userId;
-        })
+        });
         console.log(storeUserInfo.user);
       }
     }));

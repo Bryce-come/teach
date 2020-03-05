@@ -61,7 +61,7 @@ export default {
     function routeTo(name: string) {
       router.push({ name });
     }
-    function contains(item:any) {
+    function contains(item: any) {
       if (!storeUserInfo.user) { return true; }
       return checkPrivilegeAuthDepartments(item);
     }

@@ -216,7 +216,7 @@ export default {
         stationInfo: null,
       },
     );
-    const expStation = ref<any>({extend:{}});
+    const expStation = ref<any>({extend: {}});
     const deviceNameList = ref<any>([]);
     const devicesList = ref<any>([]);
     const props = ref({
@@ -360,7 +360,7 @@ export default {
         id: stationId.value,
         deviceId: row.id,
         PCIP: row.PCIP,
-        cameraId: row.channelId
+        cameraId: row.channelId,
       });
       await query(stationId.value);
       Message.success('删除成功');

@@ -32,7 +32,7 @@ import {router} from '@/main';
 import { Route } from 'vue-router';
 import {assert} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
-import {Department} from "@/types/privilege";
+import {Department} from '@/types/privilege';
 
 export default createComponent({
   setup() {

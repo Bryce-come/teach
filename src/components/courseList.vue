@@ -153,7 +153,7 @@ import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 import { CourseRecordList } from '../dao/courseRecordDao';
-import { SettingGet } from '../dao/settingDao'
+import { SettingGet } from '../dao/settingDao';
 export default createComponent({
   name: 'courseList',
   props: { },
@@ -189,7 +189,7 @@ export default createComponent({
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-      originLessonsList:[
+      originLessonsList: [
         {lesson: ['', '', '', '', '', '']},
         {lesson: ['', '', '', '', '', '']},
         {lesson: ['', '', '', '', '', '']},
@@ -217,7 +217,7 @@ export default createComponent({
         {lesson: ['', '', '', '', '', '']},
         {lesson: ['', '', '', '', '', '']},
       ],
-    })
+    });
     function getColors(lessonOne: any, defaultColor: any) {
       const type = lessonOne.type;
       if (type === 0 || lessonOne === '') {
@@ -242,8 +242,8 @@ export default createComponent({
     }
     // 重新排列数据
     const newList = async () => {
-      lessons.value = 
-      originList.value.lessonsList
+      lessons.value =
+      originList.value.lessonsList;
       // [
       //   {lesson: ['', '', '',
       //     {
@@ -374,15 +374,15 @@ export default createComponent({
     const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
-    async function getOriginCourseRecordList(){
-      const result = await CourseRecordList({end:1582473599000,start:1581868800000,})
+    async function getOriginCourseRecordList() {
+      const result = await CourseRecordList({end: 1582473599000, start: 1581868800000});
       // for(let i=0;i<result.length;i++){
         // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(i,1,result[i])
-        originList.value.lessonsList[0].lesson.splice(0,1,result[0])
-        originList.value.lessonsList[3].lesson.splice(1,1,result[1])
+      originList.value.lessonsList[0].lesson.splice(0, 1, result[0]);
+      originList.value.lessonsList[3].lesson.splice(1, 1, result[1]);
       // }
-      console.log(originList.value.lessonsList)
-      console.log(result)
+      console.log(originList.value.lessonsList);
+      console.log(result);
     }
     // async function getOnlyLesson(){
     //   const result = await SettingGet({onlyLesson:true})

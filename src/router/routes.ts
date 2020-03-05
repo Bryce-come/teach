@@ -1,5 +1,5 @@
 
-import { PRIVILEGE,Department } from '@/types/privilege';
+import { PRIVILEGE, Department } from '@/types/privilege';
 
 const roleMng = {
   path: '/management/role',
@@ -172,7 +172,7 @@ const appointment = {
     CName: '实验室预约',
     parentCName: '实验课程管理',
     privileges: [PRIVILEGE.appoint],
-    authDepartments:[Department.Teacher, Department.Admin]
+    authDepartments: [Department.Teacher, Department.Admin],
   },
 };
 const appointment4Student = {
@@ -182,7 +182,7 @@ const appointment4Student = {
   meta: {
     CName: '实验室预约',
     privileges: [PRIVILEGE.appoint],
-    authDepartments:[Department.Student]
+    authDepartments: [Department.Student],
   },
 };
 const appointmentExamine = {
@@ -321,7 +321,7 @@ const preview = {
   component: () => import('../views/teach/preview.vue'),
   meta: {
     CName: '课前预习',
-    authDepartments:[Department.Student]
+    authDepartments: [Department.Student],
   },
 };
 const homework = {
@@ -330,7 +330,7 @@ const homework = {
   component: () => import('../views/teach/homework.vue'),
   meta: {
     CName: '课后作业',
-    authDepartments:[Department.Student]
+    authDepartments: [Department.Student],
   },
 };
 
