@@ -38,33 +38,34 @@
           
           >
           <!-- :style="{'background-color': item != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" -->
-          {{item ?item.course.name:''}}
-            <div v-if="!item">
-              <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
-            </div>
-            <el-popover
-              placement="top-start"
-              width="50"
-              >
+            
+            <div v-if="item" slot="reference">{{item.course.name}}</div>
+            <el-popover placement="top-start" width="50">
               <div style="color:#67C23A;width:6rem;" @click="readLesson(item)">
                 <i class="el-icon-reading"/>
                 <span  style="margin-left:5px">查看</span>
               </div>
               <div style="color:#67a1ff;width:6rem;" @click='showLesson(item)'>
-                    <i class="el-icon-edit"/>
-                    <span  style="margin-left:5px">修改</span>
+                <i class="el-icon-edit"/>
+                <span  style="margin-left:5px">修改</span>
               </div>
               <div style="color:#F56C6C;width:6rem;" @click="delectLesson(item)">
                 <i class="el-icon-delete"/>
                 <span  style="margin-left:5px">删除</span>
               </div>
-                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                    <i class="el-icon-takeaway-box"></i>
-                    <span  style="margin-left:5px">延长课时</span>
-                  </div> -->
-              <div style="width:100%;height:100%" slot="reference" >
-              </div>
+              <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                <i class="el-icon-takeaway-box"></i>
+                <span  style="margin-left:5px">延长课时</span>
+              </div> -->
+              <!-- <div style="width:100%;height:100%" slot="reference" >
+                <div>
+                 {{item?item.course.name:''}}
+                  </div>
+              </div> -->
             </el-popover>
+            <div v-if="!item">
+              <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+            </div>
           </div>
         </div>
       </div>
@@ -90,7 +91,7 @@
                  :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
                  :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
                 >
-                  <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
+                  <!-- <div v-if="item" slot="reference">{{item.name}}</div> -->
                 <el-popover
                   placement="top-start"
                   width="50"
@@ -107,16 +108,16 @@
                     <i class="el-icon-delete"/>
                     <span  style="margin-left:5px">删除</span>
                   </div>
-                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
                     <i class="el-icon-takeaway-box"></i>
                     <span  style="margin-left:5px">延长课时</span>
-                  </div>
+                  </div> -->
                   <div style="width:100%;height:100%" slot="reference" >
                     <div>
                        {{lessonItem?lessonItem.course.name:''}}
                     </div>
-                    </div>
-                  </el-popover>
+                  </div>
+                </el-popover>
                <div v-if="!lessonItem">
                  <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
                </div>
@@ -252,19 +253,7 @@ export default createComponent({
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-      originLessonsList:[ 
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',
-      '','','','','','','',],
+      originLessonsList:[],
       //  originLessonsList:[ 
       // 1,2,3,4,5,6,7,
       // 8,9,10,11,12,13,14,
@@ -317,8 +306,8 @@ export default createComponent({
     }
     // 重新排列数据
     const newList = async () => {
-      lessons.value =
-      originList.value.lessonsList;
+      // lessons.value =
+      // originList.value.originLessonsList;
       // [
       //   {lesson: ['', '', '',
       //     {
@@ -452,11 +441,10 @@ export default createComponent({
     async function cheakIt(row:any){
       // const sum = <HTMLElement>document.getElementsByClassName('textCell')[row]
       // sum.style.height=100+'px'
-      console.log(row)
+      // console.log(row)
     }
     async function getOriginCourseRecordList(row:any){
       const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
-      console.log(result)
       function setThisDay(row:any){
         if(row===0){
           return 7
@@ -472,15 +460,13 @@ export default createComponent({
           // for(let j=0;j<result[i].extend.lessons.length-1;j++){
           // }
         }
-        newList()
-        console.log(originList.value.originLessonsList)
       }
     }
     async function goLastWeek(){
-      setWeekSection(new Date(weekSection.value.weekStart-86400000))
+      await setWeekSection(new Date(weekSection.value.weekStart-86400000))
     }
     async function goNextWeek(){
-      setWeekSection(new Date(weekSection.value.weekEnd+86400000))
+      await setWeekSection(new Date(weekSection.value.weekEnd+86400000))
     }
     async function clearDiv(){
       // for(let i=0;i<originList.value.originLessonsList.length;i++){
@@ -506,7 +492,6 @@ export default createComponent({
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[1].getTime()
       getOriginCourseRecordList(weekSection)
-      newList()
     }
     onMounted(useLoading(loading, async () => {
       await setWeekSection(new Date());
