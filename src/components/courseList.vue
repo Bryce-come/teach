@@ -12,19 +12,7 @@
       <p style="margin:0 auto;margin-top:5px">
         {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
     </div>
-    <div style="width:80%;height:623px;background-color:azure;margin:auto;border:0.005em solid #000">
-        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
-        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
-        <div class="firstRow" v-for="(item,i) in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">第<span>{{i+1}}</span>节课</div>
-        <div style="width:87.5%;height:588.4px;background-color:blue;
-        position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
-        display: flex;flex-wrap: wrap;flex-direction:row ;">
-          <div class="textCell" @click="cheakIt(i)" v-for="(item,i) in originList.originLessonsList" :key="i">
-            
-          </div>
-        </div>
-    </div>
-    <div class="class-table">
+    <div style="margin: 7px;">
       <div class="flex center">
         <div style="margin: 10px">
           <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(142, 208, 214)"></span>
@@ -35,6 +23,55 @@
           <span>新预约课程</span>
         </div>
       </div>
+      <div style="width:80%;height:623px;background-color:azure;margin:auto;border:0.005em solid #000">
+        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
+        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
+        <div style="width:12.5%;height:588.4px;background-color:blue;
+        position:relative;left:;top:;display: -webkit-flex; /* Safari */
+        display: flex;flex-wrap: wrap;flex-direction:column ;">
+          <div class="firstRow" v-for="(item,i) in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">第<span>{{i+1}}</span>节课</div>
+        </div>
+        <div style="width:87.5%;height:589px;background-color:blue;
+        position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
+        display: flex;flex-wrap: wrap;flex-direction:row ;">
+          <div class="textCell" @click="cheakIt(item)" v-for="(item,i) in originList.originLessonsList" :key="i"
+          
+          >
+          <!-- :style="{'background-color': item != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" -->
+          {{item ?item.course.name:''}}
+            <div v-if="!item">
+              <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+            </div>
+            <el-popover
+              placement="top-start"
+              width="50"
+              >
+              <div style="color:#67C23A;width:6rem;" @click="readLesson(item)">
+                <i class="el-icon-reading"/>
+                <span  style="margin-left:5px">查看</span>
+              </div>
+              <div style="color:#67a1ff;width:6rem;" @click='showLesson(item)'>
+                    <i class="el-icon-edit"/>
+                    <span  style="margin-left:5px">修改</span>
+              </div>
+              <div style="color:#F56C6C;width:6rem;" @click="delectLesson(item)">
+                <i class="el-icon-delete"/>
+                <span  style="margin-left:5px">删除</span>
+              </div>
+                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                    <i class="el-icon-takeaway-box"></i>
+                    <span  style="margin-left:5px">延长课时</span>
+                  </div> -->
+              <div style="width:100%;height:100%" slot="reference" >
+              </div>
+            </el-popover>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="class-table">
+      
       <table id='tabs'  >
         <thead>
           <tr>
@@ -70,10 +107,10 @@
                     <i class="el-icon-delete"/>
                     <span  style="margin-left:5px">删除</span>
                   </div>
-                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
                     <i class="el-icon-takeaway-box"></i>
                     <span  style="margin-left:5px">延长课时</span>
-                  </div> -->
+                  </div>
                   <div style="width:100%;height:100%" slot="reference" >
                     <div>
                        {{lessonItem?lessonItem.course.name:''}}
@@ -216,18 +253,31 @@ export default createComponent({
     const lessons = ref<any>();
     const originList = ref<any>({
       originLessonsList:[ 
-      1,2,3,4,5,6,7,
-      8,9,10,11,12,13,14,
-      15,16,17,18,19,20,21,
-      22,23,24,25,26,27,28,
-      29,30,31,32,33,34,35,
-      36,37,38,39,40,41,42,
-      43,44,45,46,47,48,49,
-      50,51,52,53,54,55,56,
-      57,58,59,60,61,62,63,
-      64,65,66,67,68,69,70,
-      71,72,73,74,75,76,77,
-      78,79,80,81,82,83,84 ],
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',
+      '','','','','','','',],
+      //  originLessonsList:[ 
+      // 1,2,3,4,5,6,7,
+      // 8,9,10,11,12,13,14,
+      // 15,16,17,18,19,20,21,
+      // 22,23,24,25,26,27,28,
+      // 29,30,31,32,33,34,35,
+      // 36,37,38,39,40,41,42,
+      // 43,44,45,46,47,48,49,
+      // 50,51,52,53,54,55,56,
+      // 57,58,59,60,61,62,63,
+      // 64,65,66,67,68,69,70,
+      // 71,72,73,74,75,76,77,
+      // 78,79,80,81,82,83,84 ],
       lessonsList: [
         {lesson: ['','','','','','','']},
         {lesson: ['','','','','','','']},
@@ -400,9 +450,9 @@ export default createComponent({
       Message.success('成功延长一小时');
     };
     async function cheakIt(row:any){
-      const sum = <HTMLElement>document.getElementsByClassName('textCell')[row]
+      // const sum = <HTMLElement>document.getElementsByClassName('textCell')[row]
       // sum.style.height=100+'px'
-      console.log(sum)
+      console.log(row)
     }
     async function getOriginCourseRecordList(row:any){
       const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
@@ -416,15 +466,14 @@ export default createComponent({
       }
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
-          // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(setThisDay(new Date(result[i].startDt).getDay()-1),1,result[i])
-          // console.log(originList.value.originLessonsList[result[i].extend.lessons[0]*setThisDay(new Date(result[i].startDt).getDay())-1])
-          const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
-          str.innerText=result[i].course.name;
+          originList.value.originLessonsList[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1]=result[i]
+          // const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
+          // str.innerText=result[i].course.name;
           // for(let j=0;j<result[i].extend.lessons.length-1;j++){
-            // originList.value.lessonsList[result[i].extend.lessons[j+1]-1].lesson.splice(i,1)
           // }
         }
         newList()
+        console.log(originList.value.originLessonsList)
       }
     }
     async function goLastWeek(){
@@ -434,18 +483,25 @@ export default createComponent({
       setWeekSection(new Date(weekSection.value.weekEnd+86400000))
     }
     async function clearDiv(){
-      for(let i=0;i<originList.value.originLessonsList.length;i++){
-        const sum = <HTMLElement>document.getElementsByClassName('textCell')[i]
-        sum.innerText=``
-      }
+      // for(let i=0;i<originList.value.originLessonsList.length;i++){
+      //   const sum = <HTMLElement>document.getElementsByClassName('textCell')[i]
+      //   sum.innerText=``
+      // }
     }
     async function setWeekSection(row:any){
       originList.value.originLessonsList=[ 
-      1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
-      21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
-      41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
-      61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
-      81,82,83,84 ]
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,
+      ,,,,,,,]
       const result = getWeekDaysRange(row)
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[1].getTime()
@@ -545,21 +601,22 @@ function initForm(): any {
           font-weight: lighter;
           text-align: center;
           vertical-align: middle;
-          .order {
-            height: 2.5rem;
-            line-height: 2.5rem;
-            text-align: center;
-            vertical-align: middle;
-          }
-          .order .el-button{
-            display: none;
-          }
-          .order:hover .el-button{
-            display: inline-block;
-          }
+          
         }
       }
     }
+  }
+  .order {
+    height: 2.5rem;
+    line-height: 3.5rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .order .el-button{
+    display: none;
+  }
+  .order:hover .el-button{
+      display: inline-block;
   }
   .firstCol{
     width:12.5%;
@@ -575,7 +632,8 @@ function initForm(): any {
     padding: 0;
   } 
   .firstRow{
-    width:12.5%;
+    // width:12.5%;
+    height: 8.3333%;
     color: #fff;
     background-color: #67a1ff;
     border:0.005em solid #000;
