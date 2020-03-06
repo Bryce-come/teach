@@ -3,9 +3,9 @@
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
         <el-date-picker v-model="oneDay" type="date" placeholder="选择日期"></el-date-picker>
-        <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>  
-        <el-button style="margin-left: 10px" type="primary"  icon="el-icon-arrow-left" @click="goLastWeek()">上一周</el-button>
-        <el-button style="margin-left: 10px" type="primary" @click="goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="clearDiv();list()">跳转日期</el-button>  
+        <el-button style="margin-left: 10px" type="primary"  icon="el-icon-arrow-left" @click="clearDiv();goLastWeek()">上一周</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="clearDiv();goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
       </div>
     </div>
     <div class="flex align-center" style="margin:0 auto">
@@ -19,7 +19,9 @@
         <div style="width:87.5%;height:588.4px;background-color:blue;
         position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
         display: flex;flex-wrap: wrap;flex-direction:row ;">
-          <div class="textCell" @click="cheakIt(this)" v-for="(item,i) in originList.originLessonsList" :key="i">第<span>{{i+1}}</span>个格子</div>
+          <div class="textCell" @click="cheakIt(i)" v-for="(item,i) in originList.originLessonsList" :key="i">
+            
+          </div>
         </div>
     </div>
     <div class="class-table">
@@ -214,11 +216,18 @@ export default createComponent({
     const lessons = ref<any>();
     const originList = ref<any>({
       originLessonsList:[ 
-      1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
-      21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
-      41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
-      61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
-      81,82,83,84 ],
+      1,2,3,4,5,6,7,
+      8,9,10,11,12,13,14,
+      15,16,17,18,19,20,21,
+      22,23,24,25,26,27,28,
+      29,30,31,32,33,34,35,
+      36,37,38,39,40,41,42,
+      43,44,45,46,47,48,49,
+      50,51,52,53,54,55,56,
+      57,58,59,60,61,62,63,
+      64,65,66,67,68,69,70,
+      71,72,73,74,75,76,77,
+      78,79,80,81,82,83,84 ],
       lessonsList: [
         {lesson: ['','','','','','','']},
         {lesson: ['','','','','','','']},
@@ -391,10 +400,13 @@ export default createComponent({
       Message.success('成功延长一小时');
     };
     async function cheakIt(row:any){
-      
+      const sum = <HTMLElement>document.getElementsByClassName('textCell')[row]
+      // sum.style.height=100+'px'
+      console.log(sum)
     }
     async function getOriginCourseRecordList(row:any){
       const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
+      console.log(result)
       function setThisDay(row:any){
         if(row===0){
           return 7
@@ -404,15 +416,14 @@ export default createComponent({
       }
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
-          originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(setThisDay(new Date(result[i].startDt).getDay()-1),1,result[i])
-          for(let j=0;j<result[i].extend.lessons.length-1;j++){
-            originList.value.lessonsList[result[i].extend.lessons[j+1]-1].lesson.splice(i,1)
-          }
-          // originList.value.lessonsList[0].lesson.splice(0,1,result[0])
-          // originList.value.lessonsList[3].lesson.splice(1,1,result[1])
+          // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(setThisDay(new Date(result[i].startDt).getDay()-1),1,result[i])
+          // console.log(originList.value.originLessonsList[result[i].extend.lessons[0]*setThisDay(new Date(result[i].startDt).getDay())-1])
+          const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
+          str.innerText=result[i].course.name;
+          // for(let j=0;j<result[i].extend.lessons.length-1;j++){
+            // originList.value.lessonsList[result[i].extend.lessons[j+1]-1].lesson.splice(i,1)
+          // }
         }
-        // document.getElementById('tabs')
-        // console.log(originList.value.lessonsList)
         newList()
       }
     }
@@ -422,21 +433,19 @@ export default createComponent({
     async function goNextWeek(){
       setWeekSection(new Date(weekSection.value.weekEnd+86400000))
     }
+    async function clearDiv(){
+      for(let i=0;i<originList.value.originLessonsList.length;i++){
+        const sum = <HTMLElement>document.getElementsByClassName('textCell')[i]
+        sum.innerText=``
+      }
+    }
     async function setWeekSection(row:any){
-      originList.value.lessonsList=[
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-      ]
+      originList.value.originLessonsList=[ 
+      1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+      21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
+      41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
+      61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
+      81,82,83,84 ]
       const result = getWeekDaysRange(row)
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[1].getTime()
@@ -453,7 +462,7 @@ export default createComponent({
       ];
     }));
     return{
-      getOriginCourseRecordList,originList,
+      getOriginCourseRecordList,originList,clearDiv,
       setWeekSection,goLastWeek,goNextWeek,weekSection,
       loading,cheakIt,
       oneDay,
