@@ -12,6 +12,16 @@
       <p style="margin:0 auto;margin-top:5px">
         {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
     </div>
+    <div style="width:80%;height:623px;background-color:azure;margin:auto;border:0.005em solid #000">
+        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
+        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
+        <div class="firstRow" v-for="(item,i) in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">第<span>{{i+1}}</span>节课</div>
+        <div style="width:87.5%;height:588.4px;background-color:blue;
+        position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
+        display: flex;flex-wrap: wrap;flex-direction:row ;">
+          <div class="textCell" @click="cheakIt(this)" v-for="(item,i) in originList.originLessonsList" :key="i">第<span>{{i+1}}</span>个格子</div>
+        </div>
+    </div>
     <div class="class-table">
       <div class="flex center">
         <div style="margin: 10px">
@@ -75,11 +85,7 @@
            </tr>
         </tbody>
       </table>
-      <!-- <div style="width:80%;height:637px;background-color:azure;margin:auto;border:1px solid #000">
-        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
-        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
-        <div class="firstRow" v-for="(item,i) in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">第<span>{{i+1}}</span>节课</div>
-      </div> -->
+      
 
       <el-dialog
       :visible.sync="readModel.visible"
@@ -207,20 +213,12 @@ export default createComponent({
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-      originLessonsList:[
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-      ],
+      originLessonsList:[ 
+      1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+      21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
+      41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
+      61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
+      81,82,83,84 ],
       lessonsList: [
         {lesson: ['','','','','','','']},
         {lesson: ['','','','','','','']},
@@ -392,6 +390,9 @@ export default createComponent({
     const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
+    async function cheakIt(row:any){
+      
+    }
     async function getOriginCourseRecordList(row:any){
       const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
       function setThisDay(row:any){
@@ -452,9 +453,9 @@ export default createComponent({
       ];
     }));
     return{
-      getOriginCourseRecordList,
+      getOriginCourseRecordList,originList,
       setWeekSection,goLastWeek,goNextWeek,weekSection,
-      loading,
+      loading,cheakIt,
       oneDay,
       list: useLoading(loading, list),
       weeks,
@@ -570,9 +571,19 @@ function initForm(): any {
     background-color: #67a1ff;
     border:0.005em solid #000;
     line-height: 3.5rem;
-    font-weight: lighter;
     text-align: center;
-    vertical-align: middle;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+  }
+  .textCell{
+    width:14.2857%;
+    height: 8.3333%;
+    background-color:white;
+    border:0.1px solid #000;
+    line-height: 3.5rem;
+    text-align: center;
+    font-weight: normal;
     margin: 0;
     padding: 0;
   }
