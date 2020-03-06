@@ -390,9 +390,7 @@ const indexChildren = [
   homework,
   {
     path: '*',
-    name: '404_child',
-    component: () => import('../components/page404.vue'),
-    meta: { authDisabled: true },
+    redirect: {name: '404'},
   },
 ];
 export const routes = [
