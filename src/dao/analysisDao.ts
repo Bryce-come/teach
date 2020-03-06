@@ -7,8 +7,8 @@ import {postService, mesPostUntilSuccess} from 'web-toolkit/src/case-main/index'
  * return List<DeviceWorkStatusRecord>
  */
 export async function AnalysisDeviceTime(params: any) {
-  const {data: {list}} = await postService('/rest/analysis/device/time', params);
-  return list;
+  const { data } = await postService('/rest/analysis/device/time', params);
+  return data;
 }
 
 /**
