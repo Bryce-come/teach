@@ -13,5 +13,5 @@ export async function DownLoadPrivate( path: string, filename: string ) {
  * 用于图片显示-private
  */
 export function ImageLink(path: string) {
-  return axios.defaults.baseURL + '/rest/download?name=' + path + '&dt=' + new Date().getTime();
+  if (path) { return axios.defaults.baseURL + '/rest/download?name=' + path + '&dt=' + new Date().getTime(); }
 }

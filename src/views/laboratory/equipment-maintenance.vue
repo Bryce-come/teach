@@ -260,9 +260,9 @@ export default {
       console.log(executorList.value);
       console.log(deviceNameList.value);
       maintainTypeList.value = [
-        {id: '0', type: '巡检'},
-        {id: '1', type: '保养'},
-        {id: '2', type: '维修'},
+        {id: 0, type: '巡检'},
+        {id: 1, type: '保养'},
+        {id: 2, type: '维修'},
       ];
       statusList.value = [
         { value: '正常',

@@ -28,12 +28,12 @@
           <el-table-column type="expand">
             <div slot-scope="props" class="flex start">
               <el-form label-width="100px">
-                <el-form-item label="预约课程：">{{props.row.course.name}}</el-form-item>
-                <el-form-item label="预约实验：">{{props.row.program.name}}</el-form-item>
-                <el-form-item label="指定教师：">{{props.row.teacher.name}}</el-form-item>
+                <el-form-item label="预约课程：">{{props.row.course ? props.row.course.name : ''}}</el-form-item>
+                <el-form-item label="预约实验：">{{props.row.program ? props.row.program.name : ''}}</el-form-item>
+                <el-form-item label="指定教师：">{{props.row.teacher ? props.row.teacher.name : ''}}</el-form-item>
                 <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?  props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}</el-form-item>
-                <el-form-item label="处理人：">{{props.row.operator.name}}</el-form-item>
-                <el-form-item label="处理时间：">{{props.row.handleDt}}</el-form-item>
+                <el-form-item label="处理人：">{{props.row.operator ? props.row.operator.name : ''}}</el-form-item>
+                <el-form-item label="处理时间：">{{props.row.handleDt ? props.row.handleDt : ''}}</el-form-item>
               </el-form>
             </div>
           </el-table-column>
@@ -45,7 +45,13 @@
               {{(row.type===1? '授课预约':'')+(row.type===2? '个人预约':'')}}
             </span>
           </el-table-column>
-          <el-table-column label="预约课时" prop=""></el-table-column>
+          <el-table-column label="预约课时">
+            <div class="flex start" slot-scope="{row}">
+              <div v-for="(item, i) in row.extend.lessons" :key="i">
+                {{item + ','}}
+              </div>
+            </div>
+          </el-table-column>
           <el-table-column label="开始时间" width="160" prop="startDt" align="center"></el-table-column>
           <el-table-column label="结束时间" width="160" prop="endDt" align="center"></el-table-column>
           <el-table-column label="审核结果" fixed="right" width="100">
@@ -58,7 +64,7 @@
           </el-table-column>
           <el-table-column label="操作" fixed="right" align="center" min-width="150">
             <div class="flex center little-space" slot-scope="{row}">
-              <el-button type="warning" size="mini" @click="showAppointForm(row)">修改</el-button>
+              <el-button type="warning" size="mini" :disabled="row.result === 0? false: true" @click="showAppointForm(row)">修改</el-button>
               <el-button type="danger" size="mini" :disabled="row.result === 0? false: true" @click="revokeAppoint(row)">撤销</el-button>
             </div>
           </el-table-column>
@@ -68,97 +74,162 @@
         :modal="appointModal"
         :confirm="appointUpdate">
         <div slot="title">{{appointModal.appointInfo && appointModal.appointInfo.id ? '修改预约信息' : '申请预约'}}</div>
-        <el-form v-if="appointModal.appointInfo" ref="form" :model="appointModal.appointInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请选择预约类型'}">
-            <el-select v-model="appointModal.appointInfo.type">
-              <el-option
-                v-for="item of appointTypeList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择课程：" prop="course">
-            <el-select v-model="appointModal.appointInfo.course" value-key="id">
-              <el-option
-                v-for="item of courseList"
-                :key="item.id"
-                :label="item.name"
-                :value="item"></el-option>
-            </el-select>
-            <!-- <lkt-select :list="courseList" value-key="name" option-value-key="id" v-model="appointModal.appointInfo.course.id"/> -->
-          </el-form-item>
-          <el-form-item label="选择实验：" prop="program.id">
-            <el-select v-model="appointModal.appointInfo.program.id">
-              <el-option
-                v-for="item of appointModal.appointInfo.course.id ? appointModal.appointInfo.course.programList : programList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择指定教师：" prop="teacher.id" v-if="appointModal.appointInfo.type === 1">
-            <el-select v-model="appointModal.appointInfo.teacher.id">
-              <el-option 
-                v-for="item of teacherList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择其他参与人：" prop="students" v-if="appointModal.appointInfo.type === 2">
-            <el-select v-model="appointModal.appointInfo.students" multiple collapse-tags>
-              <el-option
-                v-for="item of otherStudentInClasz"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择操作台：" prop="stations" :rules="appointModal.appointInfo.type === 2 ? { required: true, message: '请选择操作台'} : { required: false}">
-            <el-select v-model="appointModal.appointInfo.stations" multiple collapse-tags>
-              <el-option
-                v-for="item of stationList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择开始时间：" prop="startDt">
-            <el-date-picker v-model="appointModal.appointInfo.startDt" type="datetime"></el-date-picker>
-          </el-form-item>
-          <el-form-item label="选择结束时间：" prop="endDt">
-            <el-date-picker v-model="appointModal.appointInfo.endDt" type="datetime"></el-date-picker>
-          </el-form-item>
-          <el-form-item label="选择课时：" prop="extend.lessons" :rules="{ required: true, message: '请选择预约课时'}">
-            <el-select v-model="appointModal.appointInfo.extend.lessons" multiple collapse-tags>
-              <el-option
-                v-for="item in lessonList.lessonNum"
-                :key="item"
-                :label="'第' + item + '节课'"
-                :value="item"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择班级：" prop="extend.clasz" v-if="appointModal.appointInfo.type === 1">
-            <el-select v-model="appointModal.appointInfo.extend.clasz" value-key="id">
-              <el-option
-                v-for="item of classList"
-                :key="item.id"
-                :label="item.name"
-                :value="item"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选择组别：" prop="extend.claszGroup" v-if="appointModal.appointInfo.type === 1">
-            <el-select v-model="appointModal.appointInfo.extend.claszGroup" value-key="id">
-              <el-option
-                v-for="item of appointModal.appointInfo.extend.clasz ? appointModal.appointInfo.extend.clasz.groups : []"
-                :key="item.id"
-                :label="item.name"
-                :value="item"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
+         <el-form v-if="storeUserInfo.user && storeUserInfo.user.role.id === 2 && appointModal.appointInfo" ref="form" :model="appointModal.appointInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
+            <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请选择预约类型'}">
+              <el-select v-model="appointModal.appointInfo.type">
+                <el-option
+                  v-for="item of appointTypeList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择课程：" prop="course">
+              <el-select v-model="appointModal.appointInfo.course" value-key="id">
+                <el-option
+                  v-for="item of courseList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择实验：" prop="program.id">
+              <el-select v-model="appointModal.appointInfo.program.id">
+                <el-option
+                  v-for="item of appointModal.appointInfo.course.id ? appointModal.appointInfo.course.programList : programList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择指定教师：" prop="teacher.id">
+              <el-select v-model="appointModal.appointInfo.teacher.id">
+                <el-option
+                  v-for="item of teacherList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择操作台：" prop="stations" :rules="appointModal.appointInfo.type === 2 ? { required: true, message: '请选择操作台'} : { required: false}">
+              <el-select v-model="appointModal.appointInfo.stations" multiple collapse-tags>
+                <el-option
+                  v-for="item of stationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+              <el-date-picker v-model="appointDate" type="date"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
+              <el-select v-model="startLesson">
+                <el-option
+                  v-for="item in lessonList.lessonNum"
+                  :key="item"
+                  :label="'第' + item + '节课'"
+                  :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
+              <el-select v-model="endLesson">
+                <el-option
+                  v-for="item in lessonList.lessonNum"
+                  :key="item"
+                  :label="'第' + item + '节课'"
+                  :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择班级：" prop="extend.clasz" v-if="appointModal.appointInfo.type === 1">
+              <el-select v-model="appointModal.appointInfo.extend.clasz.id">
+                <el-option
+                  v-for="item of classList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择组别：" prop="extend.claszGroup" v-if="appointModal.appointInfo.type === 1">
+              <el-select v-model="appointModal.appointInfo.extend.claszGroup.id">
+                <el-option
+                  v-for="item of appointModal.appointInfo.extend.clasz.id?(classList.filter(item1 => {return item1.id === appointModal.appointInfo.extend.clasz.id}))[0].groups:[]"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <el-form v-if="storeUserInfo.user && storeUserInfo.user.role.id === 3 && appointModal.appointInfo" ref="form" :model="appointModal.appointInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
+            <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请选择预约类型'}">
+              <el-select v-model="appointModal.appointInfo.type">
+                <el-option
+                  v-for="item of studentAppointType"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择课程：" prop="course">
+              <el-select v-model="appointModal.appointInfo.course" value-key="id">
+                <el-option
+                  v-for="item of courseList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择实验：" prop="program.id">
+              <el-select v-model="appointModal.appointInfo.program.id">
+                <el-option
+                  v-for="item of appointModal.appointInfo.course.id ? appointModal.appointInfo.course.programList : programList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择其他参与人：" prop="students">
+              <el-select v-model="appointModal.appointInfo.students" multiple collapse-tags>
+                <el-option
+                  v-for="item of otherStudentInClasz"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择操作台：" prop="stations" :rules="{ required: true, message: '请选择操作台'}">
+              <el-select v-model="appointModal.appointInfo.stations" multiple collapse-tags>
+                <el-option
+                  v-for="item of stationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+              <el-date-picker v-model="appointDate" type="date"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
+              <el-select v-model="startLesson">
+                <el-option
+                  v-for="item in lessonList.lessonNum"
+                  :key="item"
+                  :label="'第' + item + '节课'"
+                  :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
+              <el-select v-model="endLesson">
+                <el-option
+                  v-for="item in lessonList.lessonNum"
+                  :key="item"
+                  :label="'第' + item + '节课'"
+                  :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
       </kit-dialog-simple>
     </div>
 </template>
@@ -189,6 +260,9 @@ export default createComponent({
       {id: 1, name: '授课预约'},
       {id: 2, name: '个人预约'},
     ]);
+    const studentAppointType = ref<any>([
+      {id: 2, name: '个人预约'},
+    ]);
     const courseList = ref<any>([]);
     const programList = ref<any>([]);
     const teacherList = ref<any>([]);
@@ -196,7 +270,10 @@ export default createComponent({
     const otherStudentInClasz = ref<any>();
     const stationList = ref<any>([]);
     const classList = ref<any>([]);
+    const appointDate = ref<any>();
     const lessonList = ref<any>();
+    const startLesson = ref<any>();
+    const endLesson = ref<any>();
     const appointModal = ref<any>({
       visible: false,
       appointInfo: null,
@@ -205,15 +282,14 @@ export default createComponent({
     const form = ref<ElForm | null>(null);
     const showAppointForm = async (data?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
+      console.log(data);
       if (data) {
         data = deepClone(data);
         appointModal.value.type = 'update';
-        console.log(data);
       } else {
         data = initAppointForm();
         appointModal.value.type = 'add';
       }
-      // console.log(appointModal.value.type);
       appointModal.value.appointInfo = data;
       appointModal.value.visible = true;
     };
@@ -222,35 +298,41 @@ export default createComponent({
       console.log(valid);
       if (valid) {
         // 时间格式转化
-        if (appointModal.value.appointInfo.startDt && appointModal.value.appointInfo.startDt instanceof Date) {
-          appointModal.value.appointInfo.startDt = appointModal.value.appointInfo.startDt.getTime();
+        // if (appointModal.value.appointInfo.startDt && appointModal.value.appointInfo.startDt instanceof Date) {
+        //   appointModal.value.appointInfo.startDt = appointModal.value.appointInfo.startDt.getTime();
+        // }
+        // if (appointModal.value.appointInfo.endDt && appointModal.value.appointInfo.endDt instanceof Date) {
+        //   appointModal.value.appointInfo.endDt = appointModal.value.appointInfo.endDt.getTime();
+        // }
+        if (appointDate.value && appointDate.value instanceof Date && startLesson) {
+          appointModal.value.appointInfo.startDt = transformDate(appointDate.value, lessonList.value.lesson+'startLesson.value'[0]);
         }
-        if (appointModal.value.appointInfo.endDt && appointModal.value.appointInfo.endDt instanceof Date) {
-          appointModal.value.appointInfo.endDt = appointModal.value.appointInfo.endDt.getTime();
+        if (appointDate.value && appointDate.value instanceof Date && endLesson && endLesson >= startLesson) {
+          appointModal.value.appointInfo.endDt = transformDate(appointDate.value, lessonList.value.lesson+'endLesson.value'[1]);
         }
-        if(appointModal.value.type === 'add') {
+        if (appointModal.value.type === 'add') {
           await AppointAdd({
             type: appointModal.value.appointInfo.type,
-            courseId: appointModal.value.appointInfo.course.id,
-            programId: appointModal.value.appointInfo.program.id,
-            teacherId: appointModal.value.appointInfo.teacher.id,
-            studentJson: JSON.stringify(appointModal.value.appointInfo.students),
-            stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
-            startDt: appointModal.value.appointInfo.startDt,
-            endDt: appointModal.value.appointInfo.endDt, 
+            courseId: appointModal.value.appointInfo.course.id ? appointModal.value.appointInfo.course.id : null,
+            programId: appointModal.value.appointInfo.program.id ? appointModal.value.appointInfo.program.id : null,
+            teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
+            studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
+            stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
+            start: appointModal.value.appointInfo.startDt,
+            end: appointModal.value.appointInfo.endDt, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
           await AppointUpdate({
             id: appointModal.value.appointInfo.id,
             type: appointModal.value.appointInfo.type,
-            courseId: appointModal.value.appointInfo.course.id,
-            programId: appointModal.value.appointInfo.program.id,
-            teacherId: appointModal.value.appointInfo.teacher.id,
-            studentJson: JSON.stringify(appointModal.value.appointInfo.students),
-            stationJson: JSON.stringify(appointModal.value.appointInfo.stations),
-            startDt: appointModal.value.appointInfo.startDt,
-            endDt: appointModal.value.appointInfo.endDt,
+            courseId: appointModal.value.appointInfo.course.id ? appointModal.value.appointInfo.course.id : null,
+            programId: appointModal.value.appointInfo.program.id ? appointModal.value.appointInfo.program.id : null,
+            teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
+            studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
+            stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
+            start: appointModal.value.appointInfo.startDt,
+            end: appointModal.value.appointInfo.endDt, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }
@@ -287,13 +369,13 @@ export default createComponent({
       courseList.value = await CourseList({
           containPrograms: true,
         });
-      console.log(courseList.value);
+      // console.log(courseList.value);
       programList.value = await ProgramList();
-      console.log(programList.value);
+      // console.log(programList.value);
       teacherList.value = await TeacherList();
-      console.log(teacherList.value);
-      studentList.value = await StudentList();
-      console.log(studentList.value);
+      // console.log(teacherList.value);
+      studentList.value = await StudentList({});
+      // console.log(studentList.value);
       stationList.value = await StationList({
         simple: true,
       });
@@ -302,18 +384,18 @@ export default createComponent({
       lessonList.value = await SettingGet({
         onlyLesson: true,
       });
-      // console.log(lessonList.value);
+      console.log(lessonList.value.lesson+'startLesson'[0]);
       //console.log(storeUserInfo.user);
       if (storeUserInfo.user) {
         const claszId = storeUserInfo.user.extend.clasz;
         const studentInClasz = studentList.value.filter(function(item: any) {
           return item.extend.clasz === claszId;
-        })
+        });
         const userId = storeUserInfo.user.id;
         otherStudentInClasz.value = studentInClasz.filter(function(item: any) {
           return item.id !== userId;
         })
-        // console.log(otherStudentInClasz.value);
+        // console.log(storeUserInfo.user);
       }
     }));
     return {
@@ -321,16 +403,29 @@ export default createComponent({
       appointRecordList, appointDt, queryAppointRecordList,
       revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
       form, appointModal, showAppointForm,
-      appointUpdate: useLoading(loading, AppointUpdate),
+      appointUpdate: useLoading(loading, appointUpdate),
       storeUserInfo,
-      appointTypeList, courseList, programList, stationList,
-      teacherList, studentList, otherStudentInClasz, classList, lessonList,
+      appointTypeList, studentAppointType, courseList, programList, stationList,
+      teacherList, studentList, otherStudentInClasz, classList,
+      appointDate, lessonList, startLesson, endLesson,
     };
   },
 });
+function transformDate(time1: any, timestamp2: any) {
+  // 获取课时时分秒
+  var time = new Date(timestamp2);
+  var Hour = time.getHours();
+  var Min = time.getMinutes();
+  var Sec = time.getSeconds();
+  // 将预约日期与课时时分秒组合
+  var datetime = time1 + ' ' + Hour + ':' + Min + ':' + Sec;
+  var t = new Date(datetime);
+  return t.getTime();
+}
 function initAppointForm() {
   return {
     id: '', type: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
+    appointDate: '',
     extend: {clasz: {}, claszGroup: {}},
   };
 }
