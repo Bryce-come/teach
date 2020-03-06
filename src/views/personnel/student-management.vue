@@ -184,285 +184,285 @@
   </div>
 </template>
 <script lang="ts">
-  import {onMounted, ref} from '@vue/composition-api';
-  import {ElTree} from 'element-ui/types/tree';
-  import {ElForm} from 'element-ui/types/form';
-  import {useConfirm, useLoading, useSearch} from 'web-toolkit/src/service';
-  import {storeUserInfo} from 'web-toolkit/src/case-main';
-  import {Message} from 'element-ui';
-  import {deepClone} from 'web-toolkit/src/utils';
-  import {
-    ClassDel,
-    ClassFreeze,
-    ClassGroupDel,
-    ClassGroupUpdate,
-    ClassList,
-    ClassUnFreeze,
-    ClassUpdate, RoleList,
-    StudentList,
-    UserAdd,
-    UserDel,
-    UserUpdate
-  } from '@/dao/userDao';
+import {onMounted, ref} from '@vue/composition-api';
+import {ElTree} from 'element-ui/types/tree';
+import {ElForm} from 'element-ui/types/form';
+import {useConfirm, useLoading, useSearch} from 'web-toolkit/src/service';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
+import {Message} from 'element-ui';
+import {deepClone} from 'web-toolkit/src/utils';
+import {
+  ClassDel,
+  ClassFreeze,
+  ClassGroupDel,
+  ClassGroupUpdate,
+  ClassList,
+  ClassUnFreeze,
+  ClassUpdate, RoleList,
+  StudentList,
+  UserAdd,
+  UserDel,
+  UserUpdate,
+} from '@/dao/userDao';
 
-  export default {
-    setup() {
-    const loading = ref(false);
-    const tree = ref<ElTree<any, any>|null>(null);
-    const roleList = ref<any>([]);
-    const clasz = ref<any>({});
-    const claszGroup = ref<any>({});
-    const studentUserList = ref<any>();
-    const classList = ref<any>();
-    const ctogList = ref<any>();
-    // 一个班级的分组
-    const groupList = ref<any>();
-    const removeValue = ref<any>({
-      name: '',
-    });
+export default {
+  setup() {
+  const loading = ref(false);
+  const tree = ref<ElTree<any, any>|null>(null);
+  const roleList = ref<any>([]);
+  const clasz = ref<any>({});
+  const claszGroup = ref<any>({});
+  const studentUserList = ref<any>();
+  const classList = ref<any>();
+  const ctogList = ref<any>();
+  // 一个班级的分组
+  const groupList = ref<any>();
+  const removeValue = ref<any>({
+    name: '',
+  });
 
-    function setRemoveName(row: any) {
-      removeValue.value.name = row.name;
-    }
-    const props = ref({
-      children: 'groups',
-      label: 'name',
+  function setRemoveName(row: any) {
+    removeValue.value.name = row.name;
+  }
+  const props = ref({
+    children: 'groups',
+    label: 'name',
+  });
+  const remove = async (row: any) => {
+    await UserDel({
+    id: row.id,
+    off: 0,
     });
-    const remove = async (row: any) => {
-      await UserDel({
-      id: row.id,
-      off: 0,
-      });
-      await queryStudentList();
-    };
-    const removeClass = async (row: any) => {
-        await ClassDel({
-          id: row.id,
-        });
-        await queryClassList();
-    };
-    const grpandclzList = ref<any>({
-          claszIdList: [],
-          claszNameList: [],
-          groupLista: [],
-          groupListb: [],
-          groupIdList: [],
-          groupNameList: [],
-        });
-    const form = ref<ElForm|null>(null);
-    const modal = ref<any>({
-      visible: false,
-      studentInfo: null,
-    });
-    async function toggleStatus(row: any) {
-      const off = row.off;
-      await UserDel({
-        id: row.id,
-        off: off === 0 ? 1 : 2,
-      });
-      Message.success(`${off === Status.Normal ? '冻结' : '恢复'}成功`);
-      await queryStudentList();
-    }
-    function validator(rule: any, value: string, callback: Function) {
-      if (!value && (modal.value.studentInfo.pwd !== '' )) {
-        callback(new Error('请再次输入密码'));
-      } else if (value !== modal.value.studentInfo.pwd) {
-        callback(new Error('两次输入密码不一致!'));
-      } else {
-        callback();
-      }
-    }
-    const addClazFlag  =  ref<any>({
-      visible: false,
-      addClazInfo: '',
-    });
-    const moveNowTrue = ref<any>({
-      moveNowId: '',
-    });
-    function moveNow(row: any) {
-      moveNowTrue.value.moveNowId = row.id;
-    }
-    function moveNotNow() {
-      moveNowTrue.value.moveNowId = '';
-    }
-    function firstTab(node:any) {
-      clasz.value = node.data.groups?node.data:node.parent.data;
-      claszGroup.value = node.data.groups?{}:node.data;
-      useLoading(loading,queryStudentList)();
-    }
-    const upgrpFlag = ref<any>({
-      visible: false,
-      upgrpInfo: null,
-      data: '',
-    });
-    function showFormB() {
-      addClazFlag.value.visible = true;
-    }
-    function updataGropFlag(row: any) {
-      upgrpFlag.value.visible = true;
-      upgrpFlag.value.data = row;
-      upgrpFlag.value.upgrpInfo = row.data.name;
-    }
-    const addNewGroupFlag = ref<any>({
-      visible: false,
-      addNewGroupInfo: '',
-      data: '',
-      claz: '',
-    });
-    function addNewGroup(row: any) {
-      addNewGroupFlag.value.visible = true;
-      addNewGroupFlag.value.data = row;
-    }
-    async function FrozenClaz(row: any) {
-      const result = {
-        id: row.id,
-        off: 1,
-      };
-      row.freez = true;
-      await ClassFreeze(result);
-      await queryClassList();
-      await queryStudentList();
-      Message.success('冻结成功');
-    }
-    async function unFrozenClaz(row: any) {
-      const result = {
-        id: row.id,
-        off: 2,
-      };
-      row.freez = false;
-      await ClassUnFreeze(result);
-      await queryClassList();
-      await queryStudentList();
-      Message.success('解冻成功');
-    }
-    async function removeGrop(row: any) {
-      const result = {
-        id: row.id,
-      };
-      await ClassGroupDel(result);
-      await queryClassList();
-    }
-    async function addClaz(row: any) {
-      // todo validate
-      const result = {
-        name: addClazFlag.value.addClazInfo,
-      };
-      await ClassUpdate(result);
-      await queryClassList();
-      addClazFlag.value.addClazInfo = '';
-      addClazFlag.value.visible = false;
-    }
-    async function showForm(row: any) {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
-      modal.value.studentInfo = row ? deepClone(row) : initForm();
-      modal.value.visible = true;
-      if(row){
-        armasdb(row.extend.clasz);
-      }
-    }
-    async function groupUpdate() {
-      // todo form validate
-      const result = {
-        cid: upgrpFlag.value.data.parent.data.id,
-        name: upgrpFlag.value.upgrpInfo,
-        id: upgrpFlag.value.data.data.id,
-      };
-      await ClassGroupUpdate(result);
-      await queryClassList();
-      upgrpFlag.value.visible = false;
-      upgrpFlag.value.upgrpInfo = '';
-    }
-    async function addNewGroupDate() {
-      // todo form validate
-      const result = {
-        cid: addNewGroupFlag.value.data.data.id,
-        name: addNewGroupFlag.value.addNewGroupInfo,
-      };
-      await ClassGroupUpdate(result);
-      await queryClassList();
-      addNewGroupFlag.value.visible = false;
-      addNewGroupFlag.value.addNewGroupInfo = '';
-    }
-    async function update() {
-      const valid = await (form.value as ElForm).validate();
-      if (!valid) { return ; }
-      if (modal.value.studentInfo.phone === '') {
-        modal.value.studentInfo.phone = null;
-      }
-      const result = {
-        id: modal.value.studentInfo.id,
-        username: modal.value.studentInfo.username,
-        name: modal.value.studentInfo.name,
-        phone: modal.value.studentInfo.phone,
-        pwd: modal.value.studentInfo.pwd,
-        role: modal.value.studentInfo.role.id,
-        extendJson: JSON.stringify({
-          address: modal.value.studentInfo.extend.address,
-          clasz: modal.value.studentInfo.extend.clasz,
-          claszGroup: modal.value.studentInfo.extend.claszGroup,
-        })
-      };
-      if (!modal.value.studentInfo.id) {
-        await UserAdd(result);
-        Message.success('添加成功');
-      } else {
-        await UserUpdate(result);
-        Message.success('修改成功');
-      }
-      modal.value.visible = false;
-      await queryStudentList();
-    }
-    const queryStudentList = async () => {
-      studentUserList.value  = await StudentList({classId: clasz.value.id, groupId:claszGroup.value.id});
-    };
-    async function queryClassList() {
-      classList.value = await ClassList();
-    }
-    function armasdb(clasz: any) {
-      if(!clasz) groupList.value = [];
-      const c = classList.value.filter((cc:any)=>cc.id===clasz)[0];
-      if(c){
-        groupList.value = c.groups;
-      }
-    }
-    onMounted(useLoading(loading, async () => {
-      roleList.value = await RoleList({root: 2});
-      await queryClassList();
-      await queryStudentList();
-    }));
-    const [keywords, filtered] = useSearch(studentUserList, {
-      includeProps: ['username', 'name', 'phone', 'extend.claszName', 'extend.claszGroupName'],
-    });
-    return{
-      loading, tree, props, studentUserList, filtered, keywords,
-      roleList, clasz, claszGroup,
-      addClazFlag, armasdb,
-      addNewGroup, addNewGroupDate, storeUserInfo,
-      removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
-      upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow, setRemoveName,
-      remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
-      toggleStatus: useLoading(loading, toggleStatus),
-      queryStudentList: useLoading(loading, queryStudentList),
-      queryClassList,
-      removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
-      modal, form, showForm, addClaz, groupUpdate, removeValue,
-      update: useLoading(loading, update),
-      updataGropFlag, addNewGroupFlag,
-      validator, classList, groupList, ctogList,  firstTab, grpandclzList,
-      FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
-      unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),
-    };
-  },
+    await queryStudentList();
   };
-  enum Status {
-    Normal = 0,
-    Frozen = 1,
+  const removeClass = async (row: any) => {
+      await ClassDel({
+        id: row.id,
+      });
+      await queryClassList();
+  };
+  const grpandclzList = ref<any>({
+        claszIdList: [],
+        claszNameList: [],
+        groupLista: [],
+        groupListb: [],
+        groupIdList: [],
+        groupNameList: [],
+      });
+  const form = ref<ElForm|null>(null);
+  const modal = ref<any>({
+    visible: false,
+    studentInfo: null,
+  });
+  async function toggleStatus(row: any) {
+    const off = row.off;
+    await UserDel({
+      id: row.id,
+      off: off === 0 ? 1 : 2,
+    });
+    Message.success(`${off === Status.Normal ? '冻结' : '恢复'}成功`);
+    await queryStudentList();
   }
-  function initForm() {
-    return {
-      extend: {},
+  function validator(rule: any, value: string, callback: Function) {
+    if (!value && (modal.value.studentInfo.pwd !== '' )) {
+      callback(new Error('请再次输入密码'));
+    } else if (value !== modal.value.studentInfo.pwd) {
+      callback(new Error('两次输入密码不一致!'));
+    } else {
+      callback();
+    }
+  }
+  const addClazFlag  =  ref<any>({
+    visible: false,
+    addClazInfo: '',
+  });
+  const moveNowTrue = ref<any>({
+    moveNowId: '',
+  });
+  function moveNow(row: any) {
+    moveNowTrue.value.moveNowId = row.id;
+  }
+  function moveNotNow() {
+    moveNowTrue.value.moveNowId = '';
+  }
+  function firstTab(node: any) {
+    clasz.value = node.data.groups ? node.data : node.parent.data;
+    claszGroup.value = node.data.groups ? {} : node.data;
+    useLoading(loading, queryStudentList)();
+  }
+  const upgrpFlag = ref<any>({
+    visible: false,
+    upgrpInfo: null,
+    data: '',
+  });
+  function showFormB() {
+    addClazFlag.value.visible = true;
+  }
+  function updataGropFlag(row: any) {
+    upgrpFlag.value.visible = true;
+    upgrpFlag.value.data = row;
+    upgrpFlag.value.upgrpInfo = row.data.name;
+  }
+  const addNewGroupFlag = ref<any>({
+    visible: false,
+    addNewGroupInfo: '',
+    data: '',
+    claz: '',
+  });
+  function addNewGroup(row: any) {
+    addNewGroupFlag.value.visible = true;
+    addNewGroupFlag.value.data = row;
+  }
+  async function FrozenClaz(row: any) {
+    const result = {
+      id: row.id,
+      off: 1,
     };
+    row.freez = true;
+    await ClassFreeze(result);
+    await queryClassList();
+    await queryStudentList();
+    Message.success('冻结成功');
   }
+  async function unFrozenClaz(row: any) {
+    const result = {
+      id: row.id,
+      off: 2,
+    };
+    row.freez = false;
+    await ClassUnFreeze(result);
+    await queryClassList();
+    await queryStudentList();
+    Message.success('解冻成功');
+  }
+  async function removeGrop(row: any) {
+    const result = {
+      id: row.id,
+    };
+    await ClassGroupDel(result);
+    await queryClassList();
+  }
+  async function addClaz(row: any) {
+    // todo validate
+    const result = {
+      name: addClazFlag.value.addClazInfo,
+    };
+    await ClassUpdate(result);
+    await queryClassList();
+    addClazFlag.value.addClazInfo = '';
+    addClazFlag.value.visible = false;
+  }
+  async function showForm(row: any) {
+    if (form.value) { (form.value as ElForm).clearValidate(); }
+    modal.value.studentInfo = row ? deepClone(row) : initForm();
+    modal.value.visible = true;
+    if (row) {
+      armasdb(row.extend.clasz);
+    }
+  }
+  async function groupUpdate() {
+    // todo form validate
+    const result = {
+      cid: upgrpFlag.value.data.parent.data.id,
+      name: upgrpFlag.value.upgrpInfo,
+      id: upgrpFlag.value.data.data.id,
+    };
+    await ClassGroupUpdate(result);
+    await queryClassList();
+    upgrpFlag.value.visible = false;
+    upgrpFlag.value.upgrpInfo = '';
+  }
+  async function addNewGroupDate() {
+    // todo form validate
+    const result = {
+      cid: addNewGroupFlag.value.data.data.id,
+      name: addNewGroupFlag.value.addNewGroupInfo,
+    };
+    await ClassGroupUpdate(result);
+    await queryClassList();
+    addNewGroupFlag.value.visible = false;
+    addNewGroupFlag.value.addNewGroupInfo = '';
+  }
+  async function update() {
+    const valid = await (form.value as ElForm).validate();
+    if (!valid) { return ; }
+    if (modal.value.studentInfo.phone === '') {
+      modal.value.studentInfo.phone = null;
+    }
+    const result = {
+      id: modal.value.studentInfo.id,
+      username: modal.value.studentInfo.username,
+      name: modal.value.studentInfo.name,
+      phone: modal.value.studentInfo.phone,
+      pwd: modal.value.studentInfo.pwd,
+      role: modal.value.studentInfo.role.id,
+      extendJson: JSON.stringify({
+        address: modal.value.studentInfo.extend.address,
+        clasz: modal.value.studentInfo.extend.clasz,
+        claszGroup: modal.value.studentInfo.extend.claszGroup,
+      }),
+    };
+    if (!modal.value.studentInfo.id) {
+      await UserAdd(result);
+      Message.success('添加成功');
+    } else {
+      await UserUpdate(result);
+      Message.success('修改成功');
+    }
+    modal.value.visible = false;
+    await queryStudentList();
+  }
+  const queryStudentList = async () => {
+    studentUserList.value  = await StudentList({classId: clasz.value.id, groupId: claszGroup.value.id});
+  };
+  async function queryClassList() {
+    classList.value = await ClassList();
+  }
+  function armasdb(clasz: any) {
+    if (!clasz) { groupList.value = []; }
+    const c = classList.value.filter((cc: any) => cc.id === clasz)[0];
+    if (c) {
+      groupList.value = c.groups;
+    }
+  }
+  onMounted(useLoading(loading, async () => {
+    roleList.value = await RoleList({root: 2});
+    await queryClassList();
+    await queryStudentList();
+  }));
+  const [keywords, filtered] = useSearch(studentUserList, {
+    includeProps: ['username', 'name', 'phone', 'extend.claszName', 'extend.claszGroupName'],
+  });
+  return{
+    loading, tree, props, studentUserList, filtered, keywords,
+    roleList, clasz, claszGroup,
+    addClazFlag, armasdb,
+    addNewGroup, addNewGroupDate, storeUserInfo,
+    removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
+    upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow, setRemoveName,
+    remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
+    toggleStatus: useLoading(loading, toggleStatus),
+    queryStudentList: useLoading(loading, queryStudentList),
+    queryClassList,
+    removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
+    modal, form, showForm, addClaz, groupUpdate, removeValue,
+    update: useLoading(loading, update),
+    updataGropFlag, addNewGroupFlag,
+    validator, classList, groupList, ctogList,  firstTab, grpandclzList,
+    FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
+    unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),
+  };
+},
+};
+enum Status {
+  Normal = 0,
+  Frozen = 1,
+}
+function initForm() {
+  return {
+    extend: {},
+  };
+}
 </script>
 <style scoped lang="scss">
   .treewidth{

@@ -18,7 +18,7 @@ export default {
       router.push({name: 'login'});
     }
     return{
-      router, toLogin
+      router, toLogin,
     };
   },
 };

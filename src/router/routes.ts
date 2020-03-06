@@ -418,6 +418,6 @@ export const routes = [
   },
   {
     path: '*',
-    redirect: {name: '404'}
+    redirect: {name: '404'},
   },
 ];
