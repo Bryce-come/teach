@@ -105,7 +105,7 @@
             </el-form-item>
             <el-form-item label="选择指定教师：" prop="teacher.id">
               <el-select v-model="appointModal.appointInfo.teacher.id">
-                <el-option 
+                <el-option
                   v-for="item of teacherList"
                   :key="item.id"
                   :label="item.name"
@@ -217,7 +217,7 @@
                   :value="item"></el-option>
               </el-select>
             </el-form-item>
-          </el-form>        
+          </el-form>
       </kit-dialog-simple>
     </div>
 </template>
@@ -354,7 +354,7 @@ export default createComponent({
       console.log(programList.value);
       teacherList.value = await TeacherList();
       console.log(teacherList.value);
-      studentList.value = await StudentList();
+      studentList.value = await StudentList({});
       console.log(studentList.value);
       stationList.value = await StationList({
         simple: true,

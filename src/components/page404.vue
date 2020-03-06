@@ -4,7 +4,7 @@
     <div class="info">{{ router.currentRoute.params.msg === undefined?'当前页面找不到':router.currentRoute.params.msg }}</div>
     <br />
     <el-button type="primary" @click="router.back()">返 回</el-button>
-    <el-button type="primary" @click="logout()" style="margin-left: 10px">返回至登录页</el-button>
+    <el-button type="primary" @click="toLogin()" style="margin-left: 10px">返回至登录页</el-button>
   </div>
 </template>
 
@@ -14,13 +14,11 @@ import {router} from '@/main';
 export default {
   name: 'page404',
   setup() {
-    function logout() {
-      // todo
-      // this.$store.commit('removeToken');
-      // this.$router.push({name: 'login'});
+    function toLogin() {
+      router.push({name: 'login'});
     }
     return{
-      router,
+      router, toLogin
     };
   },
 };
