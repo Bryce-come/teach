@@ -1,12 +1,12 @@
 
-import { PRIVILEGE } from '@/types/privilege';
+import { PRIVILEGE, Department } from '@/types/privilege';
 
 const roleMng = {
   path: '/management/role',
   name: 'roleMng',
   component: () => import('../views/user/role.vue'),
   meta: {
-    privileges: [PRIVILEGE.ROLE_MNG],
+    privileges: [PRIVILEGE.roleMng],
     CName: '角色权限管理',
     parentCName: '系统管理',
   },
@@ -16,26 +16,17 @@ const userMng = {
   name: 'userMng',
   component: () => import('../views/user/user.vue'),
   meta: {
-    privileges: [PRIVILEGE.USER_MNG],
+    privileges: [PRIVILEGE.userMng],
     CName: '系统账户管理',
     parentCName: '系统管理',
   },
 };
-// const indexPage = {
-//   path: '/index-page',
-//   name: 'index-page',
-//   component: () => import('../views/monitor/index.vue'),
-//   alias: '',
-//   meta: {
-//     privileges: [PRIVILEGE.DEVICE_MONITOR],
-//     CName: '设备总览',
-//   },
-// };
 const device = {
   path: '/laboratory/device',
   name: 'device',
   component: () => import('../views/laboratory/device.vue'),
   meta: {
+    privileges: [PRIVILEGE.deviceMng],
     CName: '设备台账管理',
     parentCName: '实验室管理',
   },
@@ -47,6 +38,7 @@ const workTop = {
   meta: {
     CName: '操作台管理',
     parentCName: '实验室管理',
+    privileges: [PRIVILEGE.expStationMng],
   },
 };
 const equipmentMaintenance = {
@@ -56,6 +48,7 @@ const equipmentMaintenance = {
   meta: {
     CName: '设备保养维修',
     parentCName: '实验室管理',
+    privileges: [PRIVILEGE.deviceMaintenMng],
   },
 };
 const cuttingToolManagement = {
@@ -65,6 +58,7 @@ const cuttingToolManagement = {
   meta: {
     CName: '刀具管理',
     parentCName: '实验室管理',
+    privileges: [PRIVILEGE.deviceComponentMng],
   },
 };
 const monitor = {
@@ -75,6 +69,7 @@ const monitor = {
   meta: {
     CName: '实时监控',
     parentCName: '实验室管理',
+    privileges: [PRIVILEGE.deviceMonitor],
   },
 };
 const monitorDetail = {
@@ -85,6 +80,7 @@ const monitorDetail = {
     CName: '监控详情',
     parentCName: '实验室管理',
     parentName: 'monitor',
+    privileges: [PRIVILEGE.deviceMonitor],
   },
 };
 const monitorHistory = {
@@ -94,6 +90,7 @@ const monitorHistory = {
   meta: {
     CName: '使用过程分析',
     parentCName: '实验室管理',
+    privileges: [PRIVILEGE.deviceUsageAnalysis],
   },
 };
 const monitorHistoryDetail = {
@@ -104,18 +101,19 @@ const monitorHistoryDetail = {
     CName: '使用过程分析详情',
     parentCName: '实验室管理',
     parentName: 'monitorHistory',
+    privileges: [PRIVILEGE.deviceUsageAnalysis],
   },
 };
-const processMonitorDetail = {
-  path: '/laboratory/processMonitorDetail/:id',
-  name: 'processMonitorDetail',
-  component: () => import('../views/laboratory/process-monitor-detail.vue'),
-  meta: {
-    CName: '操作台详情',
-    parentCName: '实验室管理',
-    parentName: 'monitorHistory',
-  },
-};
+// const processMonitorDetail = {
+//   path: '/laboratory/processMonitorDetail/:id',
+//   name: 'processMonitorDetail',
+//   component: () => import('../views/laboratory/process-monitor-detail.vue'),
+//   meta: {
+//     CName: '操作台详情',
+//     parentCName: '实验室管理',
+//     parentName: 'monitorHistory',
+//   },
+// };
 const usageAnalysis = {
   path: '/laboratory/usage-analysis',
   name: 'usageAnalysis',
@@ -123,16 +121,17 @@ const usageAnalysis = {
   meta: {
     CName: '使用情况统计',
     parentCName: '实验室管理',
+    privileges: [PRIVILEGE.deviceAnalysis],
   },
 };
 const courseScheduling = {
   path: '/course/courseScheduling',
   name: 'courseScheduling',
   component: () => import('../views/course/course-scheduling.vue'),
-  // 这里都加上authDisabled，不用检验是否登录
   meta: {
     CName: '实训排课',
     parentCName: '实验课程管理',
+    privileges: [PRIVILEGE.courseRecordMng, PRIVILEGE.courseRecordUpdate],
   },
 };
 const experiment = {
@@ -142,6 +141,7 @@ const experiment = {
   meta: {
     CName: '实验项目',
     parentCName: '实验课程管理',
+    privileges: [PRIVILEGE.programMng],
   },
 };
 const courseManagement = {
@@ -151,6 +151,7 @@ const courseManagement = {
   meta: {
     CName: '课程管理',
     parentCName: '实验课程管理',
+    privileges: [PRIVILEGE.courseMng],
   },
 };
 const reportTemplateManagement = {
@@ -160,6 +161,7 @@ const reportTemplateManagement = {
   meta: {
     CName: '报告模板管理',
     parentCName: '实验课程管理',
+    privileges: [PRIVILEGE.reportTemplateMng],
   },
 };
 const appointment = {
@@ -169,16 +171,28 @@ const appointment = {
   meta: {
     CName: '实验室预约',
     parentCName: '实验课程管理',
+    privileges: [PRIVILEGE.appoint],
+    authDepartments: [Department.Teacher, Department.Admin],
+  },
+};
+const appointment4Student = {
+  path: '/student/appointment',
+  name: 'appointment4Student',
+  component: () => import('../views/course/appointment.vue'),
+  meta: {
+    CName: '实验室预约',
+    privileges: [PRIVILEGE.appoint],
+    authDepartments: [Department.Student],
   },
 };
 const appointmentExamine = {
   path: '/course/appointmentExamine',
   name: 'appointmentExamine',
   component: () => import('../views/course/appointment-examine.vue'),
-  // 这里都加上authDisabled，不用检验是否登录
   meta: {
     CName: '预约审核',
     parentCName: '实验课程管理',
+    privileges: [PRIVILEGE.appointMng],
   },
 };
 const teacherManagement = {
@@ -188,6 +202,7 @@ const teacherManagement = {
   meta: {
     CName: '教师管理',
     parentCName: '人员管理',
+    privileges: [PRIVILEGE.teacherMng],
   },
 };
 const studentManagement = {
@@ -197,6 +212,7 @@ const studentManagement = {
   meta: {
     CName: '学生管理',
     parentCName: '人员管理',
+    privileges: [PRIVILEGE.studentMng],
   },
 };
 const deviceAlarm = {
@@ -206,6 +222,7 @@ const deviceAlarm = {
   meta: {
     CName: '设备报警',
     parentCName: '报警提醒',
+    privileges: [PRIVILEGE.deviceAlarm],
   },
 };
 const disusingAlarm = {
@@ -215,6 +232,7 @@ const disusingAlarm = {
   meta: {
     CName: '非法使用报警',
     parentCName: '报警提醒',
+    privileges: [PRIVILEGE.usageAlarm],
   },
 };
 const delayAlarm = {
@@ -224,6 +242,7 @@ const delayAlarm = {
   meta: {
     CName: '维保超期报警',
     parentCName: '报警提醒',
+    privileges: [PRIVILEGE.deviceMaintenAlarm],
   },
 };
 const teachMonitor = {
@@ -233,6 +252,7 @@ const teachMonitor = {
   meta: {
     CName: '现场监控',
     parentCName: '教学过程管理',
+    privileges: [PRIVILEGE.inClassMng],
   },
 };
 const deviceDistribution = {
@@ -242,6 +262,7 @@ const deviceDistribution = {
   meta: {
     CName: '教学设备分配',
     parentCName: '教学过程管理',
+    privileges: [PRIVILEGE.inClassMng],
   },
 };
 const programManagement = {
@@ -251,6 +272,7 @@ const programManagement = {
   meta: {
     CName: 'NC程序管理',
     parentCName: '教学过程管理',
+    privileges: [PRIVILEGE.inClassMng],
   },
 };
 const experimentResultScore = {
@@ -260,6 +282,7 @@ const experimentResultScore = {
   meta: {
     CName: '实验结果及评分',
     parentCName: '教学过程管理',
+    privileges: [PRIVILEGE.inClassMng],
   },
 };
 const gatewayChannelManagement = {
@@ -269,6 +292,7 @@ const gatewayChannelManagement = {
   meta: {
     CName: '网关通道管理',
     parentCName: '教学过程管理',
+    privileges: [PRIVILEGE.inClassMng],
   },
 };
 const systemOptionSetting = {
@@ -278,6 +302,7 @@ const systemOptionSetting = {
   meta: {
     CName: '系统选项设置',
     parentCName: '系统管理',
+    privileges: [PRIVILEGE.systemSetting],
   },
 };
 const equipmentModelConfiguration = {
@@ -287,6 +312,7 @@ const equipmentModelConfiguration = {
   meta: {
     CName: '设备型号配置',
     parentCName: '系统管理',
+    privileges: [PRIVILEGE.systemSetting],
   },
 };
 const preview = {
@@ -295,6 +321,7 @@ const preview = {
   component: () => import('../views/teach/preview.vue'),
   meta: {
     CName: '课前预习',
+    authDepartments: [Department.Student],
   },
 };
 const homework = {
@@ -303,18 +330,19 @@ const homework = {
   component: () => import('../views/teach/homework.vue'),
   meta: {
     CName: '课后作业',
+    authDepartments: [Department.Student],
   },
 };
 
-const test = {
-  path: '/test',
-  name: 'test',
-  component: () => import('../views/test.vue'),
-  meta: {
-    CName: 'test',
-    parentCName: '系统管理',
-  },
-};
+// const test = {
+//   path: '/test',
+//   name: 'test',
+//   component: () => import('../views/test.vue'),
+//   meta: {
+//     CName: 'test',
+//     parentCName: '系统管理',
+//   },
+// };
 //
 // // 按顺序 用于菜单的排列
 const indexChildren = [
@@ -326,7 +354,7 @@ const indexChildren = [
   monitorDetail,
   monitorHistory,
   monitorHistoryDetail,
-  processMonitorDetail,
+  // processMonitorDetail,
   usageAnalysis,
   // 实验课程管理
   courseScheduling,
@@ -354,6 +382,8 @@ const indexChildren = [
   userMng,
   roleMng,
   // test,
+  // 学生端
+  appointment4Student,
   // 课前预习
   preview,
   // 课后作业
@@ -372,7 +402,12 @@ export const routes = [
     component: () => import('../views/login.vue'),
     meta: { authDisabled: true },
   },
-
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../components/page404.vue'),
+    meta: { authDisabled: true },
+  },
   {
     path: '/',
     name: 'index',
@@ -383,8 +418,6 @@ export const routes = [
   },
   {
     path: '*',
-    name: '404',
-    component: () => import('../components/page404.vue'),
-    meta: { authDisabled: true },
+    redirect: {name: '404'},
   },
 ];

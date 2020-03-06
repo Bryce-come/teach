@@ -5,12 +5,13 @@ export const mainMenuTitles = [
   '实验室管理', 'icon-xiangmu',
   '实验课程管理', 'icon-manage2',
   '人员管理', 'icon-my',
-  // '系统设置', 'icon-system',
   '报警提醒', 'icon-message4',
   '教学过程管理', 'icon-oeeanalysis',
   '系统管理', 'icon-system',
+  // 学生端
   '课前预习', 'icon-xiangmu',
   '课后作业', 'icon-xiangmu',
+  '实验室预约', 'icon-manage2',
 ];
 
 export const loginTitle1 = process.env.VUE_APP_LOGIN_TITLE1;

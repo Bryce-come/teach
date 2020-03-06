@@ -84,8 +84,8 @@
           <el-form-item label="供货商联系方式：" prop="extend.supplierTel">
             <el-input v-model="storeRecordModal.storeInfo.extend.supplierTel"></el-input>
           </el-form-item>
-          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
-            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
+          <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.dt"></el-date-picker>
           </el-form-item>
           <el-form-item label="保管人：" prop="extend.keeper">
             <el-input v-model="storeRecordModal.storeInfo.extend.keeper"></el-input>
@@ -99,8 +99,8 @@
             <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量">
             </el-input-number>
           </el-form-item>
-          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
-            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
+          <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.dt"></el-date-picker>
           </el-form-item>
           <el-form-item label="借用人：" prop="extend.person" :rules="{ required: true, message: '请输入借用人名称'}">
             <el-input v-model="storeRecordModal.storeInfo.extend.person"></el-input>
@@ -126,8 +126,8 @@
           <el-form-item label="归还人：" prop="extend.person" :rules="{ required: true, message: '请输入归还人名称'}">
             <el-input v-model="storeRecordModal.storeInfo.extend.person"></el-input>
           </el-form-item>
-          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
-            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
+          <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.dt"></el-date-picker>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
@@ -137,8 +137,8 @@
           <el-form-item label="报废数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
             <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
           </el-form-item>
-          <el-form-item label="时间：" prop="extend.buyDt" :rules="{ required: true, message: '请选择时间'}">
-            <el-date-picker v-model="storeRecordModal.storeInfo.extend.buyDt"></el-date-picker>
+          <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+            <el-date-picker v-model="storeRecordModal.storeInfo.dt"></el-date-picker>
           </el-form-item>
           <el-form-item label="备注：" prop="remark">
             <el-input v-model="storeRecordModal.storeInfo.remark"  type="textarea" :autosize="{ minRows: 3}"></el-input>
@@ -173,6 +173,11 @@
             </div>
           </el-table-column>
           <el-table-column prop="quantity" label="数量"/>
+          <el-table-column prop="dt" label="时间">
+            <div slot-scope="{ row }">
+              <span v-if="row.dt">{{new Date(row.dt) | date }}</span>
+            </div>
+          </el-table-column>
           <el-table-column prop="extend.person" label="操作人"/>
           <el-table-column prop="remark" label="备注" />
         </lkt-table>
@@ -294,14 +299,14 @@ export default {
       const valid = await (form2.value as ElForm).validate();
       if (valid) {
          // 时间格式转化
-        if (storeRecordModal.value.storeInfo.extend.buyDt && storeRecordModal.value.storeInfo.extend.buyDt instanceof Date) {
-          storeRecordModal.value.storeInfo.extend.buyDt = storeRecordModal.value.storeInfo.extend.buyDt.getTime();
+        if (storeRecordModal.value.storeInfo.dt && storeRecordModal.value.storeInfo.dt instanceof Date) {
+          storeRecordModal.value.storeInfo.dt = storeRecordModal.value.storeInfo.dt.getTime();
         }
         await ComponentStoreRecordAdd({
           componentId: componentID.value,
           type: storeRecordModal.value.storeInfo.type,
           quantity: storeRecordModal.value.storeInfo.quantity,
-          dt: storeRecordModal.value.storeInfo.extend.buyDt,
+          dt: storeRecordModal.value.storeInfo.dt,
           remark: storeRecordModal.value.storeInfo.remark ? storeRecordModal.value.storeInfo.remark : null,
           extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
@@ -314,7 +319,7 @@ export default {
     const query = async (data: any) => {
       deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
       componentId: data.id});
-      console.log(deviceComponentStoreRecord.value);
+      console.log( deviceComponentStoreRecordList.value);
     };
     const queryStationList = async () => {
       stationList.value = await StationList({
@@ -349,7 +354,7 @@ function initCutterForm() {
 }
 function initStoreRecordForm() {
   return {
-    type: 1 , quantity: '', remark: '',
+    type: 1 , quantity: '', remark: '', dt: '',
     extend: {
       person: '',
       stationRecord: {

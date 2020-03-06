@@ -130,11 +130,11 @@ export default {
       const end = dt + minutes15;
       const list = await AnalysisDeviceTime({
         deviceId: row.device.id,
-        start: start,
-        end: end,
+        start,
+        end,
       });
        // console.log(list);
-      const time =list.extend? list.extend.times : [];
+      const time = list.extend ? list.extend.times : [];
       timeChart.value = timelineConfig(time, statusMap, { left: '2%', top: 0, showTime: true, dataZoom: true, confine: true });
       let { data: { list: device } } = await postService(urlMap.params_menu.url, {
         deviceIdJson: `["${row.device.id}"]`,

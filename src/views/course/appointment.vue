@@ -105,7 +105,7 @@
             </el-form-item>
             <el-form-item label="选择指定教师：" prop="teacher.id">
               <el-select v-model="appointModal.appointInfo.teacher.id">
-                <el-option 
+                <el-option
                   v-for="item of teacherList"
                   :key="item.id"
                   :label="item.name"
@@ -229,7 +229,7 @@
                   :value="item"></el-option>
               </el-select>
             </el-form-item>
-          </el-form>        
+          </el-form>
       </kit-dialog-simple>
     </div>
 </template>
@@ -285,7 +285,7 @@ export default createComponent({
       console.log(data);
       if (data) {
         data = deepClone(data);
-        appointModal.value.type = 'update';        
+        appointModal.value.type = 'update';
       } else {
         data = initAppointForm();
         appointModal.value.type = 'add';
@@ -310,7 +310,7 @@ export default createComponent({
         if (appointDate.value && appointDate.value instanceof Date && endLesson && endLesson >= startLesson) {
           appointModal.value.appointInfo.endDt = transformDate(appointDate.value, lessonList.value.lesson+'endLesson.value'[1]);
         }
-        if(appointModal.value.type === 'add') {
+        if (appointModal.value.type === 'add') {
           await AppointAdd({
             type: appointModal.value.appointInfo.type,
             courseId: appointModal.value.appointInfo.course.id ? appointModal.value.appointInfo.course.id : null,
@@ -318,8 +318,13 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
+<<<<<<< HEAD
             start: appointModal.value.appointInfo.startDt,
             end: appointModal.value.appointInfo.endDt, 
+=======
+            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
+            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
+>>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
@@ -331,8 +336,13 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
+<<<<<<< HEAD
             start: appointModal.value.appointInfo.startDt,
             end: appointModal.value.appointInfo.endDt, 
+=======
+            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
+            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
+>>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }
@@ -373,9 +383,15 @@ export default createComponent({
       programList.value = await ProgramList();
       // console.log(programList.value);
       teacherList.value = await TeacherList();
+<<<<<<< HEAD
       // console.log(teacherList.value);
       studentList.value = await StudentList();
       // console.log(studentList.value);
+=======
+      console.log(teacherList.value);
+      studentList.value = await StudentList({});
+      console.log(studentList.value);
+>>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
       stationList.value = await StationList({
         simple: true,
       });
@@ -384,18 +400,28 @@ export default createComponent({
       lessonList.value = await SettingGet({
         onlyLesson: true,
       });
+<<<<<<< HEAD
       console.log(lessonList.value.lesson+'startLesson'[0]);
       //console.log(storeUserInfo.user);
+=======
+      // console.log(lessonList.value);
+      // console.log(storeUserInfo.user);
+>>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
       if (storeUserInfo.user) {
         const claszId = storeUserInfo.user.extend.clasz;
         const studentInClasz = studentList.value.filter(function(item: any) {
           return item.extend.clasz === claszId;
-        })
+        });
         const userId = storeUserInfo.user.id;
         otherStudentInClasz.value = studentInClasz.filter(function(item: any) {
           return item.id !== userId;
+<<<<<<< HEAD
         })
         // console.log(storeUserInfo.user);
+=======
+        });
+        console.log(storeUserInfo.user);
+>>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
       }
     }));
     return {
