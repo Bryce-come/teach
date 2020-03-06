@@ -318,13 +318,8 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
-<<<<<<< HEAD
             start: appointModal.value.appointInfo.startDt,
             end: appointModal.value.appointInfo.endDt, 
-=======
-            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
-            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
->>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
@@ -336,13 +331,8 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
-<<<<<<< HEAD
             start: appointModal.value.appointInfo.startDt,
             end: appointModal.value.appointInfo.endDt, 
-=======
-            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
-            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
->>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }
@@ -383,15 +373,9 @@ export default createComponent({
       programList.value = await ProgramList();
       // console.log(programList.value);
       teacherList.value = await TeacherList();
-<<<<<<< HEAD
       // console.log(teacherList.value);
-      studentList.value = await StudentList();
-      // console.log(studentList.value);
-=======
-      console.log(teacherList.value);
       studentList.value = await StudentList({});
-      console.log(studentList.value);
->>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
+      // console.log(studentList.value);
       stationList.value = await StationList({
         simple: true,
       });
@@ -400,13 +384,8 @@ export default createComponent({
       lessonList.value = await SettingGet({
         onlyLesson: true,
       });
-<<<<<<< HEAD
       console.log(lessonList.value.lesson+'startLesson'[0]);
       //console.log(storeUserInfo.user);
-=======
-      // console.log(lessonList.value);
-      // console.log(storeUserInfo.user);
->>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
       if (storeUserInfo.user) {
         const claszId = storeUserInfo.user.extend.clasz;
         const studentInClasz = studentList.value.filter(function(item: any) {
@@ -415,13 +394,8 @@ export default createComponent({
         const userId = storeUserInfo.user.id;
         otherStudentInClasz.value = studentInClasz.filter(function(item: any) {
           return item.id !== userId;
-<<<<<<< HEAD
         })
         // console.log(storeUserInfo.user);
-=======
-        });
-        console.log(storeUserInfo.user);
->>>>>>> 9ce443e1f92740acc359e37971b32f55d1be52f7
       }
     }));
     return {
