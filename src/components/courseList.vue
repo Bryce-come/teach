@@ -2,9 +2,25 @@
   <div v-loading="loading">
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
-        <lkt-date-picker v-model="oneDay"/>
-        <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>        
+        <el-date-picker v-model="oneDay" type="date" placeholder="选择日期"></el-date-picker>
+        <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>  
+        <el-button style="margin-left: 10px" type="primary"  icon="el-icon-arrow-left" @click="goLastWeek()">上一周</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
       </div>
+    </div>
+    <div class="flex align-center" style="margin:0 auto">
+      <p style="margin:0 auto;margin-top:5px">
+        {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
+    </div>
+    <div style="width:80%;height:623px;background-color:azure;margin:auto;border:0.005em solid #000">
+        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
+        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
+        <div class="firstRow" v-for="(item,i) in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">第<span>{{i+1}}</span>节课</div>
+        <div style="width:87.5%;height:588.4px;background-color:blue;
+        position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
+        display: flex;flex-wrap: wrap;flex-direction:row ;">
+          <div class="textCell" @click="cheakIt(this)" v-for="(item,i) in originList.originLessonsList" :key="i">第<span>{{i+1}}</span>个格子</div>
+        </div>
     </div>
     <div class="class-table">
       <div class="flex center">
@@ -17,13 +33,7 @@
           <span>新预约课程</span>
         </div>
       </div>
-      <div class="flex end" style="margin-right: 10%;margin-bottom:10px">
-          <el-button-group>
-            <el-button type="primary" size="small" icon="el-icon-arrow-left">上一周</el-button>
-            <el-button type="primary" size="small">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-          </el-button-group>
-        </div>
-      <table id='tabs'>
+      <table id='tabs'  >
         <thead>
           <tr>
             <th>时间</th>
@@ -75,6 +85,8 @@
            </tr>
         </tbody>
       </table>
+      
+
       <el-dialog
       :visible.sync="readModel.visible"
       :modal="readModel.oneLesson"
@@ -152,6 +164,7 @@ import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
+import { getWeekDaysRange } from 'web-toolkit/src/utils/date'
 import { CourseRecordList } from '../dao/courseRecordDao';
 import { SettingGet } from '../dao/settingDao';
 export default createComponent({
@@ -164,12 +177,16 @@ export default createComponent({
     const loading = ref(false);
     // 学期选择列表
     const terms = ref({});
-    const oneDay = ref();
+    const oneDay = ref<any>();
     const isshow = ref(false);
     const color = ref();
     const tableX = ref(-1);
     const tableY = ref(-1);
     const courseAppointTypeList = ref<any>();
+    const weekSection = ref<any>({
+      weekStart:'',
+      weekEnd:'',
+    });
     // 查看标志a
     const readModel = ref<any>(
       {
@@ -183,39 +200,38 @@ export default createComponent({
       });
     const form = ref<ElForm|null>(null);
     // 查询函数
-    async function list() {}
+    async function list() {
+      if(oneDay.value===undefined){
+        alert('请选择日期')
+      }
+      else{
+        await setWeekSection(new Date(oneDay.value))
+      }
+    }
     const moreSetting = ref({
       lessonNum: 7,
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-      originLessonsList: [
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-      ],
+      originLessonsList:[ 
+      1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+      21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
+      41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
+      61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,
+      81,82,83,84 ],
       lessonsList: [
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
       ],
     });
     function getColors(lessonOne: any, defaultColor: any) {
@@ -237,7 +253,7 @@ export default createComponent({
     }
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
     function digital2Chinese(num: any, identifier: any) {
-      const character = ['一', '二', '三', '四', '五', '六', '七'];
+      const character = ['一', '二', '三', '四', '五', '六'];
       return identifier === 'week' && num === 6 ? '日' : character[num];
     }
     // 重新排列数据
@@ -374,25 +390,62 @@ export default createComponent({
     const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
-    async function getOriginCourseRecordList() {
-      const result = await CourseRecordList({end: 1582473599000, start: 1581868800000});
-      // for(let i=0;i<result.length;i++){
-        // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(i,1,result[i])
-      originList.value.lessonsList[0].lesson.splice(0, 1, result[0]);
-      originList.value.lessonsList[3].lesson.splice(1, 1, result[1]);
-      // }
-      console.log(originList.value.lessonsList);
-      console.log(result);
+    async function cheakIt(row:any){
+      
     }
-    // async function getOnlyLesson(){
-    //   const result = await SettingGet({onlyLesson:true})
-    //   // console.log(result)
-    // }
+    async function getOriginCourseRecordList(row:any){
+      const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
+      function setThisDay(row:any){
+        if(row===0){
+          return 7
+        }else{
+          return row
+        }
+      }
+      if( result.length!=0){
+        for(let i=0;i<result.length;i++){
+          originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(setThisDay(new Date(result[i].startDt).getDay()-1),1,result[i])
+          for(let j=0;j<result[i].extend.lessons.length-1;j++){
+            originList.value.lessonsList[result[i].extend.lessons[j+1]-1].lesson.splice(i,1)
+          }
+          // originList.value.lessonsList[0].lesson.splice(0,1,result[0])
+          // originList.value.lessonsList[3].lesson.splice(1,1,result[1])
+        }
+        // document.getElementById('tabs')
+        // console.log(originList.value.lessonsList)
+        newList()
+      }
+    }
+    async function goLastWeek(){
+      setWeekSection(new Date(weekSection.value.weekStart-86400000))
+    }
+    async function goNextWeek(){
+      setWeekSection(new Date(weekSection.value.weekEnd+86400000))
+    }
+    async function setWeekSection(row:any){
+      originList.value.lessonsList=[
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+      ]
+      const result = getWeekDaysRange(row)
+      weekSection.value.weekStart = result[0].getTime()
+      weekSection.value.weekEnd = result[1].getTime()
+      getOriginCourseRecordList(weekSection)
+      newList()
+    }
     onMounted(useLoading(loading, async () => {
-      await newList();
+      await setWeekSection(new Date());
       await tabCell();
-      await getOriginCourseRecordList();
-      // await getOnlyLesson()
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
@@ -400,10 +453,10 @@ export default createComponent({
       ];
     }));
     return{
-      getOriginCourseRecordList,
-      // getOnlyLesson,
-      loading,
-      oneDay: new Date(),
+      getOriginCourseRecordList,originList,
+      setWeekSection,goLastWeek,goNextWeek,weekSection,
+      loading,cheakIt,
+      oneDay,
       list: useLoading(loading, list),
       weeks,
       digital2Chinese,
@@ -498,5 +551,40 @@ function initForm(): any {
         }
       }
     }
+  }
+  .firstCol{
+    width:12.5%;
+    background-color:#67A1FF;
+    margin:auto;
+    border:0.005em solid #000;
+    float: left;
+    color: #fff;
+    line-height: 2.5rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+  } 
+  .firstRow{
+    width:12.5%;
+    color: #fff;
+    background-color: #67a1ff;
+    border:0.005em solid #000;
+    line-height: 3.5rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+  }
+  .textCell{
+    width:14.2857%;
+    height: 8.3333%;
+    background-color:white;
+    border:0.1px solid #000;
+    line-height: 3.5rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
   }
 </style>

@@ -95,8 +95,8 @@ export async function ClassGroupDel(params: any) {
  * ApiParam(value = "用于select待选列表")
  * RequestParam(required = false, defaultValue = "false") boolean forSelect
  */
-export async function StudentList() {
-  const {data: {list}} = await postService('/rest/student/list');
+export async function StudentList(params: any) {
+  const {data: {list}} = await postService('/rest/student/list', params);
   return list;
 }
 

@@ -402,7 +402,12 @@ export const routes = [
     component: () => import('../views/login.vue'),
     meta: { authDisabled: true },
   },
-
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../components/page404.vue'),
+    meta: { authDisabled: true },
+  },
   {
     path: '/',
     name: 'index',
@@ -413,8 +418,6 @@ export const routes = [
   },
   {
     path: '*',
-    name: '404',
-    component: () => import('../components/page404.vue'),
-    meta: { authDisabled: true },
+    redirect: {name: '404'},
   },
 ];
