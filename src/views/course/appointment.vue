@@ -94,13 +94,13 @@
                   :value="item"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="选择实验：" prop="program">
-              <el-select v-model="appointModal.appointInfo.program" value-key="id">
+            <el-form-item label="选择实验：" prop="program.id">
+              <el-select v-model="appointModal.appointInfo.program.id">
                 <el-option
                   v-for="item of appointModal.appointInfo.course.id ? appointModal.appointInfo.course.programList : programList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item"></el-option>
+                  :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="选择指定教师：" prop="teacher.id">
@@ -121,14 +121,20 @@
                   :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="选择开始时间：" prop="startDt">
-              <el-date-picker v-model="appointModal.appointInfo.startDt" type="datetime"></el-date-picker>
+            <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+              <el-date-picker v-model="appointDate" type="date"></el-date-picker>
             </el-form-item>
-            <el-form-item label="选择结束时间：" prop="endDt">
-              <el-date-picker v-model="appointModal.appointInfo.endDt" type="datetime"></el-date-picker>
+            <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
+              <el-select v-model="startLesson">
+                <el-option
+                  v-for="item in lessonList.lessonNum"
+                  :key="item"
+                  :label="'第' + item + '节课'"
+                  :value="item"></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="选择课时：" prop="extend.lessons" :rules="{ required: true, message: '请选择预约课时'}">
-              <el-select v-model="appointModal.appointInfo.extend.lessons" multiple collapse-tags>
+            <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
+              <el-select v-model="endLesson">
                 <el-option
                   v-for="item in lessonList.lessonNum"
                   :key="item"
@@ -137,21 +143,21 @@
               </el-select>
             </el-form-item>
             <el-form-item label="选择班级：" prop="extend.clasz" v-if="appointModal.appointInfo.type === 1">
-              <el-select v-model="appointModal.appointInfo.extend.clasz" value-key="id">
+              <el-select v-model="appointModal.appointInfo.extend.clasz.id">
                 <el-option
                   v-for="item of classList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item"></el-option>
+                  :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="选择组别：" prop="extend.claszGroup" v-if="appointModal.appointInfo.type === 1">
-              <el-select v-model="appointModal.appointInfo.extend.claszGroup" value-key="id">
+              <el-select v-model="appointModal.appointInfo.extend.claszGroup.id">
                 <el-option
-                  v-for="item of appointModal.appointInfo.extend.clasz ? appointModal.appointInfo.extend.clasz.groups : []"
+                  v-for="item of appointModal.appointInfo.extend.clasz.id?(classList.filter(item1 => {return item1.id === appointModal.appointInfo.extend.clasz.id}))[0].groups:[]"
                   :key="item.id"
                   :label="item.name"
-                  :value="item"></el-option>
+                  :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </el-form>
@@ -175,13 +181,13 @@
                   :value="item"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="选择实验：" prop="program">
-              <el-select v-model="appointModal.appointInfo.program" value-key="id">
+            <el-form-item label="选择实验：" prop="program.id">
+              <el-select v-model="appointModal.appointInfo.program.id">
                 <el-option
                   v-for="item of appointModal.appointInfo.course.id ? appointModal.appointInfo.course.programList : programList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item"></el-option>
+                  :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="选择其他参与人：" prop="students">
@@ -202,14 +208,20 @@
                   :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="选择开始时间：" prop="startDt" :rules="{ required: true, message: '请选择开始时间'}">
-              <el-date-picker v-model="appointModal.appointInfo.startDt" type="datetime"></el-date-picker>
+            <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+              <el-date-picker v-model="appointDate" type="date"></el-date-picker>
             </el-form-item>
-            <el-form-item label="选择结束时间：" prop="endDt" :rules="{ required: true, message: '请选择结束时间'}">
-              <el-date-picker v-model="appointModal.appointInfo.endDt" type="datetime"></el-date-picker>
+            <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
+              <el-select v-model="startLesson">
+                <el-option
+                  v-for="item in lessonList.lessonNum"
+                  :key="item"
+                  :label="'第' + item + '节课'"
+                  :value="item"></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="选择课时：" prop="extend.lessons" :rules="{ required: true, message: '请选择预约课时'}">
-              <el-select v-model="appointModal.appointInfo.extend.lessons" multiple collapse-tags>
+            <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
+              <el-select v-model="endLesson">
                 <el-option
                   v-for="item in lessonList.lessonNum"
                   :key="item"
@@ -258,7 +270,10 @@ export default createComponent({
     const otherStudentInClasz = ref<any>();
     const stationList = ref<any>([]);
     const classList = ref<any>([]);
+    const appointDate = ref<any>();
     const lessonList = ref<any>();
+    const startLesson = ref<any>();
+    const endLesson = ref<any>();
     const appointModal = ref<any>({
       visible: false,
       appointInfo: null,
@@ -275,7 +290,6 @@ export default createComponent({
         data = initAppointForm();
         appointModal.value.type = 'add';
       }
-      // console.log(appointModal.value.type);
       appointModal.value.appointInfo = data;
       appointModal.value.visible = true;
     };
@@ -284,11 +298,17 @@ export default createComponent({
       console.log(valid);
       if (valid) {
         // 时间格式转化
-        if (appointModal.value.appointInfo.startDt && appointModal.value.appointInfo.startDt instanceof Date) {
-          appointModal.value.appointInfo.startDt = appointModal.value.appointInfo.startDt.getTime();
+        // if (appointModal.value.appointInfo.startDt && appointModal.value.appointInfo.startDt instanceof Date) {
+        //   appointModal.value.appointInfo.startDt = appointModal.value.appointInfo.startDt.getTime();
+        // }
+        // if (appointModal.value.appointInfo.endDt && appointModal.value.appointInfo.endDt instanceof Date) {
+        //   appointModal.value.appointInfo.endDt = appointModal.value.appointInfo.endDt.getTime();
+        // }
+        if (appointDate.value && appointDate.value instanceof Date && startLesson) {
+          appointModal.value.appointInfo.startDt = transformDate(appointDate.value, lessonList.value.lesson+'startLesson.value'[0]);
         }
-        if (appointModal.value.appointInfo.endDt && appointModal.value.appointInfo.endDt instanceof Date) {
-          appointModal.value.appointInfo.endDt = appointModal.value.appointInfo.endDt.getTime();
+        if (appointDate.value && appointDate.value instanceof Date && endLesson && endLesson >= startLesson) {
+          appointModal.value.appointInfo.endDt = transformDate(appointDate.value, lessonList.value.lesson+'endLesson.value'[1]);
         }
         if (appointModal.value.type === 'add') {
           await AppointAdd({
@@ -298,8 +318,8 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
-            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
-            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
+            start: appointModal.value.appointInfo.startDt,
+            end: appointModal.value.appointInfo.endDt, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         } else {
@@ -311,8 +331,8 @@ export default createComponent({
             teacherId: appointModal.value.appointInfo.teacher.id ? appointModal.value.appointInfo.teacher.id : null,
             studentJson: JSON.stringify(appointModal.value.appointInfo.students ? appointModal.value.appointInfo.students : null),
             stationJson: JSON.stringify(appointModal.value.appointInfo.stations ? appointModal.value.appointInfo.stations : null),
-            start: appointModal.value.appointInfo.startDt ? appointModal.value.appointInfo.startDt : null,
-            end: appointModal.value.appointInfo.endDt ? appointModal.value.appointInfo.endDt : null,
+            start: appointModal.value.appointInfo.startDt,
+            end: appointModal.value.appointInfo.endDt, 
             extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
           });
         }
@@ -349,13 +369,13 @@ export default createComponent({
       courseList.value = await CourseList({
           containPrograms: true,
         });
-      console.log(courseList.value);
+      // console.log(courseList.value);
       programList.value = await ProgramList();
-      console.log(programList.value);
+      // console.log(programList.value);
       teacherList.value = await TeacherList();
-      console.log(teacherList.value);
+      // console.log(teacherList.value);
       studentList.value = await StudentList({});
-      console.log(studentList.value);
+      // console.log(studentList.value);
       stationList.value = await StationList({
         simple: true,
       });
@@ -364,8 +384,8 @@ export default createComponent({
       lessonList.value = await SettingGet({
         onlyLesson: true,
       });
-      // console.log(lessonList.value);
-      // console.log(storeUserInfo.user);
+      console.log(lessonList.value.lesson+'startLesson'[0]);
+      //console.log(storeUserInfo.user);
       if (storeUserInfo.user) {
         const claszId = storeUserInfo.user.extend.clasz;
         const studentInClasz = studentList.value.filter(function(item: any) {
@@ -374,8 +394,8 @@ export default createComponent({
         const userId = storeUserInfo.user.id;
         otherStudentInClasz.value = studentInClasz.filter(function(item: any) {
           return item.id !== userId;
-        });
-        console.log(storeUserInfo.user);
+        })
+        // console.log(storeUserInfo.user);
       }
     }));
     return {
@@ -386,13 +406,26 @@ export default createComponent({
       appointUpdate: useLoading(loading, appointUpdate),
       storeUserInfo,
       appointTypeList, studentAppointType, courseList, programList, stationList,
-      teacherList, studentList, otherStudentInClasz, classList, lessonList,
+      teacherList, studentList, otherStudentInClasz, classList,
+      appointDate, lessonList, startLesson, endLesson,
     };
   },
 });
+function transformDate(time1: any, timestamp2: any) {
+  // 获取课时时分秒
+  var time = new Date(timestamp2);
+  var Hour = time.getHours();
+  var Min = time.getMinutes();
+  var Sec = time.getSeconds();
+  // 将预约日期与课时时分秒组合
+  var datetime = time1 + ' ' + Hour + ':' + Min + ':' + Sec;
+  var t = new Date(datetime);
+  return t.getTime();
+}
 function initAppointForm() {
   return {
     id: '', type: '', course: {id: ''}, program: {id: ''}, teacher: {id: ''}, students: [], stations: [],
+    appointDate: '',
     extend: {clasz: {}, claszGroup: {}},
   };
 }
