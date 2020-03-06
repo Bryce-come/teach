@@ -134,7 +134,7 @@ export default {
         end,
       });
        // console.log(list);
-      const time = data.list.extend ? data.list.extend.times : [];
+      const time = data.list;
       timeChart.value = timelineConfig(time, statusMap, { left: '2%', top: 0, showTime: true, dataZoom: true, confine: true });
       let { data: { list: device } } = await postService(urlMap.params_menu.url, {
         deviceIdJson: `["${row.device.id}"]`,

@@ -295,6 +295,16 @@ const gatewayChannelManagement = {
     privileges: [PRIVILEGE.inClassMng],
   },
 };
+const fileManagement = {
+  path: '/teach/file-management',
+  name: 'fileManagement',
+  component: () => import('../views/teach/file-management.vue'),
+  meta: {
+    CName: '临时文件管理',
+    parentCName: '教学过程管理',
+    privileges: [PRIVILEGE.inClassMng],
+  },
+};
 const systemOptionSetting = {
   path: '/system/system-option-setting',
   name: 'systemOptionSetting',
@@ -376,6 +386,7 @@ const indexChildren = [
   programManagement,
   experimentResultScore,
   gatewayChannelManagement,
+  fileManagement,
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
