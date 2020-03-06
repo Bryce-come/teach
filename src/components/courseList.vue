@@ -29,7 +29,7 @@
         <div style="width:12.5%;height:588.4px;background-color:blue;
         position:relative;left:;top:;display: -webkit-flex; /* Safari */
         display: flex;flex-wrap: wrap;flex-direction:column ;">
-          <div class="firstRow" v-for="(item,i) in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">第<span>{{i+1}}</span>节课</div>
+          <div class="firstRow" v-for="(item,i) in courseCount.count" :key="i">第<span>{{i+1}}</span>节课</div>
         </div>
         <div style="width:87.5%;height:589px;background-color:blue;
         position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
@@ -223,6 +223,9 @@ export default createComponent({
     const tableX = ref(-1);
     const tableY = ref(-1);
     const courseAppointTypeList = ref<any>();
+    const courseCount = ref<any>({
+      count:[]
+    });
     const weekSection = ref<any>({
       weekStart:'',
       weekEnd:'',
@@ -454,7 +457,7 @@ export default createComponent({
       }
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
-          originList.value.originLessonsList[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1]=result[i]
+          originList.value.originLessonsList.splice([((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1],1,result[i])
           // const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
           // str.innerText=result[i].course.name;
           // for(let j=0;j<result[i].extend.lessons.length-1;j++){
@@ -469,31 +472,28 @@ export default createComponent({
       await setWeekSection(new Date(weekSection.value.weekEnd+86400000))
     }
     async function clearDiv(){
-      // for(let i=0;i<originList.value.originLessonsList.length;i++){
-      //   const sum = <HTMLElement>document.getElementsByClassName('textCell')[i]
-      //   sum.innerText=``
-      // }
+      
     }
     async function setWeekSection(row:any){
       originList.value.originLessonsList=[ 
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,
-      ,,,,,,,]
+      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]
       const result = getWeekDaysRange(row)
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[1].getTime()
       getOriginCourseRecordList(weekSection)
     }
+    async function getCourseCount(){
+      // courseCount.value.count
+      const result = await SettingGet({onlyLesson:true})
+      
+      for(let i=0;i<result.lessonNum;i++){
+        courseCount.value.count.push(i+1)
+      }
+      console.log(courseCount.value.count)
+    }
     onMounted(useLoading(loading, async () => {
+      await getCourseCount()
       await setWeekSection(new Date());
       await tabCell();
       courseAppointTypeList.value = [
@@ -506,7 +506,7 @@ export default createComponent({
       getOriginCourseRecordList,originList,clearDiv,
       setWeekSection,goLastWeek,goNextWeek,weekSection,
       loading,cheakIt,
-      oneDay,
+      oneDay,courseCount,
       list: useLoading(loading, list),
       weeks,
       digital2Chinese,
