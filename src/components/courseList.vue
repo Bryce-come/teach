@@ -195,14 +195,18 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-      await setWeekSection(new Date(oneDay.value))
+      if(oneDay.value===undefined){
+        alert('请选择日期')
+      }
+      else{
+        await setWeekSection(new Date(oneDay.value))
+      }
     }
     const moreSetting = ref({
       lessonNum: 7,
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-<<<<<<< HEAD
       originLessonsList:[
         {lesson: ['','','','','','','']},
         {lesson: ['','','','','','','']},
@@ -216,21 +220,6 @@ export default createComponent({
         {lesson: ['','','','','','','']},
         {lesson: ['','','','','','','']},
         {lesson: ['','','','','','','']},
-=======
-      originLessonsList: [
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
->>>>>>> 258d1050e58a0a8242ef6e80299f3e4c71b2a3bc
       ],
       lessonsList: [
         {lesson: ['','','','','','','']},
@@ -403,7 +392,6 @@ export default createComponent({
     const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
-<<<<<<< HEAD
     async function getOriginCourseRecordList(row:any){
       const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
       function setThisDay(row:any){
@@ -453,17 +441,6 @@ export default createComponent({
       weekSection.value.weekEnd = result[1].getTime()
       getOriginCourseRecordList(weekSection)
       newList()
-=======
-    async function getOriginCourseRecordList() {
-      const result = await CourseRecordList({end: 1582473599000, start: 1581868800000});
-      // for(let i=0;i<result.length;i++){
-        // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(i,1,result[i])
-      originList.value.lessonsList[0].lesson.splice(0, 1, result[0]);
-      originList.value.lessonsList[3].lesson.splice(1, 1, result[1]);
-      // }
-      console.log(originList.value.lessonsList);
-      console.log(result);
->>>>>>> 258d1050e58a0a8242ef6e80299f3e4c71b2a3bc
     }
     onMounted(useLoading(loading, async () => {
       await setWeekSection(new Date());
