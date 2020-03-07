@@ -22,7 +22,6 @@
             <el-form-item label="上课时间：">{{courseInfo.startDt + '-' + courseInfo.endDt}}</el-form-item>
             <el-form-item label="授课教师：">{{courseInfo.teacher.name}}</el-form-item>
             <el-form-item label="上课班级：">{{courseInfo.clasz.name + '-' + courseInfo.claszGroup.name}}</el-form-item>
-            <!-- <el-form-item label="上课地点：">{{'实验室'}}</el-form-item> -->
           </el-form>
           <div class="liner"></div>
       </div>
@@ -31,8 +30,8 @@
         <el-form label-width="120px" class="flex">
           <el-form-item label="实验类型：">{{courseInfo.program.label}}</el-form-item>
           <el-form-item label="操作台：">
-              <div v-for="item of courseInfo.stations" :key="item.id">{{item.name + ','}}</div>
-            </el-form-item>
+            <div v-for="item of courseInfo.stations" :key="item.id">{{item.name + ','}}</div>
+          </el-form-item>
         </el-form>
         <div class="liner"></div>
       </div>
@@ -82,12 +81,14 @@ import { Message } from 'element-ui';
 import { CourseList4Student} from '@/dao/courseProgramDao';
 import { CourseRecordPreview} from '@/dao/courseRecordDao';
 import {DownLoadPrivate} from '@/dao/commonDao';
+import {StationList} from '@/dao/stationDao';
 export default {
   setup() {
     const loading = ref(false);
     const coursePreviewList = ref<any>([]);
     const coursePreview = ref<any>();
     const courseInfo = ref<any>();
+    const stationList = ref<any>();
     const queryCoursePreviewList = async () => {
       coursePreviewList.value = await CourseList4Student();
     };
@@ -96,6 +97,12 @@ export default {
       courseInfo.value = await CourseRecordPreview({
         courseId: courseID,
       });
+      console.log(courseInfo.value);
+      for (var i = 0;i < courseInfo.value.stations;i++) {
+        const station = stationList.value.filter((item:any) => {
+          return item.id === courseInfo.value.stations[i];
+        })
+      }
     };
     async function downFile(item: any) {
       const files = {
@@ -107,11 +114,15 @@ export default {
     onMounted(useLoading(loading, async () => {
       await queryCoursePreviewList();
       // await queryCourseInfo();
+      stationList.value = await StationList({
+        simple: true,
+      });
+      console.log(stationList.value);
     }));
     return {
       loading, coursePreviewList, queryCoursePreviewList, coursePreview,
       queryCourseInfo, courseInfo,
-      downFile,
+      downFile, stationList,
     };
   },
 };
