@@ -19,22 +19,22 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
-  export default {
-    setup(){
-      const titles = ref<any>([]);
-      const titleLeft = ref<any>([]);
-      const content = ref<any>([]);
-      onMounted(()=>{
-        for (let i=0;i<8;i++) titles.value.push(i);
-        for (let i=0;i<7;i++) content.value.push(i);
-        for (let i=0;i<12;i++) titleLeft.value.push(i);
-      });
-      return{
-        titles, titleLeft,content
-      }
-    }
-  }
+import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
+export default {
+  setup() {
+    const titles = ref<any>([]);
+    const titleLeft = ref<any>([]);
+    const content = ref<any>([]);
+    onMounted(() => {
+      for (let i = 0; i < 8; i++) { titles.value.push(i); }
+      for (let i = 0; i < 7; i++) { content.value.push(i); }
+      for (let i = 0; i < 12; i++) { titleLeft.value.push(i); }
+    });
+    return{
+      titles, titleLeft, content,
+    };
+  },
+};
 </script>
 <style lang="scss" scoped>
   .title{

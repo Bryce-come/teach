@@ -67,10 +67,10 @@ export default {
     const [keywords, filtered] = useSearch(fileList, {
       includeProps: ['name'],
     });
-   const courseRecordInClass = ref<any>();
-   const queryCourseInClass = async () => {
+    const courseRecordInClass = ref<any>();
+    const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
-    }
+    };
     const remove = async (row: any) => {
       await TempFileDel({
         path: row.path,
@@ -99,7 +99,7 @@ export default {
       loading, query, fileList, keywords, filtered,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       upload: useLoading(loading, upload), downFile,
-      queryCourseInClass, courseRecordInClass, 
+      queryCourseInClass, courseRecordInClass,
     };
   },
 };

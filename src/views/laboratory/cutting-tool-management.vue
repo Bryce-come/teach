@@ -160,7 +160,7 @@
                 <el-form label-width="120px" label-position="left"  class="demo-table-expand">
                   <el-form-item label="批次:">{{row.extend.batchNo}}</el-form-item>
                   <el-form-item label="厂商:">{{row.extend.company}}</el-form-item>
-                  <el-form-item label="供货商:">{{row.extend.supplier}}</el-form-item>                  
+                  <el-form-item label="供货商:">{{row.extend.supplier}}</el-form-item>
                   <el-form-item label="厂商联系方式:">{{row.extend.supplierTel}}</el-form-item>
                   <el-form-item label="保管人:">{{row.extend.keeper}}</el-form-item>
                 </el-form>
@@ -280,8 +280,6 @@ export default {
         data = initStoreRecordForm();
       }
       storeRecordModal.value.storeInfo = data;
-      console.log('storeRecordModal.value.storeInfo');
-      console.log(storeRecordModal.value.storeInfo);
       storeRecordModal.value.visible = true;
     };
     const storeHistoryModal = ref<any>({
@@ -290,7 +288,6 @@ export default {
     });
     const storeHistoryForm = async (row: any) => {
       storeHistoryModal.value.storeHistoryInfo = row;
-      // console.log(storeHistoryModal.value.storeHistoryInfo);
       await query(storeHistoryModal.value.storeHistoryInfo);
       storeHistoryModal.value.visible = true;
     };
@@ -313,23 +310,19 @@ export default {
         cutterList.value = await ComponentStoreList();
         storeRecordModal.value.visible = false;
         Message.success('添加成功');
-        // console.log(storeRecordModal.value.storeInfo);
       }
     }
     const query = async (data: any) => {
       deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
       componentId: data.id});
-      console.log( deviceComponentStoreRecordList.value);
     };
     const queryStationList = async () => {
       stationList.value = await StationList({
           simple: false,
       });
-      console.log(stationList.value);
     };
     onMounted(useLoading(loading, async () => {
        cutterList.value = await ComponentStoreList();
-       console.log(cutterList.value);
        deviceTypeList.value = await DeviceTypeList();
        await queryStationList();
     }));

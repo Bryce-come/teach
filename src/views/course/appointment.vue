@@ -16,7 +16,7 @@
             <el-button type="success" @click="showForm()">预约申请</el-button>
           </el-form-item>
           <el-form-item label="申请时间:" label-width="80px">
-            <lkt-date-picker v-model="datetimeRange"/>
+            <lkt-date-picker v-model="datetimeRange" :clearable="false"/>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="query()">查询</el-button>
@@ -29,7 +29,7 @@
         style="width:100%">
         <el-table-column type="expand">
           <div slot-scope="{row}" class="flex start">
-            <el-form label-width="100px">
+            <el-form label-width="100px" label-position="left" class="appointButton">
               <el-form-item label="课程名称：" v-if="row.course">{{row.course.name}}</el-form-item>
               <el-form-item label="实验名称：" v-if="row.program">{{row.program.name}}</el-form-item>
               <el-form-item label="负责教师：" v-if="row.teacher">{{row.teacher.name}}</el-form-item>
@@ -41,7 +41,7 @@
                   size="mini">{{item.name}}</el-tag>
               </el-form-item>
               <el-form-item label="班级分组：" v-if="row.clasz || row.claszGroup">
-                {{ (row.clasz?row.clasz.name+'-':'')+(row.claszGroup?row.claszGroup.name:'') }}
+                {{ (row.clasz?row.clasz.name:'')+(row.claszGroup?' '+row.claszGroup.name:'') }}
               </el-form-item>
               <el-form-item label="处理人：" v-if="row.operator">{{row.operator.name}}</el-form-item>
               <el-form-item label="处理时间：" v-if="row.handleDt">{{row.handleDt}}</el-form-item>
@@ -184,188 +184,190 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, onMounted, createComponent} from '@vue/composition-api';
-  import {Message} from 'element-ui';
-  import noactionCourseList from '../../components/noaction-courstList.vue';
-  import {AppointListMine, AppointAdd, AppointUpdate, AppointOperate} from '@/dao/appointRecordDao';
-  import {CourseList, ProgramList} from '@/dao/courseProgramDao';
-  import {TeacherList, StudentList, ClassList} from '@/dao/userDao';
-  import {StationList} from '@/dao/stationDao';
-  import {SettingGet} from '@/dao/settingDao';
-  import {storeUserInfo} from 'web-toolkit/src/case-main';
-  import {useLoading, useConfirm} from 'web-toolkit/src/service';
-  import {ElForm} from 'element-ui/types/form';
-  import {deepClone} from 'web-toolkit/src/utils';
-  import {Department} from "@/types/privilege";
+import {ref, onMounted, createComponent} from '@vue/composition-api';
+import {Message} from 'element-ui';
+import noactionCourseList from '../../components/noaction-courstList.vue';
+import {AppointListMine, AppointAdd, AppointUpdate, AppointOperate} from '@/dao/appointRecordDao';
+import {CourseList, ProgramList} from '@/dao/courseProgramDao';
+import {TeacherList, StudentList, ClassList} from '@/dao/userDao';
+import {StationList} from '@/dao/stationDao';
+import {SettingGet} from '@/dao/settingDao';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
+import {useLoading, useConfirm} from 'web-toolkit/src/service';
+import {ElForm} from 'element-ui/types/form';
+import {deepClone} from 'web-toolkit/src/utils';
+import {Department} from '@/types/privilege';
 
-  export default createComponent({
-    components: {noactionCourseList},
-    setup() {
-      const loading = ref(false);
-      const courseButton = ref(false);
-      const appointButton = ref(true);
-      const appointRecordList = ref<any>([]);
-      const datetimeRange = ref<any[]>( [new Date(Date.now() - 3 * 24 * 3600000), new Date()]);
-      const appointTypeList = ref<any>([
-        {id: 1, name: '授课预约'},
-        {id: 2, name: '个人预约'},
-      ]);
-      const courseList = ref<any>([]);
-      const programList = ref<any>([]);
-      const teacherList = ref<any>([]);
-      const otherStudentInClasz = ref<any>();
-      const stationList = ref<any>([]);
-      const classList = ref<any>([]);
-      const lessonMap = ref<any>([]);
-      const appointModal = ref<any>({
-        visible: false,
-        appointInfo: {},
-        type: 'add',
-      });
-      const form = ref<ElForm | null>(null);
+export default createComponent({
+  components: {noactionCourseList},
+  setup() {
+    const loading = ref(false);
+    const courseButton = ref(false);
+    const appointButton = ref(true);
+    const appointRecordList = ref<any>([]);
+    const datetimeRange = ref<any[]>( [new Date(Date.now() - 3 * 24 * 3600000), new Date()]);
+    const appointTypeList = ref<any>([
+      {id: 1, name: '授课预约'},
+      {id: 2, name: '个人预约'},
+    ]);
+    const courseList = ref<any>([]);
+    const programList = ref<any>([]);
+    const teacherList = ref<any>([]);
+    const otherStudentInClasz = ref<any>();
+    const stationList = ref<any>([]);
+    const classList = ref<any>([]);
+    const lessonMap = ref<any>([]);
+    const appointModal = ref<any>({
+      visible: false,
+      appointInfo: {},
+      type: 'add',
+    });
+    const form = ref<ElForm | null>(null);
 
-      const showForm = async (data?: any) => {
-        if (form.value) {
-          (form.value as ElForm).clearValidate();
-        }
-        if (data) {
-          data = deepClone(data);
-          appointModal.value.type = 'update';
-          // 转化 startLesson endLesson, appointDate
-          if(data.startDt) data.appointDate = new Date(data.startDt);
-          if(data.extend.lessons && data.extend.lessons.length>0){
-            data.startLesson = data.extend.lessons[0];
-            data.endLesson = data.extend.lessons[data.extend.lessons.length-1];
-          }
-          // extend: lessons:[], clasz-班级, claszGroup-分组
-        } else {
-          data = initAppointForm();
-          appointModal.value.type = 'add';
-        }
-        appointModal.value.appointInfo = data;
-        appointModal.value.visible = true;
-      };
-
-      async function appointUpdate() {
-        const valid = await (form.value as ElForm).validate();
-        if (valid) {
-          // 时间格式转化
-          let lesson1 = lessonMap.value['lesson'+appointModal.value.appointInfo.startLesson];
-          let lesson2 = lessonMap.value['lesson'+appointModal.value.appointInfo.endLesson];
-          // extend: lessons:[], clasz-班级, claszGroup-分组
-          appointModal.value.appointInfo.extend.lessons=[];
-          for(let i=appointModal.value.appointInfo.startLesson;i<=appointModal.value.appointInfo.endLesson;i++){
-            appointModal.value.appointInfo.extend.lessons.push(i);
-          }
-          if(appointModal.value.appointInfo.clasz) {
-            appointModal.value.appointInfo.extend.clasz =appointModal.value.appointInfo.clasz.id;
-          }
-          if(appointModal.value.appointInfo.claszGroup){
-            appointModal.value.appointInfo.extend.claszGroup = appointModal.value.appointInfo.claszGroup.id;
-          }
-          const params = {
-            id: appointModal.value.appointInfo.id,
-            type: appointModal.value.appointInfo.type,
-            courseId: appointModal.value.appointInfo.course?appointModal.value.appointInfo.course.id:null,
-            programId: appointModal.value.appointInfo.program?appointModal.value.appointInfo.program.id:null,
-            teacherId: appointModal.value.appointInfo.teacher?appointModal.value.appointInfo.teacher.id:null,
-            studentJson: appointModal.value.appointInfo.students && appointModal.value.appointInfo.students.length>0 ? JSON.stringify(appointModal.value.appointInfo.students) : null,
-            stationJson: appointModal.value.appointInfo.stations && appointModal.value.appointInfo.stations.length>0 ? JSON.stringify(appointModal.value.appointInfo.stations) : null,
-            start: transformDate(appointModal.value.appointInfo.appointDate,lesson1[0]),
-            end: transformDate(appointModal.value.appointInfo.appointDate,lesson2[1]),
-            extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
-          };
-          if (appointModal.value.type === 'add') {
-            await AppointAdd(params);
-          } else {
-            await AppointUpdate(params);
-          }
-          Message.success(`${appointModal.value.type === 'add' ? '已申请预约' : '已修改预约'}`);
-          await query();
-          appointModal.value.visible = false;
-        }
+    const showForm = async (data?: any) => {
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
       }
-
-      const showCourse = async () => {
-        courseButton.value = true;
-        appointButton.value = false;
-      };
-      const showAppoint = async () => {
-        courseButton.value = false;
-        appointButton.value = true;
-      };
-      function isStudent():boolean {
-        return (storeUserInfo.user as any).role.department.id === Department.Student
-      }
-      const query = async () => {
-        appointRecordList.value = await AppointListMine({
-          start: datetimeRange.value[0].getTime(),
-          end: datetimeRange.value[1].getTime(),
-        });
-      };
-      const revokeAppoint = async (row: any) => {
-        await AppointOperate({
-          id: row.id,
-          result: 3,
-        });
-        Message.success('已撤销预约申请');
-        await query();
-      };
-      onMounted(useLoading(loading, async () => {
-        await Promise.all([
-          query(),
-          courseList.value = await CourseList({
-            containPrograms: true,
-          }),
-          programList.value = await ProgramList(),
-          teacherList.value = await TeacherList(),
-          stationList.value = await StationList({
-            simple: true,
-          }),
-          classList.value = await ClassList(),
-          lessonMap.value = await SettingGet({
-            onlyLesson: true,
-          })
-        ]);
-        if (isStudent() && (storeUserInfo.user as any).extend.clasz) {
-          const claszId = (storeUserInfo.user as any).extend.clasz;
-          otherStudentInClasz.value = await StudentList({
-            classId: claszId,
-            forSelect: true
-          });
+      if (data) {
+        data = deepClone(data);
+        appointModal.value.type = 'update';
+        // 转化 startLesson endLesson, appointDate
+        if (data.startDt) { data.appointDate = new Date(data.startDt); }
+        if (data.extend.lessons && data.extend.lessons.length > 0) {
+          data.startLesson = data.extend.lessons[0];
+          data.endLesson = data.extend.lessons[data.extend.lessons.length - 1];
         }
-      }));
-      return {
-        loading, courseButton, appointButton, showCourse, showAppoint,
-        appointRecordList, datetimeRange,
-        query: useLoading(loading, query),
-        revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
-        form, appointModal, showForm,
-        appointUpdate: useLoading(loading, appointUpdate),
-        storeUserInfo,
-        appointTypeList, courseList, programList, stationList,
-        teacherList, otherStudentInClasz, classList,
-        lessonMap,
-        isStudent
-      };
-    },
-  });
-
-  // 时分秒赋值
-  function transformDate(template: Date, timestamp: number):number {
-    const dt = new Date(timestamp);
-    dt.setFullYear(template.getFullYear());
-    dt.setDate(template.getDate());
-    dt.setMonth(template.getMonth());
-    dt.setMilliseconds(0);
-    return dt.getTime();
-  }
-
-  function initAppointForm() {
-    return {
-      extend: {},
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+      } else {
+        data = initAppointForm();
+        appointModal.value.type = 'add';
+      }
+      appointModal.value.appointInfo = data;
+      appointModal.value.visible = true;
     };
-  }
+
+    async function appointUpdate() {
+      const valid = await (form.value as ElForm).validate();
+      if (valid) {
+        // 时间格式转化
+        const lesson1 = lessonMap.value['lesson' + appointModal.value.appointInfo.startLesson];
+        const lesson2 = lessonMap.value['lesson' + appointModal.value.appointInfo.endLesson];
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+        appointModal.value.appointInfo.extend.lessons = [];
+        for (let i = appointModal.value.appointInfo.startLesson; i <= appointModal.value.appointInfo.endLesson; i++) {
+          appointModal.value.appointInfo.extend.lessons.push(i);
+        }
+        if (appointModal.value.appointInfo.clasz) {
+          appointModal.value.appointInfo.extend.clasz = appointModal.value.appointInfo.clasz.id;
+        }
+        if (appointModal.value.appointInfo.claszGroup) {
+          appointModal.value.appointInfo.extend.claszGroup = appointModal.value.appointInfo.claszGroup.id;
+        }
+        const params = {
+          id: appointModal.value.appointInfo.id,
+          type: appointModal.value.appointInfo.type,
+          courseId: appointModal.value.appointInfo.course ? appointModal.value.appointInfo.course.id : null,
+          programId: appointModal.value.appointInfo.program ? appointModal.value.appointInfo.program.id : null,
+          teacherId: appointModal.value.appointInfo.teacher ? appointModal.value.appointInfo.teacher.id : null,
+          studentJson: appointModal.value.appointInfo.students && appointModal.value.appointInfo.students.length > 0 ? JSON.stringify(appointModal.value.appointInfo.students) : null,
+          stationJson: appointModal.value.appointInfo.stations && appointModal.value.appointInfo.stations.length > 0 ? JSON.stringify(appointModal.value.appointInfo.stations) : null,
+          start: transformDate(appointModal.value.appointInfo.appointDate, lesson1[0]),
+          end: transformDate(appointModal.value.appointInfo.appointDate, lesson2[1]),
+          extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
+        };
+        if (appointModal.value.type === 'add') {
+          await AppointAdd(params);
+        } else {
+          await AppointUpdate(params);
+        }
+        Message.success(`${appointModal.value.type === 'add' ? '已申请预约' : '已修改预约'}`);
+        appointModal.value.visible = false;
+        datetimeRange.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
+        await query();
+      }
+    }
+
+    const showCourse = async () => {
+      courseButton.value = true;
+      appointButton.value = false;
+    };
+    const showAppoint = async () => {
+      courseButton.value = false;
+      appointButton.value = true;
+    };
+    function isStudent(): boolean {
+      return (storeUserInfo.user as any).role.department.id === Department.Student;
+    }
+    const query = async () => {
+      appointRecordList.value = await AppointListMine({
+        start: datetimeRange.value[0].getTime(),
+        end: datetimeRange.value[1].getTime(),
+      });
+    };
+    const revokeAppoint = async (row: any) => {
+      await AppointOperate({
+        id: row.id,
+        result: 3,
+      });
+      Message.success('已撤销预约申请');
+      await query();
+    };
+    onMounted(useLoading(loading, async () => {
+      await Promise.all([
+        query(),
+        courseList.value = await CourseList({
+          containPrograms: true,
+        }),
+        programList.value = await ProgramList(),
+        teacherList.value = await TeacherList(),
+        stationList.value = await StationList({
+          simple: true,
+        }),
+        classList.value = await ClassList(),
+        lessonMap.value = await SettingGet({
+          onlyLesson: true,
+        }),
+      ]);
+      if (isStudent() && (storeUserInfo.user as any).extend.clasz) {
+        const claszId = (storeUserInfo.user as any).extend.clasz;
+        otherStudentInClasz.value = await StudentList({
+          classId: claszId,
+          forSelect: true,
+        });
+        otherStudentInClasz.value = otherStudentInClasz.value.filter((user: any) => user.id !== (storeUserInfo.user as any).id);
+      }
+    }));
+    return {
+      loading, courseButton, appointButton, showCourse, showAppoint,
+      appointRecordList, datetimeRange,
+      query: useLoading(loading, query),
+      revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
+      form, appointModal, showForm,
+      appointUpdate: useLoading(loading, appointUpdate),
+      storeUserInfo,
+      appointTypeList, courseList, programList, stationList,
+      teacherList, otherStudentInClasz, classList,
+      lessonMap,
+      isStudent,
+    };
+  },
+});
+
+// 时分秒赋值
+function transformDate(template: Date, timestamp: number): number {
+  const dt = new Date(timestamp);
+  dt.setFullYear(template.getFullYear());
+  dt.setDate(template.getDate());
+  dt.setMonth(template.getMonth());
+  dt.setMilliseconds(0);
+  return dt.getTime();
+}
+
+function initAppointForm() {
+  return {
+    extend: {},
+  };
+}
 </script>
 <style scoped lang="scss">
   .appointButton .el-form-item{
