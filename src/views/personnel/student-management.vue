@@ -241,14 +241,6 @@ export default {
       });
       await queryClassList();
   };
-  const grpandclzList = ref<any>({
-        claszIdList: [],
-        claszNameList: [],
-        groupLista: [],
-        groupListb: [],
-        groupIdList: [],
-        groupNameList: [],
-      });
   const form = ref<ElForm|null>(null);
   const modal = ref<any>({
     visible: false,
@@ -448,7 +440,7 @@ export default {
     modal, form, showForm, addClaz, groupUpdate, removeValue,
     update: useLoading(loading, update),
     updataGropFlag, addNewGroupFlag,
-    validator, classList, groupList, ctogList,  firstTab, grpandclzList,
+    validator, classList, groupList, ctogList,  firstTab,
     FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
     unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),
   };

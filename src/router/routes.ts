@@ -347,7 +347,7 @@ const homework = {
 // const test = {
 //   path: '/test',
 //   name: 'test',
-//   component: () => import('../views/test.vue'),
+//   component: () => import('../views/test2.vue'),
 //   meta: {
 //     CName: 'test',
 //     parentCName: '系统管理',
@@ -399,11 +399,10 @@ const indexChildren = [
   preview,
   // 课后作业
   homework,
+  // test,
   {
     path: '*',
-    name: '404_child',
-    component: () => import('../components/page404.vue'),
-    meta: { authDisabled: true },
+    redirect: {name: '404'},
   },
 ];
 export const routes = [

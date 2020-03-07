@@ -218,7 +218,6 @@ export default {
         if (modal.value.maintainRecordInfo.nextDt && modal.value.maintainRecordInfo.nextDt instanceof Date) {
           modal.value.maintainRecordInfo.nextDt = modal.value.maintainRecordInfo.nextDt.getTime();
         }
-        console.log(modal.value.maintainRecordInfo);
         await DeviceMaintenAdd({
           deviceId: modal.value.maintainRecordInfo.device.id,
           type: modal.value.maintainRecordInfo.type,
@@ -257,8 +256,6 @@ export default {
         start: null,
         end: null,
       });
-      console.log(executorList.value);
-      console.log(deviceNameList.value);
       maintainTypeList.value = [
         {id: 0, type: '巡检'},
         {id: 1, type: '保养'},

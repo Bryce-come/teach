@@ -67,13 +67,13 @@ export default {
     const [keywords, filtered] = useSearch(fileList, {
       includeProps: ['name'],
     });
-   const courseRecordInClass = ref<any>();
-   const queryCourseInClass = async () => {
+    const courseRecordInClass = ref<any>();
+    const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
-    }
+    };
     const remove = async (row: any) => {
       await TempFileDel({
-        path: row.name,
+        path: row.path,
       });
       Message.success('删除成功');
       await query();
@@ -91,18 +91,6 @@ export default {
       fileList.value = await TempFileList();
       console.log(fileList.value);
     };
-    const date = async (longTypeDate:any) => {
-        var datetimeType = "";
-        var date = new Date();
-        date.setTime(longTypeDate);
-        datetimeType+= date.getFullYear(); //年
-        datetimeType+= "-" + date.getMonth(); //月
-        datetimeType += "-" + date.getDay(); //日
-        datetimeType+= "  " + date.getHours(); //时
-        datetimeType+= ":" + date.getMinutes(); //分
-        datetimeType+= ":" + date.getSeconds(); //分
-        return datetimeType;
-    }
     onMounted(useLoading(loading, async () => {
       await query();
       await queryCourseInClass();
@@ -111,7 +99,7 @@ export default {
       loading, query, fileList, keywords, filtered,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       upload: useLoading(loading, upload), downFile,
-      queryCourseInClass, courseRecordInClass, date,
+      queryCourseInClass, courseRecordInClass,
     };
   },
 };

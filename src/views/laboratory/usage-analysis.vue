@@ -41,14 +41,14 @@
         </div>
       </div>
       <div class="block_content">
-        <v-chart autoresize :options="chart" @datazoom="dataZoomEvent" style="width: 95%; height: 500px"/></div>    
+        <v-chart autoresize :options="chart" @datazoom="dataZoomEvent" style="width: 95%; height: 500px"/></div>
     </div>
     <div v-if='deviceParam.id === 2' style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
         <div>
           <span>运行时间分析</span>
         </div>
-      </div> 
+      </div>
       <div class="block_content">
         <div class="time-chart flex center align-center" v-if="timeList.length>0">
           <v-chart :autoresize="true" :options="pie" class="pie"/>
@@ -94,7 +94,7 @@ export default createComponent({
   name: 'parameter-history',
   setup() {
     const loading = ref(false);
-    let currentChartRange: Date[] = [new Date(), new Date()];
+    const currentChartRange: Date[] = [new Date(), new Date()];
     const deviceNameList = ref<any[]>([]);
     const deviceName = ref<any>();
     const stationNameList = ref<any>();
@@ -119,29 +119,25 @@ export default createComponent({
         start,
         end,
       });
-      console.log(data);
       timeList.value = data.list;
-       if (data.list.length > 0) {
+      if (data.list.length > 0) {
         pie.value = timesPieConfig(data.summary, {}, statusMap);
         line.value = timelineConfig(data.list, statusMap, { left: '2%', top: 0, showTime: true, dataZoom: true, confine: true });
-        // console.log(deviceName.value);
        }
     // 第一个页面
-      //  console.log(courseName.value);
       const option: any = getOption();
       let series: AnyObject = {};
-       const num = await AnalysisCourseManClassHours({
-          courseJson: courseName.value? JSON.stringify(courseName.value): null,
+      const num = await AnalysisCourseManClassHours({
+          courseJson: courseName.value ? JSON.stringify(courseName.value) : null,
           start,
           end,
       });
-      console.log(num);
       series = {
         type: 'line',
         symbolSize: 3,
         lineStyle: { width: 4 },
         data: num,
-      };      
+      };
       option.series = series;
       chart.value = option;
     };
@@ -156,7 +152,7 @@ export default createComponent({
     //     symbolSize: 3,
     //     lineStyle: { width: 4 },
     //     data,
-    //   };      
+    //   };
     //   option.series = series;
     //   chart.value = option;
     // };
@@ -266,13 +262,13 @@ export default createComponent({
         stationNameList.value = await StationList({
         simple: false ,
       });
-      for(const item of stationNameList.value){
-        if(item.deviceList && item.deviceList.length !== 0){
+        for (const item of stationNameList.value) {
+        if (item.deviceList && item.deviceList.length !== 0) {
           // @ts-ignore
          deviceNameList.value.push(item.deviceList[0]);
         }
       }
-      deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
+        deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
     };
     onMounted(useLoading(loading, async () => {
       deviceParamList.value = [
@@ -287,11 +283,11 @@ export default createComponent({
     }));
     return{
       loading, deviceNameList, deviceName, deviceParamList, deviceParam, timeRange, query,
-      chart, zoomRange, 
+      chart, zoomRange,
       stationNameList,
       courseNameList, courseName, pie, line,
       dataZoomEvent: debounce(dataZoomEvent, { interval: 500 }),
-      queryStation, timeList, statusMap, formatMilliseconds, timeRange1, currentChartRange, 
+      queryStation, timeList, statusMap, formatMilliseconds, timeRange1, currentChartRange,
     };
   },
 });
