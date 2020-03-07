@@ -3,7 +3,7 @@
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
         <el-date-picker v-model="oneDay" type="date" placeholder="选择日期"></el-date-picker>
-        <el-button style="margin-left: 10px" type="primary" @click="clearDiv();list()">跳转日期</el-button>  
+        <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>  
         <el-button style="margin-left: 10px" type="primary"  icon="el-icon-arrow-left" @click="clearDiv();goLastWeek()">上一周</el-button>
         <el-button style="margin-left: 10px" type="primary" @click="clearDiv();goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
       </div>
@@ -11,7 +11,11 @@
     <div class="flex align-center" style="margin:0 auto">
       <p style="margin:0 auto;margin-top:5px">
         {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
-    </div>
+    </div>   
+    <!-- <som></som> -->
+
+  
+
     <div style="margin: 7px;">
       <div class="flex center">
         <div style="margin: 10px">
@@ -23,57 +27,66 @@
           <span>新预约课程</span>
         </div>
       </div>
-      <div style="width:80%;height:623px;background-color:azure;margin:auto;border:0.005em solid #000">
-        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
-        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
-        <div style="width:12.5%;height:588.4px;background-color:blue;
-        position:relative;left:;top:;display: -webkit-flex; /* Safari */
-        display: flex;flex-wrap: wrap;flex-direction:column ;">
-          <div class="firstRow" v-for="(item,i) in courseCount.count" :key="i">第<span>{{i+1}}</span>节课</div>
-        </div>
-        <div style="width:87.5%;height:589px;background-color:blue;
-        position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
-        display: flex;flex-wrap: wrap;flex-direction:row ;">
-          <div class="textCell" @click="cheakIt(item)" v-for="(item,i) in originList.originLessonsList" :key="i"
-          
-          >
-          <!-- :style="{'background-color': item != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" -->
-            
-            <div v-if="item" slot="reference">{{item.course.name}}</div>
-            <el-popover placement="top-start" width="50">
-              <div style="color:#67C23A;width:6rem;" @click="readLesson(item)">
-                <i class="el-icon-reading"/>
-                <span  style="margin-left:5px">查看</span>
-              </div>
-              <div style="color:#67a1ff;width:6rem;" @click='showLesson(item)'>
-                <i class="el-icon-edit"/>
-                <span  style="margin-left:5px">修改</span>
-              </div>
-              <div style="color:#F56C6C;width:6rem;" @click="delectLesson(item)">
-                <i class="el-icon-delete"/>
-                <span  style="margin-left:5px">删除</span>
-              </div>
-              <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                <i class="el-icon-takeaway-box"></i>
-                <span  style="margin-left:5px">延长课时</span>
-              </div> -->
-              <!-- <div style="width:100%;height:100%" slot="reference" >
-                <div>
-                 {{item?item.course.name:''}}
-                  </div>
-              </div> -->
-            </el-popover>
-            <div v-if="!item">
-              <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+      <div class="flex center">
+        <div>
+          <div class="flex" style="width:inherit">
+            <div class="title" v-for="(weekNum, weekIndex) in weeks.length+1" :key="weekIndex">
+                {{weekIndex===0?'时间':'周' + digital2Chinese(weekIndex-1, 'week')}}
             </div>
           </div>
-        </div>
+          <div class="flex" style="width:inherit">
+            <div class="flex column">
+              <div class="titleb" v-for="i in courseCount.count" :key="i">
+                {{`第 ${i} 节课`}}
+              </div>
+            </div>
+            <div class="flex column tabDiv" v-for="(item,i) in originList.lessonsList" :key="i">
+              <div
+                class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
+                
+                :style="{'background-color': itemb != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" :key="ii" >
+
+                <div v-if="!itemb">
+                    <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+                </div>  
+                <!-- v-if="ii!==2||i!==2" -->
+                <!-- {{itemb.course?itemb.course.name:''}} -->
+                    <el-popover
+                      placement="top-start"
+                      width="50"
+                      >
+                      <div style="color:#67C23A;width:6rem;" @click="readLesson(itemb)">
+                        <i class="el-icon-reading"/>
+                        <span  style="margin-left:5px">查看</span>
+                      </div>
+                      <div style="color:#67a1ff;width:6rem;" @click='showLesson(itemb)'>
+                        <i class="el-icon-edit"/>
+                        <span  style="margin-left:5px">修改</span>
+                      </div>
+                      <div style="color:#F56C6C;width:6rem;" @click="delectLesson(itemb)">
+                        <i class="el-icon-delete"/>
+                        <span  style="margin-left:5px">删除</span>
+                      </div>
+                      <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                        <i class="el-icon-takeaway-box"></i>
+                        <span  style="margin-left:5px">延长课时</span>
+                      </div> -->
+                      <div style="width:100%;height:100%" slot="reference" >
+                        <div>
+                          {{itemb?itemb.course.name:''}}
+                        </div>
+                      </div>
+                    </el-popover>
+                            
+                </div>
+            </div>
+          </div>
+        </div> 
       </div>
     </div>
     
     <div class="class-table">
-      
-      <table id='tabs'  >
+      <!-- <table id='tabs'  >
         <thead>
           <tr>
             <th>时间</th>
@@ -88,10 +101,9 @@
                <div>第<span>{{i+1}}</span>节课</div>
              </th>
              <td v-for="(lessonItem, j) in item.lesson" :key="j" 
-                 :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
-                 :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
-                >
-                  <!-- <div v-if="item" slot="reference">{{item.name}}</div> -->
+              :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
+              :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
+                  <div v-if="item" slot="reference">{{item.name}}</div>
                 <el-popover
                   placement="top-start"
                   width="50"
@@ -108,10 +120,10 @@
                     <i class="el-icon-delete"/>
                     <span  style="margin-left:5px">删除</span>
                   </div>
-                  <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
                     <i class="el-icon-takeaway-box"></i>
                     <span  style="margin-left:5px">延长课时</span>
-                  </div> -->
+                  </div>
                   <div style="width:100%;height:100%" slot="reference" >
                     <div>
                        {{lessonItem?lessonItem.course.name:''}}
@@ -124,7 +136,7 @@
              </td>
            </tr>
         </tbody>
-      </table>
+      </table> -->
       
 
       <el-dialog
@@ -244,10 +256,11 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-      if(oneDay.value===undefined){
+      if(oneDay.value===undefined||oneDay.value===null){
         alert('请选择日期')
       }
       else{
+        clearDiv();
         await setWeekSection(new Date(oneDay.value))
       }
     }
@@ -256,33 +269,14 @@ export default createComponent({
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-      originLessonsList:[],
-      //  originLessonsList:[ 
-      // 1,2,3,4,5,6,7,
-      // 8,9,10,11,12,13,14,
-      // 15,16,17,18,19,20,21,
-      // 22,23,24,25,26,27,28,
-      // 29,30,31,32,33,34,35,
-      // 36,37,38,39,40,41,42,
-      // 43,44,45,46,47,48,49,
-      // 50,51,52,53,54,55,56,
-      // 57,58,59,60,61,62,63,
-      // 64,65,66,67,68,69,70,
-      // 71,72,73,74,75,76,77,
-      // 78,79,80,81,82,83,84 ],
       lessonsList: [
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
-        {lesson: ['','','','','','','']},
+        {lesson: [1,2,3,4,5,6,7,8,9,10,11,12,]},
+        {lesson: [13,14,15,16,17,18,19,20,21,22,23,24,]},
+        {lesson: [25,26,27,28,29,30,31,32,33,34,35,36,]},
+        {lesson: [37,38,39,40,41,42,43,44,45,46,47,48,]},
+        {lesson: [49,50,51,52,53,54,55,56,57,58,59,60,]},
+        {lesson: [61,62,63,64,65,66,67,68,69,70,71,72,]},
+        {lesson: [73,74,75,76,77,78,79,80,81,82,83,84,]},
       ],
     });
     function getColors(lessonOne: any, defaultColor: any) {
@@ -457,11 +451,14 @@ export default createComponent({
       }
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
-          originList.value.originLessonsList.splice([((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1],1,result[i])
-          // const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
-          // str.innerText=result[i].course.name;
-          // for(let j=0;j<result[i].extend.lessons.length-1;j++){
-          // }
+          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay())-1].lesson.splice(result[i].extend.lessons[0]-1,1,result[i])
+          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]-1];
+          str.style.height=50*result[i].extend.lessons.length+'px'
+          str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
+          for(let j=0;j<result[i].extend.lessons.length-1;j++){
+            const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
+            str.style.display='none'
+          }
         }
       }
     }
@@ -472,25 +469,45 @@ export default createComponent({
       await setWeekSection(new Date(weekSection.value.weekEnd+86400000))
     }
     async function clearDiv(){
-      
+      for(let i=0;i<7;i++){
+        for(let j=0;j<courseCount.value.count.length;j++){
+          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[i].childNodes[j];
+          str.style.display='inline'
+          str.style.height=50+'px'
+          str.style.lineHeight=3.5+'rem'
+        }
+      }
     }
     async function setWeekSection(row:any){
-      originList.value.originLessonsList=[ 
-      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]
+      originList.value.lessonsList=[
+        {lesson: []},
+        {lesson: []},
+        {lesson: []},
+        {lesson: []},
+        {lesson: []},
+        {lesson: []},
+        {lesson: []},
+      ]
+      for(let i=0;i<courseCount.value.count.length;i++){
+        originList.value.lessonsList[0].lesson.push('')
+        originList.value.lessonsList[1].lesson.push('')
+        originList.value.lessonsList[2].lesson.push('')
+        originList.value.lessonsList[3].lesson.push('')
+        originList.value.lessonsList[4].lesson.push('')
+        originList.value.lessonsList[5].lesson.push('')
+        originList.value.lessonsList[6].lesson.push('')
+      }
       const result = getWeekDaysRange(row)
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[1].getTime()
       getOriginCourseRecordList(weekSection)
     }
     async function getCourseCount(){
-      // courseCount.value.count
       const result = await SettingGet({onlyLesson:true})
       
       for(let i=0;i<result.lessonNum;i++){
         courseCount.value.count.push(i+1)
       }
-      console.log(courseCount.value.count)
     }
     onMounted(useLoading(loading, async () => {
       await getCourseCount()
@@ -595,48 +612,39 @@ function initForm(): any {
     height: 2.5rem;
     line-height: 3.5rem;
     text-align: center;
-    vertical-align: middle;
+    // vertical-align: middle;
+
   }
   .order .el-button{
     display: none;
+    color: #000;
   }
   .order:hover .el-button{
-      display: inline-block;
+    display: inline-block;
   }
-  .firstCol{
-    width:12.5%;
-    background-color:#67A1FF;
-    margin:auto;
-    border:0.005em solid #000;
-    float: left;
-    color: #fff;
-    line-height: 2.5rem;
+  .title{
+    color: white;
+    border: 1px solid black;
+    width: 150px;
+    height: 40px;
+    background-color: #00AAEE;
     text-align: center;
-    font-weight: normal;
-    margin: 0;
-    padding: 0;
-  } 
-  .firstRow{
-    // width:12.5%;
-    height: 8.3333%;
-    color: #fff;
-    background-color: #67a1ff;
-    border:0.005em solid #000;
-    line-height: 3.5rem;
-    text-align: center;
-    font-weight: normal;
-    margin: 0;
-    padding: 0;
+    line-height:2.5rem;
   }
-  .textCell{
-    width:14.2857%;
-    height: 8.3333%;
-    background-color:white;
-    border:0.1px solid #000;
-    line-height: 3.5rem;
+  .titleb{
+    color: white;
+    border: 1px solid black;
+    width: 150px;
+    height: 50px;
+    background-color: #00AAEE;
     text-align: center;
-    font-weight: normal;
-    margin: 0;
-    padding: 0;
+    line-height:3.5rem;
+  }
+  .content{
+    border: 1px solid black;
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    line-height:3.5rem;
   }
 </style>
