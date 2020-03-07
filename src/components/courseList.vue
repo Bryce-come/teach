@@ -40,12 +40,13 @@
             <div class="flex column tabDiv" v-for="(item,i) in originList.lessonsList" :key="i">
               <div
                 class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
-                
-                :style="{'background-color': itemb != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" :key="ii" >
-
-                <div v-if="!itemb">
+                :style="{'background-color': itemb != ''? (itemb.type===0?
+                getColors(item,'rgb(142, 208, 214)'):(itemb.type===1?
+                getColors(item,'rgb(248, 244, 8)'):(itemb.type===2?
+                getColors(item,'rgb(233, 233, 224)'):'white'))):'white'}" :key="ii" >
+                  <div v-if="!itemb">
                     <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
-                </div>  
+                  </div>  
                     <el-popover
                       placement="top-start"
                       width="50"
