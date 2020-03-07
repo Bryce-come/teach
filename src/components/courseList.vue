@@ -257,12 +257,11 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-      if(oneDay.value===undefined||oneDay.value===null){
-        alert('请选择日期')
-      }
-      else{
+      if (oneDay.value === undefined || oneDay.value === null) {
+        alert('请选择日期');
+      } else {
         clearDiv();
-        await setWeekSection(new Date(oneDay.value))
+        await setWeekSection(new Date(oneDay.value));
       }
     }
     const moreSetting = ref({
@@ -271,13 +270,13 @@ export default createComponent({
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [
-        {lesson: [1,2,3,4,5,6,7,8,9,10,11,12,]},
-        {lesson: [13,14,15,16,17,18,19,20,21,22,23,24,]},
-        {lesson: [25,26,27,28,29,30,31,32,33,34,35,36,]},
-        {lesson: [37,38,39,40,41,42,43,44,45,46,47,48,]},
-        {lesson: [49,50,51,52,53,54,55,56,57,58,59,60,]},
-        {lesson: [61,62,63,64,65,66,67,68,69,70,71,72,]},
-        {lesson: [73,74,75,76,77,78,79,80,81,82,83,84,]},
+        {lesson: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]},
+        {lesson: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]},
+        {lesson: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]},
+        {lesson: [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]},
+        {lesson: [49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]},
+        {lesson: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72]},
+        {lesson: [73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84]},
       ],
     });
     function getColors(lessonOne: any, defaultColor: any) {
@@ -458,6 +457,7 @@ export default createComponent({
           return row;
         }
       }
+<<<<<<< HEAD
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
           originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay())-1].lesson.splice(result[i].extend.lessons[0]-1,1,result[i])
@@ -468,6 +468,17 @@ export default createComponent({
           for(let j=0;j<result[i].extend.lessons.length-1;j++){
             const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
             str.style.display='none'
+=======
+      if ( result.length != 0) {
+        for (let i = 0; i < result.length; i++) {
+          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
+          const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
+          str.style.height = 50 * result[i].extend.lessons.length + 'px';
+          str.style.lineHeight = 3.5 * result[i].extend.lessons.length + 'rem';
+          for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
+            const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
+            str.style.display = 'none';
+>>>>>>> 09a6f045b44e3b1d7e778eca578b549ed23a0e5a
           }
         }
       }
@@ -478,18 +489,18 @@ export default createComponent({
     async function goNextWeek() {
       await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
     }
-    async function clearDiv(){
-      for(let i=0;i<7;i++){
-        for(let j=0;j<courseCount.value.count.length;j++){
-          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[i].childNodes[j];
-          str.style.display='inline'
-          str.style.height=50+'px'
-          str.style.lineHeight=3.5+'rem'
+    async function clearDiv() {
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < courseCount.value.count.length; j++) {
+          const str = document.getElementsByClassName('tabDiv')[i].childNodes[j] as HTMLElement;
+          str.style.display = 'inline';
+          str.style.height = 50 + 'px';
+          str.style.lineHeight = 3.5 + 'rem';
         }
       }
     }
-    async function setWeekSection(row:any){
-      originList.value.lessonsList=[
+    async function setWeekSection(row: any) {
+      originList.value.lessonsList = [
         {lesson: []},
         {lesson: []},
         {lesson: []},
@@ -497,16 +508,17 @@ export default createComponent({
         {lesson: []},
         {lesson: []},
         {lesson: []},
-      ]
-      for(let i=0;i<courseCount.value.count.length;i++){
-        originList.value.lessonsList[0].lesson.push('')
-        originList.value.lessonsList[1].lesson.push('')
-        originList.value.lessonsList[2].lesson.push('')
-        originList.value.lessonsList[3].lesson.push('')
-        originList.value.lessonsList[4].lesson.push('')
-        originList.value.lessonsList[5].lesson.push('')
-        originList.value.lessonsList[6].lesson.push('')
+      ];
+      for (let i = 0; i < courseCount.value.count.length; i++) {
+        originList.value.lessonsList[0].lesson.push('');
+        originList.value.lessonsList[1].lesson.push('');
+        originList.value.lessonsList[2].lesson.push('');
+        originList.value.lessonsList[3].lesson.push('');
+        originList.value.lessonsList[4].lesson.push('');
+        originList.value.lessonsList[5].lesson.push('');
+        originList.value.lessonsList[6].lesson.push('');
       }
+<<<<<<< HEAD
       const result = getWeekDaysRange(row)
       for(let i=0;i<result.length;i++){
         weekSection.value.weekInFo[i]=result[i].getMonth()+1+'/'+result[i].getDate()
@@ -514,12 +526,18 @@ export default createComponent({
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[6].getTime()
       getOriginCourseRecordList(weekSection)
+=======
+      const result = getWeekDaysRange(row);
+      weekSection.value.weekStart = result[0].getTime();
+      weekSection.value.weekEnd = result[1].getTime();
+      getOriginCourseRecordList(weekSection);
+>>>>>>> 09a6f045b44e3b1d7e778eca578b549ed23a0e5a
     }
-    async function getCourseCount(){
-      const result = await SettingGet({onlyLesson:true})
-      
-      for(let i=0;i<result.lessonNum;i++){
-        courseCount.value.count.push(i+1)
+    async function getCourseCount() {
+      const result = await SettingGet({onlyLesson: true});
+
+      for (let i = 0; i < result.lessonNum; i++) {
+        courseCount.value.count.push(i + 1);
       }
     }
     onMounted(useLoading(loading, async () => {
