@@ -127,7 +127,7 @@ export default {
       }
       device.value = station.value.deviceList[0];
       if (device.value) {
-        const list = await AnalysisDeviceTime({
+        const {list} = await AnalysisDeviceTime({
           start: startTimestamp.value,
           end: endTimestamp.value,
           deviceId: device.value.id,

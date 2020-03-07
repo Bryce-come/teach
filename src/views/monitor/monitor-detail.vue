@@ -172,7 +172,7 @@ export default {
       if (device.value) {
         const d1 = new Date();
         d1.setHours(d1.getHours() - 1);
-        const list = await AnalysisDeviceTime({
+        const { list } = await AnalysisDeviceTime({
           start: courseRecord.value ? new Date(courseRecord.value.startDt).getTime() : d1.getTime(),
           end: new Date().getTime(),
           deviceId: device.value.id,
