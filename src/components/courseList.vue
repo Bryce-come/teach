@@ -8,27 +8,23 @@
         <el-button style="margin-left: 10px" type="primary" @click="clearDiv();goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
       </div>
     </div>
-    <div class="flex align-center" style="margin:0 auto">
-      <p style="margin:0 auto;margin-top:5px">
-        {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
-    </div>   
 
     <div style="margin: 7px;">
       <div class="flex center">
         <div style="margin: 10px">
           <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(142, 208, 214)"></span>
           <span>计划内课程</span>
-          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(233, 233, 224)"></span>
-          <span>已预约课程</span>
-          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(248, 244, 8)"></span>
-          <span>新预约课程</span>
+          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(244,213,71)"></span>
+          <span>授课预约</span>
+          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(197,150,196)"></span>
+          <span>个人预约</span>
         </div>
       </div>
       <div class="flex center">
         <div>
           <div class="flex" style="width:inherit">
             <div class="title" v-for="(weekNum, weekIndex) in weeks.length+1" :key="weekIndex">
-                {{weekIndex===0?'时间':'周' + digital2Chinese(weekIndex-1, 'week')}}
+                {{weekIndex===0?'时间':weekSection.weekInFo[weekIndex-1] + ' ' + '周' + digital2Chinese(weekIndex-1, 'week')}}
             </div>
           </div>
           <div class="flex" style="width:inherit">
@@ -38,30 +34,36 @@
               </div>
             </div>
             <div class="flex column tabDiv" v-for="(item,i) in originList.lessonsList" :key="i">
+              <!-- <div
+                class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
+                :style="{'background-color': itemb != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" :key="ii" > -->
               <div
                 class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
                 :style="{'background-color': itemb != ''? (itemb.type===0?
-                getColors(item,'rgb(142, 208, 214)'):(itemb.type===1?
-                getColors(item,'rgb(248, 244, 8)'):(itemb.type===2?
-                getColors(item,'rgb(233, 233, 224)'):'white'))):'white'}" :key="ii" >
-                  <div v-if="!itemb">
-                    <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+                'rgb(142, 208, 214)':(itemb.type===1?
+                'rgb(244,213,71)':(itemb.type===2?
+                'rgb(197,150,196)':'white'))):'white'}" :key="ii" style="cursor: pointer;" >
+                  <div v-if="!itemb" >
+                    <div class='order' @click='showLesson()' @mousemove="showColor($event)" @mouseleave="noShowColor($event)">
+                      <!-- <el-button size='mini' @click='showLesson()'>预约</el-button> -->
+                    </div>
                   </div>  
                     <el-popover
                       placement="top-start"
                       width="50"
+                      v-if="itemb.course"
                       >
                       <div style="color:#67C23A;width:6rem;" @click="readLesson(itemb)">
                         <i class="el-icon-reading"/>
-                        <span  style="margin-left:5px">查看</span>
+                        <span  style="margin-left:5px;cursor: pointer;">查看</span>
                       </div>
                       <div style="color:#67a1ff;width:6rem;" @click='showLesson(itemb)'>
                         <i class="el-icon-edit"/>
-                        <span  style="margin-left:5px">修改</span>
+                        <span  style="margin-left:5px;cursor: pointer;">修改</span>
                       </div>
                       <div style="color:#F56C6C;width:6rem;" @click="delectLesson(itemb)">
                         <i class="el-icon-delete"/>
-                        <span  style="margin-left:5px">删除</span>
+                        <span  style="margin-left:5px;cursor: pointer;">删除</span>
                       </div>
                       <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
                         <i class="el-icon-takeaway-box"></i>
@@ -69,7 +71,9 @@
                       </div> -->
                       <div style="width:100%;height:100%" slot="reference" >
                         <div>
-                          {{itemb.course?itemb.course.name:''}}
+                          {{itemb.course?
+                          (itemb.type===0?itemb.course.name + itemb.startDt +itemb.endDt:''):
+                          ''}}
                         </div>
                       </div>
                     </el-popover>
@@ -237,6 +241,7 @@ export default createComponent({
     const weekSection = ref<any>({
       weekStart: '',
       weekEnd: '',
+      weekInFo:[],
     });
     // 查看标志a
     const readModel = ref<any>(
@@ -296,6 +301,14 @@ export default createComponent({
     function digital2Chinese(num: any, identifier: any) {
       const character = ['一', '二', '三', '四', '五', '六'];
       return identifier === 'week' && num === 6 ? '日' : character[num];
+    }
+    function showColor(row:any){
+      const result = row.srcElement
+      result.style.backgroundColor='Gainsboro'
+    }
+    function noShowColor(row:any){
+      const result = row.srcElement
+      result.style.backgroundColor='white'
     }
     // 重新排列数据
     const newList = async () => {
@@ -451,6 +464,7 @@ export default createComponent({
           const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]-1];
           str.style.height=50*result[i].extend.lessons.length+'px'
           str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
+          console.log(result[i])
           for(let j=0;j<result[i].extend.lessons.length-1;j++){
             const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
             str.style.display='none'
@@ -494,8 +508,11 @@ export default createComponent({
         originList.value.lessonsList[6].lesson.push('')
       }
       const result = getWeekDaysRange(row)
+      for(let i=0;i<result.length;i++){
+        weekSection.value.weekInFo[i]=result[i].getMonth()+1+'/'+result[i].getDate()
+      }
       weekSection.value.weekStart = result[0].getTime()
-      weekSection.value.weekEnd = result[1].getTime()
+      weekSection.value.weekEnd = result[6].getTime()
       getOriginCourseRecordList(weekSection)
     }
     async function getCourseCount(){
@@ -521,7 +538,7 @@ export default createComponent({
       loading, cheakIt,
       oneDay, courseCount,
       list: useLoading(loading, list),
-      weeks,
+      weeks,showColor,noShowColor,
       digital2Chinese,
       lessons,
       moreSetting,
@@ -608,6 +625,10 @@ function initForm(): any {
     height: 2.5rem;
     line-height: 3.5rem;
     text-align: center;
+    width: 148px;
+    left: 1px;
+    top: 1px;
+    height: 48px;
     // vertical-align: middle;
 
   }
@@ -619,20 +640,19 @@ function initForm(): any {
     display: inline-block;
   }
   .title{
-    color: white;
+    color: black;
     border: 1px solid black;
     width: 150px;
     height: 40px;
-    background-color: #00AAEE;
+    // background-color: rgb(214,236,250);
     text-align: center;
     line-height:2.5rem;
   }
   .titleb{
-    color: white;
+    color: black;
     border: 1px solid black;
     width: 150px;
     height: 50px;
-    background-color: #00AAEE;
     text-align: center;
     line-height:3.5rem;
   }
