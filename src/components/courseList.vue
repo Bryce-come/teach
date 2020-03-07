@@ -12,9 +12,6 @@
       <p style="margin:0 auto;margin-top:5px">
         {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
     </div>   
-    <!-- <som></som> -->
-
-  
 
     <div style="margin: 7px;">
       <div class="flex center">
@@ -49,8 +46,6 @@
                 <div v-if="!itemb">
                     <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
                 </div>  
-                <!-- v-if="ii!==2||i!==2" -->
-                <!-- {{itemb.course?itemb.course.name:''}} -->
                     <el-popover
                       placement="top-start"
                       width="50"
@@ -73,7 +68,7 @@
                       </div> -->
                       <div style="width:100%;height:100%" slot="reference" >
                         <div>
-                          {{itemb?itemb.course.name:''}}
+                          {{itemb.course?itemb.course.name:''}}
                         </div>
                       </div>
                     </el-popover>
@@ -256,19 +251,12 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-<<<<<<< HEAD
       if(oneDay.value===undefined||oneDay.value===null){
         alert('请选择日期')
       }
       else{
         clearDiv();
         await setWeekSection(new Date(oneDay.value))
-=======
-      if (oneDay.value === undefined) {
-        alert('请选择日期');
-      } else {
-        await setWeekSection(new Date(oneDay.value));
->>>>>>> bc5face04a5fa3581b5505be2d6df36a1cfbdd15
       }
     }
     const moreSetting = ref({
@@ -276,7 +264,6 @@ export default createComponent({
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-<<<<<<< HEAD
       lessonsList: [
         {lesson: [1,2,3,4,5,6,7,8,9,10,11,12,]},
         {lesson: [13,14,15,16,17,18,19,20,21,22,23,24,]},
@@ -285,35 +272,6 @@ export default createComponent({
         {lesson: [49,50,51,52,53,54,55,56,57,58,59,60,]},
         {lesson: [61,62,63,64,65,66,67,68,69,70,71,72,]},
         {lesson: [73,74,75,76,77,78,79,80,81,82,83,84,]},
-=======
-      originLessonsList: [],
-      //  originLessonsList:[
-      // 1,2,3,4,5,6,7,
-      // 8,9,10,11,12,13,14,
-      // 15,16,17,18,19,20,21,
-      // 22,23,24,25,26,27,28,
-      // 29,30,31,32,33,34,35,
-      // 36,37,38,39,40,41,42,
-      // 43,44,45,46,47,48,49,
-      // 50,51,52,53,54,55,56,
-      // 57,58,59,60,61,62,63,
-      // 64,65,66,67,68,69,70,
-      // 71,72,73,74,75,76,77,
-      // 78,79,80,81,82,83,84 ],
-      lessonsList: [
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '', '']},
->>>>>>> bc5face04a5fa3581b5505be2d6df36a1cfbdd15
       ],
     });
     function getColors(lessonOne: any, defaultColor: any) {
@@ -419,34 +377,34 @@ export default createComponent({
         readModel.value.visible = true;
         readModel.value.oneLesson = lessonItem;
     };
-    const tabCell = async () => {
-       const tab = document.getElementById('tabs');
-       // @ts-ignore
-       const rows = tab.rows;
-       const rlen = rows.length;
-       for (let i = 1; i < rlen; i++) {
-         const cells = rows[i].cells;
-         for (let j = 1; j < cells.length; j++) {
-             cells[j].onclick = function() {
-                if (!isshow.value) {
-                    color.value = this.style.backgroundColor;
-                    tableX.value = i;
-                    tableY.value = j;
-                    console.log(color.value);
-                }
-                isshow.value = !isshow.value;
-                if (tableX.value === i &&  tableY.value === j) {
-                    if (isshow.value) {
-                        this.style.backgroundColor = 'darkorchid';
-                    } else { this.style.backgroundColor = color.value; }
-                } else {
-                  alert('请在上一处再次点击');
-                  isshow.value = true;
-                }
-             };
-         }
-       }
-    };
+    // const tabCell = async () => {
+    //    const tab = document.getElementById('tabs');
+    //    // @ts-ignore
+    //    const rows = tab.rows;
+    //    const rlen = rows.length;
+    //    for (let i = 1; i < rlen; i++) {
+    //      const cells = rows[i].cells;
+    //      for (let j = 1; j < cells.length; j++) {
+    //          cells[j].onclick = function() {
+    //             if (!isshow.value) {
+    //                 color.value = this.style.backgroundColor;
+    //                 tableX.value = i;
+    //                 tableY.value = j;
+    //                 console.log(color.value);
+    //             }
+    //             isshow.value = !isshow.value;
+    //             if (tableX.value === i &&  tableY.value === j) {
+    //                 if (isshow.value) {
+    //                     this.style.backgroundColor = 'darkorchid';
+    //                 } else { this.style.backgroundColor = color.value; }
+    //             } else {
+    //               alert('请在上一处再次点击');
+    //               isshow.value = true;
+    //             }
+    //          };
+    //      }
+    //    }
+    // };
     const showLesson = async (lessonItem?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (lessonItem) {
@@ -486,7 +444,6 @@ export default createComponent({
           return row;
         }
       }
-<<<<<<< HEAD
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
           originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay())-1].lesson.splice(result[i].extend.lessons[0]-1,1,result[i])
@@ -497,15 +454,6 @@ export default createComponent({
             const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
             str.style.display='none'
           }
-=======
-      if ( result.length != 0) {
-        for (let i = 0; i < result.length; i++) {
-          originList.value.originLessonsList.splice([((result[i].extend.lessons[0] - 1) * 7) + setThisDay(new Date(result[i].startDt).getDay()) - 1], 1, result[i]);
-          // const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
-          // str.innerText=result[i].course.name;
-          // for(let j=0;j<result[i].extend.lessons.length-1;j++){
-          // }
->>>>>>> bc5face04a5fa3581b5505be2d6df36a1cfbdd15
         }
       }
     }
@@ -515,7 +463,6 @@ export default createComponent({
     async function goNextWeek() {
       await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
     }
-<<<<<<< HEAD
     async function clearDiv(){
       for(let i=0;i<7;i++){
         for(let j=0;j<courseCount.value.count.length;j++){
@@ -556,33 +503,11 @@ export default createComponent({
       for(let i=0;i<result.lessonNum;i++){
         courseCount.value.count.push(i+1)
       }
-=======
-    async function clearDiv() {
-
-    }
-    async function setWeekSection(row: any) {
-      originList.value.originLessonsList = [
-      , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
-      , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,  ];
-      const result = getWeekDaysRange(row);
-      weekSection.value.weekStart = result[0].getTime();
-      weekSection.value.weekEnd = result[1].getTime();
-      getOriginCourseRecordList(weekSection);
-    }
-    async function getCourseCount() {
-      // courseCount.value.count
-      const result = await SettingGet({onlyLesson: true});
-
-      for (let i = 0; i < result.lessonNum; i++) {
-        courseCount.value.count.push(i + 1);
-      }
-      console.log(courseCount.value.count);
->>>>>>> bc5face04a5fa3581b5505be2d6df36a1cfbdd15
     }
     onMounted(useLoading(loading, async () => {
       await getCourseCount();
       await setWeekSection(new Date());
-      await tabCell();
+      // await tabCell();
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
@@ -610,7 +535,7 @@ export default createComponent({
       delayLesson: useConfirm('确认延长一课时？', useLoading(loading, delayLesson)),
       isshow,
       color,
-      tabCell,
+      // tabCell,
       tableX,
       tableY,
       courseAppointTypeList,
