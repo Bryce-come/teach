@@ -2,11 +2,17 @@
   <div v-loading="loading">
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
-        <lkt-date-picker v-model="oneDay"/>
-        <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>        
+        <el-date-picker v-model="oneDay" type="date" placeholder="选择日期"></el-date-picker>
+        <el-button style="margin-left: 10px" type="primary" @click="clearDiv();list()">跳转日期</el-button>  
+        <el-button style="margin-left: 10px" type="primary"  icon="el-icon-arrow-left" @click="clearDiv();goLastWeek()">上一周</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="clearDiv();goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
       </div>
     </div>
-    <div class="class-table">
+    <div class="flex align-center" style="margin:0 auto">
+      <p style="margin:0 auto;margin-top:5px">
+        {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
+    </div>
+    <div style="margin: 7px;">
       <div class="flex center">
         <div style="margin: 10px">
           <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(142, 208, 214)"></span>
@@ -17,13 +23,57 @@
           <span>新预约课程</span>
         </div>
       </div>
-      <div class="flex end" style="margin-right: 10%;margin-bottom:10px">
-          <el-button-group>
-            <el-button type="primary" size="small" icon="el-icon-arrow-left">上一周</el-button>
-            <el-button type="primary" size="small">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-          </el-button-group>
+      <div style="width:80%;height:623px;background-color:azure;margin:auto;border:0.005em solid #000">
+        <div class="firstCol">时间</div><div class="firstCol">周一</div><div class="firstCol">周二</div><div class="firstCol">周三</div>
+        <div class="firstCol">周四</div><div class="firstCol">周五</div><div class="firstCol">周六</div><div class="firstCol">周日</div>
+        <div style="width:12.5%;height:588.4px;background-color:blue;
+        position:relative;left:;top:;display: -webkit-flex; /* Safari */
+        display: flex;flex-wrap: wrap;flex-direction:column ;">
+          <div class="firstRow" v-for="(item,i) in courseCount.count" :key="i">第<span>{{i+1}}</span>节课</div>
         </div>
-      <table id='tabs'>
+        <div style="width:87.5%;height:589px;background-color:blue;
+        position:relative;left:12.5%;top:-94.5%;display: -webkit-flex; /* Safari */
+        display: flex;flex-wrap: wrap;flex-direction:row ;">
+          <div class="textCell" @click="cheakIt(item)" v-for="(item,i) in originList.originLessonsList" :key="i"
+          
+          >
+          <!-- :style="{'background-color': item != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" -->
+            
+            <div v-if="item" slot="reference">{{item.course.name}}</div>
+            <el-popover placement="top-start" width="50">
+              <div style="color:#67C23A;width:6rem;" @click="readLesson(item)">
+                <i class="el-icon-reading"/>
+                <span  style="margin-left:5px">查看</span>
+              </div>
+              <div style="color:#67a1ff;width:6rem;" @click='showLesson(item)'>
+                <i class="el-icon-edit"/>
+                <span  style="margin-left:5px">修改</span>
+              </div>
+              <div style="color:#F56C6C;width:6rem;" @click="delectLesson(item)">
+                <i class="el-icon-delete"/>
+                <span  style="margin-left:5px">删除</span>
+              </div>
+              <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
+                <i class="el-icon-takeaway-box"></i>
+                <span  style="margin-left:5px">延长课时</span>
+              </div> -->
+              <!-- <div style="width:100%;height:100%" slot="reference" >
+                <div>
+                 {{item?item.course.name:''}}
+                  </div>
+              </div> -->
+            </el-popover>
+            <div v-if="!item">
+              <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="class-table">
+      
+      <table id='tabs'  >
         <thead>
           <tr>
             <th>时间</th>
@@ -41,7 +91,7 @@
                  :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
                  :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}"
                 >
-                  <!-- <div v-if="lessonItem" slot="reference">{{lessonItem.name}}</div> -->
+                  <!-- <div v-if="item" slot="reference">{{item.name}}</div> -->
                 <el-popover
                   placement="top-start"
                   width="50"
@@ -66,8 +116,8 @@
                     <div>
                        {{lessonItem?lessonItem.course.name:''}}
                     </div>
-                    </div>
-                  </el-popover>
+                  </div>
+                </el-popover>
                <div v-if="!lessonItem">
                  <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
                </div>
@@ -75,6 +125,8 @@
            </tr>
         </tbody>
       </table>
+      
+
       <el-dialog
       :visible.sync="readModel.visible"
       :modal="readModel.oneLesson"
@@ -152,6 +204,7 @@ import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
+import { getWeekDaysRange } from 'web-toolkit/src/utils/date'
 import { CourseRecordList } from '../dao/courseRecordDao';
 import { SettingGet } from '../dao/settingDao';
 export default createComponent({
@@ -164,12 +217,19 @@ export default createComponent({
     const loading = ref(false);
     // 学期选择列表
     const terms = ref({});
-    const oneDay = ref();
+    const oneDay = ref<any>();
     const isshow = ref(false);
     const color = ref();
     const tableX = ref(-1);
     const tableY = ref(-1);
     const courseAppointTypeList = ref<any>();
+    const courseCount = ref<any>({
+      count:[]
+    });
+    const weekSection = ref<any>({
+      weekStart:'',
+      weekEnd:'',
+    });
     // 查看标志a
     const readModel = ref<any>(
       {
@@ -183,39 +243,46 @@ export default createComponent({
       });
     const form = ref<ElForm|null>(null);
     // 查询函数
-    async function list() {}
+    async function list() {
+      if(oneDay.value===undefined){
+        alert('请选择日期')
+      }
+      else{
+        await setWeekSection(new Date(oneDay.value))
+      }
+    }
     const moreSetting = ref({
       lessonNum: 7,
     });
     const lessons = ref<any>();
     const originList = ref<any>({
-      originLessonsList: [
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-      ],
+      originLessonsList:[],
+      //  originLessonsList:[ 
+      // 1,2,3,4,5,6,7,
+      // 8,9,10,11,12,13,14,
+      // 15,16,17,18,19,20,21,
+      // 22,23,24,25,26,27,28,
+      // 29,30,31,32,33,34,35,
+      // 36,37,38,39,40,41,42,
+      // 43,44,45,46,47,48,49,
+      // 50,51,52,53,54,55,56,
+      // 57,58,59,60,61,62,63,
+      // 64,65,66,67,68,69,70,
+      // 71,72,73,74,75,76,77,
+      // 78,79,80,81,82,83,84 ],
       lessonsList: [
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
-        {lesson: ['', '', '', '', '', '']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
+        {lesson: ['','','','','','','']},
       ],
     });
     function getColors(lessonOne: any, defaultColor: any) {
@@ -237,13 +304,13 @@ export default createComponent({
     }
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
     function digital2Chinese(num: any, identifier: any) {
-      const character = ['一', '二', '三', '四', '五', '六', '七'];
+      const character = ['一', '二', '三', '四', '五', '六'];
       return identifier === 'week' && num === 6 ? '日' : character[num];
     }
     // 重新排列数据
     const newList = async () => {
-      lessons.value =
-      originList.value.lessonsList;
+      // lessons.value =
+      // originList.value.originLessonsList;
       // [
       //   {lesson: ['', '', '',
       //     {
@@ -374,25 +441,61 @@ export default createComponent({
     const delayLesson = async (lessonItem: any) => {
       Message.success('成功延长一小时');
     };
-    async function getOriginCourseRecordList() {
-      const result = await CourseRecordList({end: 1582473599000, start: 1581868800000});
-      // for(let i=0;i<result.length;i++){
-        // originList.value.lessonsList[result[i].extend.lessons[0]-1].lesson.splice(i,1,result[i])
-      originList.value.lessonsList[0].lesson.splice(0, 1, result[0]);
-      originList.value.lessonsList[3].lesson.splice(1, 1, result[1]);
-      // }
-      console.log(originList.value.lessonsList);
-      console.log(result);
+    async function cheakIt(row:any){
+      // const sum = <HTMLElement>document.getElementsByClassName('textCell')[row]
+      // sum.style.height=100+'px'
+      // console.log(row)
     }
-    // async function getOnlyLesson(){
-    //   const result = await SettingGet({onlyLesson:true})
-    //   // console.log(result)
-    // }
+    async function getOriginCourseRecordList(row:any){
+      const result = await CourseRecordList({start:row.value.weekStart,end:row.value.weekEnd+86400000})
+      function setThisDay(row:any){
+        if(row===0){
+          return 7
+        }else{
+          return row
+        }
+      }
+      if( result.length!=0){
+        for(let i=0;i<result.length;i++){
+          originList.value.originLessonsList.splice([((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1],1,result[i])
+          // const str =<HTMLElement>document.getElementsByClassName('textCell')[((result[i].extend.lessons[0]-1)*7)+setThisDay(new Date(result[i].startDt).getDay())-1];
+          // str.innerText=result[i].course.name;
+          // for(let j=0;j<result[i].extend.lessons.length-1;j++){
+          // }
+        }
+      }
+    }
+    async function goLastWeek(){
+      await setWeekSection(new Date(weekSection.value.weekStart-86400000))
+    }
+    async function goNextWeek(){
+      await setWeekSection(new Date(weekSection.value.weekEnd+86400000))
+    }
+    async function clearDiv(){
+      
+    }
+    async function setWeekSection(row:any){
+      originList.value.originLessonsList=[ 
+      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+      ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]
+      const result = getWeekDaysRange(row)
+      weekSection.value.weekStart = result[0].getTime()
+      weekSection.value.weekEnd = result[1].getTime()
+      getOriginCourseRecordList(weekSection)
+    }
+    async function getCourseCount(){
+      // courseCount.value.count
+      const result = await SettingGet({onlyLesson:true})
+      
+      for(let i=0;i<result.lessonNum;i++){
+        courseCount.value.count.push(i+1)
+      }
+      console.log(courseCount.value.count)
+    }
     onMounted(useLoading(loading, async () => {
-      await newList();
+      await getCourseCount()
+      await setWeekSection(new Date());
       await tabCell();
-      await getOriginCourseRecordList();
-      // await getOnlyLesson()
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
@@ -400,10 +503,10 @@ export default createComponent({
       ];
     }));
     return{
-      getOriginCourseRecordList,
-      // getOnlyLesson,
-      loading,
-      oneDay: new Date(),
+      getOriginCourseRecordList,originList,clearDiv,
+      setWeekSection,goLastWeek,goNextWeek,weekSection,
+      loading,cheakIt,
+      oneDay,courseCount,
       list: useLoading(loading, list),
       weeks,
       digital2Chinese,
@@ -483,20 +586,57 @@ function initForm(): any {
           font-weight: lighter;
           text-align: center;
           vertical-align: middle;
-          .order {
-            height: 2.5rem;
-            line-height: 2.5rem;
-            text-align: center;
-            vertical-align: middle;
-          }
-          .order .el-button{
-            display: none;
-          }
-          .order:hover .el-button{
-            display: inline-block;
-          }
+          
         }
       }
     }
+  }
+  .order {
+    height: 2.5rem;
+    line-height: 3.5rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .order .el-button{
+    display: none;
+  }
+  .order:hover .el-button{
+      display: inline-block;
+  }
+  .firstCol{
+    width:12.5%;
+    background-color:#67A1FF;
+    margin:auto;
+    border:0.005em solid #000;
+    float: left;
+    color: #fff;
+    line-height: 2.5rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+  } 
+  .firstRow{
+    // width:12.5%;
+    height: 8.3333%;
+    color: #fff;
+    background-color: #67a1ff;
+    border:0.005em solid #000;
+    line-height: 3.5rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+  }
+  .textCell{
+    width:14.2857%;
+    height: 8.3333%;
+    background-color:white;
+    border:0.1px solid #000;
+    line-height: 3.5rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
   }
 </style>
