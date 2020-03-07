@@ -34,9 +34,6 @@
               </div>
             </div>
             <div class="flex column tabDiv" v-for="(item,i) in originList.lessonsList" :key="i">
-              <!-- <div
-                class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
-                :style="{'background-color': itemb != ''? getColors(item,'rgb(142, 208, 214)'):'white'}" :key="ii" > -->
               <div
                 class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
                 :style="{'background-color': itemb != ''? (itemb.type===0?
@@ -69,11 +66,21 @@
                         <i class="el-icon-takeaway-box"></i>
                         <span  style="margin-left:5px">延长课时</span>
                       </div> -->
-                      <div style="width:100%;height:100%" slot="reference" >
-                        <div>
+                      <div style="width:100%;height:100%;" slot="reference" class="flex center column">
+                        <!-- <div>
                           {{itemb.course?
-                          (itemb.type===0?itemb.course.name + itemb.startDt +itemb.endDt:''):
+                          (itemb.type===0?itemb.course.name + new Date(itemb.startDt).getHours() + ':' + new Date(itemb.startDt).getMinutes() + itemb.endDt:''):
                           ''}}
+                        </div> -->
+                        <div style="line-height:32px">
+                          {{itemb.course?itemb.course.name:''}}
+                        </div>
+                        <div style="line-height:32px">
+                          {{itemb.type===0?itemb.teacher.name:(itemb.type===0?itemb.teacher.name:'')}}
+                        </div>
+                        <div style="line-height:32px">
+                          {{itemb.type != null ? new Date(itemb.startDt).getHours() + ':' + new Date(itemb.startDt).getMinutes() +'-'+
+                          new Date(itemb.endDt).getHours() + ':' + new Date(itemb.endDt).getMinutes():''}}
                         </div>
                       </div>
                     </el-popover>
@@ -86,59 +93,6 @@
     </div>
     
     <div class="class-table">
-      <!-- <table id='tabs'  >
-        <thead>
-          <tr>
-            <th>时间</th>
-            <th v-for="(weekNum, weekIndex) in weeks.length" :key="weekIndex">
-            {{'周' + digital2Chinese(weekIndex, 'week')}}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-           <tr v-for="(item,i) in lessons" :key="i">
-             <th>
-               <div>第<span>{{i+1}}</span>节课</div>
-             </th>
-             <td v-for="(lessonItem, j) in item.lesson" :key="j" 
-              :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
-              :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
-                  <div v-if="item" slot="reference">{{item.name}}</div>
-                <el-popover
-                  placement="top-start"
-                  width="50"
-                  >
-                  <div style="color:#67C23A;width:6rem;" @click="readLesson(lessonItem)">
-                    <i class="el-icon-reading"/>
-                    <span  style="margin-left:5px">查看</span>
-                  </div>
-                  <div style="color:#67a1ff;width:6rem;" @click='showLesson(lessonItem)'>
-                    <i class="el-icon-edit"/>
-                    <span  style="margin-left:5px">修改</span>
-                  </div>
-                  <div style="color:#F56C6C;width:6rem;" @click="delectLesson(lessonItem)">
-                    <i class="el-icon-delete"/>
-                    <span  style="margin-left:5px">删除</span>
-                  </div>
-                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                    <i class="el-icon-takeaway-box"></i>
-                    <span  style="margin-left:5px">延长课时</span>
-                  </div>
-                  <div style="width:100%;height:100%" slot="reference" >
-                    <div>
-                       {{lessonItem?lessonItem.course.name:''}}
-                    </div>
-                  </div>
-                </el-popover>
-               <div v-if="!lessonItem">
-                 <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
-               </div>
-             </td>
-           </tr>
-        </tbody>
-      </table> -->
-      
-
       <el-dialog
       :visible.sync="readModel.visible"
       :modal="readModel.oneLesson"
@@ -257,11 +211,12 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-      if (oneDay.value === undefined || oneDay.value === null) {
-        alert('请选择日期');
-      } else {
+      if(oneDay.value===undefined||oneDay.value===null){
+        alert('请选择日期')
+      }
+      else{
         clearDiv();
-        await setWeekSection(new Date(oneDay.value));
+        await setWeekSection(new Date(oneDay.value))
       }
     }
     const moreSetting = ref({
@@ -270,32 +225,15 @@ export default createComponent({
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [
-        {lesson: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]},
-        {lesson: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]},
-        {lesson: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]},
-        {lesson: [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]},
-        {lesson: [49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]},
-        {lesson: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72]},
-        {lesson: [73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84]},
+        {lesson: [1,2,3,4,5,6,7,8,9,10,11,12,]},
+        {lesson: [13,14,15,16,17,18,19,20,21,22,23,24,]},
+        {lesson: [25,26,27,28,29,30,31,32,33,34,35,36,]},
+        {lesson: [37,38,39,40,41,42,43,44,45,46,47,48,]},
+        {lesson: [49,50,51,52,53,54,55,56,57,58,59,60,]},
+        {lesson: [61,62,63,64,65,66,67,68,69,70,71,72,]},
+        {lesson: [73,74,75,76,77,78,79,80,81,82,83,84,]},
       ],
     });
-    function getColors(lessonOne: any, defaultColor: any) {
-      const type = lessonOne.type;
-      if (type === 0 || lessonOne === '') {
-        return defaultColor;
-        // rgb(142, 208, 214) 计划内课程
-      } else if (type === 1 || type === 2) {
-        const result = lessonOne.extend.appointRecord.result;
-        if (result === 2) {
-          // 已预约课程
-          defaultColor = 'rgb(233, 233, 224)';
-        } else if (result === 1) {
-         // 新预约课程
-          defaultColor = 'rgb(248, 244, 8)';
-        }
-        return defaultColor;
-     }
-    }
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
     function digital2Chinese(num: any, identifier: any) {
       const character = ['一', '二', '三', '四', '五', '六'];
@@ -309,115 +247,13 @@ export default createComponent({
       const result = row.srcElement
       result.style.backgroundColor='white'
     }
-    // 重新排列数据
     const newList = async () => {
-      // lessons.value =
-      // originList.value.originLessonsList;
-      // [
-      //   {lesson: ['', '', '',
-      //     {
-      //       id: 1,
-      //       course: {
-      //         name: '自动化课程1',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 1,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 3,
-      //         appointRecord: {result: 1},
-      //         lessons: [1, 2, 3],
-      //         class: '自动化1801'},
-      //     }, '', '', '']},
-      //   {lesson: ['', '', '', '', '', '']},
-      //   {lesson: ['', '', '', '', '', '']},
-      //   {lesson: ['', '', '', '', '',
-      //     {
-      //       id: 2,
-      //       course: {
-      //         name: '自动化课程2',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 0,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 1,
-      //         lessons: [4],
-      //         class: '自动化1801'},
-      //     }, '']},
-      //   {lesson: ['', '', '', '', '',
-      //     {
-      //       id: 3,
-      //       course: {
-      //         name: '自动化课程3',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 1,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 1,
-      //         appointRecord: {result: 2},
-      //         lessons: [5],
-      //         class: '自动化1801'},
-      //     }, '']},
-      //   {lesson: ['', '', '', '', '', '', '']},
-      //   {lesson: ['',
-      //     {
-      //       id: 4,
-      //       course: {
-      //         name: '自动化课程4',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 2,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 1,
-      //         appointRecord: {result: 1},
-      //         lessons: [7],
-      //         class: '自动化1801'},
-      //     }, '', '', '', '', '']},
-      // ];
+
     };
     const readLesson = async (lessonItem: any) => {
         readModel.value.visible = true;
         readModel.value.oneLesson = lessonItem;
     };
-    // const tabCell = async () => {
-    //    const tab = document.getElementById('tabs');
-    //    // @ts-ignore
-    //    const rows = tab.rows;
-    //    const rlen = rows.length;
-    //    for (let i = 1; i < rlen; i++) {
-    //      const cells = rows[i].cells;
-    //      for (let j = 1; j < cells.length; j++) {
-    //          cells[j].onclick = function() {
-    //             if (!isshow.value) {
-    //                 color.value = this.style.backgroundColor;
-    //                 tableX.value = i;
-    //                 tableY.value = j;
-    //                 console.log(color.value);
-    //             }
-    //             isshow.value = !isshow.value;
-    //             if (tableX.value === i &&  tableY.value === j) {
-    //                 if (isshow.value) {
-    //                     this.style.backgroundColor = 'darkorchid';
-    //                 } else { this.style.backgroundColor = color.value; }
-    //             } else {
-    //               alert('请在上一处再次点击');
-    //               isshow.value = true;
-    //             }
-    //          };
-    //      }
-    //    }
-    // };
     const showLesson = async (lessonItem?: any) => {
       if (form.value) { (form.value as ElForm).clearValidate(); }
       if (lessonItem) {
@@ -457,28 +293,16 @@ export default createComponent({
           return row;
         }
       }
-<<<<<<< HEAD
       if( result.length!=0){
         for(let i=0;i<result.length;i++){
           originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay())-1].lesson.splice(result[i].extend.lessons[0]-1,1,result[i])
           const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]-1];
           str.style.height=50*result[i].extend.lessons.length+'px'
-          str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
+          // str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
           console.log(result[i])
           for(let j=0;j<result[i].extend.lessons.length-1;j++){
             const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
             str.style.display='none'
-=======
-      if ( result.length != 0) {
-        for (let i = 0; i < result.length; i++) {
-          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
-          const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
-          str.style.height = 50 * result[i].extend.lessons.length + 'px';
-          str.style.lineHeight = 3.5 * result[i].extend.lessons.length + 'rem';
-          for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
-            const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
-            str.style.display = 'none';
->>>>>>> 09a6f045b44e3b1d7e778eca578b549ed23a0e5a
           }
         }
       }
@@ -489,27 +313,22 @@ export default createComponent({
     async function goNextWeek() {
       await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
     }
-    async function clearDiv() {
-      for (let i = 0; i < 7; i++) {
-        for (let j = 0; j < courseCount.value.count.length; j++) {
-          const str = document.getElementsByClassName('tabDiv')[i].childNodes[j] as HTMLElement;
-          str.style.display = 'inline';
-          str.style.height = 50 + 'px';
-          str.style.lineHeight = 3.5 + 'rem';
+    async function clearDiv(){
+      for(let i=0;i<7;i++){
+        for(let j=0;j<courseCount.value.count.length;j++){
+          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[i].childNodes[j];
+          str.style.display='inline'
+          str.style.height=50+'px'
+          str.style.lineHeight=3.5+'rem'
         }
       }
     }
-    async function setWeekSection(row: any) {
-      originList.value.lessonsList = [
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-      ];
-      for (let i = 0; i < courseCount.value.count.length; i++) {
+    async function setWeekSection(row:any){
+      originList.value.lessonsList=[
+        {lesson: []},{lesson: []},{lesson: []},{lesson: []},
+        {lesson: []},{lesson: []},{lesson: []},
+      ]
+      for(let i=0;i<courseCount.value.count.length;i++){
         originList.value.lessonsList[0].lesson.push('');
         originList.value.lessonsList[1].lesson.push('');
         originList.value.lessonsList[2].lesson.push('');
@@ -518,7 +337,6 @@ export default createComponent({
         originList.value.lessonsList[5].lesson.push('');
         originList.value.lessonsList[6].lesson.push('');
       }
-<<<<<<< HEAD
       const result = getWeekDaysRange(row)
       for(let i=0;i<result.length;i++){
         weekSection.value.weekInFo[i]=result[i].getMonth()+1+'/'+result[i].getDate()
@@ -526,24 +344,17 @@ export default createComponent({
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[6].getTime()
       getOriginCourseRecordList(weekSection)
-=======
-      const result = getWeekDaysRange(row);
-      weekSection.value.weekStart = result[0].getTime();
-      weekSection.value.weekEnd = result[1].getTime();
-      getOriginCourseRecordList(weekSection);
->>>>>>> 09a6f045b44e3b1d7e778eca578b549ed23a0e5a
     }
-    async function getCourseCount() {
-      const result = await SettingGet({onlyLesson: true});
-
-      for (let i = 0; i < result.lessonNum; i++) {
-        courseCount.value.count.push(i + 1);
+    async function getCourseCount(){
+      const result = await SettingGet({onlyLesson:true})
+      
+      for(let i=0;i<result.lessonNum;i++){
+        courseCount.value.count.push(i+1)
       }
     }
     onMounted(useLoading(loading, async () => {
       await getCourseCount();
       await setWeekSection(new Date());
-      // await tabCell();
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
@@ -560,7 +371,6 @@ export default createComponent({
       digital2Chinese,
       lessons,
       moreSetting,
-      getColors,
       readLesson,
       readModel,
       form,
@@ -571,7 +381,6 @@ export default createComponent({
       delayLesson: useConfirm('确认延长一课时？', useLoading(loading, delayLesson)),
       isshow,
       color,
-      // tabCell,
       tableX,
       tableY,
       courseAppointTypeList,
@@ -602,43 +411,6 @@ function initForm(): any {
 }
 </script>
 <style scoped lang="scss">
-  .class-table {
-    margin: 7px;
-    table {
-      background-color: rgb(32, 38, 97);
-      table-layout:fixed;
-      margin: auto;
-      width: 80%;
-      thead {
-        background-color:#67a1ff  ;
-        th {
-          color: #fff;
-          line-height: 2.5rem;
-          font-weight: normal;
-        }
-      }
-    }
-    tbody{
-      tr {
-        th {
-          color: #fff;
-          background-color:#67a1ff ;
-          line-height: 3.5rem;
-          font-weight: lighter;
-          text-align: center;
-          vertical-align: middle;
-        }
-        td {
-          // background-color:rgb(142, 208, 214) ;
-          line-height: 3.5rem;
-          font-weight: lighter;
-          text-align: center;
-          vertical-align: middle;
-          
-        }
-      }
-    }
-  }
   .order {
     height: 2.5rem;
     line-height: 3.5rem;
@@ -679,6 +451,6 @@ function initForm(): any {
     width: 150px;
     height: 50px;
     text-align: center;
-    line-height:3.5rem;
+    // line-height:3.5rem;
   }
 </style>
