@@ -8,27 +8,23 @@
         <el-button style="margin-left: 10px" type="primary" @click="clearDiv();goNextWeek()">下一周<i class="el-icon-arrow-right el-icon--right"></i></el-button>
       </div>
     </div>
-    <div class="flex align-center" style="margin:0 auto">
-      <p style="margin:0 auto;margin-top:5px">
-        {{`${new Date(weekSection.weekStart).toLocaleDateString()} - ${new Date(weekSection.weekEnd).toLocaleDateString()}`}}</p>
-    </div>   
 
     <div style="margin: 7px;">
       <div class="flex center">
         <div style="margin: 10px">
           <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(142, 208, 214)"></span>
           <span>计划内课程</span>
-          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(233, 233, 224)"></span>
-          <span>已预约课程</span>
-          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(248, 244, 8)"></span>
-          <span>新预约课程</span>
+          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(244,213,71)"></span>
+          <span>授课预约</span>
+          <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(197,150,196)"></span>
+          <span>个人预约</span>
         </div>
       </div>
       <div class="flex center">
         <div>
           <div class="flex" style="width:inherit">
             <div class="title" v-for="(weekNum, weekIndex) in weeks.length+1" :key="weekIndex">
-                {{weekIndex===0?'时间':'周' + digital2Chinese(weekIndex-1, 'week')}}
+                {{weekIndex===0?'时间':weekSection.weekInFo[weekIndex-1] + ' ' + '周' + digital2Chinese(weekIndex-1, 'week')}}
             </div>
           </div>
           <div class="flex" style="width:inherit">
@@ -41,35 +37,50 @@
               <div
                 class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
                 :style="{'background-color': itemb != ''? (itemb.type===0?
-                getColors(item,'rgb(142, 208, 214)'):(itemb.type===1?
-                getColors(item,'rgb(248, 244, 8)'):(itemb.type===2?
-                getColors(item,'rgb(233, 233, 224)'):'white'))):'white'}" :key="ii" >
-                  <div v-if="!itemb">
-                    <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
+                'rgb(142, 208, 214)':(itemb.type===1?
+                'rgb(244,213,71)':(itemb.type===2?
+                'rgb(197,150,196)':'white'))):'white'}" :key="ii" style="cursor: pointer;" >
+                  <div v-if="!itemb" >
+                    <div class='order' @click='showLesson()' @mousemove="showColor($event)" @mouseleave="noShowColor($event)">
+                      <!-- <el-button size='mini' @click='showLesson()'>预约</el-button> -->
+                    </div>
                   </div>  
                     <el-popover
                       placement="top-start"
                       width="50"
+                      v-if="itemb.course"
                       >
                       <div style="color:#67C23A;width:6rem;" @click="readLesson(itemb)">
                         <i class="el-icon-reading"/>
-                        <span  style="margin-left:5px">查看</span>
+                        <span  style="margin-left:5px;cursor: pointer;">查看</span>
                       </div>
                       <div style="color:#67a1ff;width:6rem;" @click='showLesson(itemb)'>
                         <i class="el-icon-edit"/>
-                        <span  style="margin-left:5px">修改</span>
+                        <span  style="margin-left:5px;cursor: pointer;">修改</span>
                       </div>
                       <div style="color:#F56C6C;width:6rem;" @click="delectLesson(itemb)">
                         <i class="el-icon-delete"/>
-                        <span  style="margin-left:5px">删除</span>
+                        <span  style="margin-left:5px;cursor: pointer;">删除</span>
                       </div>
                       <!-- <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
                         <i class="el-icon-takeaway-box"></i>
                         <span  style="margin-left:5px">延长课时</span>
                       </div> -->
-                      <div style="width:100%;height:100%" slot="reference" >
-                        <div>
+                      <div style="width:100%;height:100%;" slot="reference" class="flex center column">
+                        <!-- <div>
+                          {{itemb.course?
+                          (itemb.type===0?itemb.course.name + new Date(itemb.startDt).getHours() + ':' + new Date(itemb.startDt).getMinutes() + itemb.endDt:''):
+                          ''}}
+                        </div> -->
+                        <div style="line-height:32px">
                           {{itemb.course?itemb.course.name:''}}
+                        </div>
+                        <div style="line-height:32px">
+                          {{itemb.type===0?itemb.teacher.name:(itemb.type===0?itemb.teacher.name:'')}}
+                        </div>
+                        <div style="line-height:32px">
+                          {{itemb.type != null ? new Date(itemb.startDt).getHours() + ':' + new Date(itemb.startDt).getMinutes() +'-'+
+                          new Date(itemb.endDt).getHours() + ':' + new Date(itemb.endDt).getMinutes():''}}
                         </div>
                       </div>
                     </el-popover>
@@ -82,59 +93,6 @@
     </div>
     
     <div class="class-table">
-      <!-- <table id='tabs'  >
-        <thead>
-          <tr>
-            <th>时间</th>
-            <th v-for="(weekNum, weekIndex) in weeks.length" :key="weekIndex">
-            {{'周' + digital2Chinese(weekIndex, 'week')}}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-           <tr v-for="(item,i) in lessons" :key="i">
-             <th>
-               <div>第<span>{{i+1}}</span>节课</div>
-             </th>
-             <td v-for="(lessonItem, j) in item.lesson" :key="j" 
-              :rowspan="lessonItem != ''? lessonItem.extend.lessons.length:''"
-              :style="{'background-color': lessonItem != ''? getColors(lessonItem,'rgb(142, 208, 214)'):'white'}">
-                  <div v-if="item" slot="reference">{{item.name}}</div>
-                <el-popover
-                  placement="top-start"
-                  width="50"
-                  >
-                  <div style="color:#67C23A;width:6rem;" @click="readLesson(lessonItem)">
-                    <i class="el-icon-reading"/>
-                    <span  style="margin-left:5px">查看</span>
-                  </div>
-                  <div style="color:#67a1ff;width:6rem;" @click='showLesson(lessonItem)'>
-                    <i class="el-icon-edit"/>
-                    <span  style="margin-left:5px">修改</span>
-                  </div>
-                  <div style="color:#F56C6C;width:6rem;" @click="delectLesson(lessonItem)">
-                    <i class="el-icon-delete"/>
-                    <span  style="margin-left:5px">删除</span>
-                  </div>
-                  <div style="color:#E6A23C;width:6rem;" @click="delayLesson(lessonItem)">
-                    <i class="el-icon-takeaway-box"></i>
-                    <span  style="margin-left:5px">延长课时</span>
-                  </div>
-                  <div style="width:100%;height:100%" slot="reference" >
-                    <div>
-                       {{lessonItem?lessonItem.course.name:''}}
-                    </div>
-                  </div>
-                </el-popover>
-               <div v-if="!lessonItem">
-                 <div class='order'><el-button size='mini' @click='showLesson()'>预约</el-button></div>
-               </div>
-             </td>
-           </tr>
-        </tbody>
-      </table> -->
-      
-
       <el-dialog
       :visible.sync="readModel.visible"
       :modal="readModel.oneLesson"
@@ -152,9 +110,9 @@
                     <span>{{ readModel.oneLesson.students  }}</span>
                   </el-form-item>
                   <el-form-item label="实验名称：" v-if="readModel.oneLesson.course">
-                    <div v-for="(item,i) in readModel.oneLesson.course.programList" :key='i'>
-                      <span>{{ item }}</span>
-                    </div>
+                    <!-- <div v-for="(item,i) in readModel.oneLesson.program.name" :key='i'> -->
+                      <span>{{ readModel.oneLesson.program.name }}</span>
+                    <!-- </div> -->
                   </el-form-item>
                   <el-form-item label="上课时间：" v-if="readModel.oneLesson.extend">
                     <span>{{  readModel.oneLesson.extend.lessons.length+'课时' }}</span>
@@ -172,34 +130,114 @@
       :confirm="update"
       width="500px">
       <div slot='title'>{{showModal.oneLesson.id?'修改':'预约'}}课程</div>
-      <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="120px" label-position="left" class="flex column between" style="width: 400px;margin: 0 auto">
-        <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
-          <el-select v-model="showModal.oneLesson.type" style="width:300px" :clearable="false" placeholder="请选择预约类型">
+      <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="160px" label-position="left">
+        <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', }">
+          <!-- trigger: 'none' -->
+          <el-select v-model="showModal.oneLesson.type" >
             <el-option
                 v-for="item of courseAppointTypeList"
+                v-if="(item.id!==1&&item.id!==2) || !isStudent()"
                 :key="item.id"
                 :label="item.type"
                 :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="课程名称：" prop="course.name" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
-          <el-input style="width:300px" v-model="showModal.oneLesson.course.name"/>
+        <el-form-item label="选择课程：" prop="course.name" 
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择课程'} : { required: false}">
+          <el-select filterable v-model="showModal.oneLesson.course" value-key="id">
+          <el-option
+              v-for="item of courseList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="授课教师：" prop="teacher.name">
-          <el-input style="width:300px" v-model="showModal.oneLesson.teacher.name"/>
+        <el-form-item label="选择实验：" prop="program.name" v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
+          <el-select filterable v-model="showModal.oneLesson.program" value-key="id">
+            <el-option
+              v-for="item of showModal.oneLesson.course ? showModal.oneLesson.course.programList : programList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="上课班级：" prop="extend.stations">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.clasz"/>
+        <el-form-item label="选择教师：" prop="teacher.name" 
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择教师'} : { required: false}">
+          <el-select filterable v-model="showModal.oneLesson.teacher.name" value-key="id">
+            <el-option
+              v-for="item of teacherList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="实验项目：" prop="course.programList">
-          <el-input style="width:300px" v-model="showModal.oneLesson.course.programList"/>
+        <el-form-item label="上课班级：" prop="extend.clasz" 
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2? { required: true, message: '请选择班级'} : { required: false}"
+          v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=2">
+          <el-select filterable v-model="showModal.oneLesson.extend.clasz">
+            <el-option
+              v-for="item of classList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="课时：" prop="extend.lessons">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.lessons"/>
+        <el-form-item label="选择组别：" prop="extend.claszGroup" 
+         v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=2&&showModal.oneLesson.type!=0">
+          <el-select filterable v-model="showModal.oneLesson.extend.claszGroup">
+            <el-option
+              v-for="item of showModal.oneLesson.extend.clasz?(classList.filter(item1 => {return item1.id === showModal.oneLesson.extend.clasz}))[0].groups:[]"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="实验台：" prop="extend.stations">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.stations"/>
+        <el-form-item label="选择操作台：" prop="extend.stations"
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=0&&showModal.oneLesson.type!=1 ? { required: true, message: '请选择操作台'} : { required: false}"
+          v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
+          <el-select filterable v-model="showModal.oneLesson.extend.stations" multiple collapse-tags>
+            <el-option
+              v-for="item of stationList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="课时：" prop="extend.lessons">
+          <el-input v-model="showModal.oneLesson.extend.lessons"/>
+        </el-form-item> -->
+        <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+          <el-date-picker v-model="showModal.oneLesson.appointDate" type="date"/>
+        </el-form-item>
+        <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
+          <el-select v-model="showModal.oneLesson.startLesson">
+            <el-option
+              v-for="item in lessonMap.lessonNum"
+              :key="item"
+              :label="'第' + item + '节课'"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
+          <el-select v-model="showModal.oneLesson.endLesson">
+            <el-option
+              v-for="item in lessonMap.lessonNum"
+              v-if="showModal.oneLesson.startLesson?item>=showModal.oneLesson.startLesson:true"
+              :key="item"
+              :label="'第' + item + '节课'"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择其他参与人：" 
+          v-if="showModal.oneLesson.type&&showModal.oneLesson.type != 1&&showModal.oneLesson.type != 0" prop="students">
+          <el-select filterable v-model="showModal.oneLesson.students" multiple collapse-tags>
+            <el-option
+              v-for="item of otherStudentInClasz"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
        </el-form>
     </kit-dialog-simple>
@@ -212,9 +250,15 @@ import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
 import { getWeekDaysRange } from 'web-toolkit/src/utils/date';
 import { CourseRecordList } from '../dao/courseRecordDao';
 import { SettingGet } from '../dao/settingDao';
+import {CourseList, ProgramList} from '@/dao/courseProgramDao';
+import {TeacherList, StudentList, ClassList} from '@/dao/userDao';
+import {StationList} from '@/dao/stationDao';
+import {Department} from '@/types/privilege';
+import {CourseRecordAdd,CourseRecordUpdate} from '@/dao/courseRecordDao'
 export default createComponent({
   name: 'courseList',
   props: { },
@@ -228,6 +272,13 @@ export default createComponent({
     const oneDay = ref<any>();
     const isshow = ref(false);
     const color = ref();
+    const courseList = ref<any>([]);
+    const programList = ref<any>([]);
+    const teacherList = ref<any>([]);
+    const otherStudentInClasz = ref<any>();
+    const stationList = ref<any>([]);
+    const classList = ref<any>([]);
+    const lessonMap = ref<any>([]);
     const tableX = ref(-1);
     const tableY = ref(-1);
     const courseAppointTypeList = ref<any>();
@@ -237,7 +288,11 @@ export default createComponent({
     const weekSection = ref<any>({
       weekStart: '',
       weekEnd: '',
+      weekInFo:[],
     });
+    function isStudent(): boolean {
+      return (storeUserInfo.user as any).role.department.id === Department.Student;
+    }
     // 查看标志a
     const readModel = ref<any>(
       {
@@ -248,15 +303,17 @@ export default createComponent({
       {
         visible: false,
         oneLesson: '',
+        type: 'add',
       });
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-      if (oneDay.value === undefined || oneDay.value === null) {
-        alert('请选择日期');
-      } else {
+      if(oneDay.value===undefined||oneDay.value===null){
+        alert('请选择日期')
+      }
+      else{
         clearDiv();
-        await setWeekSection(new Date(oneDay.value));
+        await setWeekSection(new Date(oneDay.value))
       }
     }
     const moreSetting = ref({
@@ -265,164 +322,102 @@ export default createComponent({
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [
-        {lesson: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]},
-        {lesson: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]},
-        {lesson: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]},
-        {lesson: [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]},
-        {lesson: [49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]},
-        {lesson: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72]},
-        {lesson: [73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84]},
+        {lesson: [1,2,3,4,5,6,7,8,9,10,11,12,]},
+        {lesson: [13,14,15,16,17,18,19,20,21,22,23,24,]},
+        {lesson: [25,26,27,28,29,30,31,32,33,34,35,36,]},
+        {lesson: [37,38,39,40,41,42,43,44,45,46,47,48,]},
+        {lesson: [49,50,51,52,53,54,55,56,57,58,59,60,]},
+        {lesson: [61,62,63,64,65,66,67,68,69,70,71,72,]},
+        {lesson: [73,74,75,76,77,78,79,80,81,82,83,84,]},
       ],
     });
-    function getColors(lessonOne: any, defaultColor: any) {
-      const type = lessonOne.type;
-      if (type === 0 || lessonOne === '') {
-        return defaultColor;
-        // rgb(142, 208, 214) 计划内课程
-      } else if (type === 1 || type === 2) {
-        const result = lessonOne.extend.appointRecord.result;
-        if (result === 2) {
-          // 已预约课程
-          defaultColor = 'rgb(233, 233, 224)';
-        } else if (result === 1) {
-         // 新预约课程
-          defaultColor = 'rgb(248, 244, 8)';
-        }
-        return defaultColor;
-     }
-    }
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
     function digital2Chinese(num: any, identifier: any) {
       const character = ['一', '二', '三', '四', '五', '六'];
       return identifier === 'week' && num === 6 ? '日' : character[num];
     }
-    // 重新排列数据
+    function showColor(row:any){
+      const result = row.srcElement
+      result.style.backgroundColor='Gainsboro'
+    }
+    function noShowColor(row:any){
+      const result = row.srcElement
+      result.style.backgroundColor='white'
+    }
     const newList = async () => {
-      // lessons.value =
-      // originList.value.originLessonsList;
-      // [
-      //   {lesson: ['', '', '',
-      //     {
-      //       id: 1,
-      //       course: {
-      //         name: '自动化课程1',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 1,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 3,
-      //         appointRecord: {result: 1},
-      //         lessons: [1, 2, 3],
-      //         class: '自动化1801'},
-      //     }, '', '', '']},
-      //   {lesson: ['', '', '', '', '', '']},
-      //   {lesson: ['', '', '', '', '', '']},
-      //   {lesson: ['', '', '', '', '',
-      //     {
-      //       id: 2,
-      //       course: {
-      //         name: '自动化课程2',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 0,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 1,
-      //         lessons: [4],
-      //         class: '自动化1801'},
-      //     }, '']},
-      //   {lesson: ['', '', '', '', '',
-      //     {
-      //       id: 3,
-      //       course: {
-      //         name: '自动化课程3',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 1,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 1,
-      //         appointRecord: {result: 2},
-      //         lessons: [5],
-      //         class: '自动化1801'},
-      //     }, '']},
-      //   {lesson: ['', '', '', '', '', '', '']},
-      //   {lesson: ['',
-      //     {
-      //       id: 4,
-      //       course: {
-      //         name: '自动化课程4',
-      //         programList: ['切刀挂刀操作'] },
-      //       teacher: {
-      //         name: '玛丽'},
-      //       type: 2,
-      //       stations: ['操作台1'],
-      //       students: '马丽',
-      //       extend: {
-      //         lessonInt: 1,
-      //         appointRecord: {result: 1},
-      //         lessons: [7],
-      //         class: '自动化1801'},
-      //     }, '', '', '', '', '']},
-      // ];
+
     };
     const readLesson = async (lessonItem: any) => {
         readModel.value.visible = true;
         readModel.value.oneLesson = lessonItem;
     };
-    // const tabCell = async () => {
-    //    const tab = document.getElementById('tabs');
-    //    // @ts-ignore
-    //    const rows = tab.rows;
-    //    const rlen = rows.length;
-    //    for (let i = 1; i < rlen; i++) {
-    //      const cells = rows[i].cells;
-    //      for (let j = 1; j < cells.length; j++) {
-    //          cells[j].onclick = function() {
-    //             if (!isshow.value) {
-    //                 color.value = this.style.backgroundColor;
-    //                 tableX.value = i;
-    //                 tableY.value = j;
-    //                 console.log(color.value);
-    //             }
-    //             isshow.value = !isshow.value;
-    //             if (tableX.value === i &&  tableY.value === j) {
-    //                 if (isshow.value) {
-    //                     this.style.backgroundColor = 'darkorchid';
-    //                 } else { this.style.backgroundColor = color.value; }
-    //             } else {
-    //               alert('请在上一处再次点击');
-    //               isshow.value = true;
-    //             }
-    //          };
-    //      }
-    //    }
-    // };
-    const showLesson = async (lessonItem?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
-      if (lessonItem) {
-        lessonItem = deepClone(lessonItem);
-      } else {
-        lessonItem = initForm();
+    const showLesson = async (data?: any) => {
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
       }
-      showModal.value.oneLesson = lessonItem;
+      if (data) {
+        data = deepClone(data);
+        showModal.value.type = 'update';
+        // 转化 startLesson endLesson, appointDate
+        if (data.startDt) { data.appointDate = new Date(data.startDt); }
+        if (data.extend.lessons && data.extend.lessons.length > 0) {
+          data.startLesson = data.extend.lessons[0];
+          data.endLesson = data.extend.lessons[data.extend.lessons.length - 1];
+        }
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+      } else {
+        data = initForm();
+        showModal.value.type = 'add';
+      }
+      showModal.value.oneLesson  = data;
       showModal.value.visible = true;
     };
     async function update() {
-      const valid = true;
+      const valid = await (form.value as ElForm).validate();
       if (valid) {
-       const { course, teacher, type, stations, students, extend } = showModal.value.customer;
-       showModal.value.visible = false;
-       Message.success(`${isUndefined(course) ? '添加' : '修改'}成功`);
-       await newList();
+        // 时间格式转化
+        const lesson1 = lessonMap.value['lesson' + showModal.value.oneLesson.startLesson];
+        const lesson2 = lessonMap.value['lesson' + showModal.value.oneLesson.endLesson];
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+        showModal.value.oneLesson.extend.lessons = [];
+        for (let i = showModal.value.oneLesson.startLesson; i <= showModal.value.oneLesson.endLesson; i++) {
+          showModal.value.oneLesson.extend.lessons.push(i);
+        }
+        if (showModal.value.oneLesson.clasz) {
+          showModal.value.oneLesson.extend.clasz = showModal.value.oneLesson.clasz.id;
+        }
+        if (showModal.value.oneLesson.claszGroup) {
+          showModal.value.oneLesson.extend.claszGroup = showModal.value.oneLesson.claszGroup.id;
+        }
+        const params = {
+          id: showModal.value.oneLesson.id,
+          type: showModal.value.oneLesson.type,
+          courseId: showModal.value.oneLesson.course ? showModal.value.oneLesson.course.id : null,
+          programId: showModal.value.oneLesson.program ? showModal.value.oneLesson.program.id : null,
+          teacherId: showModal.value.oneLesson.teacher ? showModal.value.oneLesson.teacher.id : null,
+          studentJson: showModal.value.oneLesson.students && showModal.value.oneLesson.students.length > 0 ? JSON.stringify(showModal.value.oneLesson.students) : null,
+          stationJson: showModal.value.oneLesson.stations && showModal.value.oneLesson.stations.length > 0 ? JSON.stringify(showModal.value.oneLesson.stations) : null,
+          start: transformDate(showModal.value.oneLesson.appointDate, lesson1[0]),
+          end: transformDate(showModal.value.oneLesson.appointDate, lesson2[1]),
+          extendJson: JSON.stringify(showModal.value.oneLesson.extend),
+        };
+        if (showModal.value.type === 'add') {
+          await CourseRecordAdd(params);
+        } else {
+          await CourseRecordUpdate(params);
+        }
+        Message.success(`${showModal.value.type === 'add' ? '已申请预约' : '已修改预约'}`);
+        showModal.value.visible = false;
+        // showModal.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
       }
+    }
+    function transformDate(template: Date, timestamp: number): number {
+      const dt = new Date(timestamp);
+      dt.setFullYear(template.getFullYear());
+      dt.setDate(template.getDate());
+      dt.setMonth(template.getMonth());
+      dt.setMilliseconds(0);
+      return dt.getTime();
     }
     const delectLesson = async (lessonItem: any) => {
       Message.success('删除成功');
@@ -444,15 +439,16 @@ export default createComponent({
           return row;
         }
       }
-      if ( result.length != 0) {
-        for (let i = 0; i < result.length; i++) {
-          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
-          const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
-          str.style.height = 50 * result[i].extend.lessons.length + 'px';
-          str.style.lineHeight = 3.5 * result[i].extend.lessons.length + 'rem';
-          for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
-            const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
-            str.style.display = 'none';
+      if( result.length!=0){
+        for(let i=0;i<result.length;i++){
+          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay())-1].lesson.splice(result[i].extend.lessons[0]-1,1,result[i])
+          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]-1];
+          str.style.height=50*result[i].extend.lessons.length+'px'
+          // str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
+          console.log(result[i])
+          for(let j=0;j<result[i].extend.lessons.length-1;j++){
+            const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
+            str.style.display='none'
           }
         }
       }
@@ -463,27 +459,22 @@ export default createComponent({
     async function goNextWeek() {
       await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
     }
-    async function clearDiv() {
-      for (let i = 0; i < 7; i++) {
-        for (let j = 0; j < courseCount.value.count.length; j++) {
-          const str = document.getElementsByClassName('tabDiv')[i].childNodes[j] as HTMLElement;
-          str.style.display = 'inline';
-          str.style.height = 50 + 'px';
-          str.style.lineHeight = 3.5 + 'rem';
+    async function clearDiv(){
+      for(let i=0;i<7;i++){
+        for(let j=0;j<courseCount.value.count.length;j++){
+          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[i].childNodes[j];
+          str.style.display='inline'
+          str.style.height=50+'px'
+          str.style.lineHeight=3.5+'rem'
         }
       }
     }
-    async function setWeekSection(row: any) {
-      originList.value.lessonsList = [
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-        {lesson: []},
-      ];
-      for (let i = 0; i < courseCount.value.count.length; i++) {
+    async function setWeekSection(row:any){
+      originList.value.lessonsList=[
+        {lesson: []},{lesson: []},{lesson: []},{lesson: []},
+        {lesson: []},{lesson: []},{lesson: []},
+      ]
+      for(let i=0;i<courseCount.value.count.length;i++){
         originList.value.lessonsList[0].lesson.push('');
         originList.value.lessonsList[1].lesson.push('');
         originList.value.lessonsList[2].lesson.push('');
@@ -492,22 +483,47 @@ export default createComponent({
         originList.value.lessonsList[5].lesson.push('');
         originList.value.lessonsList[6].lesson.push('');
       }
-      const result = getWeekDaysRange(row);
-      weekSection.value.weekStart = result[0].getTime();
-      weekSection.value.weekEnd = result[1].getTime();
-      getOriginCourseRecordList(weekSection);
-    }
-    async function getCourseCount() {
-      const result = await SettingGet({onlyLesson: true});
-
-      for (let i = 0; i < result.lessonNum; i++) {
-        courseCount.value.count.push(i + 1);
+      const result = getWeekDaysRange(row)
+      for(let i=0;i<result.length;i++){
+        weekSection.value.weekInFo[i]=result[i].getMonth()+1+'/'+result[i].getDate()
       }
+      weekSection.value.weekStart = result[0].getTime()
+      weekSection.value.weekEnd = result[6].getTime()
+      getOriginCourseRecordList(weekSection)
+    }
+    async function getCourseCount(){
+      const result = await SettingGet({onlyLesson:true})
+      
+      for(let i=0;i<result.lessonNum;i++){
+        courseCount.value.count.push(i+1)
+      }
+
     }
     onMounted(useLoading(loading, async () => {
-      await getCourseCount();
-      await setWeekSection(new Date());
-      // await tabCell();
+      await Promise.all([
+        await getCourseCount(),
+        await setWeekSection(new Date()),
+        courseList.value = await CourseList({
+          containPrograms: true,
+        }),
+        programList.value = await ProgramList(),
+        teacherList.value = await TeacherList(),
+        stationList.value = await StationList({
+          simple: true,
+        }),
+        classList.value = await ClassList(),
+        lessonMap.value = await SettingGet({
+          onlyLesson: true,
+        }),
+      ]);
+      if (isStudent() && (storeUserInfo.user as any).extend.clasz) {
+        const claszId = (storeUserInfo.user as any).extend.clasz;
+        otherStudentInClasz.value = await StudentList({
+          classId: claszId,
+          forSelect: true,
+        });
+        otherStudentInClasz.value = otherStudentInClasz.value.filter((user: any) => user.id !== (storeUserInfo.user as any).id);
+      }
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
@@ -517,14 +533,15 @@ export default createComponent({
     return{
       getOriginCourseRecordList, originList, clearDiv,
       setWeekSection, goLastWeek, goNextWeek, weekSection,
-      loading, cheakIt,
+      loading, cheakIt, courseList, programList, stationList,
+      teacherList, otherStudentInClasz, classList,
+      lessonMap,storeUserInfo,isStudent,
       oneDay, courseCount,
       list: useLoading(loading, list),
-      weeks,
+      weeks,showColor,noShowColor,
       digital2Chinese,
       lessons,
       moreSetting,
-      getColors,
       readLesson,
       readModel,
       form,
@@ -535,7 +552,6 @@ export default createComponent({
       delayLesson: useConfirm('确认延长一课时？', useLoading(loading, delayLesson)),
       isshow,
       color,
-      // tabCell,
       tableX,
       tableY,
       courseAppointTypeList,
@@ -566,47 +582,14 @@ function initForm(): any {
 }
 </script>
 <style scoped lang="scss">
-  .class-table {
-    margin: 7px;
-    table {
-      background-color: rgb(32, 38, 97);
-      table-layout:fixed;
-      margin: auto;
-      width: 80%;
-      thead {
-        background-color:#67a1ff  ;
-        th {
-          color: #fff;
-          line-height: 2.5rem;
-          font-weight: normal;
-        }
-      }
-    }
-    tbody{
-      tr {
-        th {
-          color: #fff;
-          background-color:#67a1ff ;
-          line-height: 3.5rem;
-          font-weight: lighter;
-          text-align: center;
-          vertical-align: middle;
-        }
-        td {
-          // background-color:rgb(142, 208, 214) ;
-          line-height: 3.5rem;
-          font-weight: lighter;
-          text-align: center;
-          vertical-align: middle;
-          
-        }
-      }
-    }
-  }
   .order {
     height: 2.5rem;
     line-height: 3.5rem;
     text-align: center;
+    width: 148px;
+    left: 1px;
+    top: 1px;
+    height: 48px;
     // vertical-align: middle;
 
   }
@@ -618,20 +601,19 @@ function initForm(): any {
     display: inline-block;
   }
   .title{
-    color: white;
+    color: black;
     border: 1px solid black;
     width: 150px;
     height: 40px;
-    background-color: #00AAEE;
+    // background-color: rgb(214,236,250);
     text-align: center;
     line-height:2.5rem;
   }
   .titleb{
-    color: white;
+    color: black;
     border: 1px solid black;
     width: 150px;
     height: 50px;
-    background-color: #00AAEE;
     text-align: center;
     line-height:3.5rem;
   }
@@ -640,6 +622,6 @@ function initForm(): any {
     width: 150px;
     height: 50px;
     text-align: center;
-    line-height:3.5rem;
+    // line-height:3.5rem;
   }
 </style>

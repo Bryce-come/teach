@@ -60,7 +60,10 @@
             <el-button type="primary" plain @click="fullScreen()">全屏</el-button>
           </div>
           <div id="contain"></div>
-          <div class="watch2" />
+          <div class="watch2">
+            <div><el-button type="primary" @click="fuzhi()">连接学生屏幕</el-button></div>
+            <iframe v-if="a" id="iframe" name="iframe" :src="a" style="width:100%;height:100%"></iframe>
+          </div>
         </div>
       </div>
     </div>
@@ -122,6 +125,11 @@ export default {
       end: '2020-02-26 14:11:11',
     });
     const videoChannel = ref<any>([null, null]);
+    const Src = "http://192.168.88.128:9000";
+    const a = ref<any>();
+    async function fuzhi() {
+      a.value = Src;
+    }
 
     const query = async () => {
       while (!over.value) {
@@ -151,7 +159,7 @@ export default {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
         station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id}),
-    ]);
+      ]);
       const cameras = station.value.extend.cameras;
       if (cameras && cameras.length > 0) {
         videoChannel.value[0] = cameras[0].channelId;
@@ -383,6 +391,8 @@ export default {
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
       restartVideo, fullScreen,
       videoChannel, flag, statusMap,
+      Src, a,
+      fuzhi: useLoading(loading, fuzhi),
     };
   },
 };
