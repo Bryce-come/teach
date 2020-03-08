@@ -110,9 +110,9 @@
                     <span>{{ readModel.oneLesson.students  }}</span>
                   </el-form-item>
                   <el-form-item label="实验名称：" v-if="readModel.oneLesson.course">
-                    <div v-for="(item,i) in readModel.oneLesson.course.programList" :key='i'>
-                      <span>{{ item }}</span>
-                    </div>
+                    <!-- <div v-for="(item,i) in readModel.oneLesson.program.name" :key='i'> -->
+                      <span>{{ readModel.oneLesson.program.name }}</span>
+                    <!-- </div> -->
                   </el-form-item>
                   <el-form-item label="上课时间：" v-if="readModel.oneLesson.extend">
                     <span>{{  readModel.oneLesson.extend.lessons.length+'课时' }}</span>
@@ -130,34 +130,114 @@
       :confirm="update"
       width="500px">
       <div slot='title'>{{showModal.oneLesson.id?'修改':'预约'}}课程</div>
-      <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="120px" label-position="left" class="flex column between" style="width: 400px;margin: 0 auto">
-        <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
-          <el-select v-model="showModal.oneLesson.type" style="width:300px" :clearable="false" placeholder="请选择预约类型">
+      <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="160px" label-position="left">
+        <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', }">
+          <!-- trigger: 'none' -->
+          <el-select v-model="showModal.oneLesson.type" >
             <el-option
                 v-for="item of courseAppointTypeList"
+                v-if="(item.id!==1&&item.id!==2) || !isStudent()"
                 :key="item.id"
                 :label="item.type"
                 :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="课程名称：" prop="course.name" :rules="{ required: true, message: '请输入课程名称', trigger: 'none' }">
-          <el-input style="width:300px" v-model="showModal.oneLesson.course.name"/>
+        <el-form-item label="选择课程：" prop="course.name" 
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择课程'} : { required: false}">
+          <el-select filterable v-model="showModal.oneLesson.course" value-key="id">
+          <el-option
+              v-for="item of courseList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="授课教师：" prop="teacher.name">
-          <el-input style="width:300px" v-model="showModal.oneLesson.teacher.name"/>
+        <el-form-item label="选择实验：" prop="program.name" v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
+          <el-select filterable v-model="showModal.oneLesson.program" value-key="id">
+            <el-option
+              v-for="item of showModal.oneLesson.course ? showModal.oneLesson.course.programList : programList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="上课班级：" prop="extend.stations">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.clasz"/>
+        <el-form-item label="选择教师：" prop="teacher.name" 
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择教师'} : { required: false}">
+          <el-select filterable v-model="showModal.oneLesson.teacher.name" value-key="id">
+            <el-option
+              v-for="item of teacherList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="实验项目：" prop="course.programList">
-          <el-input style="width:300px" v-model="showModal.oneLesson.course.programList"/>
+        <el-form-item label="上课班级：" prop="extend.clasz" 
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2? { required: true, message: '请选择班级'} : { required: false}"
+          v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=2">
+          <el-select filterable v-model="showModal.oneLesson.extend.clasz">
+            <el-option
+              v-for="item of classList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="课时：" prop="extend.lessons">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.lessons"/>
+        <el-form-item label="选择组别：" prop="extend.claszGroup" 
+         v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=2&&showModal.oneLesson.type!=0">
+          <el-select filterable v-model="showModal.oneLesson.extend.claszGroup">
+            <el-option
+              v-for="item of showModal.oneLesson.extend.clasz?(classList.filter(item1 => {return item1.id === showModal.oneLesson.extend.clasz}))[0].groups:[]"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="实验台：" prop="extend.stations">
-          <el-input style="width:300px" v-model="showModal.oneLesson.extend.stations"/>
+        <el-form-item label="选择操作台：" prop="extend.stations"
+          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=0&&showModal.oneLesson.type!=1 ? { required: true, message: '请选择操作台'} : { required: false}"
+          v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
+          <el-select filterable v-model="showModal.oneLesson.extend.stations" multiple collapse-tags>
+            <el-option
+              v-for="item of stationList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="课时：" prop="extend.lessons">
+          <el-input v-model="showModal.oneLesson.extend.lessons"/>
+        </el-form-item> -->
+        <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+          <el-date-picker v-model="showModal.oneLesson.appointDate" type="date"/>
+        </el-form-item>
+        <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
+          <el-select v-model="showModal.oneLesson.startLesson">
+            <el-option
+              v-for="item in lessonMap.lessonNum"
+              :key="item"
+              :label="'第' + item + '节课'"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
+          <el-select v-model="showModal.oneLesson.endLesson">
+            <el-option
+              v-for="item in lessonMap.lessonNum"
+              v-if="showModal.oneLesson.startLesson?item>=showModal.oneLesson.startLesson:true"
+              :key="item"
+              :label="'第' + item + '节课'"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择其他参与人：" 
+          v-if="showModal.oneLesson.type&&showModal.oneLesson.type != 1&&showModal.oneLesson.type != 0" prop="students">
+          <el-select filterable v-model="showModal.oneLesson.students" multiple collapse-tags>
+            <el-option
+              v-for="item of otherStudentInClasz"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
        </el-form>
     </kit-dialog-simple>
@@ -170,9 +250,15 @@ import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
 import { getWeekDaysRange } from 'web-toolkit/src/utils/date';
 import { CourseRecordList } from '../dao/courseRecordDao';
 import { SettingGet } from '../dao/settingDao';
+import {CourseList, ProgramList} from '@/dao/courseProgramDao';
+import {TeacherList, StudentList, ClassList} from '@/dao/userDao';
+import {StationList} from '@/dao/stationDao';
+import {Department} from '@/types/privilege';
+import {CourseRecordAdd,CourseRecordUpdate} from '@/dao/courseRecordDao'
 export default createComponent({
   name: 'courseList',
   props: { },
@@ -186,6 +272,13 @@ export default createComponent({
     const oneDay = ref<any>();
     const isshow = ref(false);
     const color = ref();
+    const courseList = ref<any>([]);
+    const programList = ref<any>([]);
+    const teacherList = ref<any>([]);
+    const otherStudentInClasz = ref<any>();
+    const stationList = ref<any>([]);
+    const classList = ref<any>([]);
+    const lessonMap = ref<any>([]);
     const tableX = ref(-1);
     const tableY = ref(-1);
     const courseAppointTypeList = ref<any>();
@@ -197,6 +290,9 @@ export default createComponent({
       weekEnd: '',
       weekInFo:[],
     });
+    function isStudent(): boolean {
+      return (storeUserInfo.user as any).role.department.id === Department.Student;
+    }
     // 查看标志a
     const readModel = ref<any>(
       {
@@ -207,6 +303,7 @@ export default createComponent({
       {
         visible: false,
         oneLesson: '',
+        type: 'add',
       });
     const form = ref<ElForm|null>(null);
     // 查询函数
@@ -254,24 +351,73 @@ export default createComponent({
         readModel.value.visible = true;
         readModel.value.oneLesson = lessonItem;
     };
-    const showLesson = async (lessonItem?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
-      if (lessonItem) {
-        lessonItem = deepClone(lessonItem);
-      } else {
-        lessonItem = initForm();
+    const showLesson = async (data?: any) => {
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
       }
-      showModal.value.oneLesson = lessonItem;
+      if (data) {
+        data = deepClone(data);
+        showModal.value.type = 'update';
+        // 转化 startLesson endLesson, appointDate
+        if (data.startDt) { data.appointDate = new Date(data.startDt); }
+        if (data.extend.lessons && data.extend.lessons.length > 0) {
+          data.startLesson = data.extend.lessons[0];
+          data.endLesson = data.extend.lessons[data.extend.lessons.length - 1];
+        }
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+      } else {
+        data = initForm();
+        showModal.value.type = 'add';
+      }
+      showModal.value.oneLesson  = data;
       showModal.value.visible = true;
     };
     async function update() {
-      const valid = true;
+      const valid = await (form.value as ElForm).validate();
       if (valid) {
-       const { course, teacher, type, stations, students, extend } = showModal.value.customer;
-       showModal.value.visible = false;
-       Message.success(`${isUndefined(course) ? '添加' : '修改'}成功`);
-       await newList();
+        // 时间格式转化
+        const lesson1 = lessonMap.value['lesson' + showModal.value.oneLesson.startLesson];
+        const lesson2 = lessonMap.value['lesson' + showModal.value.oneLesson.endLesson];
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+        showModal.value.oneLesson.extend.lessons = [];
+        for (let i = showModal.value.oneLesson.startLesson; i <= showModal.value.oneLesson.endLesson; i++) {
+          showModal.value.oneLesson.extend.lessons.push(i);
+        }
+        if (showModal.value.oneLesson.clasz) {
+          showModal.value.oneLesson.extend.clasz = showModal.value.oneLesson.clasz.id;
+        }
+        if (showModal.value.oneLesson.claszGroup) {
+          showModal.value.oneLesson.extend.claszGroup = showModal.value.oneLesson.claszGroup.id;
+        }
+        const params = {
+          id: showModal.value.oneLesson.id,
+          type: showModal.value.oneLesson.type,
+          courseId: showModal.value.oneLesson.course ? showModal.value.oneLesson.course.id : null,
+          programId: showModal.value.oneLesson.program ? showModal.value.oneLesson.program.id : null,
+          teacherId: showModal.value.oneLesson.teacher ? showModal.value.oneLesson.teacher.id : null,
+          studentJson: showModal.value.oneLesson.students && showModal.value.oneLesson.students.length > 0 ? JSON.stringify(showModal.value.oneLesson.students) : null,
+          stationJson: showModal.value.oneLesson.stations && showModal.value.oneLesson.stations.length > 0 ? JSON.stringify(showModal.value.oneLesson.stations) : null,
+          start: transformDate(showModal.value.oneLesson.appointDate, lesson1[0]),
+          end: transformDate(showModal.value.oneLesson.appointDate, lesson2[1]),
+          extendJson: JSON.stringify(showModal.value.oneLesson.extend),
+        };
+        if (showModal.value.type === 'add') {
+          await CourseRecordAdd(params);
+        } else {
+          await CourseRecordUpdate(params);
+        }
+        Message.success(`${showModal.value.type === 'add' ? '已申请预约' : '已修改预约'}`);
+        showModal.value.visible = false;
+        // showModal.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
       }
+    }
+    function transformDate(template: Date, timestamp: number): number {
+      const dt = new Date(timestamp);
+      dt.setFullYear(template.getFullYear());
+      dt.setDate(template.getDate());
+      dt.setMonth(template.getMonth());
+      dt.setMilliseconds(0);
+      return dt.getTime();
     }
     const delectLesson = async (lessonItem: any) => {
       Message.success('删除成功');
@@ -351,10 +497,33 @@ export default createComponent({
       for(let i=0;i<result.lessonNum;i++){
         courseCount.value.count.push(i+1)
       }
+
     }
     onMounted(useLoading(loading, async () => {
-      await getCourseCount();
-      await setWeekSection(new Date());
+      await Promise.all([
+        await getCourseCount(),
+        await setWeekSection(new Date()),
+        courseList.value = await CourseList({
+          containPrograms: true,
+        }),
+        programList.value = await ProgramList(),
+        teacherList.value = await TeacherList(),
+        stationList.value = await StationList({
+          simple: true,
+        }),
+        classList.value = await ClassList(),
+        lessonMap.value = await SettingGet({
+          onlyLesson: true,
+        }),
+      ]);
+      if (isStudent() && (storeUserInfo.user as any).extend.clasz) {
+        const claszId = (storeUserInfo.user as any).extend.clasz;
+        otherStudentInClasz.value = await StudentList({
+          classId: claszId,
+          forSelect: true,
+        });
+        otherStudentInClasz.value = otherStudentInClasz.value.filter((user: any) => user.id !== (storeUserInfo.user as any).id);
+      }
       courseAppointTypeList.value = [
         {id: '0', type: '正常课程'},
         {id: '1', type: '授课预约'},
@@ -364,7 +533,9 @@ export default createComponent({
     return{
       getOriginCourseRecordList, originList, clearDiv,
       setWeekSection, goLastWeek, goNextWeek, weekSection,
-      loading, cheakIt,
+      loading, cheakIt, courseList, programList, stationList,
+      teacherList, otherStudentInClasz, classList,
+      lessonMap,storeUserInfo,isStudent,
       oneDay, courseCount,
       list: useLoading(loading, list),
       weeks,showColor,noShowColor,
