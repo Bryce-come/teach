@@ -1,10 +1,14 @@
 <template>
   <div v-loading="loading" class="usage-analysis">
-    <el-form :inline="true">
-      <el-form-item label="属性参数" label-width="100px">
+      <div style="display:flex;justify-content:center;margin-bottom:15px">
+        <el-button :type="numButton? 'primary':''" style="width:200px" @click="showNum()">人时数分析</el-button>
+        <el-button :type="timeButton? 'primary':''" style="width:200px;margin-left:5px" @click="showTime()">运行时间分析</el-button>
+      </div>
+      <!-- <el-form-item label="属性参数" label-width="100px">
         <lkt-select :list="deviceParamList" value-key="param" v-model="deviceParam" :clearable="false" placeholder="请选择参数"/>
-      </el-form-item>
-      <el-form-item label="课程名称" label-width="100px"  v-if='deviceParam.id === 1'>
+      </el-form-item> -->
+      <el-form :inline="true">
+      <el-form-item label="课程名称" label-width="100px"  v-if='numButton'>
         <el-select v-model="courseName" :clearable="false" multiple placeholder="请选择课程名称">
           <el-option
             v-for="item of courseNameList"
@@ -14,7 +18,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="设备名称:" label-width="100px" v-if='deviceParam.id === 2'>
+      <el-form-item label="设备名称:" label-width="100px" v-if='timeButton'>
         <el-select v-model="deviceName" :clearable="false" placeholder="请选择设备名称">
           <el-option
             v-for="item of deviceNameList"
@@ -24,7 +28,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="时间范围:" label-width="100px" v-if='deviceParam.id === 1'>
+      <!-- <el-form-item label="时间范围:" label-width="100px" v-if='numButton'>
         <lkt-date-picker v-model="timeRange1"/>
       </el-form-item> -->
       <el-form-item label="时间范围:" label-width="100px">
@@ -34,7 +38,7 @@
         <el-button type="primary" style="margin-left:15px" @click="query()">查询</el-button>
       </el-form-item>
     </el-form>
-    <div v-if='deviceParam.id === 1' style="margin: 10px 0" class="block_background" v-loading="loading">
+    <div v-if='numButton' style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
         <div>
           <span>人时数分析</span>
@@ -43,7 +47,7 @@
       <div class="block_content">
         <v-chart autoresize :options="chart" @datazoom="dataZoomEvent" style="width: 95%; height: 500px"/></div>
     </div>
-    <div v-if='deviceParam.id === 2' style="margin: 10px 0" class="block_background" v-loading="loading">
+    <div v-if='timeButton' style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
         <div>
           <span>运行时间分析</span>
@@ -94,6 +98,8 @@ export default createComponent({
   name: 'parameter-history',
   setup() {
     const loading = ref(false);
+    const numButton = ref(true);
+    const timeButton = ref(false);
     const currentChartRange: Date[] = [new Date(), new Date()];
     const deviceNameList = ref<any[]>([]);
     const deviceName = ref<any>();
@@ -270,10 +276,18 @@ export default createComponent({
       }
         deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
     };
+    const showNum = async () => {
+      numButton.value = true;
+      timeButton.value = false;
+    };
+    const showTime = async () => {
+      numButton.value = false;
+      timeButton.value = true;
+    };
     onMounted(useLoading(loading, async () => {
-      deviceParamList.value = [
-        {id: 1, param: '实验人时数'}, {id: 2, param: '运行时间'},
-      ];
+      // deviceParamList.value = [
+      //   {id: 1, param: '实验人时数'}, {id: 2, param: '运行时间'},
+      // ];
       courseNameList.value = await CourseList({
         containPrograms: true,
       });
@@ -288,6 +302,9 @@ export default createComponent({
       courseNameList, courseName, pie, line,
       dataZoomEvent: debounce(dataZoomEvent, { interval: 500 }),
       queryStation, timeList, statusMap, formatMilliseconds, timeRange1, currentChartRange,
+      numButton, timeButton,
+      showNum: useLoading(loading, showNum),
+      showTime: useLoading(loading, showTime),
     };
   },
 });

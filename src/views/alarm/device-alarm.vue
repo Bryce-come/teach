@@ -21,6 +21,8 @@
             </el-option>
           </el-select>        
         </el-form-item>
+        </el-form>
+        <el-form :inline="true">
         <el-form-item label="发生时间:" label-width="80px">
             <lkt-date-picker v-model="date">
             </lkt-date-picker>
@@ -47,12 +49,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="msg" label="报警内容" min-width="100"/>
-      <!-- <el-table-column label="持续时间" sortable="custom" prop="duration" width="120">
+      <el-table-column label="持续时间" sortable="custom" prop="duration" width="120">
         <template slot-scope="{row}">
           <el-tag type="danger" v-if="row.duration === undefined">报警中</el-tag>
           <div v-else>{{ row.duration | HMS }}</div>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column prop="createDt" label="发生时间" sortable="custom" width="170"/>
       <el-table-column label="操作" align="center" width="120">
         <div slot-scope="{ row }" class="flex column">

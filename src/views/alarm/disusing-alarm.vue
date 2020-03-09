@@ -21,6 +21,8 @@
             </el-option>
           </el-select>        
         </el-form-item>
+        </el-form> 
+        <el-form :inline="true">
         <el-form-item label="发生时间:" label-width="80px">
             <lkt-date-picker v-model="date">
             </lkt-date-picker>
