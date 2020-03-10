@@ -1,4 +1,4 @@
-<template>
+<template >
   <div v-loading="loading">
     <div class="flex center" style="margin: 5px 10px">
       <div class="flex align-center" style="margin-right: 10px">
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div style="margin: 7px;">
+    <div style="margin: 7px;"  class="some">
       <div class="flex center">
         <div style="margin: 10px">
           <span style="display: inline-block;margin: 0 5px;border-radius: 10px;width: 10px;height: 10px;background-color: rgb(142, 208, 214)"></span>
@@ -640,12 +640,14 @@ function initForm(): any {
     width: 150px;
     height: 40px;
     // background-color: rgb(214,236,250);
+    background-color: rgb(226,243,250);
     text-align: center;
     line-height:2.5rem;
   }
   .titleb{
     color: black;
     border: 1px solid black;
+    background-color: rgb(226,243,250);
     width: 150px;
     height: 50px;
     text-align: center;
@@ -653,9 +655,12 @@ function initForm(): any {
   }
   .content{
     border: 1px solid black;
-    width: 150px;
     height: 50px;
+    width: 150px;
+    // width: 12.5%;
     text-align: center;
-    // line-height:3.5rem;
+  }
+  .some{
+    width: 100%;
   }
 </style>
