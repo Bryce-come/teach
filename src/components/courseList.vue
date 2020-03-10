@@ -428,6 +428,9 @@ export default createComponent({
           await CourseRecordAdd(params);
           await setWeekSection(new Date(weekSection.value.weekStart));
         } else {
+          if (showModal.value.oneLesson.startLesson===showModal.value.oneLesson.endLesson){
+            clearDiv()
+          }
           await CourseRecordUpdate(params);
           await setWeekSection(new Date(weekSection.value.weekStart));
         }
@@ -461,6 +464,7 @@ export default createComponent({
     }
     async function getOriginCourseRecordList(row: any) {
       const result = await CourseRecordList({start: row.value.weekStart, end: row.value.weekEnd + 86400000});
+      console.log(result)
       function setThisDay(row: any) {
         if (row === 0) {
           return 7;
@@ -519,7 +523,7 @@ export default createComponent({
       const result = getWeekDaysRange(row);
       for (let i = 0; i < result.length; i++) {
         weekSection.value.weekInFo[i] = result[i].getMonth() + 1 + '-' + result[i].getDate();
-        weekSection.value.weekWithYeat[i] = result[i].getFullYear() + '-' + (1 + result[i].getMonth()) + '-' + result[i].getDate();
+        weekSection.value.weekWithYeat[i] = result[i]
       }
       weekSection.value.weekStart = result[0].getTime();
       weekSection.value.weekEnd = result[6].getTime();
