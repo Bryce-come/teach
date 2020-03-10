@@ -35,7 +35,7 @@
             </div>
             <div class="flex column tabDiv" v-for="(item,i) in originList.lessonsList" :key="i">
               <div
-                class="content" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
+                class="content" @click="setSomething(i,ii);" v-for="(itemb,ii) in originList.lessonsList[i].lesson"
                 :style="{'background-color': itemb != ''? (itemb.type===0?
                 'rgb(142, 208, 214)':(itemb.type===1?
                 'rgb(244,213,71)':(itemb.type===2?
@@ -106,9 +106,12 @@
                   <el-form-item label="授课教师：" v-if="readModel.oneLesson.teacher">
                     <span>{{ readModel.oneLesson.teacher.name }}</span>
                   </el-form-item>
-                  <el-form-item label="参与学生：" v-if="readModel.oneLesson">
-                    <span>{{ readModel.oneLesson.students  }}</span>
+                  <el-form-item label="上课班级：" v-if="readModel.oneLesson">
+                    <span>{{ readModel.oneLesson.clasz.name  }}</span>
                   </el-form-item>
+                  <!-- <el-form-item label="上课小组：" v-if="readModel.oneLesson">
+                    <span>{{ readModel.oneLesson.claszGroup.name }}</span>
+                  </el-form-item> -->
                   <el-form-item label="实验名称：" v-if="readModel.oneLesson.course">
                     <!-- <div v-for="(item,i) in readModel.oneLesson.program.name" :key='i'> -->
                       <span>{{ readModel.oneLesson.program.name }}</span>
@@ -117,7 +120,7 @@
                   <el-form-item label="上课时间：" v-if="readModel.oneLesson.extend">
                     <span>{{  readModel.oneLesson.extend.lessons.length+'课时' }}</span>
                   </el-form-item>
-                  <el-form-item label="操作台：" v-if="readModel.oneLesson">
+                  <el-form-item label="操作台：" v-if="readModel.oneLesson.stations">
                     <div v-for="(item,i) in readModel.oneLesson.stations" :key='i'>
                       <span>{{ item }}</span>
                     </div>
@@ -133,10 +136,11 @@
       <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="160px" label-position="left">
         <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', }">
           <!-- trigger: 'none' -->
+          
+                <!-- v-if="(item.id!==1&&item.id!==2) || !isStudent()" -->
           <el-select v-model="showModal.oneLesson.type" >
             <el-option
                 v-for="item of courseAppointTypeList"
-                v-if="(item.id!==1&&item.id!==2) || !isStudent()"
                 :key="item.id"
                 :label="item.type"
                 :value="item.id">
@@ -193,10 +197,10 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择操作台：" prop="extend.stations"
+        <el-form-item label="选择操作台：" prop="stations"
           :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=0&&showModal.oneLesson.type!=1 ? { required: true, message: '请选择操作台'} : { required: false}"
           v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
-          <el-select filterable v-model="showModal.oneLesson.extend.stations" multiple collapse-tags>
+          <el-select filterable v-model="showModal.oneLesson.stations" multiple collapse-tags>
             <el-option
               v-for="item of stationList"
               :key="item.id"
@@ -211,8 +215,8 @@
           <el-date-picker v-model="showModal.oneLesson.appointDate" type="date"/>
         </el-form-item>
         <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
-          <el-select v-model="showModal.oneLesson.startLesson">
-            <el-option
+          <el-select v-model="showModal.oneLesson.startLesson" id='setStarta'>
+            <el-option id='setStart'
               v-for="item in lessonMap.lessonNum"
               :key="item"
               :label="'第' + item + '节课'"
@@ -289,6 +293,7 @@ export default createComponent({
       weekStart: '',
       weekEnd: '',
       weekInFo:[],
+      weekWithYeat:[],
     });
     function isStudent(): boolean {
       return (storeUserInfo.user as any).role.department.id === Department.Student;
@@ -316,9 +321,6 @@ export default createComponent({
         await setWeekSection(new Date(oneDay.value))
       }
     }
-    const moreSetting = ref({
-      lessonNum: 7,
-    });
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [
@@ -366,7 +368,29 @@ export default createComponent({
         }
         // extend: lessons:[], clasz-班级, claszGroup-分组
       } else {
-        data = initForm();
+        // data = initForm();
+        data={
+          course: {
+            name: '',
+            programList: undefined,
+          },
+          teacher: {
+            name: '',
+          },
+          type: undefined,
+          stations: undefined,
+          students: '',
+          startLesson:showModal.value.oneLesson.startLesson,
+          appointDate:showModal.value.oneLesson.appointDate,
+          extend: {
+            lessonInt: undefined,
+            appointRecord: {
+              result: undefined,
+              },
+            lessons: undefined,
+            clasz: '',
+          },
+        };
         showModal.value.type = 'add';
       }
       showModal.value.oneLesson  = data;
@@ -410,6 +434,7 @@ export default createComponent({
         showModal.value.visible = false;
         // showModal.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
       }
+
     }
     function transformDate(template: Date, timestamp: number): number {
       const dt = new Date(timestamp);
@@ -459,6 +484,10 @@ export default createComponent({
     async function goNextWeek() {
       await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
     }
+    async function setSomething(this:any,rowa:any,rowb:any){
+      showModal.value.oneLesson.appointDate=weekSection.value.weekWithYeat[rowa]
+      showModal.value.oneLesson.startLesson=rowb+1
+    }
     async function clearDiv(){
       for(let i=0;i<7;i++){
         for(let j=0;j<courseCount.value.count.length;j++){
@@ -485,7 +514,8 @@ export default createComponent({
       }
       const result = getWeekDaysRange(row)
       for(let i=0;i<result.length;i++){
-        weekSection.value.weekInFo[i]=result[i].getMonth()+1+'/'+result[i].getDate()
+        weekSection.value.weekInFo[i]=result[i].getMonth()+1+'-'+result[i].getDate()
+        weekSection.value.weekWithYeat[i]=result[i].getFullYear()+'-'+(1+result[i].getMonth())+'-'+result[i].getDate()
       }
       weekSection.value.weekStart = result[0].getTime()
       weekSection.value.weekEnd = result[6].getTime()
@@ -525,9 +555,9 @@ export default createComponent({
         otherStudentInClasz.value = otherStudentInClasz.value.filter((user: any) => user.id !== (storeUserInfo.user as any).id);
       }
       courseAppointTypeList.value = [
-        {id: '0', type: '正常课程'},
-        {id: '1', type: '授课预约'},
-        {id: '2', type: '个人预约'},
+        {id: 0, type: '正常课程'},
+        {id: 1, type: '授课预约'},
+        {id: 2, type: '个人预约'},
       ];
     }));
     return{
@@ -536,12 +566,11 @@ export default createComponent({
       loading, cheakIt, courseList, programList, stationList,
       teacherList, otherStudentInClasz, classList,
       lessonMap,storeUserInfo,isStudent,
-      oneDay, courseCount,
+      oneDay, courseCount,setSomething,
       list: useLoading(loading, list),
       weeks,showColor,noShowColor,
       digital2Chinese,
       lessons,
-      moreSetting,
       readLesson,
       readModel,
       form,
@@ -578,18 +607,19 @@ function initForm(): any {
       lessons: undefined,
       clasz: '',
     },
-    };
+  };
 }
 </script>
 <style scoped lang="scss">
   .order {
+    position: relative;
     height: 2.5rem;
     line-height: 3.5rem;
     text-align: center;
-    width: 148px;
+    width: 147px;
     left: 1px;
     top: 1px;
-    height: 48px;
+    height: 47px;
     // vertical-align: middle;
 
   }
