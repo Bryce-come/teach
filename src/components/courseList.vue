@@ -134,7 +134,7 @@
       width="500px">
       <div slot='title'>{{showModal.oneLesson.id?'修改':'预约'}}课程</div>
       <el-form  v-if="showModal.oneLesson" ref="form" :model="showModal.oneLesson" label-width="160px" label-position="left">
-        <el-form-item label="预约类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', }">
+        <el-form-item label="排课类型：" prop="type" :rules="{ required: true, message: '请输入课程名称', }">
           <!-- trigger: 'none' -->
           
                 <!-- v-if="(item.id!==1&&item.id!==2) || !isStudent()" -->
@@ -262,7 +262,7 @@ import {CourseList, ProgramList} from '@/dao/courseProgramDao';
 import {TeacherList, StudentList, ClassList} from '@/dao/userDao';
 import {StationList} from '@/dao/stationDao';
 import {Department} from '@/types/privilege';
-import {CourseRecordAdd,CourseRecordUpdate} from '@/dao/courseRecordDao'
+import {CourseRecordAdd,CourseRecordUpdate,CourseRecordDel} from '@/dao/courseRecordDao'
 export default createComponent({
   name: 'courseList',
   props: { },
@@ -427,8 +427,10 @@ export default createComponent({
         };
         if (showModal.value.type === 'add') {
           await CourseRecordAdd(params);
+          await setWeekSection(new Date(weekSection.value.weekStart));
         } else {
           await CourseRecordUpdate(params);
+          await setWeekSection(new Date(weekSection.value.weekStart));
         }
         Message.success(`${showModal.value.type === 'add' ? '已申请预约' : '已修改预约'}`);
         showModal.value.visible = false;
@@ -445,6 +447,9 @@ export default createComponent({
       return dt.getTime();
     }
     const delectLesson = async (lessonItem: any) => {
+      const result = {id: lessonItem.id}
+      await CourseRecordDel(result)
+      await setWeekSection(new Date(weekSection.value.weekStart));
       Message.success('删除成功');
     };
     const delayLesson = async (lessonItem: any) => {
