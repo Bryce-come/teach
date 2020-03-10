@@ -7,7 +7,7 @@
     <div v-show="numButton">
       <el-form :inline="true" >
         <el-form-item label="课程名称:" label-width="100px">
-          <el-select v-model="courseName" name="s1" :clearable="true" multiple placeholder="请选择课程名称">
+          <el-select v-model="courseName" :clearable="true" multiple placeholder="请选择课程名称">
             <el-option
               v-for="item of courseNameList"
               :key="item.id"
@@ -36,7 +36,7 @@
     <div v-show="timeButton">
       <el-form :inline="true">
         <el-form-item label="设备名称:" label-width="100px">
-          <el-select v-model="deviceName" name="s3"  :clearable="false" placeholder="请选择设备名称">
+          <el-select v-model="deviceName" :clearable="false" placeholder="请选择设备名称">
             <el-option
               v-for="item1 of deviceNameList"
               :key="item1.id"
@@ -84,229 +84,229 @@
   </div>
 </template>
 <script lang="ts">
-  import {createComponent, ref, Ref, onMounted} from '@vue/composition-api';
-  import {useLoading} from 'web-toolkit/src/service';
-  import {debounce} from 'web-toolkit/src/utils';
-  import {getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
-  import {StationList} from '@/dao/stationDao';
-  import {sleep, formatMilliseconds} from 'web-toolkit/src/utils';
-  import {statusMap} from '@/utils/device-utils';
-  import {timelineConfig, timesPieConfig} from 'web-toolkit/src/utils/echarts-helper';
-  import {AnalysisDeviceTime, AnalysisCourseManClassHours} from '@/dao/analysisDao';
-  import {CourseList} from '@/dao/courseProgramDao';
+import {createComponent, ref, Ref, onMounted} from '@vue/composition-api';
+import {useLoading} from 'web-toolkit/src/service';
+import {debounce} from 'web-toolkit/src/utils';
+import {getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import {StationList} from '@/dao/stationDao';
+import {sleep, formatMilliseconds} from 'web-toolkit/src/utils';
+import {statusMap} from '@/utils/device-utils';
+import {timelineConfig, timesPieConfig} from 'web-toolkit/src/utils/echarts-helper';
+import {AnalysisDeviceTime, AnalysisCourseManClassHours} from '@/dao/analysisDao';
+import {CourseList} from '@/dao/courseProgramDao';
 
-  export default createComponent({
-    name: 'parameter-history',
-    setup() {
-      const loading = ref(false);
-      const numButton = ref(true);
-      const timeButton = ref(false);
-      const currentChartRange: Date[] = [new Date(), new Date()];
-      const deviceNameList = ref<any[]>([]);
-      const deviceName = ref<any>();
-      const stationNameList = ref<any>();
-      const pie = ref({});
-      const line = ref({});
-      const timeList: Ref<any[]> = ref([]);
-      const courseNameList = ref<any>([]);
-      const courseName = ref<any>([]);
-      const timeRange = ref([new Date(Date.now() - 30 * 24 * 3600000), new Date()]);
-      const timeRange1 = ref([new Date(Date.now() - 6 * 3600000), new Date()]);
-      const chart = ref(undefined);
-      const zoomRange: Ref<Date[]> = ref([]);
-      const queryNum = async () => {
-        const start = timeRange.value[0].getTime();
-        const end = timeRange.value[1].getTime();
-        // 第一个页面
-        const option: any = getOption();
-        let series = {};
-        let dataset = {};
-        const num = await AnalysisCourseManClassHours({
-          courseJson: courseName.value ? JSON.stringify(courseName.value) : null,
-          start,
-          end,
-        });
-        series = {
-          type: 'line',
-          symbolSize: 3,
-          lineStyle: {width: 4},
-        };
-        dataset = {
-          dimensions: ['x', 'y'],
-          source: num,
-        };
-        option.series = series;
-        option.dataset = dataset;
-        chart.value = option;
+export default createComponent({
+  name: 'parameter-history',
+  setup() {
+    const loading = ref(false);
+    const numButton = ref(true);
+    const timeButton = ref(false);
+    const currentChartRange: Date[] = [new Date(), new Date()];
+    const deviceNameList = ref<any[]>([]);
+    const deviceName = ref<any>();
+    const stationNameList = ref<any>();
+    const pie = ref({});
+    const line = ref({});
+    const timeList: Ref<any[]> = ref([]);
+    const courseNameList = ref<any>([]);
+    const courseName = ref<any>([]);
+    const timeRange = ref([new Date(Date.now() - 30 * 24 * 3600000), new Date()]);
+    const timeRange1 = ref([new Date(Date.now() - 6 * 3600000), new Date()]);
+    const chart = ref(undefined);
+    const zoomRange: Ref<Date[]> = ref([]);
+    const queryNum = async () => {
+      const start = timeRange.value[0].getTime();
+      const end = timeRange.value[1].getTime();
+      // 第一个页面
+      const option: any = getOption();
+      let series = {};
+      let dataset = {};
+      const num = await AnalysisCourseManClassHours({
+        courseJson: courseName.value ? JSON.stringify(courseName.value) : null,
+        start,
+        end,
+      });
+      series = {
+        type: 'line',
+        symbolSize: 3,
+        lineStyle: {width: 4},
       };
-      const queryTime = async () => {
-        const start = timeRange1.value[0].getTime();
-        const end = timeRange1.value[1].getTime();
-        const data = await AnalysisDeviceTime({
-          deviceId: deviceName.value,
-          start,
-          end,
+      dataset = {
+        dimensions: ['x', 'y'],
+        source: num,
+      };
+      option.series = series;
+      option.dataset = dataset;
+      chart.value = option;
+    };
+    const queryTime = async () => {
+      const start = timeRange1.value[0].getTime();
+      const end = timeRange1.value[1].getTime();
+      const data = await AnalysisDeviceTime({
+        deviceId: deviceName.value,
+        start,
+        end,
+      });
+      timeList.value = data.list;
+      if (data.list.length > 0) {
+        pie.value = timesPieConfig(data.summary, {}, statusMap);
+        line.value = timelineConfig(data.list, statusMap, {
+          left: '2%',
+          top: 0,
+          showTime: true,
+          dataZoom: true,
+          confine: true,
         });
-        timeList.value = data.list;
-        if (data.list.length > 0) {
-          pie.value = timesPieConfig(data.summary, {}, statusMap);
-          line.value = timelineConfig(data.list, statusMap, {
-            left: '2%',
-            top: 0,
-            showTime: true,
-            dataZoom: true,
-            confine: true
-          });
-        }
       }
-      function getOption() {
-        const yName = '';
-        const xName = '';
-        return {
-          legend: {
+    };
+    function getOption() {
+      const yName = '';
+      const xName = '';
+      return {
+        legend: {
+          show: true,
+        },
+        tooltip: {
+          trigger: 'axis',
+          // formatter: (params: any) => {
+          //   if (params.length === 0) { return ''; }
+          //   let res = '';
+          //   const date = new Date(params[0].data[0]);
+          //   res += '<div>' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + formatTime(date) + '</div>';
+          //   for (const p of params) {
+          //     res += `${p.marker}<span>${p.seriesName}: ${p.data[1]}</span><br/>`;
+          //   }
+          //   return res;
+          // },
+        },
+        color: getColors(),
+        toolbox: {
+          feature: {
+            restore: {
+              title: '还原',
+              iconStyle: {
+                borderColor: 'black',
+              },
+            },
+          },
+        },
+        // calculable: true,
+        xAxis: {
+          // min: currentChartRange[0].getTime(),
+          // max: currentChartRange[1].getTime(),
+          type: 'value',
+          name: '课程',
+          nameGap: 2,
+          nameTextStyle: {
+            color: getColor(),
+            fontSize: 14,
+          },
+          splitLine: {
+            show: false,
+          },
+          axisLine: {
+            lineStyle: {
+              color: getColor(),
+            },
+          },
+        },
+        yAxis: {
+          type: 'value',
+          name: yName,
+          nameTextStyle: {
+            color: getColor(),
+            fontSize: 16,
+          },
+          axisLine: {
+            lineStyle: {
+              color: getColor(),
+            },
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+        grid: {
+          bottom: '15%',
+        },
+        dataZoom: [
+          {
             show: true,
-          },
-          tooltip: {
-            trigger: 'axis',
-            // formatter: (params: any) => {
-            //   if (params.length === 0) { return ''; }
-            //   let res = '';
-            //   const date = new Date(params[0].data[0]);
-            //   res += '<div>' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + formatTime(date) + '</div>';
-            //   for (const p of params) {
-            //     res += `${p.marker}<span>${p.seriesName}: ${p.data[1]}</span><br/>`;
-            //   }
-            //   return res;
-            // },
-          },
-          color: getColors(),
-          toolbox: {
-            feature: {
-              restore: {
-                title: '还原',
-                iconStyle: {
-                  borderColor: 'black',
-                },
-              },
-            },
-          },
-          // calculable: true,
-          xAxis: {
-            // min: currentChartRange[0].getTime(),
-            // max: currentChartRange[1].getTime(),
-            type: 'value',
-            name: '课程',
-            nameGap: 2,
-            nameTextStyle: {
-              color: getColor(),
-              fontSize: 14,
-            },
-            splitLine: {
-              show: false,
-            },
-            axisLine: {
-              lineStyle: {
-                color: getColor(),
-              },
-            },
-          },
-          yAxis: {
-            type: 'value',
-            name: yName,
-            nameTextStyle: {
-              color: getColor(),
-              fontSize: 16,
-            },
-            axisLine: {
-              lineStyle: {
-                color: getColor(),
-              },
-            },
-            splitLine: {
-              show: false,
-            },
-          },
-          grid: {
-            bottom: '15%',
-          },
-          dataZoom: [
-            {
-              show: true,
-              type: 'slider',
-              dataBackground: {
-                areaStyle: {
-                  color: getColors(),
-                },
-              },
-              textStyle: {
+            type: 'slider',
+            dataBackground: {
+              areaStyle: {
                 color: getColors(),
               },
-              realtime: true,
-              showDataShadow: true,
-              bottom: 5,
             },
-          ],
-          series: [],
-          dataset: {},
-        };
-      }
+            textStyle: {
+              color: getColors(),
+            },
+            realtime: true,
+            showDataShadow: true,
+            bottom: 5,
+          },
+        ],
+        series: [],
+        dataset: {},
+      };
+    }
 
-      function dataZoomEvent(data: any) {
-        zoomRange.value = [];
-        const dir = currentChartRange[1].getTime() - currentChartRange[0].getTime();
-        zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.start / 100));
-        zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.end / 100));
-      }
+    function dataZoomEvent(data: any) {
+      zoomRange.value = [];
+      const dir = currentChartRange[1].getTime() - currentChartRange[0].getTime();
+      zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.start / 100));
+      zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.end / 100));
+    }
 
-      const queryStation = async () => {
-        stationNameList.value = await StationList({
-          simple: false,
-        });
-        for (const item of stationNameList.value) {
-          if (item.deviceList && item.deviceList.length !== 0) {
-            deviceNameList.value.push(item.deviceList[0]);
-          }
+    const queryStation = async () => {
+      stationNameList.value = await StationList({
+        simple: false,
+      });
+      for (const item of stationNameList.value) {
+        if (item.deviceList && item.deviceList.length !== 0) {
+          deviceNameList.value.push(item.deviceList[0]);
         }
-        deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
-      };
-      // 人时数分析
-      const showNum = async () => {
-        numButton.value = true;
-        timeButton.value = false;
-        // timeRange.value = [new Date(Date.now() - 30 * 24 * 3600000), new Date()];
-        // courseName.value = [];
-        // useLoading(loading, queryNum)();
-      };
-      // 运行时间分析
-      const showTime = async () => {
-        numButton.value = false;
-        timeButton.value = true;
-        // deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
-        // useLoading(loading, queryTime)();
-      };
-      onMounted(useLoading(loading, async () => {
-        courseNameList.value = await CourseList({
-          containPrograms: true,
-        });
-        await queryStation();
-        await queryTime();
-        await queryNum();
-      }));
-      return {
-        loading, deviceNameList, deviceName, timeRange,
-        queryTime: useLoading(loading, queryTime),
-        queryNum: useLoading(loading, queryNum),
-        chart, zoomRange,
-        stationNameList,
-        courseNameList, courseName, pie, line,
-        dataZoomEvent: debounce(dataZoomEvent, {interval: 500}),
-        queryStation, timeList, statusMap, formatMilliseconds, timeRange1, currentChartRange,
-        numButton, timeButton,
-        showNum,
-        showTime,
-      };
-    },
-  });
+      }
+      deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
+    };
+    // 人时数分析
+    const showNum = async () => {
+      numButton.value = true;
+      timeButton.value = false;
+      // timeRange.value = [new Date(Date.now() - 30 * 24 * 3600000), new Date()];
+      // courseName.value = [];
+      // useLoading(loading, queryNum)();
+    };
+    // 运行时间分析
+    const showTime = async () => {
+      numButton.value = false;
+      timeButton.value = true;
+      // deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
+      // useLoading(loading, queryTime)();
+    };
+    onMounted(useLoading(loading, async () => {
+      courseNameList.value = await CourseList({
+        containPrograms: true,
+      });
+      await queryStation();
+      await queryTime();
+      await queryNum();
+    }));
+    return {
+      loading, deviceNameList, deviceName, timeRange,
+      queryTime: useLoading(loading, queryTime),
+      queryNum: useLoading(loading, queryNum),
+      chart, zoomRange,
+      stationNameList,
+      courseNameList, courseName, pie, line,
+      dataZoomEvent: debounce(dataZoomEvent, {interval: 500}),
+      queryStation, timeList, statusMap, formatMilliseconds, timeRange1, currentChartRange,
+      numButton, timeButton,
+      showNum,
+      showTime,
+    };
+  },
+});
 </script>
 <style scoped lang="scss">
   .pie {
