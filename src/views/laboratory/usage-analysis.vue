@@ -1,14 +1,14 @@
 <template>
   <div v-loading="loading" class="usage-analysis">
-      <div style="display:flex;justify-content:center;margin-bottom:15px">
-        <el-button :type="numButton? 'primary':''" style="width:200px" @click="showNum()">人时数分析</el-button>
-        <el-button :type="timeButton? 'primary':''" style="width:200px;margin-left:5px" @click="showTime()">运行时间分析</el-button>
-      </div>
-      <!-- <el-form-item label="属性参数" label-width="100px">
-        <lkt-select :list="deviceParamList" value-key="param" v-model="deviceParam" :clearable="false" placeholder="请选择参数"/>
-      </el-form-item> -->
-      <el-form :inline="true">
-      <el-form-item label="课程名称" label-width="100px"  v-if='numButton'>
+    <div style="display:flex;justify-content:center;margin-bottom:15px">
+      <el-button :type="numButton? 'primary':''" style="width:200px" @click="showNum()">人时数分析</el-button>
+      <el-button :type="timeButton? 'primary':''" style="width:200px;margin-left:5px" @click="showTime()">运行时间分析</el-button>
+    </div>
+    <!-- <el-form-item label="属性参数" label-width="100px">
+      <lkt-select :list="deviceParamList" value-key="param" v-model="deviceParam" :clearable="false" placeholder="请选择参数"/>
+    </el-form-item> -->
+    <el-form :inline="true">
+      <el-form-item label="课程名称:" label-width="100px"  v-if='numButton'>
         <el-select v-model="courseName" :clearable="false" multiple placeholder="请选择课程名称">
           <el-option
             v-for="item of courseNameList"
@@ -77,19 +77,14 @@
   </div>
 </template>
 <script lang="ts">
-import { router } from '@/main';
-import { createComponent, ref, Ref, onMounted } from '@vue/composition-api';
+  import { createComponent, ref, Ref, onMounted } from '@vue/composition-api';
 import { useLoading } from 'web-toolkit/src/service';
-import { IDevice, IParamConfig, IResponseData} from '@/types/beans';
-import { isString, debounce, assert, formatTime} from 'web-toolkit/src/utils';
+import { debounce, formatTime} from 'web-toolkit/src/utils';
 import { getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 import { StationList, StationInfo } from '@/dao/stationDao';
 import { Message } from 'element-ui';
 import { sleep, formatMilliseconds } from 'web-toolkit/src/utils';
-import { EChartOption } from 'echarts';
-import { download, mesPostUntilSuccess, postService} from 'web-toolkit/src/case-main/index';
 import { statusMap} from '@/utils/device-utils';
-import { urlMap} from '@/config';
 import { timelineConfig, timesPieConfig} from 'web-toolkit/src/utils/echarts-helper';
 import {AnalysisDeviceTime, AnalysisCourseManClassHours} from '@/dao/analysisDao';
 import { AnyObject } from '@vue/composition-api/dist/types/basic';
@@ -104,8 +99,8 @@ export default createComponent({
     const deviceNameList = ref<any[]>([]);
     const deviceName = ref<any>();
     const stationNameList = ref<any>();
-    const pie: Ref<EChartOption> = ref({});
-    const line: Ref<EChartOption> = ref({});
+    const pie = ref<any>({});
+    const line = ref<any>({});
     const timeList: Ref<any[]> = ref([]);
     const courseNameList = ref<any>();
     const courseName = ref<any>();
@@ -115,7 +110,7 @@ export default createComponent({
     });
     const timeRange = ref([new Date(Date.now() - 24 * 3600000), new Date()]);
     const timeRange1 = ref([]);
-    const chart: Ref<EChartOption | void> = ref(undefined);
+    const chart = ref<any>(undefined);
     const zoomRange: Ref<Date[]> = ref([]);
     const query = async () => {
       const start = timeRange.value[0].getTime();
