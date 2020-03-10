@@ -7,36 +7,41 @@
       <!-- <el-form-item label="属性参数" label-width="100px">
         <lkt-select :list="deviceParamList" value-key="param" v-model="deviceParam" :clearable="false" placeholder="请选择参数"/>
       </el-form-item> -->
-      <el-form :inline="true">
-      <el-form-item label="课程名称" label-width="100px"  v-if='numButton'>
-        <el-select v-model="courseName" :clearable="false" multiple placeholder="请选择课程名称">
-          <el-option
-            v-for="item of courseNameList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="设备名称:" label-width="100px" v-if='timeButton'>
-        <el-select v-model="deviceName" :clearable="false" placeholder="请选择设备名称">
-          <el-option
-            v-for="item of deviceNameList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="时间范围:" label-width="100px" v-if='numButton'>
-        <lkt-date-picker v-model="timeRange1"/>
-      </el-form-item> -->
-      <el-form-item label="时间范围:" label-width="100px">
-        <lkt-date-picker v-model="timeRange"/>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" style="margin-left:15px" @click="query()">查询</el-button>
-      </el-form-item>
+      <el-form :inline="true" v-if='numButton'>
+        <el-form-item label="课程名称" label-width="100px">
+          <el-select v-model="courseName" :clearable="false" multiple placeholder="请选择课程名称">
+            <el-option
+              v-for="item of courseNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+         <el-form-item label="时间范围:" label-width="100px">
+          <lkt-date-picker v-model="timeRange"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" style="margin-left:15px" @click="queryNum()">查询</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form :inline="true" v-if='timeButton'>
+        <el-form-item label="设备名称:" label-width="100px" >
+          <el-select v-model="deviceName" :clearable="false" placeholder="请选择设备名称">
+            <el-option
+              v-for="item1 of deviceNameList"
+              :key="item1.id"
+              :label="item1.name"
+              :value="item1.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="时间范围:" label-width="100px">
+          <lkt-date-picker v-model="timeRange1"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" style="margin-left:15px" @click="queryTime()">查询</el-button>
+        </el-form-item>
     </el-form>
     <div v-if='numButton' style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
@@ -113,13 +118,38 @@ export default createComponent({
     const deviceParam = ref<any>({
       id: 1, param: '实验人时数',
     });
-    const timeRange = ref([new Date(Date.now() - 24 * 3600000), new Date()]);
-    const timeRange1 = ref([]);
+    const timeRange = ref([new Date(Date.now() - 30 * 24 * 3600000), new Date()]);
+    const timeRange1 = ref([new Date(Date.now() - 24 * 3600000), new Date()]);
     const chart: Ref<EChartOption | void> = ref(undefined);
     const zoomRange: Ref<Date[]> = ref([]);
-    const query = async () => {
+    const queryNum = async () => {
       const start = timeRange.value[0].getTime();
       const end = timeRange.value[1].getTime();
+    // 第一个页面
+      const option: any = getOption();
+      let series: AnyObject = {};
+      let dataset: AnyObject = {};
+      const num = await AnalysisCourseManClassHours({
+          courseJson: courseName.value ? JSON.stringify(courseName.value) : null,
+          start,
+          end,
+      });
+      series = {
+        type: 'line',
+        symbolSize: 3,
+        lineStyle: { width: 4 },
+      };
+      dataset = {
+        dimensions:['x','y'],
+        source: num,
+      };
+      option.series = series;
+      option.dataset = dataset;
+      chart.value = option;
+    };
+    const queryTime = async () => {   
+      const start = timeRange1.value[0].getTime();
+      const end = timeRange1.value[1].getTime();
       const data = await AnalysisDeviceTime({
         deviceId: deviceName.value,
         start,
@@ -130,23 +160,7 @@ export default createComponent({
         pie.value = timesPieConfig(data.summary, {}, statusMap);
         line.value = timelineConfig(data.list, statusMap, { left: '2%', top: 0, showTime: true, dataZoom: true, confine: true });
        }
-    // 第一个页面
-      const option: any = getOption();
-      let series: AnyObject = {};
-      const num = await AnalysisCourseManClassHours({
-          courseJson: courseName.value ? JSON.stringify(courseName.value) : null,
-          start,
-          end,
-      });
-      series = {
-        type: 'line',
-        symbolSize: 3,
-        lineStyle: { width: 4 },
-        data: num,
-      };
-      option.series = series;
-      chart.value = option;
-    };
+    }
     // const  queryXY = async () => {
     //   const option: any = getOption();
     //   let series: AnyObject = {};
@@ -164,22 +178,23 @@ export default createComponent({
     // };
     function getOption() {
       const yName = '';
+      const xName = '';
       return {
         legend: {
           show: true,
         },
         tooltip: {
           trigger: 'axis',
-          formatter: (params: any) => {
-            if (params.length === 0) { return ''; }
-            let res = '';
-            const date = new Date(params[0].data[0]);
-            res += '<div>' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + formatTime(date) + '</div>';
-            for (const p of params) {
-              res += `${p.marker}<span>${p.seriesName}: ${p.data[1]}</span><br/>`;
-            }
-            return res;
-          },
+          // formatter: (params: any) => {
+          //   if (params.length === 0) { return ''; }
+          //   let res = '';
+          //   const date = new Date(params[0].data[0]);
+          //   res += '<div>' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + formatTime(date) + '</div>';
+          //   for (const p of params) {
+          //     res += `${p.marker}<span>${p.seriesName}: ${p.data[1]}</span><br/>`;
+          //   }
+          //   return res;
+          // },
         },
         color: getColors(),
         toolbox: {
@@ -201,10 +216,10 @@ export default createComponent({
         },
         // calculable: true,
         xAxis: {
-          min: currentChartRange[0].getTime(),
-          max: currentChartRange[1].getTime(),
-          type: 'time',
-          name: '时间',
+          // min: currentChartRange[0].getTime(),
+          // max: currentChartRange[1].getTime(),
+          type: 'value',
+          name: '课程',
           nameGap: 2,
           nameTextStyle: {
             color: getColor(),
@@ -256,6 +271,7 @@ export default createComponent({
           },
         ],
         series: [],
+        dataset: {},
       };
     }
     function dataZoomEvent(data: any) {
@@ -276,13 +292,22 @@ export default createComponent({
       }
         deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
     };
+    // 人时数分析
     const showNum = async () => {
       numButton.value = true;
       timeButton.value = false;
+      timeRange.value = [new Date(Date.now() - 30 *24 * 3600000), new Date()];
+      courseName.value = [];
+      deviceName.value = '';
+      await queryNum();
     };
+    // 运行时间分析
     const showTime = async () => {
       numButton.value = false;
       timeButton.value = true;
+      timeRange.value = [];
+      deviceName.value = deviceNameList.value && deviceNameList.value.length !== 0 ? deviceNameList.value[0].id : null;
+      await queryTime();
     };
     onMounted(useLoading(loading, async () => {
       // deviceParamList.value = [
@@ -293,10 +318,11 @@ export default createComponent({
       });
       await queryStation();
       // await queryXY();
-      await query();
+      await queryTime();
+      await queryNum();
     }));
     return{
-      loading, deviceNameList, deviceName, deviceParamList, deviceParam, timeRange, query,
+      loading, deviceNameList, deviceName, deviceParamList, deviceParam, timeRange, queryTime, queryNum,
       chart, zoomRange,
       stationNameList,
       courseNameList, courseName, pie, line,
