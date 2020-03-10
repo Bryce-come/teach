@@ -98,10 +98,10 @@ export default {
         courseId: courseID,
       });
       console.log(courseInfo.value);
-      for (var i = 0;i < courseInfo.value.stations;i++) {
-        const station = stationList.value.filter((item:any) => {
+      for (let i = 0; i < courseInfo.value.stations; i++) {
+        const station = stationList.value.filter((item: any) => {
           return item.id === courseInfo.value.stations[i];
-        })
+        });
       }
     };
     async function downFile(item: any) {

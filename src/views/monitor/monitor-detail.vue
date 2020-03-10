@@ -125,7 +125,7 @@ export default {
       end: '2020-02-26 14:11:11',
     });
     const videoChannel = ref<any>([null, null]);
-    const Src = "http://192.168.88.128:9000";
+    const Src = 'http://192.168.88.128:9000';
     const a = ref<any>();
     async function fuzhi() {
       a.value = Src;

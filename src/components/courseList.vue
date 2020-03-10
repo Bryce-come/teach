@@ -292,8 +292,8 @@ export default createComponent({
     const weekSection = ref<any>({
       weekStart: '',
       weekEnd: '',
-      weekInFo:[],
-      weekWithYeat:[],
+      weekInFo: [],
+      weekWithYeat: [],
     });
     function isStudent(): boolean {
       return (storeUserInfo.user as any).role.department.id === Department.Student;
@@ -313,24 +313,23 @@ export default createComponent({
     const form = ref<ElForm|null>(null);
     // 查询函数
     async function list() {
-      if(oneDay.value===undefined||oneDay.value===null){
-        alert('请选择日期')
-      }
-      else{
+      if (oneDay.value === undefined || oneDay.value === null) {
+        alert('请选择日期');
+      } else {
         clearDiv();
-        await setWeekSection(new Date(oneDay.value))
+        await setWeekSection(new Date(oneDay.value));
       }
     }
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [
-        {lesson: [1,2,3,4,5,6,7,8,9,10,11,12,]},
-        {lesson: [13,14,15,16,17,18,19,20,21,22,23,24,]},
-        {lesson: [25,26,27,28,29,30,31,32,33,34,35,36,]},
-        {lesson: [37,38,39,40,41,42,43,44,45,46,47,48,]},
-        {lesson: [49,50,51,52,53,54,55,56,57,58,59,60,]},
-        {lesson: [61,62,63,64,65,66,67,68,69,70,71,72,]},
-        {lesson: [73,74,75,76,77,78,79,80,81,82,83,84,]},
+        {lesson: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]},
+        {lesson: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]},
+        {lesson: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]},
+        {lesson: [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]},
+        {lesson: [49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]},
+        {lesson: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72]},
+        {lesson: [73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84]},
       ],
     });
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
@@ -338,13 +337,13 @@ export default createComponent({
       const character = ['一', '二', '三', '四', '五', '六'];
       return identifier === 'week' && num === 6 ? '日' : character[num];
     }
-    function showColor(row:any){
-      const result = row.srcElement
-      result.style.backgroundColor='Gainsboro'
+    function showColor(row: any) {
+      const result = row.srcElement;
+      result.style.backgroundColor = 'Gainsboro';
     }
-    function noShowColor(row:any){
-      const result = row.srcElement
-      result.style.backgroundColor='white'
+    function noShowColor(row: any) {
+      const result = row.srcElement;
+      result.style.backgroundColor = 'white';
     }
     const newList = async () => {
 
@@ -369,7 +368,7 @@ export default createComponent({
         // extend: lessons:[], clasz-班级, claszGroup-分组
       } else {
         // data = initForm();
-        data={
+        data = {
           course: {
             name: '',
             programList: undefined,
@@ -380,8 +379,8 @@ export default createComponent({
           type: undefined,
           stations: undefined,
           students: '',
-          startLesson:showModal.value.oneLesson.startLesson,
-          appointDate:showModal.value.oneLesson.appointDate,
+          startLesson: showModal.value.oneLesson.startLesson,
+          appointDate: showModal.value.oneLesson.appointDate,
           extend: {
             lessonInt: undefined,
             appointRecord: {
@@ -469,16 +468,16 @@ export default createComponent({
           return row;
         }
       }
-      if( result.length!=0){
-        for(let i=0;i<result.length;i++){
-          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay())-1].lesson.splice(result[i].extend.lessons[0]-1,1,result[i])
-          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]-1];
-          str.style.height=50*result[i].extend.lessons.length+'px'
+      if ( result.length != 0) {
+        for (let i = 0; i < result.length; i++) {
+          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
+          const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
+          str.style.height = 50 * result[i].extend.lessons.length + 'px';
           // str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
-          console.log(result[i])
-          for(let j=0;j<result[i].extend.lessons.length-1;j++){
-            const str =<HTMLElement>document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay())-1].childNodes[result[i].extend.lessons[0]+j];
-            str.style.display='none'
+          console.log(result[i]);
+          for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
+            const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
+            str.style.display = 'none';
           }
         }
       }
@@ -489,26 +488,26 @@ export default createComponent({
     async function goNextWeek() {
       await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
     }
-    async function setSomething(this:any,rowa:any,rowb:any){
-      showModal.value.oneLesson.appointDate=weekSection.value.weekWithYeat[rowa]
-      showModal.value.oneLesson.startLesson=rowb+1
+    async function setSomething(this: any, rowa: any, rowb: any) {
+      showModal.value.oneLesson.appointDate = weekSection.value.weekWithYeat[rowa];
+      showModal.value.oneLesson.startLesson = rowb + 1;
     }
-    async function clearDiv(){
-      for(let i=0;i<7;i++){
-        for(let j=0;j<courseCount.value.count.length;j++){
-          const str =<HTMLElement>document.getElementsByClassName('tabDiv')[i].childNodes[j];
-          str.style.display='inline'
-          str.style.height=50+'px'
-          str.style.lineHeight=3.5+'rem'
+    async function clearDiv() {
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < courseCount.value.count.length; j++) {
+          const str = document.getElementsByClassName('tabDiv')[i].childNodes[j] as HTMLElement;
+          str.style.display = 'inline';
+          str.style.height = 50 + 'px';
+          str.style.lineHeight = 3.5 + 'rem';
         }
       }
     }
-    async function setWeekSection(row:any){
-      originList.value.lessonsList=[
-        {lesson: []},{lesson: []},{lesson: []},{lesson: []},
-        {lesson: []},{lesson: []},{lesson: []},
-      ]
-      for(let i=0;i<courseCount.value.count.length;i++){
+    async function setWeekSection(row: any) {
+      originList.value.lessonsList = [
+        {lesson: []}, {lesson: []}, {lesson: []}, {lesson: []},
+        {lesson: []}, {lesson: []}, {lesson: []},
+      ];
+      for (let i = 0; i < courseCount.value.count.length; i++) {
         originList.value.lessonsList[0].lesson.push('');
         originList.value.lessonsList[1].lesson.push('');
         originList.value.lessonsList[2].lesson.push('');
@@ -517,20 +516,20 @@ export default createComponent({
         originList.value.lessonsList[5].lesson.push('');
         originList.value.lessonsList[6].lesson.push('');
       }
-      const result = getWeekDaysRange(row)
-      for(let i=0;i<result.length;i++){
-        weekSection.value.weekInFo[i]=result[i].getMonth()+1+'-'+result[i].getDate()
-        weekSection.value.weekWithYeat[i]=result[i].getFullYear()+'-'+(1+result[i].getMonth())+'-'+result[i].getDate()
+      const result = getWeekDaysRange(row);
+      for (let i = 0; i < result.length; i++) {
+        weekSection.value.weekInFo[i] = result[i].getMonth() + 1 + '-' + result[i].getDate();
+        weekSection.value.weekWithYeat[i] = result[i].getFullYear() + '-' + (1 + result[i].getMonth()) + '-' + result[i].getDate();
       }
-      weekSection.value.weekStart = result[0].getTime()
-      weekSection.value.weekEnd = result[6].getTime()
-      getOriginCourseRecordList(weekSection)
+      weekSection.value.weekStart = result[0].getTime();
+      weekSection.value.weekEnd = result[6].getTime();
+      getOriginCourseRecordList(weekSection);
     }
-    async function getCourseCount(){
-      const result = await SettingGet({onlyLesson:true})
-      
-      for(let i=0;i<result.lessonNum;i++){
-        courseCount.value.count.push(i+1)
+    async function getCourseCount() {
+      const result = await SettingGet({onlyLesson: true});
+
+      for (let i = 0; i < result.lessonNum; i++) {
+        courseCount.value.count.push(i + 1);
       }
 
     }
@@ -570,10 +569,10 @@ export default createComponent({
       setWeekSection, goLastWeek, goNextWeek, weekSection,
       loading, cheakIt, courseList, programList, stationList,
       teacherList, otherStudentInClasz, classList,
-      lessonMap,storeUserInfo,isStudent,
-      oneDay, courseCount,setSomething,
+      lessonMap, storeUserInfo, isStudent,
+      oneDay, courseCount, setSomething,
       list: useLoading(loading, list),
-      weeks,showColor,noShowColor,
+      weeks, showColor, noShowColor,
       digital2Chinese,
       lessons,
       readLesson,
