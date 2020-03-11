@@ -8,7 +8,7 @@
           <div style="margin-top: 10px"><el-radio v-model="condition" label="2" border>按日期查询</el-radio></div>
         </div>
         <div v-if="condition==='1'">
-          <CourseList />
+          <courseList />
         </div>
         <div v-else>
           <lkt-date-picker type="daterange" v-model="range"/>
@@ -88,7 +88,7 @@
 <script lang="ts">
 import { ref, onMounted, createComponent } from '@vue/composition-api';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
-import CourseList from '../../components/courseList.vue';
+import courseList from '../../components/courseList.vue';
 import { Message } from 'element-ui';
 import { timelineConfig} from 'web-toolkit/src/utils/echarts-helper';
 import {ImageLink} from '@/dao/commonDao';
@@ -98,7 +98,7 @@ import {statusMap} from '@/utils/device-utils';
 import {CourseRecordList} from '@/dao/courseRecordDao';
 
 export default createComponent({
-  components: { CourseList },
+  components: { courseList },
   setup() {
     const loading = ref(false);
     const condition = ref<string>('1');

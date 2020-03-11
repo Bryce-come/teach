@@ -48,7 +48,7 @@
                     <el-popover
                       placement="top-start"
                       width="50"
-                      v-if="itemb.course"
+                      v-if="itemb"
                       >
                       <div style="color:#67C23A;width:6rem;" @click="readLesson(itemb)">
                         <i class="el-icon-reading"/>
@@ -72,11 +72,14 @@
                           (itemb.type===0?itemb.course.name + new Date(itemb.startDt).getHours() + ':' + new Date(itemb.startDt).getMinutes() + itemb.endDt:''):
                           ''}}
                         </div> -->
-                        <div style="line-height:32px">
+                        <div style="line-height:32px" v-if="itemb.course">
                           {{itemb.course?itemb.course.name:''}}
                         </div>
-                        <div style="line-height:32px">
-                          {{itemb.type===0?itemb.teacher.name:(itemb.type===0?itemb.teacher.name:'')}}
+                        <div style="line-height:32px" v-if="itemb.teacher">
+                          {{itemb.teacher.name}}
+                        </div>
+                        <div style="line-height:32px" v-if="itemb.type===2">
+                          {{itemb.students}}
                         </div>
                         <div style="line-height:32px">
                           {{itemb.type != null ? new Date(itemb.startDt).getHours() + ':' + new Date(itemb.startDt).getMinutes() +'-'+
@@ -160,7 +163,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择教师：" prop="teacher.name" 
-          :rules="showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择教师'} : { required: false}">
+          :rules="showModal.oneLesson.type!=2 ? { required: true, message: '请选择教师'} : { required: false}">
           <el-select filterable v-model="showModal.oneLesson.teacher" value-key="id">
             <el-option
               v-for="item of teacherList"
@@ -169,7 +172,7 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择实验：" prop="program.name" v-if="">
+        <el-form-item label="选择实验：" prop="program.name">
           <el-select filterable v-model="showModal.oneLesson.program" value-key="id">
             <el-option
               v-for="item of showModal.oneLesson.course ? showModal.oneLesson.course.programList : programList"
@@ -235,7 +238,7 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择其他参与人：" 
+        <el-form-item label="选择参与人："  :rules="{ required: true, message: '请选择参与人'}"
           v-if="showModal.oneLesson.type&&showModal.oneLesson.type != 1&&showModal.oneLesson.type != 0" prop="students">
           <el-select filterable v-model="showModal.oneLesson.students" multiple collapse-tags>
             <el-option
@@ -372,15 +375,33 @@ export default createComponent({
           data.endLesson = data.extend.lessons[data.extend.lessons.length - 1];
         }
         // extend: lessons:[], clasz-班级, claszGroup-分组
+        if(data.course){
+          data.course.programList = courseList.value.filter((item1:any) => {return item1.id === data.course.id})[0].programList
+        }
+        if(!data.course){
+          data.course={
+            name: '',
+            programList: undefined,
+            id:null
+          }
+        }
+        if(!data.teacher){
+          data.teacher={
+            name: '',
+            id:null
+          }
+        }
       } else {
         // data = initForm();
         data = {
           course: {
             name: '',
             programList: undefined,
+            id:null
           },
           teacher: {
             name: '',
+            id:null
           },
           type: undefined,
           stations: undefined,
@@ -389,6 +410,10 @@ export default createComponent({
           // appointDate: showModal.value.oneLesson.appointDate,
           startLesson:'',
           appointDate:'',
+          program:{
+            name:'',
+            id:null,
+          },
           extend: {
             lessonInt: undefined,
             appointRecord: {
@@ -401,6 +426,8 @@ export default createComponent({
         showModal.value.type = 'add';
       }
       showModal.value.oneLesson  = data;
+      
+      
       showModal.value.visible = true;
     };
     async function update() {
@@ -563,17 +590,10 @@ export default createComponent({
         lessonMap.value = await SettingGet({
           onlyLesson: true,
         }),
-      ]);
-      console.log( courseList);
-      
-      if (isStudent() && (storeUserInfo.user as any).extend.clasz) {
-        const claszId = (storeUserInfo.user as any).extend.clasz;
         otherStudentInClasz.value = await StudentList({
-          classId: claszId,
           forSelect: true,
-        });
-        otherStudentInClasz.value = otherStudentInClasz.value.filter((user: any) => user.id !== (storeUserInfo.user as any).id);
-      }
+        }),
+      ]);
       courseAppointTypeList.value = [
         {id: 0, type: '正常课程'},
         {id: 1, type: '授课预约'},
