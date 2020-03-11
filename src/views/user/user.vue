@@ -82,7 +82,7 @@ export default createComponent({
       data: {},
     });
     const form = ref<ElForm|null>(null);
-    
+
     function validator(rule: any, value: string, callback: Function) {
       if (!value && (modal.value.data.pwd !== '' )) {
         callback(new Error('请再次输入密码'));
