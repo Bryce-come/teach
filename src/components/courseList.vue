@@ -474,6 +474,9 @@ export default createComponent({
       }
       if ( result.length != 0) {
         for (let i = 0; i < result.length; i++) {
+          // if(result[i].extend.lessons=undefined){
+          //   result[i].extend.lessons=[1,2,3]
+          // }
           originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
           const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
           str.style.height = 50 * result[i].extend.lessons.length + 'px';

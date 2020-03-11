@@ -88,14 +88,15 @@
       </el-col>
     </el-row>
     <kit-dialog-simple
+      @submit.native.prevent
       :modal="modal"
       :confirm="update"
       width="500px">
       <div slot="title">添加操作台</div>
       <el-form v-if="modal.workTopInfo" ref="form" :model="modal.workTopInfo" label-width="120px" label-position="left"
                style="width: 300px;margin: 0 auto">
-        <el-form-item label="操作台名称：" prop="name" :rules="{ required: true, message: '请输入操作台名称'}">
-          <el-input v-model="modal.workTopInfo.name"/>
+        <el-form-item label="操作台名称：" prop="name" :rules="{ required: true, message: '请输入操作台名称(15位大写字母和数字)'}">
+          <el-input v-model="modal.workTopInfo.name" oninput="value=value.replace(/[^0-9A-Z]/g,'');" minlength="15" maxlength="15" clearable/>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
