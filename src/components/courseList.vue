@@ -660,8 +660,6 @@ function initForm(): any {
     left: 1px;
     top: 1px;
     height: 47px;
-    // vertical-align: middle;
-
   }
   .order .el-button{
     display: none;
@@ -675,7 +673,6 @@ function initForm(): any {
     border: 1px solid black;
     width: 150px;
     height: 40px;
-    // background-color: rgb(214,236,250);
     background-color: rgb(226,243,250);
     text-align: center;
     line-height:2.5rem;
@@ -693,7 +690,6 @@ function initForm(): any {
     border: 1px solid black;
     height: 50px;
     width: 150px;
-    // width: 12.5%;
     text-align: center;
   }
   .some{
