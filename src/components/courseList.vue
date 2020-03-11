@@ -112,7 +112,7 @@
                   <!-- <el-form-item label="上课小组：" v-if="readModel.oneLesson">
                     <span>{{ readModel.oneLesson.claszGroup.name }}</span>
                   </el-form-item> -->
-                  <el-form-item label="实验名称：" v-if="readModel.oneLesson.course">
+                  <el-form-item label="实验名称：" v-if="readModel.oneLesson.program">
                     <!-- <div v-for="(item,i) in readModel.oneLesson.program.name" :key='i'> -->
                       <span>{{ readModel.oneLesson.program.name }}</span>
                     <!-- </div> -->
@@ -169,7 +169,7 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择实验：" prop="program.name" v-if="showModal.oneLesson.type!=0">
+        <el-form-item label="选择实验：" prop="program.name" v-if="">
           <el-select filterable v-model="showModal.oneLesson.program" value-key="id">
             <el-option
               v-for="item of showModal.oneLesson.course ? showModal.oneLesson.course.programList : programList"
