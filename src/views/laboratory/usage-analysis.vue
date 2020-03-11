@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="block_content">
-        <v-chart autoresize :options="chart" @datazoom="dataZoomEvent" style="width: 95%; height: 500px"/></div>
+        <v-chart autoresize :options="chart" style="width: 95%; height: 500px"/></div>
     </div>
     <div v-if='timeButton' style="margin: 10px 0" class="block_background" v-loading="loading">
       <div class="block_title flex between">
@@ -183,8 +183,8 @@ export default createComponent({
         legend: {
           show: true,
         },
-        tooltip: {
-          trigger: 'axis',
+        // tooltip: {
+        //   trigger: 'axis',
           // formatter: (params: any) => {
           //   if (params.length === 0) { return ''; }
           //   let res = '';
@@ -195,7 +195,7 @@ export default createComponent({
           //   }
           //   return res;
           // },
-        },
+        // },
         color: getColors(),
         toolbox: {
           feature: {
@@ -253,33 +253,33 @@ export default createComponent({
         grid: {
           bottom: '15%',
         },
-        dataZoom: [
-          {
-            show: true,
-            type: 'slider',
-            dataBackground: {
-              areaStyle: {
-                color: getColors(),
-              },
-            },
-            textStyle: {
-              color: getColors(),
-            },
-            realtime: true,
-            showDataShadow: true,
-            bottom: 5,
-          },
-        ],
+        // dataZoom: [
+        //   {
+        //     show: true,
+        //     type: 'slider',
+        //     dataBackground: {
+        //       areaStyle: {
+        //         color: getColors(),
+        //       },
+        //     },
+        //     textStyle: {
+        //       color: getColors(),
+        //     },
+        //     realtime: true,
+        //     showDataShadow: true,
+        //     bottom: 5,
+        //   },
+        // ],
         series: [],
         dataset: {},
       };
     }
-    function dataZoomEvent(data: any) {
-      zoomRange.value = [];
-      const dir = currentChartRange[1].getTime() - currentChartRange[0].getTime();
-      zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.start / 100));
-      zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.end / 100));
-    }
+    // function dataZoomEvent(data: any) {
+    //   zoomRange.value = [];
+    //   const dir = currentChartRange[1].getTime() - currentChartRange[0].getTime();
+    //   zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.start / 100));
+    //   zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.end / 100));
+    // }
     const queryStation = async () => {
         stationNameList.value = await StationList({
         simple: false ,
@@ -326,7 +326,7 @@ export default createComponent({
       chart, zoomRange,
       stationNameList,
       courseNameList, courseName, pie, line,
-      dataZoomEvent: debounce(dataZoomEvent, { interval: 500 }),
+      // dataZoomEvent: debounce(dataZoomEvent, { interval: 500 }),
       queryStation, timeList, statusMap, formatMilliseconds, timeRange1, currentChartRange,
       numButton, timeButton,
       showNum: useLoading(loading, showNum),
