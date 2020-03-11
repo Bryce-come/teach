@@ -148,8 +148,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择课程：" prop="course.name" 
-          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择课程'} : { required: false}">
-          <el-select filterable v-model="showModal.oneLesson.course" value-key="id">
+          :rules="showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择课程'} : { required: false}">
+          <el-select filterable v-model="showModal.oneLesson.course" value-key="id" 
+            @change='setTeacherValue()'>
+            <!-- (classList.filter(item1 => {return item1.id === showModal.oneLesson.extend.clasz}))[0].groups -->
           <el-option
               v-for="item of courseList"
               :key="item.id"
@@ -157,7 +159,17 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择实验：" prop="program.name" v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
+        <el-form-item label="选择教师：" prop="teacher.name" 
+          :rules="showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择教师'} : { required: false}">
+          <el-select filterable v-model="showModal.oneLesson.teacher" value-key="id">
+            <el-option
+              v-for="item of teacherList"
+              :key="item.id"
+              :label="item.name"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择实验：" prop="program.name" v-if="showModal.oneLesson.type!=0">
           <el-select filterable v-model="showModal.oneLesson.program" value-key="id">
             <el-option
               v-for="item of showModal.oneLesson.course ? showModal.oneLesson.course.programList : programList"
@@ -166,19 +178,9 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择教师：" prop="teacher.name" 
-          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2 ? { required: true, message: '请选择教师'} : { required: false}">
-          <el-select filterable v-model="showModal.oneLesson.teacher.name" value-key="id">
-            <el-option
-              v-for="item of teacherList"
-              :key="item.id"
-              :label="item.name"
-              :value="item"/>
-          </el-select>
-        </el-form-item>
         <el-form-item label="上课班级：" prop="extend.clasz" 
-          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2? { required: true, message: '请选择班级'} : { required: false}"
-          v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=2">
+          :rules="showModal.oneLesson.type!=1&&showModal.oneLesson.type!=2? { required: true, message: '请选择班级'} : { required: false}"
+          v-if="showModal.oneLesson.type!=2">
           <el-select filterable v-model="showModal.oneLesson.extend.clasz">
             <el-option
               v-for="item of classList"
@@ -188,7 +190,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择组别：" prop="extend.claszGroup" 
-         v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=2&&showModal.oneLesson.type!=0">
+         v-if="showModal.oneLesson.type!=2&&showModal.oneLesson.type!=0">
           <el-select filterable v-model="showModal.oneLesson.extend.claszGroup">
             <el-option
               v-for="item of showModal.oneLesson.extend.clasz?(classList.filter(item1 => {return item1.id === showModal.oneLesson.extend.clasz}))[0].groups:[]"
@@ -198,8 +200,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择操作台：" prop="stations"
-          :rules="showModal.oneLesson.type&&showModal.oneLesson.type!=0&&showModal.oneLesson.type!=1 ? { required: true, message: '请选择操作台'} : { required: false}"
-          v-if="showModal.oneLesson.type&&showModal.oneLesson.type!=0">
+          :rules="showModal.oneLesson.type!=0&&showModal.oneLesson.type!=1 ? { required: true, message: '请选择操作台'} : { required: false}"
+          v-if="showModal.oneLesson.type!=0">
           <el-select filterable v-model="showModal.oneLesson.stations" multiple collapse-tags>
             <el-option
               v-for="item of stationList"
@@ -320,6 +322,10 @@ export default createComponent({
         await setWeekSection(new Date(oneDay.value));
       }
     }
+    function setTeacherValue(){
+      const str = (courseList.value.filter((item1:any) => {return item1 === showModal.value.oneLesson.course}))[0].teacher
+      showModal.value.oneLesson.teacher = str
+    }
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [
@@ -379,15 +385,17 @@ export default createComponent({
           type: undefined,
           stations: undefined,
           students: '',
-          startLesson: showModal.value.oneLesson.startLesson,
-          appointDate: showModal.value.oneLesson.appointDate,
+          // startLesson: showModal.value.oneLesson.startLesson,
+          // appointDate: showModal.value.oneLesson.appointDate,
+          startLesson:'',
+          appointDate:'',
           extend: {
             lessonInt: undefined,
             appointRecord: {
               result: undefined,
               },
             lessons: undefined,
-            clasz: '',
+            clasz: null,
           },
         };
         showModal.value.type = 'add';
@@ -451,6 +459,7 @@ export default createComponent({
     const delectLesson = async (lessonItem: any) => {
       const result = {id: lessonItem.id}
       await CourseRecordDel(result)
+      await clearDiv()
       await setWeekSection(new Date(weekSection.value.weekStart));
       Message.success('删除成功');
     };
@@ -474,9 +483,6 @@ export default createComponent({
       }
       if ( result.length != 0) {
         for (let i = 0; i < result.length; i++) {
-          // if(result[i].extend.lessons=undefined){
-          //   result[i].extend.lessons=[1,2,3]
-          // }
           originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
           const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
           str.style.height = 50 * result[i].extend.lessons.length + 'px';
@@ -542,6 +548,7 @@ export default createComponent({
     }
     onMounted(useLoading(loading, async () => {
       await Promise.all([
+        // await  CourseRecordDel({id:6}),
         await getCourseCount(),
         await setWeekSection(new Date()),
         courseList.value = await CourseList({
@@ -557,6 +564,8 @@ export default createComponent({
           onlyLesson: true,
         }),
       ]);
+      console.log( courseList);
+      
       if (isStudent() && (storeUserInfo.user as any).extend.clasz) {
         const claszId = (storeUserInfo.user as any).extend.clasz;
         otherStudentInClasz.value = await StudentList({
@@ -580,7 +589,7 @@ export default createComponent({
       oneDay, courseCount, setSomething,
       list: useLoading(loading, list),
       weeks, showColor, noShowColor,
-      digital2Chinese,
+      digital2Chinese,setTeacherValue,
       lessons,
       readLesson,
       readModel,
