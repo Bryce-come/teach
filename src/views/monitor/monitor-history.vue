@@ -9,8 +9,6 @@
         </div>
         <div v-if="condition==='1'">
           <courseList :read-only="true" />
-        <div v-if="condition==='1'" style ='display'>
-          <courseList style =''/>
         </div>
         <div v-else>
           <lkt-date-picker type="daterange" v-model="range"/>

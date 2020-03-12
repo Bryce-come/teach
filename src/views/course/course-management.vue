@@ -186,7 +186,7 @@ export default {
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
-        if(courseModal.value.courseInfo.extend.scoreRatio[1]+courseModal.value.courseInfo.extend.scoreRatio[0]===100){
+        if (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] === 100) {
           if (courseModal.value.type === 'add') {
             await CourseAdd({
               // *code, *name, *teacherId, extendJson, programJson
@@ -212,8 +212,7 @@ export default {
           courseList.value = await CourseList({
             containPrograms: true,
           });
-        }
-        else{
+        } else {
           Message.error('分数比相加需为100');
         }
       }

@@ -133,12 +133,12 @@ export default createComponent({
           option.y[0].name = '人时数统计';
         }
       }
-      chart.value = lineConfig(option,{series:[{type: 'bar'}]});
+      chart.value = lineConfig(option, {series: [{type: 'bar'}]});
     };
     const queryTime = async () => {
       const start = timeRange1.value[0].getTime();
       const end = timeRange1.value[1].getTime();
-       oneStation.value = await StationInfo({
+      oneStation.value = await StationInfo({
         id: deviceName.value,
       });
       const data = await AnalysisDeviceTime({

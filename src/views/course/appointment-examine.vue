@@ -119,7 +119,7 @@ export default createComponent({
     });
     const modal = ref<any>({
       visible: false,
-      dt: null
+      dt: null,
     });
     const query = async () => {
       appointRecords.value = await AppointList({

@@ -320,386 +320,385 @@
   </div>
 </template>
 <script lang="ts">
-  import {createComponent, onMounted, ref, watch} from '@vue/composition-api';
-  import {useConfirm, useLoading} from 'web-toolkit/src/service';
-  import {Message} from 'element-ui';
-  import {ElForm} from 'element-ui/types/form';
-  import {deepClone, isNil} from 'web-toolkit/src/utils';
-  import {storeUserInfo} from 'web-toolkit/src/case-main';
-  import {getWeekDaysRange} from 'web-toolkit/src/utils/date';
-  import {CourseRecordList} from '@/dao/courseRecordDao';
-  import {SettingGet} from '@/dao/settingDao';
-  import {CourseList, ProgramList} from '@/dao/courseProgramDao';
-  import {ClassList, StudentList, TeacherList} from '@/dao/userDao';
-  import {StationList} from '@/dao/stationDao';
-  import {Department, PRIVILEGE} from '@/types/privilege';
-  import {CourseRecordAdd, CourseRecordDel, CourseRecordUpdate} from '@/dao/courseRecordDao'
+import {createComponent, onMounted, ref, watch} from '@vue/composition-api';
+import {useConfirm, useLoading} from 'web-toolkit/src/service';
+import {Message} from 'element-ui';
+import {ElForm} from 'element-ui/types/form';
+import {deepClone, isNil} from 'web-toolkit/src/utils';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
+import {getWeekDaysRange} from 'web-toolkit/src/utils/date';
+import {CourseRecordList} from '@/dao/courseRecordDao';
+import {SettingGet} from '@/dao/settingDao';
+import {CourseList, ProgramList} from '@/dao/courseProgramDao';
+import {ClassList, StudentList, TeacherList} from '@/dao/userDao';
+import {StationList} from '@/dao/stationDao';
+import {Department, PRIVILEGE} from '@/types/privilege';
+import {CourseRecordAdd, CourseRecordDel, CourseRecordUpdate} from '@/dao/courseRecordDao';
 
-  export default createComponent({
-    name: 'courseList',
-    props: {
-      // 只读将不能修改
-      readOnly: {
-        type: Boolean,
-        default: false,
-      },
-      dt:{
-        type: Date,
-        default: ()=>null
-      }
+export default createComponent({
+  name: 'courseList',
+  props: {
+    // 只读将不能修改
+    readOnly: {
+      type: Boolean,
+      default: false,
     },
-    // props 父组件传过来的东西  ctx 相当于子组件的this（cts.$emit()）
-    setup(props: any, ctx: any) {
-      const loading = ref(false);
-      const oneDay = ref<any>();
-      const color = ref();
-      const courseList = ref<any>([]);
-      const programList = ref<any>([]);
-      const teacherList = ref<any>([]);
-      const otherStudentInClasz = ref<any>();
-      const stationList = ref<any>([]);
-      const classList = ref<any>([]);
-      const lessonMap = ref<any>([]);
-      const tableX = ref(-1);
-      const tableY = ref(-1);
-      const courseAppointTypeList = ref<any>();
-      const courseCount = ref<any>({
-        count: [],
-      });
-      const weekSection = ref<any>({
-        weekStart: '',
-        weekEnd: '',
-        weekInFo: [],
-        weekWithYeat: [],
-      });
-      // 课程内容框的高度
-      const divHeight=ref<number>(45);
-      watch(()=>props.dt, async ()=>{
-        if(!props.dt) return ;
-        oneDay.value = props.dt;
-        await list();
-      });
+    dt: {
+      type: Date,
+      default: () => null,
+    },
+  },
+  // props 父组件传过来的东西  ctx 相当于子组件的this（cts.$emit()）
+  setup(props: any, ctx: any) {
+    const loading = ref(false);
+    const oneDay = ref<any>();
+    const color = ref();
+    const courseList = ref<any>([]);
+    const programList = ref<any>([]);
+    const teacherList = ref<any>([]);
+    const otherStudentInClasz = ref<any>();
+    const stationList = ref<any>([]);
+    const classList = ref<any>([]);
+    const lessonMap = ref<any>([]);
+    const tableX = ref(-1);
+    const tableY = ref(-1);
+    const courseAppointTypeList = ref<any>();
+    const courseCount = ref<any>({
+      count: [],
+    });
+    const weekSection = ref<any>({
+      weekStart: '',
+      weekEnd: '',
+      weekInFo: [],
+      weekWithYeat: [],
+    });
+    // 课程内容框的高度
+    const divHeight = ref<number>(45);
+    watch(() => props.dt, async () => {
+      if (!props.dt) { return ; }
+      oneDay.value = props.dt;
+      await list();
+    });
 
-      function isStudent(): boolean {
-        return (storeUserInfo.user as any).role.department.id === Department.Student;
-      }
+    function isStudent(): boolean {
+      return (storeUserInfo.user as any).role.department.id === Department.Student;
+    }
 
-      // 查看标志a
-      const readModel = ref<any>({
-        visible: false,
-        oneLesson: '',
-      });
-      const showModal = ref<any>({
-        visible: false,
-        oneLesson: '',
-        type: 'add',
-      });
-      const form = ref<ElForm | null>(null);
+    // 查看标志a
+    const readModel = ref<any>({
+      visible: false,
+      oneLesson: '',
+    });
+    const showModal = ref<any>({
+      visible: false,
+      oneLesson: '',
+      type: 'add',
+    });
+    const form = ref<ElForm | null>(null);
 
-      // 查询函数
-      async function list() {
-        if (isNil(oneDay.value)) {
-          alert('请选择日期');
-        } else {
-          clearDiv();
-          await setWeekSection(new Date(oneDay.value));
-        }
-      }
-
-      function setTeacherValue() {
-        showModal.value.oneLesson.teacher = (courseList.value.filter((item1: any) => {
-          return item1 === showModal.value.oneLesson.course
-        }))[0].teacher
-      }
-
-      const lessons = ref<any>();
-      const originList = ref<any>({
-        lessonsList: [],
-      });
-      const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
-
-      function digital2Chinese(num: any, identifier: any) {
-        const character = ['一', '二', '三', '四', '五', '六'];
-        return identifier === 'week' && num === 6 ? '日' : character[num];
-      }
-
-      function showColor(row: any) {
-        if(props.readOnly) return ;
-        const result = row.target;
-        result.style.backgroundColor = 'Gainsboro';
-      }
-
-      function noShowColor(row: any) {
-        if(props.readOnly) return ;
-        const result = row.target;
-        result.style.backgroundColor = 'white';
-      }
-
-      const readLesson = async (lessonItem: any) => {
-        readModel.value.visible = true;
-        readModel.value.oneLesson = lessonItem;
-      };
-      const showLesson = async (data?: any, rowa?: any, rowb?: any) => {
-        if(props.readOnly) return ;
-        // 无新增权限
-        if(!data && (storeUserInfo.user as any).role.privileges.indexOf(PRIVILEGE.courseRecordMng)<0) return;
-        if (form.value) {
-          (form.value as ElForm).clearValidate();
-        }
-        if (data) {
-          data = deepClone(data);
-          showModal.value.type = 'update';
-          // 转化 startLesson endLesson, appointDate
-          if (data.startDt) {
-            data.appointDate = new Date(data.startDt);
-          }
-          if (data.extend.lessons && data.extend.lessons.length > 0) {
-            data.startLesson = data.extend.lessons[0];
-            data.endLesson = data.extend.lessons[data.extend.lessons.length - 1];
-          }
-          // extend: lessons:[], clasz-班级, claszGroup-分组
-          if (data.course) {
-            data.course.programList = courseList.value.filter((item1: any) => { return item1.id === data.course.id })[0].programList
-          }
-          if (!data.course) {
-            data.course = {
-              name: '',
-              programList: undefined,
-              id: null
-            }
-          }
-          if (!data.teacher) {
-            data.teacher = {
-              name: '',
-              id: null
-            }
-          }
-        }
-        else {
-          // data = initForm();
-          data = {
-            course: {
-              name: '',
-              programList: undefined,
-              id: null
-            },
-            teacher: {
-              name: '',
-              id: null
-            },
-            type: 0,
-            stations: undefined,
-            students: [],
-            startLesson: rowb + 1,
-            appointDate: weekSection.value.weekWithYeat[rowa],
-            // startLesson: 1,
-            program: {
-              name: '',
-              id: null,
-            },
-            extend: {
-              lessonInt: undefined,
-              appointRecord: {
-                result: undefined,
-              },
-              lessons: undefined,
-              clasz: null,
-            },
-          };
-          showModal.value.type = 'add';
-        }
-        showModal.value.oneLesson = data;
-        showModal.value.visible = true;
-      };
-
-      async function update() {
-        if(props.readOnly) return ;
-        const valid = await (form.value as ElForm).validate();
-        if (valid) {
-          // 时间格式转化
-          const lesson1 = lessonMap.value['lesson' + showModal.value.oneLesson.startLesson];
-          const lesson2 = lessonMap.value['lesson' + showModal.value.oneLesson.endLesson];
-          // extend: lessons:[], clasz-班级, claszGroup-分组
-          showModal.value.oneLesson.extend.lessons = [];
-          for (let i = showModal.value.oneLesson.startLesson; i <= showModal.value.oneLesson.endLesson; i++) {
-            showModal.value.oneLesson.extend.lessons.push(i);
-          }
-          if (showModal.value.oneLesson.clasz) {
-            showModal.value.oneLesson.extend.clasz = showModal.value.oneLesson.clasz.id;
-          }
-          if (showModal.value.oneLesson.claszGroup) {
-            showModal.value.oneLesson.extend.claszGroup = showModal.value.oneLesson.claszGroup.id;
-          }
-          const params = {
-            id: showModal.value.oneLesson.id,
-            type: showModal.value.oneLesson.type,
-            courseId: showModal.value.oneLesson.course ? showModal.value.oneLesson.course.id : null,
-            programId: showModal.value.oneLesson.program ? showModal.value.oneLesson.program.id : null,
-            teacherId: showModal.value.oneLesson.teacher ? showModal.value.oneLesson.teacher.id : null,
-            studentJson: showModal.value.oneLesson.type==2 && showModal.value.oneLesson.students && showModal.value.oneLesson.students.length > 0 ? JSON.stringify(showModal.value.oneLesson.students) : null,
-            stationJson: showModal.value.oneLesson.type!=0 && showModal.value.oneLesson.stations && showModal.value.oneLesson.stations.length > 0 ? JSON.stringify(showModal.value.oneLesson.stations) : null,
-            start: transformDate(showModal.value.oneLesson.appointDate, lesson1[0]),
-            end: transformDate(showModal.value.oneLesson.appointDate, lesson2[1]),
-            extendJson: JSON.stringify(showModal.value.oneLesson.extend),
-          };
-          if (showModal.value.type === 'add') {
-            await CourseRecordAdd(params);
-            await setWeekSection(new Date(weekSection.value.weekStart));
-          } else {
-            if (showModal.value.oneLesson.startLesson === showModal.value.oneLesson.endLesson) {
-              clearDiv()
-            }
-            await CourseRecordUpdate(params);
-            await setWeekSection(new Date(weekSection.value.weekStart));
-          }
-          Message.success(`${showModal.value.type === 'add' ? '已增加课程记录' : '已修改课程记录'}`);
-          showModal.value.visible = false;
-          // showModal.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
-        }
-
-      }
-      function transformDate(template: Date, timestamp: number): number {
-        const dt = new Date(timestamp);
-        dt.setFullYear(template.getFullYear());
-        dt.setDate(template.getDate());
-        dt.setMonth(template.getMonth());
-        dt.setMilliseconds(0);
-        return dt.getTime();
-      }
-      const deleteLesson = async (lessonItem: any) => {
-        if(props.readOnly) return ;
-        const result = {id: lessonItem.id};
-        await CourseRecordDel(result);
+    // 查询函数
+    async function list() {
+      if (isNil(oneDay.value)) {
+        alert('请选择日期');
+      } else {
         clearDiv();
-        await setWeekSection(new Date(weekSection.value.weekStart));
-        Message.success('删除成功');
-      };
-      async function getOriginCourseRecordList(row: any) {
-        const result = await CourseRecordList({start: row.value.weekStart, end: row.value.weekEnd + 86400000});
-        function setThisDay(row: any) {
-          if (row === 0) {
-            return 7;
-          } else {
-            return row;
-          }
+        await setWeekSection(new Date(oneDay.value));
+      }
+    }
+
+    function setTeacherValue() {
+      showModal.value.oneLesson.teacher = (courseList.value.filter((item1: any) => {
+        return item1 === showModal.value.oneLesson.course;
+      }))[0].teacher;
+    }
+
+    const lessons = ref<any>();
+    const originList = ref<any>({
+      lessonsList: [],
+    });
+    const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+
+    function digital2Chinese(num: any, identifier: any) {
+      const character = ['一', '二', '三', '四', '五', '六'];
+      return identifier === 'week' && num === 6 ? '日' : character[num];
+    }
+
+    function showColor(row: any) {
+      if (props.readOnly) { return ; }
+      const result = row.target;
+      result.style.backgroundColor = 'Gainsboro';
+    }
+
+    function noShowColor(row: any) {
+      if (props.readOnly) { return ; }
+      const result = row.target;
+      result.style.backgroundColor = 'white';
+    }
+
+    const readLesson = async (lessonItem: any) => {
+      readModel.value.visible = true;
+      readModel.value.oneLesson = lessonItem;
+    };
+    const showLesson = async (data?: any, rowa?: any, rowb?: any) => {
+      if (props.readOnly) { return ; }
+      // 无新增权限
+      if (!data && (storeUserInfo.user as any).role.privileges.indexOf(PRIVILEGE.courseRecordMng) < 0) { return; }
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
+      }
+      if (data) {
+        data = deepClone(data);
+        showModal.value.type = 'update';
+        // 转化 startLesson endLesson, appointDate
+        if (data.startDt) {
+          data.appointDate = new Date(data.startDt);
         }
-        if (result.length > 0) {
-          for (let i = 0; i < result.length; i++) {
-            // 课时矩阵
-            originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
+        if (data.extend.lessons && data.extend.lessons.length > 0) {
+          data.startLesson = data.extend.lessons[0];
+          data.endLesson = data.extend.lessons[data.extend.lessons.length - 1];
+        }
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+        if (data.course) {
+          data.course.programList = courseList.value.filter((item1: any) => item1.id === data.course.id)[0].programList;
+        }
+        if (!data.course) {
+          data.course = {
+            name: '',
+            programList: undefined,
+            id: null,
+          };
+        }
+        if (!data.teacher) {
+          data.teacher = {
+            name: '',
+            id: null,
+          };
+        }
+      } else {
+        // data = initForm();
+        data = {
+          course: {
+            name: '',
+            programList: undefined,
+            id: null,
+          },
+          teacher: {
+            name: '',
+            id: null,
+          },
+          type: 0,
+          stations: undefined,
+          students: [],
+          startLesson: rowb + 1,
+          appointDate: weekSection.value.weekWithYeat[rowa],
+          // startLesson: 1,
+          program: {
+            name: '',
+            id: null,
+          },
+          extend: {
+            lessonInt: undefined,
+            appointRecord: {
+              result: undefined,
+            },
+            lessons: undefined,
+            clasz: null,
+          },
+        };
+        showModal.value.type = 'add';
+      }
+      showModal.value.oneLesson = data;
+      showModal.value.visible = true;
+    };
+
+    async function update() {
+      if (props.readOnly) { return ; }
+      const valid = await (form.value as ElForm).validate();
+      if (valid) {
+        // 时间格式转化
+        const lesson1 = lessonMap.value['lesson' + showModal.value.oneLesson.startLesson];
+        const lesson2 = lessonMap.value['lesson' + showModal.value.oneLesson.endLesson];
+        // extend: lessons:[], clasz-班级, claszGroup-分组
+        showModal.value.oneLesson.extend.lessons = [];
+        for (let i = showModal.value.oneLesson.startLesson; i <= showModal.value.oneLesson.endLesson; i++) {
+          showModal.value.oneLesson.extend.lessons.push(i);
+        }
+        if (showModal.value.oneLesson.clasz) {
+          showModal.value.oneLesson.extend.clasz = showModal.value.oneLesson.clasz.id;
+        }
+        if (showModal.value.oneLesson.claszGroup) {
+          showModal.value.oneLesson.extend.claszGroup = showModal.value.oneLesson.claszGroup.id;
+        }
+        const params = {
+          id: showModal.value.oneLesson.id,
+          type: showModal.value.oneLesson.type,
+          courseId: showModal.value.oneLesson.course ? showModal.value.oneLesson.course.id : null,
+          programId: showModal.value.oneLesson.program ? showModal.value.oneLesson.program.id : null,
+          teacherId: showModal.value.oneLesson.teacher ? showModal.value.oneLesson.teacher.id : null,
+          studentJson: showModal.value.oneLesson.type == 2 && showModal.value.oneLesson.students && showModal.value.oneLesson.students.length > 0 ? JSON.stringify(showModal.value.oneLesson.students) : null,
+          stationJson: showModal.value.oneLesson.type != 0 && showModal.value.oneLesson.stations && showModal.value.oneLesson.stations.length > 0 ? JSON.stringify(showModal.value.oneLesson.stations) : null,
+          start: transformDate(showModal.value.oneLesson.appointDate, lesson1[0]),
+          end: transformDate(showModal.value.oneLesson.appointDate, lesson2[1]),
+          extendJson: JSON.stringify(showModal.value.oneLesson.extend),
+        };
+        if (showModal.value.type === 'add') {
+          await CourseRecordAdd(params);
+          await setWeekSection(new Date(weekSection.value.weekStart));
+        } else {
+          if (showModal.value.oneLesson.startLesson === showModal.value.oneLesson.endLesson) {
+            clearDiv();
           }
-          for (let i = 0; i < result.length; i++) {
-            // if(document.getElementsByClassName('tabDiv').length===0) continue;
-            // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
-            // 有课程时的高度
-            // const str = document.getElementById((setThisDay(new Date(result[i].startDt).getDay())-1)+"-"+(result[i].extend.lessons[0] - 1)) as HTMLElement;
-            // str.style.height = divHeight.value * result[i].extend.lessons.length + 'px';
-            // 挤掉的div 隐藏
-            for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
-              // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
-              const str1 = document.getElementById((setThisDay(new Date(result[i].startDt).getDay())-1)+"-"+(result[i].extend.lessons[0] +j)) as HTMLElement;
-              str1.style.display = 'none';
-            }
-          }
+          await CourseRecordUpdate(params);
+          await setWeekSection(new Date(weekSection.value.weekStart));
+        }
+        Message.success(`${showModal.value.type === 'add' ? '已增加课程记录' : '已修改课程记录'}`);
+        showModal.value.visible = false;
+        // showModal.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
+      }
+
+    }
+    function transformDate(template: Date, timestamp: number): number {
+      const dt = new Date(timestamp);
+      dt.setFullYear(template.getFullYear());
+      dt.setDate(template.getDate());
+      dt.setMonth(template.getMonth());
+      dt.setMilliseconds(0);
+      return dt.getTime();
+    }
+    const deleteLesson = async (lessonItem: any) => {
+      if (props.readOnly) { return ; }
+      const result = {id: lessonItem.id};
+      await CourseRecordDel(result);
+      clearDiv();
+      await setWeekSection(new Date(weekSection.value.weekStart));
+      Message.success('删除成功');
+    };
+    async function getOriginCourseRecordList(row: any) {
+      const result = await CourseRecordList({start: row.value.weekStart, end: row.value.weekEnd + 86400000});
+      function setThisDay(row: any) {
+        if (row === 0) {
+          return 7;
+        } else {
+          return row;
         }
       }
-      async function goLastWeek() {
-        await setWeekSection(new Date(weekSection.value.weekStart - 86400000));
-      }
-      async function goNextWeek() {
-        await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
-      }
-      function clearDiv() {
-        for (let i = 0; i < 7; i++) {
-          for (let j = 0; j < courseCount.value.count.length; j++) {
-            const str = document.getElementsByClassName('tabDiv')[i].childNodes[j] as HTMLElement;
-            str.style.display = 'inline';
-            //
-            str.style.height = divHeight.value + 'px';
-            str.style.lineHeight = 3.5 + 'rem';
-          }
-        }
-      }
-      async function setWeekSection(row: any) {
-        if(!originList) return ;
-        originList.value.lessonsList = [
-          {lesson: []}, {lesson: []}, {lesson: []}, {lesson: []},
-          {lesson: []}, {lesson: []}, {lesson: []},
-        ];
-        for (let i = 0; i < courseCount.value.count.length; i++) {
-          originList.value.lessonsList[0].lesson.push('');
-          originList.value.lessonsList[1].lesson.push('');
-          originList.value.lessonsList[2].lesson.push('');
-          originList.value.lessonsList[3].lesson.push('');
-          originList.value.lessonsList[4].lesson.push('');
-          originList.value.lessonsList[5].lesson.push('');
-          originList.value.lessonsList[6].lesson.push('');
-        }
-        const result = getWeekDaysRange(row);
+      if (result.length > 0) {
         for (let i = 0; i < result.length; i++) {
-          weekSection.value.weekInFo[i] = result[i].getMonth() + 1 + '-' + result[i].getDate();
-          weekSection.value.weekWithYeat[i] = result[i]
+          // 课时矩阵
+          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
         }
-        weekSection.value.weekStart = result[0].getTime();
-        weekSection.value.weekEnd = result[6].getTime();
-        await getOriginCourseRecordList(weekSection);
-      }
-      async function getCourseCount() {
-        lessonMap.value = await SettingGet({onlyLesson: true});
-        for (let i = 0; i < lessonMap.value.lessonNum; i++) {
-          courseCount.value.count.push(i + 1);
+        for (let i = 0; i < result.length; i++) {
+          // if(document.getElementsByClassName('tabDiv').length===0) continue;
+          // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
+          // 有课程时的高度
+          // const str = document.getElementById((setThisDay(new Date(result[i].startDt).getDay())-1)+"-"+(result[i].extend.lessons[0] - 1)) as HTMLElement;
+          // str.style.height = divHeight.value * result[i].extend.lessons.length + 'px';
+          // 挤掉的div 隐藏
+          for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
+            // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
+            const str1 = document.getElementById((setThisDay(new Date(result[i].startDt).getDay()) - 1) + '-' + (result[i].extend.lessons[0] + j)) as HTMLElement;
+            str1.style.display = 'none';
+          }
         }
       }
-      onMounted(useLoading(loading, async () => {
-        await getCourseCount();
-        await setWeekSection(props.dt?props.dt:new Date());
-        await Promise.all([
-          courseList.value = await CourseList({
-            containPrograms: true,
-          }),
-          programList.value = await ProgramList(),
-          teacherList.value = await TeacherList(),
-          stationList.value = await StationList({
-            simple: true,
-          }),
-          classList.value = await ClassList(),
-          otherStudentInClasz.value = await StudentList({
-            forSelect: true,
-          }),
-        ]);
-        courseAppointTypeList.value = [
-          {id: 0, type: '正常课程'},
-          {id: 1, type: '授课预约'},
-          {id: 2, type: '个人预约'},
-        ];
-      }));
-      return {
-        originList, clearDiv,
-        goLastWeek: useLoading(loading, goLastWeek),
-        goNextWeek: useLoading(loading, goNextWeek),
-        weekSection,
-        loading, courseList, programList, stationList,
-        teacherList, otherStudentInClasz, classList,
-        lessonMap, storeUserInfo, PRIVILEGE, isStudent,
-        oneDay, courseCount,
-        list: useLoading(loading, list),
-        weeks, showColor, noShowColor,
-        digital2Chinese, setTeacherValue,
-        lessons,
-        readLesson,
-        readModel,
-        form,
-        showModal,
-        showLesson,
-        update,
-        deleteLesson: useConfirm('确认删除？', useLoading(loading, deleteLesson)),
-        color,
-        tableX,
-        tableY,
-        courseAppointTypeList, divHeight,
-      };
-    },
-  });
+    }
+    async function goLastWeek() {
+      await setWeekSection(new Date(weekSection.value.weekStart - 86400000));
+    }
+    async function goNextWeek() {
+      await setWeekSection(new Date(weekSection.value.weekEnd + 86400000));
+    }
+    function clearDiv() {
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < courseCount.value.count.length; j++) {
+          const str = document.getElementsByClassName('tabDiv')[i].childNodes[j] as HTMLElement;
+          str.style.display = 'inline';
+          //
+          str.style.height = divHeight.value + 'px';
+          str.style.lineHeight = 3.5 + 'rem';
+        }
+      }
+    }
+    async function setWeekSection(row: any) {
+      if (!originList) { return ; }
+      originList.value.lessonsList = [
+        {lesson: []}, {lesson: []}, {lesson: []}, {lesson: []},
+        {lesson: []}, {lesson: []}, {lesson: []},
+      ];
+      for (let i = 0; i < courseCount.value.count.length; i++) {
+        originList.value.lessonsList[0].lesson.push('');
+        originList.value.lessonsList[1].lesson.push('');
+        originList.value.lessonsList[2].lesson.push('');
+        originList.value.lessonsList[3].lesson.push('');
+        originList.value.lessonsList[4].lesson.push('');
+        originList.value.lessonsList[5].lesson.push('');
+        originList.value.lessonsList[6].lesson.push('');
+      }
+      const result = getWeekDaysRange(row);
+      for (let i = 0; i < result.length; i++) {
+        weekSection.value.weekInFo[i] = result[i].getMonth() + 1 + '-' + result[i].getDate();
+        weekSection.value.weekWithYeat[i] = result[i];
+      }
+      weekSection.value.weekStart = result[0].getTime();
+      weekSection.value.weekEnd = result[6].getTime();
+      await getOriginCourseRecordList(weekSection);
+    }
+    async function getCourseCount() {
+      lessonMap.value = await SettingGet({onlyLesson: true});
+      for (let i = 0; i < lessonMap.value.lessonNum; i++) {
+        courseCount.value.count.push(i + 1);
+      }
+    }
+    onMounted(useLoading(loading, async () => {
+      await getCourseCount();
+      await setWeekSection(props.dt ? props.dt : new Date());
+      await Promise.all([
+        courseList.value = await CourseList({
+          containPrograms: true,
+        }),
+        programList.value = await ProgramList(),
+        teacherList.value = await TeacherList(),
+        stationList.value = await StationList({
+          simple: true,
+        }),
+        classList.value = await ClassList(),
+        otherStudentInClasz.value = await StudentList({
+          forSelect: true,
+        }),
+      ]);
+      courseAppointTypeList.value = [
+        {id: 0, type: '正常课程'},
+        {id: 1, type: '授课预约'},
+        {id: 2, type: '个人预约'},
+      ];
+    }));
+    return {
+      originList, clearDiv,
+      goLastWeek: useLoading(loading, goLastWeek),
+      goNextWeek: useLoading(loading, goNextWeek),
+      weekSection,
+      loading, courseList, programList, stationList,
+      teacherList, otherStudentInClasz, classList,
+      lessonMap, storeUserInfo, PRIVILEGE, isStudent,
+      oneDay, courseCount,
+      list: useLoading(loading, list),
+      weeks, showColor, noShowColor,
+      digital2Chinese, setTeacherValue,
+      lessons,
+      readLesson,
+      readModel,
+      form,
+      showModal,
+      showLesson,
+      update,
+      deleteLesson: useConfirm('确认删除？', useLoading(loading, deleteLesson)),
+      color,
+      tableX,
+      tableY,
+      courseAppointTypeList, divHeight,
+    };
+  },
+});
 </script>
 <style scoped lang="scss">
   .course-list-order {
