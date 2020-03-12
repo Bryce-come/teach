@@ -500,7 +500,6 @@ export default createComponent({
     }
     async function getOriginCourseRecordList(row: any) {
       const result = await CourseRecordList({start: row.value.weekStart, end: row.value.weekEnd + 86400000});
-      console.log(result)
       function setThisDay(row: any) {
         if (row === 0) {
           return 7;
@@ -514,7 +513,6 @@ export default createComponent({
           const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
           str.style.height = 50 * result[i].extend.lessons.length + 'px';
           // str.style.lineHeight=3.5*result[i].extend.lessons.length+'rem'
-          console.log(result[i]);
           for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
             const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
             str.style.display = 'none';

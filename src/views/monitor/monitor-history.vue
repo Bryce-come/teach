@@ -7,8 +7,8 @@
           <div><el-radio v-model="condition" label="1" border>按课时查询</el-radio></div>
           <div style="margin-top: 10px"><el-radio v-model="condition" label="2" border>按日期查询</el-radio></div>
         </div>
-        <div v-if="condition==='1'">
-          <courseList />
+        <div v-if="condition==='1'" style ='display'>
+          <courseList style =''/>
         </div>
         <div v-else>
           <lkt-date-picker type="daterange" v-model="range"/>
