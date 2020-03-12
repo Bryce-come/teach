@@ -205,7 +205,7 @@ export default {
   // 一个班级的分组
   const groupList = ref<any>();
   const removeValue = ref<any>({
-    name: '',
+    name: null,
   });
 
   function setRemoveName(row: any) {
