@@ -54,9 +54,7 @@
       </el-form>
       <div style="margin: 10px 0" class="block_background" v-loading="loading">
         <div class="block_title flex between">
-          <div>
-            <span>{{oneStation.name}}运行时间分析</span>
-          </div>
+          <div v-if="oneStation">{{oneStation.name}}运行时间分析</div>
         </div>
         <div class="block_content">
           <div class="time-chart flex center align-center" v-if="timeList.length>0">
@@ -135,28 +133,14 @@ export default createComponent({
           option.y[0].name = '人时数统计';
         }
       }
-      console.log(option);
-      // series = {
-      //   type: 'line',
-      //   symbolSize: 3,
-      //   lineStyle: {width: 4},
-      // };
-      // dataset = {
-      //   dimensions: ['x', 'y'],
-      //   source: num,
-      // };
-      // option.series = series;
-      // option.dataset = dataset;
-      chart.value = lineConfig(option,{type:line});
+      chart.value = lineConfig(option,{series:[{type: 'bar'}]});
     };
     const queryTime = async () => {
       const start = timeRange1.value[0].getTime();
       const end = timeRange1.value[1].getTime();
-      // console.log(deviceName.value);
        oneStation.value = await StationInfo({
         id: deviceName.value,
       });
-      // console.log(oneStation);
       const data = await AnalysisDeviceTime({
         deviceId: oneStation.value.deviceList && oneStation.value.deviceList.length?oneStation.value.deviceList[0].id : null ,
         start,
@@ -174,110 +158,11 @@ export default createComponent({
         });
       }
     };
-    function getOption() {
-      const yName = '';
-      const xName = '';
-      return {
-        legend: {
-          show: true,
-        },
-        // tooltip: {
-        //   trigger: 'axis',
-          // formatter: (params: any) => {
-          //   if (params.length === 0) { return ''; }
-          //   let res = '';
-          //   const date = new Date(params[0].data[0]);
-          //   res += '<div>' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + formatTime(date) + '</div>';
-          //   for (const p of params) {
-          //     res += `${p.marker}<span>${p.seriesName}: ${p.data[1]}</span><br/>`;
-          //   }
-          //   return res;
-          // },
-        // },
-        color: getColors(),
-        toolbox: {
-          feature: {
-            restore: {
-              title: '还原',
-              iconStyle: {
-                borderColor: 'black',
-              },
-            },
-          },
-        },
-        // calculable: true,
-        xAxis: {
-          // min: currentChartRange[0].getTime(),
-          // max: currentChartRange[1].getTime(),
-          type: 'value',
-          name: '课程',
-          nameGap: 2,
-          nameTextStyle: {
-            color: getColor(),
-            fontSize: 14,
-          },
-          splitLine: {
-            show: false,
-          },
-          axisLine: {
-            lineStyle: {
-              color: getColor(),
-            },
-          },
-        },
-        yAxis: {
-          type: 'value',
-          name: yName,
-          nameTextStyle: {
-            color: getColor(),
-            fontSize: 16,
-          },
-          axisLine: {
-            lineStyle: {
-              color: getColor(),
-            },
-          },
-          splitLine: {
-            show: false,
-          },
-        },
-        grid: {
-          bottom: '15%',
-        },
-        // dataZoom: [
-        //   {
-        //     show: true,
-        //     type: 'slider',
-        //     dataBackground: {
-        //       areaStyle: {
-        //         color: getColors(),
-        //       },
-        //     },
-        //     textStyle: {
-        //       color: getColors(),
-        //     },
-        //     realtime: true,
-        //     showDataShadow: true,
-        //     bottom: 5,
-        //   },
-        // ],
-        series: [],
-        dataset: {},
-      };
-    }
-
-    // function dataZoomEvent(data: any) {
-    //   zoomRange.value = [];
-    //   const dir = currentChartRange[1].getTime() - currentChartRange[0].getTime();
-    //   zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.start / 100));
-    //   zoomRange.value.push(new Date(currentChartRange[0].getTime() + dir * data.end / 100));
-    // }
 
     const queryStation = async () => {
       stationNameList.value = await StationList({
         simple: false,
       });
-      // console.log(stationNameList.value);
       // for (const item of stationNameList.value) {
       //   if (item.deviceList && item.deviceList.length !== 0) {
       //     deviceNameList.value.push(item.deviceList[0]);

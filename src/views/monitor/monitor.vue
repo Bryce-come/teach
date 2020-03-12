@@ -152,7 +152,7 @@ export default createComponent({
           // 数据二次处理
           station.extend.deviceId = device.id;
           station.extend.deviceImg = device.deviceType.img;
-          if (courseRecord.value.stationBind && courseRecord.value.stationBind[station.id.toString()]) {
+          if (courseRecord.value && courseRecord.value.stationBind && courseRecord.value.stationBind[station.id.toString()]) {
             station.extend.students = courseRecord.value.stationBind[station.id.toString()];
           }
         }

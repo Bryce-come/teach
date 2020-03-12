@@ -7,7 +7,7 @@
       </el-button>
     </div>
     <div v-if="courseButton" class="flex center">
-      <noaction-course-list/>
+      <courseList :read-only="true"/>
     </div>
     <div v-if="appointButton">
       <div class="flex between appointButton">
@@ -186,7 +186,7 @@
 <script lang="ts">
 import {ref, onMounted, createComponent} from '@vue/composition-api';
 import {Message} from 'element-ui';
-import noactionCourseList from '../../components/noaction-courstList.vue';
+import courseList from '../../components/courseList.vue';
 import {AppointListMine, AppointAdd, AppointUpdate, AppointOperate} from '@/dao/appointRecordDao';
 import {CourseList, ProgramList} from '@/dao/courseProgramDao';
 import {TeacherList, StudentList, ClassList} from '@/dao/userDao';
@@ -199,7 +199,7 @@ import {deepClone} from 'web-toolkit/src/utils';
 import {Department} from '@/types/privilege';
 
 export default createComponent({
-  components: {noactionCourseList},
+  components: {courseList},
   setup() {
     const loading = ref(false);
     const courseButton = ref(false);

@@ -9,7 +9,7 @@
               v-for="item of appointTypeList"
               :key="item.id"
               :label="item.name"
-              :value="item.id"></el-option>
+              :value="item.id"/>
           </el-select>
         </div>
         <div class="flex align-center" style="margin-left:10px">
@@ -19,18 +19,18 @@
               v-for="item of appointResultList"
               :key="item.id"
               :label="item.name"
-              :value="item.id"></el-option>
+              :value="item.id"/>
           </el-select>
         </div>
       </div>
       <div class="flex align-center wrap" style="margin: 5px 0">
         <div class="flex align-center" style="width:60%">
-          <span>申请时间：</span>        
-          <lkt-date-picker v-model="appointDt"/>     
-          <el-button type="primary" style="margin-left:5px" @click="query()">查询</el-button>    
+          <span>申请时间：</span>
+          <lkt-date-picker v-model="appointDt"/>
+          <el-button type="primary" style="margin-left:5px" @click="query()">查询</el-button>
         </div>
         <div class="flex end" style="width:40%">
-          <el-input v-model="keywords" placeholder="输入搜索：申请人/角色" style="width:400px"></el-input>
+          <el-input v-model="keywords" placeholder="输入搜索：申请人/角色" style="width:400px"/>
         </div>
       </div>
       <lkt-table :data="flitered">
@@ -46,23 +46,22 @@
             </el-form>
           </div>
         </el-table-column>
-        <el-table-column label="预约人" prop="applicant.name" width="80"></el-table-column>
-        <el-table-column label="角色" width="80" prop="applicant.role.name"></el-table-column>
-        <el-table-column label="申请时间" width="160" prop="createDt" sortable align="center"></el-table-column>
+        <el-table-column label="预约人" prop="applicant.name" width="80"/>
+        <el-table-column label="角色" width="80" prop="applicant.role.name"/>
+        <el-table-column label="申请时间" width="160" prop="createDt" sortable align="center"/>
         <el-table-column label="预约类型" width="100">
           <span slot-scope="{ row }">
             {{(row.type===1? '授课预约':'')+(row.type===2? '个人预约':'')}}
           </span>
         </el-table-column>
         <el-table-column label="预约课时">
-          <div class="flex start" slot-scope="{row}">
-            <div v-for="(item, i) in row.extend.lessons" :key="i">
-              {{item + ','}}
-            </div>
+          <div class="flex start" slot-scope="{row}" v-if="row.extend.lessons && row.extend.lessons.length>0">
+            <div>第{{row.extend.lessons[0]}}节</div>
+            <div v-if="row.extend.lessons.length>1"> - 第{{row.extend.lessons[row.extend.lessons.length-1]}}节</div>
           </div>
         </el-table-column>
-        <el-table-column label="开始时间" width="160" prop="startDt" align="center"></el-table-column>
-        <el-table-column label="结束时间" width="160" prop="endDt" align="center"></el-table-column>
+        <el-table-column label="开始时间" width="160" prop="startDt" align="center"/>
+        <el-table-column label="结束时间" width="160" prop="endDt" align="center"/>
         <el-table-column label="审核结果" fixed="right" width="100">
           <div slot-scope="{row}">
             <el-tag v-if="row.result === 0" type="warning">未审核</el-tag>
@@ -73,31 +72,32 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" min-width="150">
           <div class="flex center little-space wrap" slot-scope="{ row }" >
-            <el-button type="warning" size="mini" @click="courseVisible = true">对比课表</el-button>
-            <el-button type="primary" size="mini" :disabled="row.result === 0? false: true" @click="agreeAppoint(row)">同意</el-button>
-            <el-button type="danger" size="mini" :disabled="row.result === 0? false: true" @click="disagreeAppoint(row)">拒绝</el-button>
+            <el-button type="warning" size="mini" @click="()=>{ modal.dt = new Date(row.startDt);modal.visible = true;}">对比课表</el-button>
+            <el-button type="primary" size="mini" :disabled="row.result!==0" @click="agreeAppoint(row)">同意</el-button>
+            <el-button type="danger" size="mini" :disabled="row.result!==0" @click="disagreeAppoint(row)">拒绝</el-button>
           </div>
-        </el-table-column>   
+        </el-table-column>
       </lkt-table>
     </div>
-    <el-dialog
-      title="对比课表"
-      :visible.sync="courseVisible"
+    <kit-dialog-simple
+      v-if="modal.dt"
+      :no-footer="true"
+      :modal="modal"
       width="80%">
       <div class="flex center">
-        <noaction-course-list></noaction-course-list>
+        <courseList :read-only="true" :dt="modal.dt"/>
       </div>
-    </el-dialog>
+    </kit-dialog-simple>
   </div>
 </template>
 <script lang="ts">
 import { ref, Ref, onMounted, createComponent } from '@vue/composition-api';
 import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
-import noactionCourseList from '../../components/noaction-courstList.vue';
+import courseList from '../../components/courseList.vue';
 import {AppointList, AppointOperate} from '@/dao/appointRecordDao';
 export default createComponent({
-  components: { noactionCourseList },
+  components: { courseList },
   setup() {
     const loading = ref(false);
     const appointRecords = ref<any>();
@@ -117,7 +117,10 @@ export default createComponent({
     const [keywords, flitered] = useSearch(appointRecords, {
       includeProps: ['applicant.name', 'applicant.role'],
     });
-    const courseVisible = ref(false);
+    const modal = ref<any>({
+      visible: false,
+      dt: null
+    });
     const query = async () => {
       appointRecords.value = await AppointList({
         typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
@@ -147,7 +150,7 @@ export default createComponent({
       await query();
     }));
     return{
-    loading, appointRecords, query, courseVisible,
+    loading, appointRecords, query, modal,
     agreeAppoint,
     disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
     appointTypeList, appointType, appointResultList, appointResult, appointDt,
