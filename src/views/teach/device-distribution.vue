@@ -117,7 +117,6 @@ export default {
         stationList.value = await StationList({
             simple: false,
         });
-        console.log(stationList.value);
     };
     const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
@@ -127,9 +126,6 @@ export default {
            // @ts-ignore
            overStudentList.value = obj.reduce((a, b) => a.concat(b), []);
         }
-        console.log(courseRecordInClass.value);
-        // console.log(overStudentList.value);
-        // console.log(studentsList.value);
     };
     function img(path: any) {
       if (path) {
@@ -158,7 +154,6 @@ export default {
     const update = async () => {
         const stationId = stationID.value;
         let flag = false;
-        console.log(checkList.value);
         if (checkList.value && checkList.value.length !== 0) {
           for (const item of checkList.value) {
             if (stationExtend.value.stationBind) {
@@ -188,7 +183,6 @@ export default {
     const StuUpdate = async () => {
         const obj3 = [[1], [3], [2, 5]];
         const obj4 = obj3.reduce((a, b) => a.concat(b), [] );
-        console.log(obj4);
     };
     const courseRecordUpdate = async () => {
       await CourseRecordUpdate({

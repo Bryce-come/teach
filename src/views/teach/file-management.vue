@@ -89,7 +89,6 @@ export default {
     }
     const query = async () => {
       fileList.value = await TempFileList();
-      console.log(fileList.value);
     };
     onMounted(useLoading(loading, async () => {
       await query();

@@ -262,9 +262,9 @@ export default {
     moveNowTrue.value.moveNowId = null;
   }
   const cilckIng = ref<any>({
-    str:null
-  })
-  function changeBackgroundColor(node: any,row: any){
+    str: null,
+  });
+  function changeBackgroundColor(node: any, row: any) {
     // if(cilckIng.value.str!==null||node.data.freez===false){
     //   cilckIng.value.str.style.backgroundColor = 'transparent';
     // }
@@ -275,20 +275,19 @@ export default {
     // cilckIng.value.str.style.backgroundColor = 'PaleTurquoise';
     // console.log(node);
   }
-  function firstTab(node: any,row:any) {
-    if(cilckIng.value.str!==null||node.data.freez===false){
+  function firstTab(node: any, row: any) {
+    if (cilckIng.value.str !== null || node.data.freez === false ) {
       cilckIng.value.str.style.backgroundColor = 'transparent';
     }
     // else {
     //   cilckIng.value.str.style.backgroundColor = 'Tomato';
     // }
-    cilckIng.value.str = row.target
+    cilckIng.value.str = row.target;
     cilckIng.value.str.style.backgroundColor = 'PaleTurquoise';
     clasz.value = node.data.groups ? node.data : node.parent.data;
     claszGroup.value = node.data.groups ? {} : node.data;
     useLoading(loading, queryStudentList)();
   }
-  
   async function FrozenClaz(row: any) {
     const result = {
       id: row.id,
@@ -327,51 +326,51 @@ export default {
     }
   }
   const typeList = ref<any>([
-    {id:1,name:'增加班级'},
-    {id:2,name:'修改班级'},
-    {id:3,name:'增加小组'},
-    {id:4,name:'修改班级'},
-  ])
+    {id: 1, name: '增加班级'},
+    {id: 2, name: '修改班级'},
+    {id: 3, name: '增加小组'},
+    {id: 4, name: '修改班级'},
+  ]);
   const upClazGropFlag = ref<any>({
     visible: false,
     upClazGropInfo: null,
     data: null,
     // 1-增加班级 2-修改班级 3-增加小组 4-修改小组
     type: null,
-    typeName:null,
+    typeName: null,
   });
-  function upClazGrop(row:any,sum:any){
+  function upClazGrop(row: any, sum: any) {
     // if (form1.value) { (form1.value as ElForm).clearValidate(); }
-    if (sum!==1){upClazGropFlag.value.upClazGropInfo = row.data.name ? row.data.name : '';}
+    if (sum !== 1) {upClazGropFlag.value.upClazGropInfo = row.data.name ? row.data.name : ''; }
     upClazGropFlag.value.visible = true;
     upClazGropFlag.value.data = row;
-    upClazGropFlag.value.typeName = typeList.value.filter((item:any) => {return item.id === sum})[0].name;
+    upClazGropFlag.value.typeName = typeList.value.filter((item: any) => item.id === sum )[0].name;
     upClazGropFlag.value.type = sum;
   }
   async function upClazGropdate() {
     const valid = await (form1.value as ElForm).validate();
     if (!valid) { return ; }
-    if (upClazGropFlag.value.type===1){
+    if (upClazGropFlag.value.type === 1) {
       const result = {
         name: upClazGropFlag.value.upClazGropInfo,
       };
       await ClassUpdate(result);
     }
-    if (upClazGropFlag.value.type===2){
+    if (upClazGropFlag.value.type === 2) {
       const result = {
-        id:upClazGropFlag.value.data.data.id,
+        id: upClazGropFlag.value.data.data.id,
         name: upClazGropFlag.value.upClazGropInfo,
       };
       await ClassUpdate(result);
     }
-    if (upClazGropFlag.value.type===3){
+    if (upClazGropFlag.value.type === 3) {
       const result = {
         cid: upClazGropFlag.value.data.data.id,
         name: upClazGropFlag.value.upClazGropInfo,
       };
       await ClassGroupUpdate(result);
     }
-    if (upClazGropFlag.value.type===4){
+    if (upClazGropFlag.value.type === 4) {
       const result = {
         cid: upClazGropFlag.value.data.parent.data.id,
         name: upClazGropFlag.value.upClazGropInfo,
@@ -435,16 +434,16 @@ export default {
   });
   return{
     loading, tree, props, studentUserList, filtered, keywords,
-    roleList, clasz, claszGroup,upClazGrop,
-    armasdb,upClazGropFlag,  storeUserInfo,
+    roleList, clasz, claszGroup, upClazGrop,
+    armasdb, upClazGropFlag,  storeUserInfo,
     removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
     moveNow, moveNowTrue, moveNotNow, setRemoveName,
     remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
     toggleStatus: useLoading(loading, toggleStatus),
     queryStudentList: useLoading(loading, queryStudentList),
-    queryClassList,update,changeBackgroundColor,
+    queryClassList, update, changeBackgroundColor,
     removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
-    modal, form, showForm,removeValue,upClazGropdate, form1,
+    modal, form, showForm, removeValue, upClazGropdate, form1,
     validator, classList, groupList, ctogList,  firstTab,
     FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
     unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),

@@ -70,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import {ref, Ref, onMounted, createComponent,onUnmounted} from '@vue/composition-api';
+import {ref, Ref, onMounted, createComponent, onUnmounted} from '@vue/composition-api';
 import {useLoading, useConfirm} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {leftFill0} from 'web-toolkit/src/utils';
@@ -109,17 +109,17 @@ export default createComponent({
       const seconds = Math.round(leave2 / 1000);
       return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
-    function countTime(this:any){
-      timeCount.value.timeValue = timeDiff(new Date(courseRecord.value.endDt))
+    function countTime(this: any) {
+      timeCount.value.timeValue = timeDiff(new Date(courseRecord.value.endDt));
       if (new Date(timeCount.value.timeIf) <= new Date() ) {
         clearInterval(timer);
       }
     }
     const timeCount = ref<any>({
-      timeValue:null,
-      timeIf:null
+      timeValue: null,
+      timeIf: null,
     });
-    const timer = setInterval(countTime,1000) 
+    const timer = setInterval(countTime, 1000) ; 
     function summaryHandle(summary: any, key: string) {
       if (summary[key]) {
         summary[key] = summary[key] + 1;
@@ -143,17 +143,16 @@ export default createComponent({
     }
     onUnmounted(() => {
         clearInterval(timer);
-    })
+    });
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
       ]);
-      if(courseRecord.value===undefined){
+      if (courseRecord.value === undefined) {
         clearInterval(timer);
-      }
-      else{
-        timeCount.value.timeIf=courseRecord.value.endDt
+      } else {
+        timeCount.value.timeIf = courseRecord.value.endDt;
       }
       const data = [];
       const summary: any = {};
@@ -200,13 +199,13 @@ export default createComponent({
       };
       // todo times的异步动态添加无效
       await fetchTimes();
-      timer
+      timer;
     }));
     return {
       loading, courseRecord,
       timeDiff, chart, times,
-      stationList,countTime,
-      ImageLink,timeCount,timer,
+      stationList, countTime,
+      ImageLink, timeCount, timer,
       percentage, statusMap,
     };
   },

@@ -209,7 +209,7 @@ export default {
       }
     }
     async function searchFList() {
-      if (searchInfo.value.inDt != undefined) {
+      if (searchInfo.value.inDt !== undefined) {
         const resulta = new Date(searchInfo.value.inDt[0]);
         const resultb = new Date(searchInfo.value.inDt[1]);
         searchInfo.value.start = Number(resulta) / 1000;
@@ -251,11 +251,11 @@ export default {
       scoreList.value.allScore = experimentReportList.value;
       scoreList.value.haveScore = [];
       scoreList.value.noScore = [];
-      for (let i = 0; i < experimentReportList.value.length; i++) {
-        if (experimentReportList.value[i].scoreSum != null) {
-          scoreList.value.haveScore.push(experimentReportList.value[i]);
+      for (const d of experimentReportList.value) {
+        if (d.scoreSum != null) {
+          scoreList.value.haveScore.push(d);
         } else {
-          scoreList.value.noScore.push(experimentReportList.value[i]);
+          scoreList.value.noScore.push(d);
         }
       }
     };

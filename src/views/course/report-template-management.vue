@@ -56,7 +56,6 @@ export default {
     }
     const query = async () => {
       experimentReportTemplateList.value = await ReportTemplateList();
-      console.log(experimentReportTemplateList.value);
     };
     onMounted(useLoading(loading, async () => {
       await query();

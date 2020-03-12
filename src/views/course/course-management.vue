@@ -214,7 +214,7 @@ export default {
           });
         }
         else{
-          Message.error('分数比相加需为100')
+          Message.error('分数比相加需为100');
         }
       }
     }

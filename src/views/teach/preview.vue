@@ -97,7 +97,6 @@ export default {
       courseInfo.value = await CourseRecordPreview({
         courseId: courseID,
       });
-      console.log(courseInfo.value);
       for (let i = 0; i < courseInfo.value.stations; i++) {
         const station = stationList.value.filter((item: any) => {
           return item.id === courseInfo.value.stations[i];
@@ -117,7 +116,6 @@ export default {
       stationList.value = await StationList({
         simple: true,
       });
-      console.log(stationList.value);
     }));
     return {
       loading, coursePreviewList, queryCoursePreviewList, coursePreview,
