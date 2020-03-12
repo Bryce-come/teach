@@ -111,12 +111,13 @@ export default createComponent({
     };
     function countTime(this:any){
       timeCount.value.timeValue = timeDiff(new Date(courseRecord.value.endDt))
-      if (new Date(courseRecord.value.endDt) <= new Date()) {
+      if (new Date(timeCount.value.timeIf) <= new Date() ) {
         clearInterval(timer);
       }
     }
     const timeCount = ref<any>({
-      timeValue:''
+      timeValue:null,
+      timeIf:null
     });
     const timer = setInterval(countTime,1000) 
     function summaryHandle(summary: any, key: string) {
@@ -148,6 +149,12 @@ export default createComponent({
         courseRecord.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
       ]);
+      if(courseRecord.value===undefined){
+        clearInterval(timer);
+      }
+      else{
+        timeCount.value.timeIf=courseRecord.value.endDt
+      }
       const data = [];
       const summary: any = {};
       for (const station of stationList.value) {
