@@ -161,7 +161,6 @@ export default {
       if (videoChannel.value[flag.value] === null || videoChannel.value[flag.value] === undefined) {
         return ;
       }
-      console.log('start video', starting.value);
       const msg1 = await startPlayback(0, modalVideo.value.szDeviceIndentify, videoChannel.value[flag.value], formatDateTime(new Date(start.value)), formatDateTime(new Date(end.value)));
       if (msg1) {
         alert(msg1);

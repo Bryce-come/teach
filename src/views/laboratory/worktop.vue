@@ -95,8 +95,8 @@
       <div slot="title">添加操作台</div>
       <el-form v-if="modal.workTopInfo" ref="form" :model="modal.workTopInfo" label-width="120px" label-position="left"
                style="width: 300px;margin: 0 auto">
-        <el-form-item label="操作台名称：" prop="name" :rules="{ required: true, message: '请输入操作台名称(15位大写字母和数字)'}">
-          <el-input v-model="modal.workTopInfo.name" oninput="value=value.replace(/[^0-9A-Z]/g,'');" clearable minlength="4"/>
+        <el-form-item label="操作台名称：" prop="name" :rules="{ required: true, message: '请输入操作台名称'}">
+          <el-input v-model="modal.workTopInfo.name" clearable/>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -107,7 +107,7 @@
       <div slot="title">添加关联设备</div>
       <el-form v-if="addDeviceModal.deviceInfo" ref="form1" :model="addDeviceModal.deviceInfo" label-width="110px" label-position="left" style="width: 90%;margin: 0 auto">
         <el-form-item label="设备名称：" prop="device" :rules="{ required: true, message: '请选择设备'}">
-          <el-select value-key="id" v-model="addDeviceModal.deviceInfo.device" placeholder="请选择设备名称">
+          <el-select value-key="id" v-model="addDeviceModal.deviceInfo.device" placeholder="请选择设备名称" clearable>
             <el-option
               v-for="item of deviceNameList"
               :key="item.id"
@@ -116,17 +116,17 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="网关编号：" prop="collector.id" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.collector.id"/>
+        <el-form-item label="网关编号：" prop="collector.id"  :rules="{ required: true,pattern: /^[A-Z0-9]{15}$/g, message: '请填入信息(15位大写字母和数字)'}">
+          <el-input v-model="addDeviceModal.deviceInfo.collector.id" maxlength="15" clearable/>
         </el-form-item>
         <el-form-item label="设备IP：" prop="device.extend.ip" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.device.extend.ip"/>
+          <el-input v-model="addDeviceModal.deviceInfo.device.extend.ip" clearable/>
         </el-form-item>
         <el-form-item label="网关外IP：" prop="collector.extend.outerIp" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.outerIp"/>
+          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.outerIp" clearable/>
         </el-form-item>
         <el-form-item label="网关内IP：" prop="collector.extend.innerIp" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.innerIp"/>
+          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.innerIp" clearable/>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>

@@ -87,7 +87,7 @@ import {createComponent, ref, Ref, onMounted} from '@vue/composition-api';
 import {useLoading} from 'web-toolkit/src/service';
 import {debounce} from 'web-toolkit/src/utils';
 import {getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
-import {StationList,StationInfo} from '@/dao/stationDao';
+import {StationList, StationInfo} from '@/dao/stationDao';
 import {sleep, formatMilliseconds} from 'web-toolkit/src/utils';
 import {statusMap} from '@/utils/device-utils';
 import {timelineConfig, timesPieConfig, lineConfig} from 'web-toolkit/src/utils/echarts-helper';
@@ -126,8 +126,8 @@ export default createComponent({
         start,
         end,
       });
-      if(num && num.length !== 0 ){
-        for (const item of num){
+      if (num && num.length !== 0 ) {
+        for (const item of num) {
           option.x.push(item.x);
           option.y[0].data.push(item.y);
           option.y[0].name = '人时数统计';
@@ -142,7 +142,7 @@ export default createComponent({
         id: deviceName.value,
       });
       const data = await AnalysisDeviceTime({
-        deviceId: oneStation.value.deviceList && oneStation.value.deviceList.length?oneStation.value.deviceList[0].id : null ,
+        deviceId: oneStation.value.deviceList && oneStation.value.deviceList.length ? oneStation.value.deviceList[0].id : null ,
         start,
         end,
       });
@@ -169,7 +169,6 @@ export default createComponent({
       //   }
       // }
       deviceName.value = stationNameList.value && stationNameList.value[0] && stationNameList.value[0].deviceList.length !== 0 ? stationNameList.value[0].id : null;
-      console.log( deviceName.value);
     };
     // 人时数分析
     const showNum = async () => {
@@ -212,7 +211,7 @@ export default createComponent({
 });
 function initLine() {
   return {
-      x:[], y:[{name:'人时数分析',data:[]} ],
+      x: [], y: [{name: '人时数分析', data: []} ],
   };
 }
 </script>
