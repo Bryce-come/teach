@@ -344,7 +344,6 @@ export default {
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
-      console.log(fileList.value);
     }
     async function downFile(item: any) {
       const files = {
@@ -357,7 +356,6 @@ export default {
       // experimentList.value = await ProgramList();
       await showAllExp();
       stationList.value = await StationList(true);
-      console.log(stationList.value);
     }));
     return{
       loading, experimentList, keywords, filtered, expTypeList, tab,
