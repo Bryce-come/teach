@@ -2,7 +2,7 @@
   <div v-loading="loading" class="student-management">
     <el-row :gutter="10" type="flex" justify="space-between">
       <el-col :span="4" class="treewidth">
-        <el-button type="success" @click="showFormB()">添加班级</el-button>
+        <el-button type="success" @click="() => upClazGrop(node,1)">添加班级</el-button>
         <el-tree
             :data="classList"
             :props="props"
@@ -40,8 +40,15 @@
                   type="text"
                   size="mini"
                   v-if='node.level===1&&moveNowTrue.moveNowId===node.id'
-                  @click="() => addNewGroup(node)">
+                  @click="() => upClazGrop(node,3)">
                   <i class="el-icon-plus" title="增加小组"/>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  v-if='node.level===1&&moveNowTrue.moveNowId===node.id'
+                  @click="() => upClazGrop(node,2)">
+                  <i class="el-icon-edit" title="班级改名"/>
                 </el-button>
                 <el-button
                   type="text"
@@ -54,7 +61,7 @@
                   type="text"
                   size="mini"
                   v-if="node.level===2&&moveNowTrue.moveNowId===node.id"
-                  @click="() => updataGropFlag(node)">
+                  @click="() => upClazGrop(node,4)">
                   <i class="el-icon-edit" title="组名改名"/>
                 </el-button>
                 <el-button
@@ -112,37 +119,16 @@
     </el-row>
     <kit-dialog-simple
       @submit.native.prevent
-      :modal="upgrpFlag"
-      :confirm="groupUpdate">
-      <div slot="title">修改小组名</div>
-        <el-form v-if="upgrpFlag.visible" ref="form1" :model="upgrpFlag" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="名称：" prop="upgrpInfo" :rules="{ required: true, message: '请输入名称'}">
-            <el-input v-model="upgrpFlag.upgrpInfo" clearable/>
+      :modal="upClazGropFlag"
+      :confirm="upClazGropdate">
+      <div slot="title">{{upClazGropFlag.typeName}}</div>
+        <el-form v-if="upClazGropFlag.visible" ref="form1" :model="upClazGropFlag" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
+          <el-form-item label="名称：" prop="upClazGropInfo" :rules="{ required: true, message: '请输入名称'}">
+            <el-input v-model="upClazGropFlag.upClazGropInfo" clearable/>
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
-    <kit-dialog-simple
-      @submit.native.prevent
-      :modal="addNewGroupFlag"
-      :confirm="addNewGroupDate">
-      <div slot="title">增加新的小组</div>
-        <el-form v-if="addNewGroupFlag.visible" ref="form2" :model="addNewGroupFlag" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="名称：" prop="addNewGroupInfo" :rules="{ required: true, message: '请输入名称'}">
-            <el-input v-model="addNewGroupFlag.addNewGroupInfo" clearable/>
-          </el-form-item>
-        </el-form>
-    </kit-dialog-simple>
-    <kit-dialog-simple
-      @submit.native.prevent
-      :modal="addClazFlag"
-      :confirm="addClaz">
-      <div slot="title">增加新的班级</div>
-        <el-form v-if="addClazFlag.visible" ref="form3" :model="addClazFlag" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="名称：" prop="addClazInfo" :rules="{ required: true, message: '请输入名称'}">
-            <el-input v-model="addClazFlag.addClazInfo" clearable/>
-          </el-form-item>
-        </el-form>
-    </kit-dialog-simple>
+    
     <kit-dialog-simple
       :modal="modal"
       :confirm="update"
@@ -242,6 +228,7 @@ export default {
       await queryClassList();
   };
   const form = ref<ElForm|null>(null);
+  const form1 = ref<ElForm|null>(null);
   const modal = ref<any>({
     visible: false,
     studentInfo: null,
@@ -264,10 +251,6 @@ export default {
       callback();
     }
   }
-  const addClazFlag  =  ref<any>({
-    visible: false,
-    addClazInfo: '',
-  });
   const moveNowTrue = ref<any>({
     moveNowId: '',
   });
@@ -282,29 +265,14 @@ export default {
     claszGroup.value = node.data.groups ? {} : node.data;
     useLoading(loading, queryStudentList)();
   }
-  const upgrpFlag = ref<any>({
+  const upClazGropFlag = ref<any>({
     visible: false,
-    upgrpInfo: null,
+    upClazGropInfo: null,
     data: '',
+    // 1-增加班级 2-修改班级 3-增加小组 4-修改小组
+    type: null,
+    typeName:'',
   });
-  function showFormB() {
-    addClazFlag.value.visible = true;
-  }
-  function updataGropFlag(row: any) {
-    upgrpFlag.value.visible = true;
-    upgrpFlag.value.data = row;
-    upgrpFlag.value.upgrpInfo = row.data.name;
-  }
-  const addNewGroupFlag = ref<any>({
-    visible: false,
-    addNewGroupInfo: '',
-    data: '',
-    claz: '',
-  });
-  function addNewGroup(row: any) {
-    addNewGroupFlag.value.visible = true;
-    addNewGroupFlag.value.data = row;
-  }
   async function FrozenClaz(row: any) {
     const result = {
       id: row.id,
@@ -334,16 +302,6 @@ export default {
     await ClassGroupDel(result);
     await queryClassList();
   }
-  async function addClaz(row: any) {
-    // todo validate
-    const result = {
-      name: addClazFlag.value.addClazInfo,
-    };
-    await ClassUpdate(result);
-    await queryClassList();
-    addClazFlag.value.addClazInfo = '';
-    addClazFlag.value.visible = false;
-  }
   async function showForm(row: any) {
     if (form.value) { (form.value as ElForm).clearValidate(); }
     modal.value.studentInfo = row ? deepClone(row) : initForm();
@@ -352,28 +310,52 @@ export default {
       armasdb(row.extend.clasz);
     }
   }
-  async function groupUpdate() {
-    // todo form validate
-    const result = {
-      cid: upgrpFlag.value.data.parent.data.id,
-      name: upgrpFlag.value.upgrpInfo,
-      id: upgrpFlag.value.data.data.id,
-    };
-    await ClassGroupUpdate(result);
-    await queryClassList();
-    upgrpFlag.value.visible = false;
-    upgrpFlag.value.upgrpInfo = '';
+  const typeList = ref<any>([
+    {id:1,name:'增加班级'},
+    {id:2,name:'修改班级'},
+    {id:3,name:'增加小组'},
+    {id:4,name:'修改班级'},
+  ])
+  function upClazGrop(row:any,sum:any){
+    upClazGropFlag.value.visible = true;
+    upClazGropFlag.value.data = row;
+    upClazGropFlag.value.typeName = typeList.value.filter((item:any) => {return item.id === sum})[0].name;
+    upClazGropFlag.value.type = sum;
   }
-  async function addNewGroupDate() {
-    // todo form validate
-    const result = {
-      cid: addNewGroupFlag.value.data.data.id,
-      name: addNewGroupFlag.value.addNewGroupInfo,
-    };
-    await ClassGroupUpdate(result);
+  async function upClazGropdate() {
+    // const valid = await (form1.value as ElForm).validate();
+    // if (!valid) { return ; }
+    if (upClazGropFlag.value.type===1){
+      const result = {
+        name: upClazGropFlag.value.upClazGropInfo,
+      };
+      await ClassUpdate(result);
+    }
+    if (upClazGropFlag.value.type===2){
+      const result = {
+        id:upClazGropFlag.value.data.data.id,
+        name: upClazGropFlag.value.upClazGropInfo,
+      };
+      await ClassUpdate(result);
+    }
+    if (upClazGropFlag.value.type===3){
+      const result = {
+        cid: upClazGropFlag.value.data.data.id,
+        name: upClazGropFlag.value.upClazGropInfo,
+      };
+      await ClassGroupUpdate(result);
+    }
+    if (upClazGropFlag.value.type===4){
+      const result = {
+        cid: upClazGropFlag.value.data.parent.data.id,
+        name: upClazGropFlag.value.upClazGropInfo,
+        id: upClazGropFlag.value.data.data.id,
+      };
+      await ClassGroupUpdate(result);
+    }
     await queryClassList();
-    addNewGroupFlag.value.visible = false;
-    addNewGroupFlag.value.addNewGroupInfo = '';
+    upClazGropFlag.value.visible = false;
+    upClazGropFlag.value.upClazGropInfo = '';
   }
   async function update() {
     const valid = await (form.value as ElForm).validate();
@@ -427,19 +409,16 @@ export default {
   });
   return{
     loading, tree, props, studentUserList, filtered, keywords,
-    roleList, clasz, claszGroup,
-    addClazFlag, armasdb,
-    addNewGroup, addNewGroupDate, storeUserInfo,
+    roleList, clasz, claszGroup,upClazGrop,
+    armasdb,upClazGropFlag,  storeUserInfo,
     removeClass: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeClass)),
-    upgrpFlag, showFormB, moveNow, moveNowTrue, moveNotNow, setRemoveName,
+    moveNow, moveNowTrue, moveNotNow, setRemoveName,
     remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
     toggleStatus: useLoading(loading, toggleStatus),
     queryStudentList: useLoading(loading, queryStudentList),
     queryClassList,
     removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
-    modal, form, showForm, addClaz, groupUpdate, removeValue,
-    update: useLoading(loading, update),
-    updataGropFlag, addNewGroupFlag,
+    modal, form, showForm,removeValue,upClazGropdate, 
     validator, classList, groupList, ctogList,  firstTab,
     FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
     unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),
