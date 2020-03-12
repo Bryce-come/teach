@@ -2,7 +2,7 @@
   <div v-loading="loading" class="student-management">
     <el-row :gutter="10" type="flex" justify="space-between">
       <el-col :span="4" class="treewidth">
-        <el-button type="success" @click="() => upClazGrop(node,1)">添加班级</el-button>
+        <el-button type="success" @click="() => upClazGrop(null,1)">添加班级</el-button>
         <el-tree
             :data="classList"
             :props="props"
@@ -252,27 +252,20 @@ export default {
     }
   }
   const moveNowTrue = ref<any>({
-    moveNowId: '',
+    moveNowId: null,
   });
   function moveNow(row: any) {
     moveNowTrue.value.moveNowId = row.id;
   }
   function moveNotNow() {
-    moveNowTrue.value.moveNowId = '';
+    moveNowTrue.value.moveNowId = null;
   }
   function firstTab(node: any) {
     clasz.value = node.data.groups ? node.data : node.parent.data;
     claszGroup.value = node.data.groups ? {} : node.data;
     useLoading(loading, queryStudentList)();
   }
-  const upClazGropFlag = ref<any>({
-    visible: false,
-    upClazGropInfo: null,
-    data: '',
-    // 1-增加班级 2-修改班级 3-增加小组 4-修改小组
-    type: null,
-    typeName:'',
-  });
+  
   async function FrozenClaz(row: any) {
     const result = {
       id: row.id,
@@ -316,15 +309,25 @@ export default {
     {id:3,name:'增加小组'},
     {id:4,name:'修改班级'},
   ])
+  const upClazGropFlag = ref<any>({
+    visible: false,
+    upClazGropInfo: null,
+    data: null,
+    // 1-增加班级 2-修改班级 3-增加小组 4-修改小组
+    type: null,
+    typeName:null,
+  });
   function upClazGrop(row:any,sum:any){
+    // if (form1.value) { (form1.value as ElForm).clearValidate(); }
+    if (sum!==1){upClazGropFlag.value.upClazGropInfo = row.data.name ? row.data.name : '';}
     upClazGropFlag.value.visible = true;
     upClazGropFlag.value.data = row;
     upClazGropFlag.value.typeName = typeList.value.filter((item:any) => {return item.id === sum})[0].name;
     upClazGropFlag.value.type = sum;
   }
   async function upClazGropdate() {
-    // const valid = await (form1.value as ElForm).validate();
-    // if (!valid) { return ; }
+    const valid = await (form1.value as ElForm).validate();
+    if (!valid) { return ; }
     if (upClazGropFlag.value.type===1){
       const result = {
         name: upClazGropFlag.value.upClazGropInfo,
@@ -355,7 +358,7 @@ export default {
     }
     await queryClassList();
     upClazGropFlag.value.visible = false;
-    upClazGropFlag.value.upClazGropInfo = '';
+    upClazGropFlag.value.upClazGropInfo = null;
   }
   async function update() {
     const valid = await (form.value as ElForm).validate();
@@ -416,9 +419,9 @@ export default {
     remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
     toggleStatus: useLoading(loading, toggleStatus),
     queryStudentList: useLoading(loading, queryStudentList),
-    queryClassList,
+    queryClassList,update,
     removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
-    modal, form, showForm,removeValue,upClazGropdate, 
+    modal, form, showForm,removeValue,upClazGropdate, form1,
     validator, classList, groupList, ctogList,  firstTab,
     FrozenClaz: useConfirm('确认冻结？', useLoading(loading, FrozenClaz)),
     unFrozenClaz: useConfirm('确认解冻？', useLoading(loading, unFrozenClaz)),
