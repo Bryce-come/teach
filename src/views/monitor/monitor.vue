@@ -12,7 +12,7 @@
               <el-form-item label="授课老师：">{{ courseRecord.teacher.name }}</el-form-item>
               <el-form-item label="授课班级分组：">{{ (courseRecord.clasz?courseRecord.clasz.name:'')+' '+(courseRecord.claszGroup?courseRecord.claszGroup.name:'') }}</el-form-item>
               <el-form-item label="上课人数：">{{ courseRecord.studentList?courseRecord.studentList.length:'- -' }}</el-form-item>
-              <el-form-item label="距离下课时间：">{{ timeDiff(new Date(courseRecord.endDt)) }}</el-form-item>
+              <el-form-item label="距离下课时间：">{{ timeCount.timeValue }}</el-form-item>
             </div>
             <el-form-item label="本课程进度：">
               <div style="margin-top: 8px">
@@ -70,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
+import {ref, Ref, onMounted, createComponent,onUnmounted} from '@vue/composition-api';
 import {useLoading, useConfirm} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {leftFill0} from 'web-toolkit/src/utils';
@@ -109,6 +109,16 @@ export default createComponent({
       const seconds = Math.round(leave2 / 1000);
       return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
+    function countTime(this:any){
+      timeCount.value.timeValue = timeDiff(new Date(courseRecord.value.endDt))
+      if (new Date(courseRecord.value.endDt) <= new Date()) {
+        clearInterval(timer);
+      }
+    }
+    const timeCount = ref<any>({
+      timeValue:''
+    });
+    const timer = setInterval(countTime,1000) 
     function summaryHandle(summary: any, key: string) {
       if (summary[key]) {
         summary[key] = summary[key] + 1;
@@ -130,6 +140,9 @@ export default createComponent({
         times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true });
       }
     }
+    onUnmounted(() => {
+        clearInterval(timer);
+    })
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
@@ -180,12 +193,13 @@ export default createComponent({
       };
       // todo times的异步动态添加无效
       await fetchTimes();
+      timer
     }));
     return {
       loading, courseRecord,
       timeDiff, chart, times,
-      stationList,
-      ImageLink,
+      stationList,countTime,
+      ImageLink,timeCount,timer,
       percentage, statusMap,
     };
   },
