@@ -347,11 +347,11 @@ export default createComponent({
       return identifier === 'week' && num === 6 ? '日' : character[num];
     }
     function showColor(row: any) {
-      const result = row.srcElement;
+      const result = row.target;
       result.style.backgroundColor = 'Gainsboro';
     }
     function noShowColor(row: any) {
-      const result = row.srcElement;
+      const result = row.target;
       result.style.backgroundColor = 'white';
     }
     const newList = async () => {
