@@ -119,7 +119,7 @@ export default createComponent({
       timeValue: null,
       timeIf: null,
     });
-    const timer = setInterval(countTime, 1000) ; 
+    const timer = setInterval(countTime, 1000);
     function summaryHandle(summary: any, key: string) {
       if (summary[key]) {
         summary[key] = summary[key] + 1;

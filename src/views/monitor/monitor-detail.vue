@@ -214,7 +214,6 @@ export default {
     async function restartVideo(id: any, f: number) {
       flag.value = f;
       await stopVideo();
-      console.log(id);
       if (id) { await startVideo(id); }
     }
     async function paramAnalysisMonitor() {
