@@ -186,31 +186,36 @@ export default {
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
-        if (courseModal.value.type === 'add') {
-          await CourseAdd({
-            // *code, *name, *teacherId, extendJson, programJson
-            // id: courseModal.value.courseInfo.id,
-            code: courseModal.value.courseInfo.code,
-            name: courseModal.value.courseInfo.name,
-            teacherId: courseModal.value.courseInfo.teacher.id,
-            extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
-            programJson: JSON.stringify(courseModal.value.courseInfo.program),
-          });
-        } else {
-          await CourseUpdate({
-            id: courseModal.value.courseInfo.id,
-            code: courseModal.value.courseInfo.code,
-            name: courseModal.value.courseInfo.name,
-            teacherId: courseModal.value.courseInfo.teacher.id,
-            extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
-            programJson: JSON.stringify(courseModal.value.courseInfo.program),
+        if(courseModal.value.courseInfo.extend.scoreRatio[1]+courseModal.value.courseInfo.extend.scoreRatio[0]===100){
+          if (courseModal.value.type === 'add') {
+            await CourseAdd({
+              // *code, *name, *teacherId, extendJson, programJson
+              // id: courseModal.value.courseInfo.id,
+              code: courseModal.value.courseInfo.code,
+              name: courseModal.value.courseInfo.name,
+              teacherId: courseModal.value.courseInfo.teacher.id,
+              extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
+              programJson: JSON.stringify(courseModal.value.courseInfo.program),
+            });
+          } else {
+            await CourseUpdate({
+              id: courseModal.value.courseInfo.id,
+              code: courseModal.value.courseInfo.code,
+              name: courseModal.value.courseInfo.name,
+              teacherId: courseModal.value.courseInfo.teacher.id,
+              extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
+              programJson: JSON.stringify(courseModal.value.courseInfo.program),
+            });
+          }
+          courseModal.value.visible = false;
+          Message.success(`${courseModal.value.type === 'add' ? '添加' : '修改'}成功`);
+          courseList.value = await CourseList({
+            containPrograms: true,
           });
         }
-        courseModal.value.visible = false;
-        Message.success(`${courseModal.value.type === 'add' ? '添加' : '修改'}成功`);
-        courseList.value = await CourseList({
-          containPrograms: true,
-        });
+        else{
+          Message.error('分数比相加需为100')
+        }
       }
     }
     onMounted(useLoading(loading, async () => {
