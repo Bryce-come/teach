@@ -13,14 +13,15 @@
             min-width="350px"
             ref="tree">
             <div
+              :style="data.freez?'background-color:	Tomato':''"
               class="flex between align-center"
               style="width: 100%; cursor: default"
               slot-scope="{ node, data }"
+              @click="changeBackgroundColor(node,$event)"
               @mousemove="moveNow(node)" @mouseleave="moveNotNow()" >
               <div
-                :style="data.freez?'color:red':''"
                 style="cursor: pointer"
-                @click="firstTab(node)">{{node.label}}</div>
+                @click="firstTab(node,$event)">{{node.label}}</div>
               <div class="flex">
                 <el-button
                   type="text"
@@ -260,7 +261,29 @@ export default {
   function moveNotNow() {
     moveNowTrue.value.moveNowId = null;
   }
-  function firstTab(node: any) {
+  const cilckIng = ref<any>({
+    str:null
+  })
+  function changeBackgroundColor(node: any,row: any){
+    // if(cilckIng.value.str!==null||node.data.freez===false){
+    //   cilckIng.value.str.style.backgroundColor = 'transparent';
+    // }
+    // else {
+    //   cilckIng.value.str.style.backgroundColor = 'Tomato';
+    // }
+    // cilckIng.value.str = row.target
+    // cilckIng.value.str.style.backgroundColor = 'PaleTurquoise';
+    // console.log(node);
+  }
+  function firstTab(node: any,row:any) {
+    if(cilckIng.value.str!==null||node.data.freez===false){
+      cilckIng.value.str.style.backgroundColor = 'transparent';
+    }
+    // else {
+    //   cilckIng.value.str.style.backgroundColor = 'Tomato';
+    // }
+    cilckIng.value.str = row.target
+    cilckIng.value.str.style.backgroundColor = 'PaleTurquoise';
     clasz.value = node.data.groups ? node.data : node.parent.data;
     claszGroup.value = node.data.groups ? {} : node.data;
     useLoading(loading, queryStudentList)();
@@ -419,7 +442,7 @@ export default {
     remove: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, remove)),
     toggleStatus: useLoading(loading, toggleStatus),
     queryStudentList: useLoading(loading, queryStudentList),
-    queryClassList,update,
+    queryClassList,update,changeBackgroundColor,
     removeGrop: useConfirm(`确认删除${removeValue.value.name}?`, useLoading(loading, removeGrop)),
     modal, form, showForm,removeValue,upClazGropdate, form1,
     validator, classList, groupList, ctogList,  firstTab,
