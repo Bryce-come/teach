@@ -15,4 +15,4 @@ student1, 123456
 -[x] 学生管理中，班级名称重复和分组重复都放在服务端校验了，前端的删除，所以grpandclzList也不需要了。并测试下。
 -[x] el-form-item 中的rules用于validate，是根据prop的值来校验的（在配置el-form的:model），这个都没注意
 -[x] 学生管理中，选择完班级或分组后，tree中那条背景色更改下，可以通过clasz.value或claszGroup.value来判断是否选中。同理，冻结也可以如此判断，修改底色。
--[ ] yarn lint 中的警告所示的内容修改。
+-[x] yarn lint 中的警告所示的内容修改。
