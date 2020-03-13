@@ -4,7 +4,7 @@ import {WebVideoCtrl} from '@/utils/webVideoCtrl';
 export async function init(containId: string, windowType: number) {
   // 检查插件是否已经安装过
   const iRet = WebVideoCtrl.I_CheckPluginInstall();
-  if (-1 == iRet) {
+  if (-1 === iRet) {
     alert('您还未安装过插件WebComponentsKit.exe');
     return;
   }
@@ -20,11 +20,11 @@ export async function init(containId: string, windowType: number) {
         // console.log('选中窗口：', xmlDoc.getElementsByTagName<any>('SelectWnd')[0].textContent);
       },
       cbEvent(iEventType: any, iParam1: any, iParam2: any) {
-        if (2 == iEventType) {// 回放正常结束
+        if (2 === iEventType) {// 回放正常结束
           // console.log('窗口' + iParam1 + '回放结束！');
-        } else if (-1 == iEventType) {
+        } else if (-1 === iEventType) {
           // console.log('设备' + iParam1 + '网络错误！');
-        } else if (3001 == iEventType) {
+        } else if (3001 === iEventType) {
           // clickStopRecord(g_szRecordType, iParam1);
         }
       },
@@ -51,7 +51,7 @@ export async function login(ip: string, port: string, username: string, pwd: str
           reject(' 登录失败！' + status);
         },
       });
-    if (-1 == iRet) {
+    if (-1 === iRet) {
       // console.log(' 已登录过！');
       resolve();
     }

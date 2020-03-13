@@ -41,7 +41,6 @@ export default {
     const list = ref<any>();
     const queryManually = async () => {
       list.value = await AlarmMaintenDelay();
-      console.log(list.value);
       };
     const confirm = async (row: any) => {
     };

@@ -123,7 +123,6 @@ export default {
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });
-        console.log(deviceAlarmList.value);
     };
     const snapshot = async (row: any) => {
       const dt = new Date(row.createDt).getTime();
