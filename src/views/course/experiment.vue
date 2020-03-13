@@ -17,8 +17,8 @@
       <el-table-column label="实验名称" prop="name"/>      
       <el-table-column label="实验类型" prop="label"/>    
       <el-table-column label="实验目的" prop="purpose"/>
-      <el-table-column label="关联操作台" width="150px">
-        <div class="flex start" slot-scope="{row}" >
+      <el-table-column label="关联操作台" width="250px">
+        <div class="flex wrap" slot-scope="{row}" >
            <div v-for="(item,i) in row.stationList" :key="i" style="padding: 0">
              {{item.name + '，'}}
            </div>
