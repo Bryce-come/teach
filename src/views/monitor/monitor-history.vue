@@ -87,7 +87,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, createComponent,watch } from '@vue/composition-api';
+import { ref, onMounted, createComponent, watch } from '@vue/composition-api';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import courseList from '../../components/courseList.vue';
 import { Message } from 'element-ui';
@@ -109,12 +109,12 @@ export default createComponent({
     const times = ref<any>({});
     const courseRecord = ref<any>();
     const courseRecordList = ref<any>();
-    const courseTimeRange = ref<any>([null,null]);
+    const courseTimeRange = ref<any>([null, null]);
     const collapseVal = ref<any>();
 
-    watch(()=>courseTimeRange.value, ()=>{
+    watch(() => courseTimeRange.value, () =>  {
       // 点击课时后直接查询
-      if(courseTimeRange.value && courseTimeRange.value.length===2 && courseTimeRange.value[0]){
+      if (courseTimeRange.value && courseTimeRange.value.length === 2 && courseTimeRange.value[0]) {
         useLoading(loading, query)();
       }
     });
@@ -122,8 +122,7 @@ export default createComponent({
       if (condition.value === '1') {
         dt.value[0] = courseTimeRange.value[0];
         dt.value[1] = courseTimeRange.value[1];
-      }
-      else {
+      } else {
         if (range.value.length !== 2) {
           Message.error('请选择时间范围');
           return;
@@ -140,8 +139,8 @@ export default createComponent({
         start: dt.value[0].getTime(),
         end: dt.value[1].getTime(),
       });
-      if(courseRecordList.value && courseRecordList.value.length>0){
-        collapseVal.value = courseRecordList.value[0].id
+      if (courseRecordList.value && courseRecordList.value.length > 0) {
+        collapseVal.value = courseRecordList.value[0].id;
       }
       const list = await AnalysisDeviceTimes({
         start: dt.value[0].getTime(),
@@ -183,7 +182,7 @@ export default createComponent({
       courseRecord, courseRecordList,
       query: useLoading(loading, query),
       handleCourseRecordTitle,
-      getTypeName, courseTimeRange, collapseVal
+      getTypeName, courseTimeRange, collapseVal,
     };
   },
 });

@@ -312,7 +312,6 @@ export default {
     };
     const showAllExp = async () => {
       experimentList.value = await ProgramList();
-      console.log(experimentList.value);
     };
     const showInExp = async () => {
       const firstList = await ProgramList();

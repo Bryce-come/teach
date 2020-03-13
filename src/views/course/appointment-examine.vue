@@ -128,7 +128,6 @@ export default createComponent({
         start: appointDt.value && appointDt.value[0] ? (appointDt.value[0] as Date).getTime() : null,
         end: appointDt.value && appointDt.value[1] ? (appointDt.value[1] as Date).getTime() : null,
       });
-      console.log(appointRecords.value);
     };
     const agreeAppoint = async (row: any) => {
       await AppointOperate({

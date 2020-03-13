@@ -335,7 +335,7 @@ import {createComponent, onMounted, ref, watch} from '@vue/composition-api';
 import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
-import {deepClone, isNil,} from 'web-toolkit/src/utils';
+import {deepClone, isNil } from 'web-toolkit/src/utils';
 import {storeUserInfo} from 'web-toolkit/src/case-main';
 import {getWeekDaysRange, clearHMS} from 'web-toolkit/src/utils/date';
 import {CourseRecordList} from '@/dao/courseRecordDao';
@@ -350,9 +350,9 @@ export default createComponent({
   name: 'courseList',
   props: {
     // readOnly, timeRange
-    mode:{
+    mode: {
       type: String,
-      default: ''
+      default: '',
     },
     dt: {
       type: Date,
@@ -361,7 +361,7 @@ export default createComponent({
     // timeRange时返回的时间
     range: {
       type: Array,
-      default: ()=>[null,null],
+      default: () => [null, null],
     },
   },
   // props 父组件传过来的东西  ctx 相当于子组件的this（cts.$emit()）
@@ -436,44 +436,44 @@ export default createComponent({
     }
 
     function showColor(row: any) {
-      if (props.mode==='readOnly') { return ; }
+      if (props.mode === 'readOnly') { return ; }
       const result = row.target;
       result.style.backgroundColor = 'Gainsboro';
     }
     function noShowColor(row: any) {
-      if (props.mode==='readOnly') { return ; }
+      if (props.mode === 'readOnly') { return ; }
       const result = row.target;
       result.style.backgroundColor = 'white';
     }
-    function choose(x:any, y:any, item:any) {
-      const id=x+'-'+y;
-      if(divChoose.value){
+    function choose(x: any, y: any, item: any) {
+      const id = x + '-' + y;
+      if (divChoose.value) {
         const div = document.getElementById(divChoose.value) as HTMLElement;
-        div.style.borderWidth='1px';
-        div.style.borderColor='black';
+        div.style.borderWidth = '1px';
+        div.style.borderColor = 'black';
       }
       const div = document.getElementById(id) as HTMLElement;
-      div.style.borderWidth='3px';
-      div.style.borderColor='#ff0200';
+      div.style.borderWidth = '3px';
+      div.style.borderColor = '#ff0200';
       divChoose.value = id;
-      if(item){
-        props.range.splice(0,1,new Date(item.startDt))
-        props.range.splice(1,1,new Date(item.endDt))
-      }else{
+      if (item) {
+        props.range.splice(0, 1, new Date(item.startDt));
+        props.range.splice(1, 1, new Date(item.endDt));
+      } else {
         const dt = weekSection.value.weekWithYeat[x];
         const dt1 = new Date();
         const dt2 = new Date();
         dt1.setTime(dt.getTime());
         dt2.setTime(dt.getTime());
-        const t1 = new Date(lessonMap.value['lesson'+(y+1)][0]);
-        const t2 = new Date(lessonMap.value['lesson'+(y+1)][1]);
+        const t1 = new Date(lessonMap.value['lesson' + (y + 1)][0]);
+        const t2 = new Date(lessonMap.value['lesson' + (y + 1)][1]);
         clearHMS(dt1); clearHMS(dt2);
         dt1.setHours(t1.getHours());
         dt2.setHours(t2.getHours());
         dt1.setMinutes(t1.getMinutes());
         dt2.setMinutes(t2.getMinutes());
-        props.range.splice(0,1,dt1);
-        props.range.splice(1,1,dt2);
+        props.range.splice(0, 1, dt1);
+        props.range.splice(1, 1, dt2);
       }
     }
 
@@ -482,7 +482,7 @@ export default createComponent({
       readModel.value.oneLesson = lessonItem;
     };
     const showLesson = async (data?: any, rowa?: any, rowb?: any) => {
-      if (props.mode==='readOnly') { return ; }
+      if (props.mode === 'readOnly') { return ; }
       // 无新增权限
       if (!data && (storeUserInfo.user as any).role.privileges.indexOf(PRIVILEGE.courseRecordMng) < 0) { return; }
       if (form.value) {
@@ -516,8 +516,7 @@ export default createComponent({
             id: null,
           };
         }
-      }
-      else {
+      } else {
         // data = initForm();
         data = {
           course: {
@@ -555,7 +554,7 @@ export default createComponent({
     };
 
     async function update() {
-      if (props.mode==='readOnly') { return ; }
+      if (props.mode === 'readOnly') { return ; }
       const valid = await (form.value as ElForm).validate();
       if (valid) {
         // 时间格式转化
@@ -578,8 +577,8 @@ export default createComponent({
           courseId: showModal.value.oneLesson.course ? showModal.value.oneLesson.course.id : null,
           programId: showModal.value.oneLesson.program ? showModal.value.oneLesson.program.id : null,
           teacherId: showModal.value.oneLesson.teacher ? showModal.value.oneLesson.teacher.id : null,
-          studentJson: showModal.value.oneLesson.type == 2 && showModal.value.oneLesson.students && showModal.value.oneLesson.students.length > 0 ? JSON.stringify(showModal.value.oneLesson.students) : null,
-          stationJson: showModal.value.oneLesson.type != 0 && showModal.value.oneLesson.stations && showModal.value.oneLesson.stations.length > 0 ? JSON.stringify(showModal.value.oneLesson.stations) : null,
+          studentJson: showModal.value.oneLesson.type === 2 && showModal.value.oneLesson.students && showModal.value.oneLesson.students.length > 0 ? JSON.stringify(showModal.value.oneLesson.students) : null,
+          stationJson: showModal.value.oneLesson.type !== 0 && showModal.value.oneLesson.stations && showModal.value.oneLesson.stations.length > 0 ? JSON.stringify(showModal.value.oneLesson.stations) : null,
           start: transformDate(showModal.value.oneLesson.appointDate, lesson1[0]),
           end: transformDate(showModal.value.oneLesson.appointDate, lesson2[1]),
           extendJson: JSON.stringify(showModal.value.oneLesson.extend),
@@ -609,7 +608,7 @@ export default createComponent({
       return dt.getTime();
     }
     const deleteLesson = async (lessonItem: any) => {
-      if (props.mode==='readOnly') { return ; }
+      if (props.mode === 'readOnly') { return ; }
       const result = {id: lessonItem.id};
       await CourseRecordDel(result);
       clearDiv();
@@ -626,20 +625,24 @@ export default createComponent({
         }
       }
       if (result.length > 0) {
-        for (let i = 0; i < result.length; i++) {
+        for (const d of result) {
           // 课时矩阵
-          originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
+          originList.value.lessonsList[setThisDay(new Date(d.startDt).getDay()) - 1].lesson.splice(d.extend.lessons[0] - 1, 1, d);
         }
-        for (let i = 0; i < result.length; i++) {
+        // for (let i = 0; i < result.length; i++) {
+        //   // 课时矩阵
+        //   originList.value.lessonsList[setThisDay(new Date(result[i].startDt).getDay()) - 1].lesson.splice(result[i].extend.lessons[0] - 1, 1, result[i]);
+        // }
+        for (const d of result) {
           // if(document.getElementsByClassName('tabDiv').length===0) continue;
           // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] - 1] as HTMLElement;
           // 有课程时的高度
           // const str = document.getElementById((setThisDay(new Date(result[i].startDt).getDay())-1)+"-"+(result[i].extend.lessons[0] - 1)) as HTMLElement;
           // str.style.height = divHeight.value * result[i].extend.lessons.length + 'px';
           // 挤掉的div 隐藏
-          for (let j = 0; j < result[i].extend.lessons.length - 1; j++) {
+          for (let j = 0; j < d.extend.lessons.length - 1; j++) {
             // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
-            const str1 = document.getElementById((setThisDay(new Date(result[i].startDt).getDay()) - 1) + '-' + (result[i].extend.lessons[0] + j)) as HTMLElement;
+            const str1 = document.getElementById((setThisDay(new Date(d.startDt).getDay()) - 1) + '-' + (d.extend.lessons[0] + j)) as HTMLElement;
             str1.style.display = 'none';
           }
         }
@@ -668,7 +671,7 @@ export default createComponent({
         {lesson: []}, {lesson: []}, {lesson: []}, {lesson: []},
         {lesson: []}, {lesson: []}, {lesson: []},
       ];
-      for (let i = 0; i < courseCount.value.count.length; i++) {
+      for (const d of courseCount.value.count) {
         originList.value.lessonsList[0].lesson.push('');
         originList.value.lessonsList[1].lesson.push('');
         originList.value.lessonsList[2].lesson.push('');
@@ -677,6 +680,15 @@ export default createComponent({
         originList.value.lessonsList[5].lesson.push('');
         originList.value.lessonsList[6].lesson.push('');
       }
+      // for (let i = 0; i < courseCount.value.count.length; i++) {
+      //   originList.value.lessonsList[0].lesson.push('');
+      //   originList.value.lessonsList[1].lesson.push('');
+      //   originList.value.lessonsList[2].lesson.push('');
+      //   originList.value.lessonsList[3].lesson.push('');
+      //   originList.value.lessonsList[4].lesson.push('');
+      //   originList.value.lessonsList[5].lesson.push('');
+      //   originList.value.lessonsList[6].lesson.push('');
+      // }
       const result = getWeekDaysRange(row);
       for (let i = 0; i < result.length; i++) {
         weekSection.value.weekInFo[i] = result[i].getMonth() + 1 + '-' + result[i].getDate();
@@ -738,7 +750,7 @@ export default createComponent({
       color,
       tableX,
       tableY,
-      courseAppointTypeList, divHeight, choose
+      courseAppointTypeList, divHeight, choose,
     };
   },
 });
