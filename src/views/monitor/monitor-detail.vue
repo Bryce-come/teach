@@ -60,9 +60,9 @@
             <el-button type="primary" plain @click="fullScreen()">全屏</el-button>
           </div>
           <div id="contain"></div>
+          <div class="flex center little-space"><el-button type="primary" @click="connectPC()">连接学生屏幕</el-button></div>
           <div class="watch2">
-            <div><el-button type="primary" @click="fuzhi()">连接学生屏幕</el-button></div>
-            <iframe v-if="a" id="iframe" name="iframe" :src="a" style="width:100%;height:100%"></iframe>
+            <iframe v-if="pcIp" id="iframe" name="iframe" :src="'http://'+pcIp+':9000'" style="width:100%;height:100%"></iframe>
           </div>
         </div>
       </div>
@@ -125,11 +125,7 @@ export default {
       end: '2020-02-26 14:11:11',
     });
     const videoChannel = ref<any>([null, null]);
-    const Src = 'http://192.168.88.128:9000';
-    const a = ref<any>();
-    async function fuzhi() {
-      a.value = Src;
-    }
+    const pcIp = ref<any>();
 
     const query = async () => {
       while (!over.value) {
@@ -155,6 +151,15 @@ export default {
       const seconds = Math.round(leave2 / 1000);
       return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
+    function connectPC(){
+      const pcs = station.value.extend.PCs;
+      if(pcs && pcs.length>0){
+        pcIp.value = pcs[0].PCIP;
+      }
+      else{
+        Message.error("无PC配置");
+      }
+    }
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
@@ -390,8 +395,7 @@ export default {
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
       restartVideo, fullScreen,
       videoChannel, flag, statusMap,
-      Src, a,
-      fuzhi: useLoading(loading, fuzhi),
+      pcIp, connectPC
     };
   },
 };
@@ -405,7 +409,7 @@ export default {
  .watch2 {
    width: 100%;
    height: 500px;
-   background-color: rgb(210, 224, 85);
+   background-color: rgb(204, 207, 209);
  }
  .watch3 {
    margin-right: 10px;
