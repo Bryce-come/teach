@@ -52,7 +52,7 @@
           <el-input v-model="modal.deviceInfo.name" />
         </el-form-item>
         <el-form-item label="设备型号：" prop="deviceType.id" :rules="{ required: true, message: '请选择设备型号'}">
-          <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="modal.deviceInfo.deviceType.id" placeholder="请选择设备型号"/>
+          <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="modal.deviceInfo.deviceType.id" placeholder="请选择设备型号" :disabled="modal.deviceInfo.deviceType.id"/>
         </el-form-item>
         <el-form-item label="购入日期：" prop="extend.buyDt" :rules="{ required: true, message: '请选择购入日期'}">
           <el-date-picker v-model="modal.deviceInfo.extend.buyDt" type="date"/>
