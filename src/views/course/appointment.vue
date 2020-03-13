@@ -7,7 +7,7 @@
       </el-button>
     </div>
     <div v-if="courseButton" class="flex center">
-      <courseList :read-only="true"/>
+      <courseList mode="readOnly"/>
     </div>
     <div v-if="appointButton">
       <div class="flex between appointButton">

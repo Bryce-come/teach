@@ -2,14 +2,14 @@
   <div v-loading="loading">
     <div class="monitor flex">
       <div class="block-card monitor-left">
-        <div class="title">上课班级信息</div>
-        <div v-if="!courseRecord|| !courseRecord.course" style="color: grey;text-align: center">暂无上课信息</div>
+        <div class="title">上课信息</div>
+        <div v-if="!courseRecord" style="color: grey;text-align: center">暂无上课信息</div>
         <div v-else class="content">
           <el-form label-width="110px" label-position="left" style="width:100%;margin-top:20px" >
             <div class="flex align-center wrap course-content">
               <el-form-item label="课程名称：">{{ courseRecord.course?courseRecord.course.name:'' }}</el-form-item>
               <el-form-item label="实验项目：">{{ courseRecord.program?courseRecord.program.name:'' }}</el-form-item>
-              <el-form-item label="授课老师：">{{ courseRecord.teacher.name }}</el-form-item>
+              <el-form-item label="授课老师：">{{ courseRecord.teacher?courseRecord.teacher.name:'' }}</el-form-item>
               <el-form-item label="授课班级分组：">{{ (courseRecord.clasz?courseRecord.clasz.name:'')+' '+(courseRecord.claszGroup?courseRecord.claszGroup.name:'') }}</el-form-item>
               <el-form-item label="上课人数：">{{ courseRecord.studentList?courseRecord.studentList.length:'- -' }}</el-form-item>
               <el-form-item label="距离下课时间：">{{ timeCount.timeValue }}</el-form-item>

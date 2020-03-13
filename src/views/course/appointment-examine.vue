@@ -85,7 +85,7 @@
       :modal="modal"
       width="80%">
       <div class="flex center">
-        <courseList :read-only="true" :dt="modal.dt"/>
+        <courseList mode="readOnly" :dt="modal.dt"/>
       </div>
     </kit-dialog-simple>
   </div>

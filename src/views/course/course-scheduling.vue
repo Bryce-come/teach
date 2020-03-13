@@ -1,7 +1,7 @@
 <template>
   <div v-loading='loading'>
     <div class="flex center">
-      <course-list></course-list>
+      <course-list/>
     </div>
   </div>
 </template>

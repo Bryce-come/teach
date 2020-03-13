@@ -10,7 +10,7 @@
         <span>个人预约</span>
       </div>
       <el-date-picker v-model="oneDay" type="date" placeholder="选择日期"/>
-      <el-button style="margin-left: 10px" type="primary" @click="list()">跳转日期</el-button>
+      <el-button style="margin-left: 10px" type="success" @click="list()">跳转日期</el-button>
       <el-button style="margin-left: 10px" type="primary" icon="el-icon-arrow-left" @click="()=>{clearDiv();goLastWeek()}">
         上一周
       </el-button>
@@ -34,19 +34,25 @@
             <div
               :key="ii" :id="i+'-'+ii"
               v-if="!itemb"
-              @click='showLesson(null,i,ii)'
+              @click='()=> {
+                if(mode===""){
+                  showLesson(null,i,ii);
+                } else if(mode==="timeRange"){
+                  choose(i, ii, null);
+                }
+              }'
               @mousemove="showColor($event)"
               @mouseleave="noShowColor($event)"
               class="course-list-content"
               :style="{'background-color': 'white',
-                'cursor': readOnly?'default':'pointer'
-                }">
+                'cursor': mode==='readOnly'?'default':'pointer'
+              }">
             </div>
             <el-popover
               :key="ii"
               placement="top-start"
               width="50"
-              v-else-if="!readOnly">
+              v-else-if="mode===''">
               <div style="color:#67C23A;width:6rem;" @click="readLesson(itemb)">
                 <i class="el-icon-reading"/>
                 <span style="margin-left:5px;cursor: pointer;">查看</span>
@@ -71,7 +77,7 @@
                   'rgb(142, 208, 214)':(itemb.type===1?
                   'rgb(244,213,71)':(itemb.type===2?
                   'rgb(197,150,196)':'white'))):'white',
-                  'cursor': readOnly?'default':'pointer',
+                  'cursor': mode==='readOnly'?'default':'pointer',
                   'height': divHeight*itemb.extend.lessons.length+'px'
                 }">
                 <div style="line-height:26px" v-if="itemb.course">
@@ -89,12 +95,17 @@
               :key="ii"
               :id="i+'-'+ii"
               v-else
+              @click='()=> {
+                if(mode==="timeRange"){
+                  choose(i, ii, itemb);
+                }
+              }'
               class="course-list-content flex center column"
               :style="{'background-color': itemb !== ''? (itemb.type===0?
                   'rgb(142, 208, 214)':(itemb.type===1?
                   'rgb(244,213,71)':(itemb.type===2?
                   'rgb(197,150,196)':'white'))):'white',
-                  'cursor': readOnly?'default':'pointer',
+                  'cursor': mode==='readOnly'?'default':'pointer',
                   'height': divHeight*itemb.extend.lessons.length+'px'
                 }">
               <div style="line-height:26px" v-if="itemb.course">
@@ -197,7 +208,7 @@
       </div>
     </kit-dialog-simple>
     <kit-dialog-simple
-      v-if="!readOnly"
+      v-if="mode!=='readOnly'"
       :modal="showModal"
       :confirm="update"
       width="500px">
@@ -324,9 +335,9 @@ import {createComponent, onMounted, ref, watch} from '@vue/composition-api';
 import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
-import {deepClone, isNil} from 'web-toolkit/src/utils';
+import {deepClone, isNil,} from 'web-toolkit/src/utils';
 import {storeUserInfo} from 'web-toolkit/src/case-main';
-import {getWeekDaysRange} from 'web-toolkit/src/utils/date';
+import {getWeekDaysRange, clearHMS} from 'web-toolkit/src/utils/date';
 import {CourseRecordList} from '@/dao/courseRecordDao';
 import {SettingGet} from '@/dao/settingDao';
 import {CourseList, ProgramList} from '@/dao/courseProgramDao';
@@ -338,14 +349,19 @@ import {CourseRecordAdd, CourseRecordDel, CourseRecordUpdate} from '@/dao/course
 export default createComponent({
   name: 'courseList',
   props: {
-    // 只读将不能修改
-    readOnly: {
-      type: Boolean,
-      default: false,
+    // readOnly, timeRange
+    mode:{
+      type: String,
+      default: ''
     },
     dt: {
       type: Date,
       default: () => null,
+    },
+    // timeRange时返回的时间
+    range: {
+      type: Array,
+      default: ()=>[null,null],
     },
   },
   // props 父组件传过来的东西  ctx 相当于子组件的this（cts.$emit()）
@@ -374,6 +390,7 @@ export default createComponent({
     });
     // 课程内容框的高度
     const divHeight = ref<number>(45);
+    const divChoose = ref<any>();
     watch(() => props.dt, async () => {
       if (!props.dt) { return ; }
       oneDay.value = props.dt;
@@ -383,7 +400,6 @@ export default createComponent({
     function isStudent(): boolean {
       return (storeUserInfo.user as any).role.department.id === Department.Student;
     }
-
     // 查看标志a
     const readModel = ref<any>({
       visible: false,
@@ -395,7 +411,6 @@ export default createComponent({
       type: 'add',
     });
     const form = ref<ElForm | null>(null);
-
     // 查询函数
     async function list() {
       if (isNil(oneDay.value)) {
@@ -405,34 +420,61 @@ export default createComponent({
         await setWeekSection(new Date(oneDay.value));
       }
     }
-
     function setTeacherValue() {
       showModal.value.oneLesson.teacher = (courseList.value.filter((item1: any) => {
         return item1 === showModal.value.oneLesson.course;
       }))[0].teacher;
     }
-
     const lessons = ref<any>();
     const originList = ref<any>({
       lessonsList: [],
     });
     const weeks = ref(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
-
     function digital2Chinese(num: any, identifier: any) {
       const character = ['一', '二', '三', '四', '五', '六'];
       return identifier === 'week' && num === 6 ? '日' : character[num];
     }
 
     function showColor(row: any) {
-      if (props.readOnly) { return ; }
+      if (props.mode==='readOnly') { return ; }
       const result = row.target;
       result.style.backgroundColor = 'Gainsboro';
     }
-
     function noShowColor(row: any) {
-      if (props.readOnly) { return ; }
+      if (props.mode==='readOnly') { return ; }
       const result = row.target;
       result.style.backgroundColor = 'white';
+    }
+    function choose(x:any, y:any, item:any) {
+      const id=x+'-'+y;
+      if(divChoose.value){
+        const div = document.getElementById(divChoose.value) as HTMLElement;
+        div.style.borderWidth='1px';
+        div.style.borderColor='black';
+      }
+      const div = document.getElementById(id) as HTMLElement;
+      div.style.borderWidth='3px';
+      div.style.borderColor='#ff0200';
+      divChoose.value = id;
+      if(item){
+        props.range.splice(0,1,new Date(item.startDt))
+        props.range.splice(1,1,new Date(item.endDt))
+      }else{
+        const dt = weekSection.value.weekWithYeat[x];
+        const dt1 = new Date();
+        const dt2 = new Date();
+        dt1.setTime(dt.getTime());
+        dt2.setTime(dt.getTime());
+        const t1 = new Date(lessonMap.value['lesson'+(y+1)][0]);
+        const t2 = new Date(lessonMap.value['lesson'+(y+1)][1]);
+        clearHMS(dt1); clearHMS(dt2);
+        dt1.setHours(t1.getHours());
+        dt2.setHours(t2.getHours());
+        dt1.setMinutes(t1.getMinutes());
+        dt2.setMinutes(t2.getMinutes());
+        props.range.splice(0,1,dt1);
+        props.range.splice(1,1,dt2);
+      }
     }
 
     const readLesson = async (lessonItem: any) => {
@@ -440,7 +482,7 @@ export default createComponent({
       readModel.value.oneLesson = lessonItem;
     };
     const showLesson = async (data?: any, rowa?: any, rowb?: any) => {
-      if (props.readOnly) { return ; }
+      if (props.mode==='readOnly') { return ; }
       // 无新增权限
       if (!data && (storeUserInfo.user as any).role.privileges.indexOf(PRIVILEGE.courseRecordMng) < 0) { return; }
       if (form.value) {
@@ -474,7 +516,8 @@ export default createComponent({
             id: null,
           };
         }
-      } else {
+      }
+      else {
         // data = initForm();
         data = {
           course: {
@@ -512,7 +555,7 @@ export default createComponent({
     };
 
     async function update() {
-      if (props.readOnly) { return ; }
+      if (props.mode==='readOnly') { return ; }
       const valid = await (form.value as ElForm).validate();
       if (valid) {
         // 时间格式转化
@@ -566,7 +609,7 @@ export default createComponent({
       return dt.getTime();
     }
     const deleteLesson = async (lessonItem: any) => {
-      if (props.readOnly) { return ; }
+      if (props.mode==='readOnly') { return ; }
       const result = {id: lessonItem.id};
       await CourseRecordDel(result);
       clearDiv();
@@ -695,7 +738,7 @@ export default createComponent({
       color,
       tableX,
       tableY,
-      courseAppointTypeList, divHeight,
+      courseAppointTypeList, divHeight, choose
     };
   },
 });

@@ -3,14 +3,14 @@
     <div class="block-card">
       <div class="title">查询条件</div>
       <div class="content flex align-center">
-        <div class="flex column" style="margin-right: 2rem">
+        <div class="flex column" style="margin-right: 3rem">
           <div><el-radio v-model="condition" label="1" border>按课时查询</el-radio></div>
           <div style="margin-top: 10px"><el-radio v-model="condition" label="2" border>按日期查询</el-radio></div>
         </div>
-        <div v-if="condition==='1'">
-          <courseList :read-only="true" />
+        <div v-if="condition==='1'" class="flex center" style="width: 100%">
+          <courseList mode="timeRange" :range="courseTimeRange"/>
         </div>
-        <div v-else>
+        <div v-else class="flex center" style="width: 100%">
           <lkt-date-picker type="daterange" v-model="range"/>
           <el-button type="primary" style="margin-left: 20px" @click="query">开始查询</el-button>
         </div>
@@ -30,7 +30,7 @@
         </el-form>
       </div>
       <div class="content" v-else style="padding-left: 2rem">
-        <el-collapse accordion>
+        <el-collapse accordion v-model="collapseVal">
           <el-collapse-item
             v-for="record in courseRecordList"
             :key="record.id"
@@ -43,6 +43,7 @@
                 <el-form-item label="授课老师：">{{ record.teacher?record.teacher.name:'' }}</el-form-item>
                 <el-form-item label="授课班级分组：">{{ (record.clasz?record.clasz.name:'')+' '+(record.claszGroup?record.claszGroup.name:'') }}</el-form-item>
                 <el-form-item label="上课人数：">{{ record.studentList?record.studentList.length:'- -' }}</el-form-item>
+                <el-form-item label="课程时间：">{{ record.startDt+' - '+record.endDt }}</el-form-item>
               </div>
             </el-form>
           </el-collapse-item>
@@ -86,7 +87,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, onMounted, createComponent } from '@vue/composition-api';
+import { ref, onMounted, createComponent,watch } from '@vue/composition-api';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import courseList from '../../components/courseList.vue';
 import { Message } from 'element-ui';
@@ -95,7 +96,7 @@ import {ImageLink} from '@/dao/commonDao';
 import {StationList} from '@/dao/stationDao';
 import {AnalysisDeviceTimes} from '@/dao/analysisDao';
 import {statusMap} from '@/utils/device-utils';
-import {CourseRecordList} from '@/dao/courseRecordDao';
+import {CourseRecordDetail, CourseRecordList} from '@/dao/courseRecordDao';
 
 export default createComponent({
   components: { courseList },
@@ -108,21 +109,21 @@ export default createComponent({
     const times = ref<any>({});
     const courseRecord = ref<any>();
     const courseRecordList = ref<any>();
+    const courseTimeRange = ref<any>([null,null]);
+    const collapseVal = ref<any>();
 
+    watch(()=>courseTimeRange.value, ()=>{
+      // 点击课时后直接查询
+      if(courseTimeRange.value && courseTimeRange.value.length===2 && courseTimeRange.value[0]){
+        useLoading(loading, query)();
+      }
+    });
     async function query() {
       if (condition.value === '1') {
-        courseRecordList.value = null;
-        dt.value[0] = new Date(courseRecord.value.startDt);
-        dt.value[1] = new Date(courseRecord.value.endDt);
-        // 补充那次课中的stationBind
-        if (courseRecord.value.stationBind) {
-          for (const station of stationList.value) {
-            if (courseRecord.value.stationBind[station.id.toString()]) {
-              station.extend.students = courseRecord.value.stationBind[station.id.toString()];
-            }
-          }
-        }
-      } else {
+        dt.value[0] = courseTimeRange.value[0];
+        dt.value[1] = courseTimeRange.value[1];
+      }
+      else {
         if (range.value.length !== 2) {
           Message.error('请选择时间范围');
           return;
@@ -133,11 +134,14 @@ export default createComponent({
         dt.value[0].setHours(0); dt.value[0].setMinutes(0); dt.value[0].setSeconds(0); dt.value[0].setMilliseconds(0);
         dt.value[1].setHours(0); dt.value[1].setMinutes(0); dt.value[1].setSeconds(0); dt.value[1].setMilliseconds(0);
         dt.value[1] = new Date(dt.value[1].getTime() + 24 * 3600 * 1000);
-        // 获取courseRecord list
-        courseRecordList.value = await CourseRecordList({
-          start: dt.value[0].getTime(),
-          end: dt.value[1].getTime(),
-        });
+      }
+      // 获取courseRecord list
+      courseRecordList.value = await CourseRecordList({
+        start: dt.value[0].getTime(),
+        end: dt.value[1].getTime(),
+      });
+      if(courseRecordList.value && courseRecordList.value.length>0){
+        collapseVal.value = courseRecordList.value[0].id
       }
       const list = await AnalysisDeviceTimes({
         start: dt.value[0].getTime(),
@@ -179,7 +183,7 @@ export default createComponent({
       courseRecord, courseRecordList,
       query: useLoading(loading, query),
       handleCourseRecordTitle,
-      getTypeName,
+      getTypeName, courseTimeRange, collapseVal
     };
   },
 });
