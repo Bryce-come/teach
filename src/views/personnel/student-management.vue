@@ -121,9 +121,10 @@
     <kit-dialog-simple
       @submit.native.prevent
       :modal="upClazGropFlag"
-      :confirm="upClazGropdate">
+      :confirm="upClazGropdate"
+      width="500px">
       <div slot="title">{{upClazGropFlag.typeName}}</div>
-        <el-form v-if="upClazGropFlag.visible" ref="form1" :model="upClazGropFlag" label-width="120px" label-position="left" style="width: 580px;margin: 0 auto">
+        <el-form v-if="upClazGropFlag.visible" ref="form1" :model="upClazGropFlag" label-width="120px" label-position="left" style="width: 380px;margin: 0 auto">
           <el-form-item label="名称：" prop="upClazGropInfo" :rules="{ required: true, message: '请输入名称'}">
             <el-input v-model="upClazGropFlag.upClazGropInfo" clearable/>
           </el-form-item>
