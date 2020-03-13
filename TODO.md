@@ -8,7 +8,7 @@ student1, 123456
 -[x] 实时监控页：增加时间倒计时。
 -[x] 课程管理中，填写分数比的时候，需要核验是否100%。
 -[x] 报告模板管理：操作中的按钮并排放
--[ ] 所有的table expand中的el-form-item margin-bottom都改小点。
+-[x] 所有的table expand中的el-form-item margin-bottom都改小点。
 -[x] 学生管理中，缺少修改班级名。
 -[x] 学生管理中，新增班级名、修改班级名、新增小组名、修改小组名，都是类似的，用一个dialog，同时注意ref='form' 重复了，每个dialog在提交时都必须对form validate()，不用手动去判断是否有无填写。
 -[x] 学生管理中，变量初始化时不要用 ''，如addClazFlag.addClazInfo，要用null。其他页面也是如此。
