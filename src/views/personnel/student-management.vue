@@ -277,7 +277,7 @@ export default {
     // console.log(node);
   }
   function firstTab(node: any, row: any) {
-    if (cilckIng.value.str !== null || node.data.freez === false ) {
+    if (cilckIng.value.str !== null) {
       cilckIng.value.str.style.backgroundColor = 'transparent';
     }
     // else {
