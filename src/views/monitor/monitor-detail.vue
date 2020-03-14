@@ -151,13 +151,12 @@ export default {
       const seconds = Math.round(leave2 / 1000);
       return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
-    function connectPC(){
+    function connectPC() {
       const pcs = station.value.extend.PCs;
-      if(pcs && pcs.length>0){
+      if (pcs && pcs.length > 0) {
         pcIp.value = pcs[0].PCIP;
-      }
-      else{
-        Message.error("无PC配置");
+      } else {
+        Message.error('无PC配置');
       }
     }
     onMounted(useLoading(loading, async () => {
@@ -395,7 +394,7 @@ export default {
       isAbled, clearSelect, paramNameString, refreshTime, refreshTimeRatio,
       restartVideo, fullScreen,
       videoChannel, flag, statusMap,
-      pcIp, connectPC
+      pcIp, connectPC,
     };
   },
 };
