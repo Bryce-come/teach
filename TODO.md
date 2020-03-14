@@ -16,3 +16,5 @@ student1, 123456
 -[x] el-form-item 中的rules用于validate，是根据prop的值来校验的（在配置el-form的:model），这个都没注意
 -[x] 学生管理中，选择完班级或分组后，tree中那条背景色更改下，可以通过clasz.value或claszGroup.value来判断是否选中。同理，冻结也可以如此判断，修改底色。
 -[x] yarn lint 中的警告所示的内容修改。
+
+-[ ] 学生管理界面：刚进去时，想点击班级，但不能响应；只有点了分组后才能正常查询学生
