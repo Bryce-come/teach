@@ -36,7 +36,7 @@
             <div v-for="(item, i) in stationList" :key='i' style='width:30%; margin-left:10px;margin-top:10px;border:1px solid grey;border-radius:5px'>
                 <div class="flex align-center">
                   <div style="width: 60%; margin-left:10px;">{{item.name}}</div>
-                  <div v-if="courseRecordInClass.stationBind[item.id.toString()] && courseRecordInClass.stationBind[item.id.toString()].length !== 0 " class="flex end" style="width: 30%">
+                  <div v-if="courseRecordInClass.stationBind&&courseRecordInClass.stationBind[item.id.toString()] && courseRecordInClass.stationBind[item.id.toString()].length !== 0 " class="flex end" style="width: 30%">
                     <el-button type="text" @click="distribution(item.id)">重新分配</el-button>
                   </div>
                   <div v-else class="flex end" style="width: 30%">
@@ -48,8 +48,8 @@
                       <img :src="img(item.deviceList[0].deviceType.img)" alt="">
                   </div>
                   <div class="device-message" style="padding-left: 10px;width: 100px;">
-                    <div class="flex wrap">
-                      <el-tag 
+                    <div class="flex wrap" v-if="courseRecordInClass.stationBind">
+                      <el-tag
                       v-for="(sName, k) in courseRecordInClass.stationBind[item.id.toString()]" :key='k'
                       style="margin-right: 5px "
                       type="primary" size="small" effect="plain">
@@ -79,7 +79,7 @@
              <el-checkbox-group class="flex little-space"  v-model="checkList">
               <el-checkbox
                 style="min-width: 50%;font-weight: 700;padding: 5px 20px"
-                v-if=" courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
+                v-if="courseRecordInClass.extend.stationBind && courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
                 :label="param.id">
                 {{param.name}}
               </el-checkbox>
