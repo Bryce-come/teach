@@ -283,7 +283,7 @@
           label="上课班级：" prop="extend.clasz"
           :rules="showModal.oneLesson.type!==1&&showModal.oneLesson.type!==2? { required: true, message: '请选择班级'} : { required: false}"
           v-if="showModal.oneLesson.type!==2">
-          <el-select filterable v-model="showModal.oneLesson.extend.clasz">
+          <el-select filterable v-model="showModal.oneLesson.extend.clasz" @change="setGroupValue()">
             <el-option
               v-for="item of classList"
               :key="item.id"
@@ -296,7 +296,7 @@
           v-if="showModal.oneLesson.type!==2&&showModal.oneLesson.type!==0">
           <el-select filterable v-model="showModal.oneLesson.extend.claszGroup">
             <el-option
-              v-for="item of showModal.oneLesson.extend.clasz?(classList.filter(item1 => {return item1.id === showModal.oneLesson.extend.clasz}))[0].groups:[]"
+              v-for="item of showModal.oneLesson.extend.clasz?classList.filter(item1 => {return item1.id === showModal.oneLesson.extend.clasz})[0].groups:[]"
               :key="item.id"
               :label="item.name"
               :value="item.id"/>
@@ -552,7 +552,9 @@ export default createComponent({
       showModal.value.oneLesson = data;
       showModal.value.visible = true;
     };
-
+    function setGroupValue(row: any) {
+      showModal.value.oneLesson.extend.claszGroup = undefined;
+    }
     async function update() {
       if (props.mode === 'readOnly') { return ; }
       const valid = await (form.value as ElForm).validate();
@@ -565,11 +567,11 @@ export default createComponent({
         for (let i = showModal.value.oneLesson.startLesson; i <= showModal.value.oneLesson.endLesson; i++) {
           showModal.value.oneLesson.extend.lessons.push(i);
         }
-        if (showModal.value.oneLesson.clasz) {
-          showModal.value.oneLesson.extend.clasz = showModal.value.oneLesson.clasz.id;
+        if (showModal.value.oneLesson.extend.clasz) {
+          showModal.value.oneLesson.extend.clasz = showModal.value.oneLesson.extend.clasz;
         }
-        if (showModal.value.oneLesson.claszGroup) {
-          showModal.value.oneLesson.extend.claszGroup = showModal.value.oneLesson.claszGroup.id;
+        if (showModal.value.oneLesson.extend.clasz) {
+          showModal.value.oneLesson.extend.claszGroup = showModal.value.oneLesson.extend.claszGroup;
         }
         const params = {
           id: showModal.value.oneLesson.id,
@@ -731,7 +733,7 @@ export default createComponent({
       originList, clearDiv,
       goLastWeek: useLoading(loading, goLastWeek),
       goNextWeek: useLoading(loading, goNextWeek),
-      weekSection,
+      weekSection, setGroupValue,
       loading, courseList, programList, stationList,
       teacherList, otherStudentInClasz, classList,
       lessonMap, storeUserInfo, PRIVILEGE, isStudent,
