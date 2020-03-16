@@ -228,7 +228,7 @@
           <el-date-picker v-model="showModal.oneLesson.appointDate" type="date"/>
         </el-form-item>
         <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
-          <el-select v-model="showModal.oneLesson.startLesson" id='setStarta'>
+          <el-select v-model="showModal.oneLesson.startLesson" id='setStarta' @change='setEndtimeValue()'>
             <el-option id='setStart'
                        v-for="item in lessonMap.lessonNum"
                        :key="item"
@@ -552,7 +552,10 @@ export default createComponent({
       showModal.value.oneLesson = data;
       showModal.value.visible = true;
     };
-    function setGroupValue(row: any) {
+    function setEndtimeValue() {
+      showModal.value.oneLesson.endLesson = undefined;
+    }
+    function setGroupValue() {
       showModal.value.oneLesson.extend.claszGroup = undefined;
     }
     async function update() {
@@ -737,7 +740,7 @@ export default createComponent({
       loading, courseList, programList, stationList,
       teacherList, otherStudentInClasz, classList,
       lessonMap, storeUserInfo, PRIVILEGE, isStudent,
-      oneDay, courseCount,
+      oneDay, courseCount, setEndtimeValue,
       list: useLoading(loading, list),
       weeks, showColor, noShowColor,
       digital2Chinese, setTeacherValue,
