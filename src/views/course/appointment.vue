@@ -111,7 +111,8 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择指定教师：" prop="teacher">
+        <el-form-item label="选择指定教师：" prop="teacher" 
+        :rules="appointModal.appointInfo.type!==2 ? { required: true, message: '请选择教师'} : { required: false}">
           <el-select filterable v-model="appointModal.appointInfo.teacher" value-key="id">
             <el-option
               v-for="item of teacherList"
@@ -134,7 +135,7 @@
           <el-date-picker v-model="appointModal.appointInfo.appointDate" type="date"/>
         </el-form-item>
         <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
-          <el-select v-model="appointModal.appointInfo.startLesson">
+          <el-select v-model="appointModal.appointInfo.startLesson" @change='setEndtimeValue()'>
             <el-option
               v-for="item in lessonMap.lessonNum"
               :key="item"
@@ -153,7 +154,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择班级：" prop="extend.clasz" v-if="appointModal.appointInfo.type === 1">
-          <el-select filterable v-model="appointModal.appointInfo.extend.clasz">
+          <el-select filterable v-model="appointModal.appointInfo.extend.clasz" @change="setGroupValue()">
             <el-option
               v-for="item of classList"
               :key="item.id"
@@ -245,7 +246,12 @@ export default createComponent({
       appointModal.value.appointInfo = data;
       appointModal.value.visible = true;
     };
-
+    function setEndtimeValue() {
+      appointModal.value.appointInfo.endLesson = undefined;
+    }
+    function setGroupValue() {
+      appointModal.value.appointInfo.extend.claszGroup = undefined;
+    }
     async function appointUpdate() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
@@ -257,11 +263,11 @@ export default createComponent({
         for (let i = appointModal.value.appointInfo.startLesson; i <= appointModal.value.appointInfo.endLesson; i++) {
           appointModal.value.appointInfo.extend.lessons.push(i);
         }
-        if (appointModal.value.appointInfo.clasz) {
-          appointModal.value.appointInfo.extend.clasz = appointModal.value.appointInfo.clasz.id;
+        if (appointModal.value.appointInfo.extend.clasz) {
+          appointModal.value.appointInfo.extend.clasz = appointModal.value.appointInfo.extend.clasz;
         }
         if (appointModal.value.appointInfo.claszGroup) {
-          appointModal.value.appointInfo.extend.claszGroup = appointModal.value.appointInfo.claszGroup.id;
+          appointModal.value.appointInfo.extend.claszGroup = appointModal.value.appointInfo.extend.claszGroup;
         }
         const params = {
           id: appointModal.value.appointInfo.id,
@@ -339,7 +345,7 @@ export default createComponent({
     }));
     return {
       loading, courseButton, appointButton, showCourse, showAppoint,
-      appointRecordList, datetimeRange,
+      appointRecordList, datetimeRange, setEndtimeValue, setGroupValue,
       query: useLoading(loading, query),
       revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
       form, appointModal, showForm,
