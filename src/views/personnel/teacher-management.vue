@@ -27,7 +27,7 @@
       <div slot="title">录入授课教师信息</div>
       <el-form v-if="addModal.teacherInfo" ref="form" :model="addModal.teacherInfo" label-width="120px"
                label-position="left" style="width: 580px;margin: 0 auto">
-        <el-form-item label="登录用户名：" prop="username" :rules="[{ required: true, message: '请输入登录用户名'}, { pattern: /^[0-9a-zA-Z_]$/g, message: '限字母、数字、下划线'}]">
+        <el-form-item label="登录用户名：" prop="username" :rules="[{ required: true, message: '请输入登录用户名'}, { pattern: /^\w+$/g, message: '限字母、数字、下划线'}]">
           <el-input v-model="addModal.teacherInfo.username" clearable/>
         </el-form-item>
         <el-form-item label="姓名：" prop="name" :rules="{ required: true, message: '请输入姓名'}">
@@ -54,7 +54,7 @@
           <el-input v-model="addModal.teacherInfo.extend.address" clearable/>
         </el-form-item>
         <el-form-item label="联系电话：" prop="phone">
-          <el-input v-model="addModal.teacherInfo.phone" clearable/>
+          <el-input v-model="addModal.teacherInfo.phone" maxlength='11' clearable/>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
