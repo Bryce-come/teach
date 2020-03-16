@@ -117,12 +117,16 @@ export default {
         Message.success('删除成功');
     };
     const query = async () => {
-        deviceAlarmList.value = await AlarmDeviceHistory({
-          deviceTypeJson: deviceType.value ? JSON.stringify(deviceType.value) : null,
-          devicesJson: deviceName.value ? JSON.stringify(deviceName.value) : null,
-          start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
-          end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
-        });
+        if (date.value === null) {
+          Message.warning('请选择时间范围！');
+        } else {
+          deviceAlarmList.value = await AlarmDeviceHistory({
+            deviceTypeJson: deviceType.value ? JSON.stringify(deviceType.value) : null,
+            devicesJson: deviceName.value ? JSON.stringify(deviceName.value) : null,
+            start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
+            end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
+          });
+        }
     };
     const snapshot = async (row: any) => {
       const dt = new Date(row.createDt).getTime();
