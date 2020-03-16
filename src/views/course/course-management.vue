@@ -58,10 +58,10 @@
                 </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, message: '请输入操作评分占比'}">
+          <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, validator:validator}">
             <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[0]"/>
           </el-form-item>
-          <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, message: '请输入报告评分占比'}">
+          <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, validator:validator}">
             <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[1]"/>
           </el-form-item>
         </el-form>
@@ -183,10 +183,18 @@ export default {
       });
       experimentModal.value.visible = false;
     }
+    function validator(rule: any, value: string, callback: Function) {
+    if (value && (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] !== 100)) {
+      callback(new Error('分数比相加需为100'));
+    } else if (!value) {
+      callback(new Error('请输入占比'));
+    } else {
+      callback();
+    }
+  }
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
-        if (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] === 100) {
           if (courseModal.value.type === 'add') {
             await CourseAdd({
               // *code, *name, *teacherId, extendJson, programJson
@@ -212,9 +220,6 @@ export default {
           courseList.value = await CourseList({
             containPrograms: true,
           });
-        } else {
-          Message.error('分数比相加需为100');
-        }
       }
     }
     onMounted(useLoading(loading, async () => {
@@ -230,7 +235,7 @@ export default {
         courseModal, showCourseForm, experimentList,
         courseUpdate: useLoading(loading, courseUpdate),
         experimentModal, showExperimentForm, expOfCourseList,
-        keywords2, filtered2, courseID,
+        keywords2, filtered2, courseID, validator,
         experimentUpdate: useLoading(loading, experimentUpdate),
         experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
     };
