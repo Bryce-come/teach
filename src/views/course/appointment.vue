@@ -112,7 +112,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择指定教师：" prop="teacher" 
-        :rules="appointModal.appointInfo.type!==2 ? { required: true, message: '请选择教师'} : { required: false}">
+        :rules="{ required: true, message: '请选择教师'}">
           <el-select filterable v-model="appointModal.appointInfo.teacher" value-key="id">
             <el-option
               v-for="item of teacherList"

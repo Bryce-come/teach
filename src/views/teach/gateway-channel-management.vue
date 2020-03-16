@@ -54,20 +54,28 @@ export default {
       }
     }
     async function closeSomething() {
-      const idList = JSON.stringify(status.value.rowIDList);
-      const result = {
-        stationJson: idList,
-        status: false,
-      };
-      await CNCLinkSet(result);
+      if (status.value.rowIDLis.length !== 0) {
+        const idList = JSON.stringify(status.value.rowIDList);
+        const result = {
+          stationJson: idList,
+          status: false,
+        };
+        await CNCLinkSet(result);
+      } else {
+        Message.error('请选择操作台');
+      }
     }
     async function openSomething() {
-      const idList = JSON.stringify(status.value.rowIDList);
-      const result = {
-        stationJson: idList,
-        status: true,
-      };
-      await CNCLinkSet(result);
+      if (status.value.rowIDList.length !== 0) {
+        const idList = JSON.stringify(status.value.rowIDList);
+        const result = {
+          stationJson: idList,
+          status: true,
+        };
+        await CNCLinkSet(result);
+      } else {
+        Message.error('请选择操作台');
+      }
     }
     async function getStatusList() {
       const result = await CNCLinkStatus();
