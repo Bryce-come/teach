@@ -247,7 +247,10 @@ export default createComponent({
       appointModal.value.visible = true;
     };
     function setEndtimeValue() {
-      appointModal.value.appointInfo.endLesson = undefined;
+      // appointModal.value.appointInfo.endLesson = appointModal.value.appointInfo.startLesson;
+    }
+    function setEndSelfValue() {
+      // appointModal.value.appointInfo.endLesson = appointModal.value.appointInfo.endLesson;
     }
     function setGroupValue() {
       appointModal.value.appointInfo.extend.claszGroup = undefined;
@@ -345,7 +348,7 @@ export default createComponent({
     }));
     return {
       loading, courseButton, appointButton, showCourse, showAppoint,
-      appointRecordList, datetimeRange, setEndtimeValue, setGroupValue,
+      appointRecordList, datetimeRange, setEndtimeValue, setGroupValue, setEndSelfValue,
       query: useLoading(loading, query),
       revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
       form, appointModal, showForm,
