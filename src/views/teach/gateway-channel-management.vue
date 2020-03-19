@@ -15,28 +15,27 @@
       <el-table-column label="设备型号" prop="deviceList[0].type"/>
       <el-table-column label="设备编号" prop="deviceList[0].id"/>
       <el-table-column label="LKT-MAN编号" prop="collector.id"/>
-      <el-table-column label="网管通道"> 
+      <el-table-column label="网管通道">
         <template slot-scope="{ row }">
-            <el-switch 
+          <el-switch
             :disabled='row.disabledMa'
             active-color="#13ce66"
             inactive-color="#ff4949"
             v-model="row.extend.linkStatus"
             @change="toggleStatus(row)"
-            ></el-switch> 
+          />
         </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted } from '@vue/composition-api';
-import {ElForm} from 'element-ui/types/form';
-import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
-import { Message } from 'element-ui';
-import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { CNCLinkStatus, CNCLinkSet } from '../../dao/inClassDao';
-export default {
+  import {onMounted, ref} from '@vue/composition-api';
+  import {useLoading} from 'web-toolkit/src/service';
+  import {Message} from 'element-ui';
+  import {CNCLinkSet, CNCLinkStatus} from '../../dao/inClassDao';
+
+  export default {
   setup() {
     const loading = ref(false);
     const list = ref<any>({
@@ -78,8 +77,7 @@ export default {
       }
     }
     async function getStatusList() {
-      const result = await CNCLinkStatus();
-      list.value = result;
+      list.value = await CNCLinkStatus();
       status.value.statusList = [];
       status.value.disabledList = [];
       for (let i = 0; i < list.value.length; i++) {
@@ -104,7 +102,7 @@ export default {
           status: row.extend.linkStatus,
           throwable: false,
         };
-      CNCLinkSet(result);
+      await CNCLinkSet(result);
       await getStatusList();
     }
     const query = async () => {
