@@ -99,11 +99,13 @@
       const id = JSON.stringify(status.value.rowIDList);
       const result = {
           stationJson: id,
-          status: row.extend.linkStatus,
-          throwable: false,
+          status: row.extend.linkStatus
         };
-      await CNCLinkSet(result);
-      await getStatusList();
+      try{
+        await CNCLinkSet(result);
+      }finally {
+        await getStatusList();
+      }
     }
     const query = async () => {
       const result = await CNCLinkStatus();
