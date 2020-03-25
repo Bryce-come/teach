@@ -133,6 +133,10 @@ export default {
       if (m.terms && m.terms.length === 2) {
         m.termsDt = [new Date(m.terms[0]), new Date(m.terms[1])];
       }
+      for (let i = 1; i <= m.lessonNum; i++) {
+        m['lesson' + i][0] = new Date(m['lesson' + i][0]);
+        m['lesson' + i][1] = new Date(m['lesson' + i][1]);
+      }
       modal.value = m;
     }
     // 直接传要修改的参数
