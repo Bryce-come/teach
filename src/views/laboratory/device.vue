@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading">
-    <el-form style="display:flex;justify-content:flex-start;flex-wrap:wrap">
+    <el-form class="flex wrap eform" style="margin-top: 10px">
       <el-form-item label="设备型号:" label-width="80px">
         <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="deviceTypes" multiple :clearable="true" style="width:200px" placeholder="请选择设备型号"/>
       </el-form-item>
@@ -17,7 +17,7 @@
       :data="deviceList"
       style="width: 100%">
       <el-table-column type="expand">
-        <div slot-scope="props" class="flex start">
+        <div slot-scope="props" class="flex start eform">
           <el-form label-width="100px">
             <el-form-item label="设备购入价格:">{{props.row.extend.price}}</el-form-item>
             <el-form-item label="厂商联系人员:">{{props.row.extend.producerContact}}</el-form-item>
@@ -40,6 +40,7 @@
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
+      id="device"
       :modal="modal"
       :confirm="update"
       width="600px">
@@ -52,7 +53,7 @@
           <el-input v-model="modal.deviceInfo.name" />
         </el-form-item>
         <el-form-item label="设备型号：" prop="deviceType.id" :rules="{ required: true, message: '请选择设备型号'}">
-          <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="modal.deviceInfo.deviceType.id" placeholder="请选择设备型号" :disabled="modal.deviceInfo.deviceType.id"/>
+          <lkt-select :list="deviceTypeList" value-key="name" option-value-key="id" v-model="modal.deviceInfo.deviceType.id" placeholder="请选择设备型号" :clearable="false"/>
         </el-form-item>
         <el-form-item label="购入日期：" prop="extend.buyDt" :rules="{ required: true, message: '请选择购入日期'}">
           <el-date-picker v-model="modal.deviceInfo.extend.buyDt" type="date"/>
@@ -185,4 +186,9 @@ function initForm() {
 }
 </script>
 <style scoped lang="scss">
+  .eform{
+    .el-form-item{
+      margin-bottom: 10px;
+    }
+  }
 </style>

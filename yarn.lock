@@ -8657,7 +8657,7 @@ wcwidth@^1.0.1:
 
 "web-toolkit@git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git":
   version "0.1.0"
-  resolved "git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git#a60a672600dff4b23fe04c2ec3a1796825f109cd"
+  resolved "git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git#1d05f31baa183063a03731238cb9281c65e4d2e6"
   dependencies:
     "@vue/composition-api" "^0.3.2"
     ali-oss "^6.2.1"

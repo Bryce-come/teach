@@ -1,10 +1,11 @@
 <template>
-  <div  v-loading="loading">
+  <div v-loading="loading">
     <div style="width:100%;margin:20px auto">
       <div class="flex align-center" style="margin: 5px 0">
         <div class="flex align-center">
           <span>预约类型：</span>
-          <el-select v-model="appointType" multiple collapse-tags :clearable="false" placeholder="请选择预约类型" style="width:185px">
+          <el-select v-model="appointType" multiple collapse-tags :clearable="false" placeholder="请选择预约类型"
+                     style="width:185px">
             <el-option
               v-for="item of appointTypeList"
               :key="item.id"
@@ -14,7 +15,8 @@
         </div>
         <div class="flex align-center" style="margin-left:10px">
           <span>预约结果：</span>
-          <el-select v-model="appointResult" multiple collapse-tags :clearable="false" placeholder="请选择预约结果" style="width:185px">
+          <el-select v-model="appointResult" multiple collapse-tags :clearable="false" placeholder="请选择预约结果"
+                     style="width:185px">
             <el-option
               v-for="item of appointResultList"
               :key="item.id"
@@ -40,7 +42,9 @@
               <el-form-item label="预约课程：">{{props.row.course ? props.row.course.name : ''}}</el-form-item>
               <el-form-item label="预约实验：">{{props.row.program ? props.row.program.name : ''}}</el-form-item>
               <el-form-item label="指定教师：">{{props.row.teacher ? props.row.teacher.name : ''}}</el-form-item>
-              <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?  props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}</el-form-item>
+              <el-form-item label="参与人：">{{props.row.students.length > 0 ? props.row.students : props.row.clasz?
+                props.row.clasz.name + '-' + props.row.claszGroup.name : '无'}}
+              </el-form-item>
               <el-form-item label="处理人：">{{props.row.operator ? props.row.operator.name : ''}}</el-form-item>
               <el-form-item label="处理时间：">{{props.row.handleDt ? props.row.handleDt : ''}}</el-form-item>
             </el-form>
@@ -71,8 +75,10 @@
           </div>
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" min-width="150">
-          <div class="flex center little-space wrap" slot-scope="{ row }" >
-            <el-button type="warning" size="mini" @click="()=>{ modal.dt = new Date(row.startDt);modal.visible = true;}">对比课表</el-button>
+          <div class="flex center little-space wrap" slot-scope="{ row }">
+            <el-button type="warning" size="mini"
+                       @click="()=>{ modal.dt = new Date(row.startDt);modal.visible = true;}">对比课表
+            </el-button>
             <el-button type="primary" size="mini" :disabled="row.result!==0" @click="agreeAppoint(row)">同意</el-button>
             <el-button type="danger" size="mini" :disabled="row.result!==0" @click="disagreeAppoint(row)">拒绝</el-button>
           </div>
@@ -91,72 +97,73 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted, createComponent } from '@vue/composition-api';
-import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
-import { Message } from 'element-ui';
-import courseList from '../../components/courseList.vue';
-import {AppointList, AppointOperate} from '@/dao/appointRecordDao';
-export default createComponent({
-  components: { courseList },
-  setup() {
-    const loading = ref(false);
-    const appointRecords = ref<any>();
-    const appointTypeList = ref<any>([
-      {id: 1, name: '授课预约'},
-      {id: 2, name: '个人预约'},
-    ]);
-    const appointType = ref<any>();
-    const appointResultList = ref<any>([
-      {id: 0, name: '未审核'},
-      {id: 1, name: '已同意'},
-      {id: 2, name: '已拒绝'},
-      {id: 3, name: '申请撤销'},
-    ]);
-    const appointResult = ref<any>();
-    const appointDt = ref<any>(null);
-    const [keywords, flitered] = useSearch(appointRecords, {
-      includeProps: ['applicant.name', 'applicant.role'],
-    });
-    const modal = ref<any>({
-      visible: false,
-      dt: null,
-    });
-    const query = async () => {
-      appointRecords.value = await AppointList({
-        typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
-        resultJson: appointResult.value && appointResult.value.length > 0 ? JSON.stringify(appointResult.value) : null,
-        start: appointDt.value && appointDt.value[0] ? (appointDt.value[0] as Date).getTime() : null,
-        end: appointDt.value && appointDt.value[1] ? (appointDt.value[1] as Date).getTime() : null,
+  import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
+  import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
+  import {Message} from 'element-ui';
+  import courseList from '../../components/courseList.vue';
+  import {AppointList, AppointOperate} from '@/dao/appointRecordDao';
+
+  export default createComponent({
+    components: {courseList},
+    setup() {
+      const loading = ref(false);
+      const appointRecords = ref<any>();
+      const appointTypeList = ref<any>([
+        {id: 1, name: '授课预约'},
+        {id: 2, name: '个人预约'},
+      ]);
+      const appointType = ref<any>();
+      const appointResultList = ref<any>([
+        {id: 0, name: '未审核'},
+        {id: 1, name: '已同意'},
+        {id: 2, name: '已拒绝'},
+        {id: 3, name: '申请撤销'},
+      ]);
+      const appointResult = ref<any>();
+      const appointDt = ref<any>(null);
+      const [keywords, flitered] = useSearch(appointRecords, {
+        includeProps: ['applicant.name', 'applicant.role'],
       });
-    };
-    const agreeAppoint = async (row: any) => {
-      await AppointOperate({
-        id: row.id,
-        result: 1,
+      const modal = ref<any>({
+        visible: false,
+        dt: null,
       });
-      Message.success('已同意申请');
-      await query();
-    };
-    const disagreeAppoint = async (row: any) => {
-      await AppointOperate({
-        id: row.id,
-        result: 2,
-      });
-      Message.success('已拒绝申请');
-      await query();
-    };
-    onMounted(useLoading(loading, async () => {
-      await query();
-    }));
-    return{
-    loading, appointRecords, query, modal,
-    agreeAppoint,
-    disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
-    appointTypeList, appointType, appointResultList, appointResult, appointDt,
-    keywords, flitered,
-    };
-  },
-});
+      const query = async () => {
+        appointRecords.value = await AppointList({
+          typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
+          resultJson: appointResult.value && appointResult.value.length > 0 ? JSON.stringify(appointResult.value) : null,
+          start: appointDt.value && appointDt.value[0] ? (appointDt.value[0] as Date).getTime() : null,
+          end: appointDt.value && appointDt.value[1] ? (appointDt.value[1] as Date).getTime() : null,
+        });
+      };
+      const agreeAppoint = async (row: any) => {
+        await AppointOperate({
+          id: row.id,
+          result: 1,
+        });
+        Message.success('已同意申请');
+        await query();
+      };
+      const disagreeAppoint = async (row: any) => {
+        await AppointOperate({
+          id: row.id,
+          result: 2,
+        });
+        Message.success('已拒绝申请');
+        await query();
+      };
+      onMounted(useLoading(loading, async () => {
+        await query();
+      }));
+      return {
+        loading, appointRecords, query, modal,
+        agreeAppoint,
+        disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
+        appointTypeList, appointType, appointResultList, appointResult, appointDt,
+        keywords, flitered,
+      };
+    },
+  });
 </script>
 <style scoped lang="scss">
 

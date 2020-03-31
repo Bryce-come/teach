@@ -3,26 +3,26 @@
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap">
       <div class="flex start little-space wrap">
         <el-radio-group v-model="tab" @change="changeTab">
-          <el-radio-button label="所有实验"></el-radio-button>
-          <el-radio-button label="课内实验"></el-radio-button>
-          <el-radio-button label="开放实验"></el-radio-button>
+          <el-radio-button label="所有实验"/>
+          <el-radio-button label="课内实验"/>
+          <el-radio-button label="开放实验"/>
         </el-radio-group>
         <el-button type="success" @click="showForm()">添加实验</el-button>
       </div>
-      <el-input v-model="keywords" placeholder="输入搜索：实验名称" style="margin-top:5px;width:350px"></el-input>
+      <el-input v-model="keywords" placeholder="输入搜索：实验名称" style="margin-top:5px;width:350px"/>
     </div>
     <lkt-table
       :data="filtered"
       style="width:100%">
-      <el-table-column label="实验名称" prop="name"/>      
-      <el-table-column label="实验类型" prop="label"/>    
+      <el-table-column label="实验名称" prop="name"/>
+      <el-table-column label="实验类型" prop="label"/>
       <el-table-column label="实验目的" prop="purpose"/>
       <el-table-column label="关联操作台" width="250px">
-        <div class="flex wrap" slot-scope="{row}" >
-           <div v-for="(item,i) in row.stationList" :key="i" style="padding: 0">
-             {{item.name + '，'}}
-           </div>
-         </div>
+        <div class="flex wrap" slot-scope="{row}">
+          <div v-for="(item,i) in row.stationList" :key="i" style="padding: 0">
+            {{item.name + '，'}}
+          </div>
+        </div>
       </el-table-column>
       <!-- <el-table-column label="实验设备"/> -->
       <el-table-column label="附件" prop="attachment" width="250px">
@@ -42,12 +42,15 @@
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
+      id="experiment-update"
       :modal="modal"
       :confirm="update">
       <div slot="title">{{modal.experimentInfo && modal.experimentInfo.id ? '修改' : '录入'}}实验信息</div>
-      <el-form v-if="modal.experimentInfo" ref="form" :model="modal.experimentInfo" label-width="120px" label-position="left" style="margin: 0 10px">
+      <el-form
+        v-if="modal.experimentInfo" ref="form" :model="modal.experimentInfo" label-width="120px"
+        label-position="left" style="margin: 0 10px">
         <el-form-item label="实验名称：" prop="name" :rules="{ required: true, message: '请输入实验名称'}">
-          <el-input v-model="modal.experimentInfo.name"></el-input>
+          <el-input v-model="modal.experimentInfo.name"/>
         </el-form-item>
         <el-form-item label="实验类型：" prop="label" :rules="{ required: true, message: '请选择实验类型'}">
           <el-select v-model="modal.experimentInfo.label">
@@ -55,23 +58,23 @@
               v-for="item of expTypeList"
               :key="item.id"
               :label="item.name"
-              :value="item.name"></el-option>
-          </el-select>  
+              :value="item.name"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="项目编号：" prop="code" :rules="{ required: true, message: '请输入实验项目编号'}">
-          <el-input v-model="modal.experimentInfo.code"></el-input>
+          <el-input v-model="modal.experimentInfo.code"/>
         </el-form-item>
         <el-form-item label="实验目的：" prop="purpose">
-          <el-input type="textarea" v-model="modal.experimentInfo.purpose"></el-input>
+          <el-input type="textarea" v-model="modal.experimentInfo.purpose"/>
         </el-form-item>
         <el-form-item label="实验原理：" prop="principle">
-          <el-input type="textarea" v-model="modal.experimentInfo.principle"></el-input>
+          <el-input type="textarea" v-model="modal.experimentInfo.principle"/>
         </el-form-item>
         <el-form-item label="实验步骤：" prop="steps">
-          <el-input type="textarea" v-model="modal.experimentInfo.steps"></el-input>
+          <el-input type="textarea" v-model="modal.experimentInfo.steps"/>
         </el-form-item>
         <el-form-item label="实验结果：" prop="results">
-          <el-input type="textarea" v-model="modal.experimentInfo.results"></el-input>
+          <el-input type="textarea" v-model="modal.experimentInfo.results"/>
         </el-form-item>
         <el-form-item label="关联操作台：" prop="stations" :rules="{required: true, message: '请选择关联操作台'}">
           <el-select multiple v-model="modal.experimentInfo.stations">
@@ -79,7 +82,7 @@
               v-for="item of stationList"
               :key="item.id"
               :label="item.name"
-              :value="item.id"></el-option>
+              :value="item.id"/>
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="上传附件：" prop="attachment">
@@ -98,7 +101,9 @@
       :modal="detailModal"
       :confirm="detailUpdate">
       <div slot="title">查看详情</div>
-      <el-form v-if="detailModal.detailInfo" ref="form" :model="detailModal.detailInfo" label-width="120px" label-position="left" style="margin: 0 10px">
+      <el-form
+        v-if="detailModal.detailInfo" ref="form" :model="detailModal.detailInfo" label-width="120px"
+        label-position="left" style="margin: 0 10px">
         <el-form-item label="实验名称：">
           <div>{{detailModal.detailInfo.name}}</div>
         </el-form-item>
@@ -123,22 +128,25 @@
           </div>
         </el-form-item>
         <el-form-item label="附件：">
-          <el-link type="primary" v-for="(item,i) in detailModal.detailInfo.attachment" :key="i" @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}</el-link>
+          <el-link
+            type="primary" v-for="(item,i) in detailModal.detailInfo.attachment" :key="i"
+            @click="downFile(item)">{{item.split('/')[item.split('/').length-1] + '，'}}
+          </el-link>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="attachment-info"
       :modal="attachmentModal"
       :confirm="attachmentUpdate">
       <div slot="title">管理附件</div>
       <el-upload
-            :http-request="(option)=>upload(option)"
-            action=""
-            multiple
-            :file-list="fileList"
-            :show-file-list="false"
-            >
-            <el-button type="primary" icon="el-icon-upload2">点击上传附件</el-button>
+        :http-request="(option)=>upload(option)"
+        action=""
+        multiple
+        :file-list="fileList"
+        :show-file-list="false">
+        <el-button type="primary" icon="el-icon-upload2">点击上传附件</el-button>
       </el-upload>
       <el-table
         :data="attachmentList">
@@ -157,14 +165,22 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted } from '@vue/composition-api';
+import {ref, Ref, onMounted} from '@vue/composition-api';
 import {ElForm} from 'element-ui/types/form';
-import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
-import { Message } from 'element-ui';
+import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
+import {Message} from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {ProgramList, ProgramAdd, ProgramUpdate, ProgramDel, ProgramUpload, ProgramUploadDel} from '@/dao/courseProgramDao';
+import {
+  ProgramList,
+  ProgramAdd,
+  ProgramUpdate,
+  ProgramDel,
+  ProgramUpload,
+  ProgramUploadDel,
+} from '@/dao/courseProgramDao';
 import {StationList} from '@/dao/stationDao';
 import {DownLoadPrivate} from '@/dao/commonDao';
+
 export default {
   setup() {
     const loading = ref(false);
@@ -177,12 +193,13 @@ export default {
       includeProps: ['name'],
     });
     const tab = ref<'所有实验' | '课内实验' | '开放实验'>('所有实验');
+
     async function changeTab(tab: any) {
       if (tab === '所有实验') {
         await showAllExp();
       } else if (tab === '课内实验') {
         showInExp();
-      } else  {
+      } else {
         showOutExp();
       }
     }
@@ -218,6 +235,7 @@ export default {
       modal.value.experimentInfo = data;
       modal.value.visible = true;
     };
+
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
@@ -255,6 +273,7 @@ export default {
         await showAllExp();
       }
     }
+
     const detailModal = ref<any>({
       visible: false,
       detailInfo: null,
@@ -325,6 +344,7 @@ export default {
         return item.label === '开放实验';
       });
     };
+
     async function upload(option: any) {
       await ProgramUpload({
         id: expID.value,
@@ -344,6 +364,7 @@ export default {
       });
       attachmentList.value = turnObj;
     }
+
     async function downFile(item: any) {
       const files = {
         path: item,
@@ -351,12 +372,13 @@ export default {
       };
       await DownLoadPrivate(files.path, files.filename);
     }
+
     onMounted(useLoading(loading, async () => {
       // experimentList.value = await ProgramList();
       await showAllExp();
       stationList.value = await StationList(true);
     }));
-    return{
+    return {
       loading, experimentList, keywords, filtered, expTypeList, tab,
       changeTab: useLoading(loading, changeTab),
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
@@ -374,6 +396,7 @@ export default {
     };
   },
 };
+
 function initForm() {
   return {
     id: '', code: '', name: '', label: '', purpose: '', principle: '', steps: '', results: '', extend: {},

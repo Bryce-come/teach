@@ -28,6 +28,7 @@
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
+      id="user"
       :modal="modal"
       :confirm="update"
       width="40%">

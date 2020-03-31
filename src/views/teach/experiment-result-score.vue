@@ -5,25 +5,25 @@
       <el-form label-width="100px" style="margin-top:10px" :inline="true">
         <el-form-item label="课程名称:">
           <el-select v-model="searchInfo.courseId" @change="setProgramList(searchInfo.courseId)">
-              <el-option v-for="clas in courseList.courseAllList" :key="clas.id" :label="clas.name" :value="clas.id" />
+            <el-option v-for="clas in courseList.courseAllList" :key="clas.id" :label="clas.name" :value="clas.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="实验名称:">
           <el-select v-model="searchInfo.programId">
-              <el-option v-for="prog in courseList.programList" :key="prog.id" :label="prog.name" :value="prog.id" />
+            <el-option v-for="prog in courseList.programList" :key="prog.id" :label="prog.name" :value="prog.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="上课时间:">
-          <lkt-date-picker style="width:350px" type="daterange" v-model="searchInfo.inDt"></lkt-date-picker>
+          <lkt-date-picker style="width:350px" type="daterange" v-model="searchInfo.inDt"/>
         </el-form-item>
         <el-form-item label="上课班级:">
           <el-select v-model="searchInfo.claszId" @change="setGroupList(searchInfo.claszId)">
-              <el-option v-for="clas in claszList.claszAllList" :key="clas.id" :label="clas.name" :value="clas.id" />
+            <el-option v-for="clas in claszList.claszAllList" :key="clas.id" :label="clas.name" :value="clas.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="上课分组:">
           <el-select v-model="searchInfo.groupId">
-              <el-option v-for="clas in claszList.groupList" :key="clas.id" :label="clas.name" :value="clas.id" />
+            <el-option v-for="clas in claszList.groupList" :key="clas.id" :label="clas.name" :value="clas.id" />
           </el-select>
         </el-form-item>
         <el-form-item style="margin-left:20px">
@@ -39,7 +39,7 @@
           <el-button :type="hasScored?'primary':''" style="margin-left:5px" @click="showHasScored()">已评分</el-button>
           <el-button :type="noScored?'primary':''" style="margin-left:5px" @click="showNoScored()">未评分</el-button>
         </div>
-        <el-input class="search-bar"  v-model="keywords" placeholder="输入学生搜索" style="width:400px;margin:10px" clearable></el-input>
+        <el-input class="search-bar" v-model="keywords" placeholder="输入学生搜索" style="width:400px;margin:10px" clearable/>
       </div>
       <lkt-table
         :data="filtered"
@@ -73,6 +73,7 @@
       </lkt-table>
     </div>
     <kit-dialog-simple
+      id="result-score"
       :modal="scoreModal"
       :confirm="scoreUpdate"
       @submit.native.prevent
@@ -80,10 +81,10 @@
       <div slot="title">实验评分</div>
       <el-form v-if="scoreModal.scoreInfo" ref="form" :model="scoreModal.scoreInfo" label-width="100px" label-position="left" style="margin: 0 10px">
         <el-form-item label="操作评分:" prop="extend.score1">
-          <el-input v-model="scoreModal.scoreInfo.extend.score1" clearable></el-input>
+          <el-input v-model="scoreModal.scoreInfo.extend.score1" clearable/>
         </el-form-item>
         <el-form-item label="报告评分:" prop="extend.score2">
-          <el-input v-model="scoreModal.scoreInfo.extend.score2" clearable></el-input>
+          <el-input v-model="scoreModal.scoreInfo.extend.score2" clearable/>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -94,13 +95,13 @@ import { ref, Ref, onMounted } from '@vue/composition-api';
 import {ElForm} from 'element-ui/types/form';
 import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
 import { Message } from 'element-ui';
-import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import { ReportList, ReportTemplateList, ReportScore} from '../../dao/reportDao';
-import { DownLoadPrivate } from '../../dao/commonDao';
-import { CourseRecordList } from '../../dao/courseRecordDao';
-import { CourseList } from '../../dao/courseProgramDao';
-import { ProgramList } from '@/dao/courseProgramDao';
+import {deepClone} from 'web-toolkit/src/utils';
+import { ReportList, ReportScore} from '@/dao/reportDao';
+import { DownLoadPrivate } from '@/dao/commonDao';
+import { CourseList } from '@/dao/courseProgramDao';
 import { ClassList } from '@/dao/userDao';
+import { pushMsgErr } from 'web-toolkit/src/case-main';
+
 export default {
   setup() {
     const loading = ref(false);
@@ -143,10 +144,8 @@ export default {
     };
     async function scoreUpdate() {
       if (scoreModal.value.scoreInfo.extend.score1 === '' || scoreModal.value.scoreInfo.extend.score2 === '') {
-        scoreModal.value.visible = false;
-        Message.error('评分失败，请填写分数');
+        pushMsgErr('评分失败，请填写分数');
       } else {
-        scoreModal.value.visible = false;
         const result = {
           id: scoreModal.value.scoreInfo.id,
           score1: scoreModal.value.scoreInfo.extend.score1,
@@ -155,6 +154,7 @@ export default {
         await ReportScore(result);
         Message.success('评分成功');
         await getScorcedStatus();
+        scoreModal.value.visible = false;
       }
     }
     async function downFile(row: any) {
@@ -214,7 +214,7 @@ export default {
         const resultb = new Date(searchInfo.value.inDt[1]);
         searchInfo.value.start = Number(resulta) / 1000;
         searchInfo.value.end = Number(resultb) / 1000;
-      } else if (searchInfo.value.inDt === undefined) {
+      } else {
         searchInfo.value.start = null;
         searchInfo.value.end = null;
       }

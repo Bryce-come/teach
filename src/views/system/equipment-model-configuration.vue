@@ -28,6 +28,7 @@
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
+      id="device-type"
       :modal="modal"
       :confirm="update"
       width="700px">

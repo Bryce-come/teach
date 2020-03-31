@@ -77,6 +77,7 @@
       </lkt-table>
     </div>
     <kit-dialog-simple
+      id="appointment"
       width="450px"
       :modal="appointModal"
       :confirm="appointUpdate">
@@ -111,7 +112,7 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择指定教师：" prop="teacher" 
+        <el-form-item label="选择指定教师：" prop="teacher"
         :rules="{ required: true, message: '请选择教师'}">
           <el-select filterable v-model="appointModal.appointInfo.teacher" value-key="id">
             <el-option

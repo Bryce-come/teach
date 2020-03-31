@@ -208,6 +208,7 @@
       </div>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="course-list"
       v-if="mode!=='readOnly'"
       :modal="showModal"
       :confirm="update"
@@ -229,11 +230,12 @@
         </el-form-item>
         <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
           <el-select v-model="showModal.oneLesson.startLesson" id='setStarta' @change='setEndtimeValue()'>
-            <el-option id='setStart'
-                       v-for="item in lessonMap.lessonNum"
-                       :key="item"
-                       :label="'第' + item + '节课'"
-                       :value="item"/>
+            <el-option
+              id='setStart'
+              v-for="item in lessonMap.lessonNum"
+              :key="item"
+              :label="'第' + item + '节课'"
+              :value="item"/>
           </el-select>
         </el-form-item>
         <el-form-item label="选择结束课时：" prop="endLesson" :rules="{ required: true, message: '请选择结束课时'}">
@@ -602,7 +604,6 @@ export default createComponent({
         showModal.value.visible = false;
         // showModal.value = [new Date(Date.now() - 3 * 24 * 3600000), new Date()];
       }
-
     }
     function transformDate(template: Date, timestamp: number): number {
       const dt = new Date(timestamp);
@@ -685,15 +686,6 @@ export default createComponent({
         originList.value.lessonsList[5].lesson.push('');
         originList.value.lessonsList[6].lesson.push('');
       }
-      // for (let i = 0; i < courseCount.value.count.length; i++) {
-      //   originList.value.lessonsList[0].lesson.push('');
-      //   originList.value.lessonsList[1].lesson.push('');
-      //   originList.value.lessonsList[2].lesson.push('');
-      //   originList.value.lessonsList[3].lesson.push('');
-      //   originList.value.lessonsList[4].lesson.push('');
-      //   originList.value.lessonsList[5].lesson.push('');
-      //   originList.value.lessonsList[6].lesson.push('');
-      // }
       const result = getWeekDaysRange(row);
       for (let i = 0; i < result.length; i++) {
         weekSection.value.weekInFo[i] = result[i].getMonth() + 1 + '-' + result[i].getDate();

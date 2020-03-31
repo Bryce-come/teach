@@ -27,46 +27,48 @@
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
+      id="course"
       :modal="courseModal"
       :confirm="courseUpdate"
       width="700px">
-        <div slot="title">{{courseModal.courseInfo && courseModal.courseInfo.id ? '修改' : '录入'}}课程信息</div>
-        <el-form v-if="courseModal.courseInfo" ref="form" :model="courseModal.courseInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
-          <el-form-item label="课程代码：" prop="code" :rules="{ required: true, message: '请输入课程代码'}">
-            <el-input v-model="courseModal.courseInfo.code"/>
-          </el-form-item>
-          <el-form-item label="课程名称：" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
-            <el-input v-model="courseModal.courseInfo.name"/>
-          </el-form-item>
-          <el-form-item label="任课教师：" prop="teacher.id" :rules="{ required: true, message: '请选择任课教师'}">
-              <el-select v-model="courseModal.courseInfo.teacher.id">
-                <el-option
-                  v-for="item of teacherList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-          </el-form-item>
-          <el-form-item label="实验项目：" prop="program" :rules="{ required: true, message: '请选择实验项目'}">
-              <el-select v-model="courseModal.courseInfo.program" multiple>
-                <el-option
-                  v-for="item of experimentList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-          </el-form-item>
-          <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, validator:validator}">
-            <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[0]"/>
-          </el-form-item>
-          <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, validator:validator}">
-            <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[1]"/>
-          </el-form-item>
-        </el-form>
+      <div slot="title">{{courseModal.courseInfo && courseModal.courseInfo.id ? '修改' : '录入'}}课程信息</div>
+      <el-form v-if="courseModal.courseInfo" ref="form" :model="courseModal.courseInfo" label-width="130px" label-position="left" style="width: 580px;margin: 0 auto">
+        <el-form-item label="课程代码：" prop="code" :rules="{ required: true, message: '请输入课程代码'}">
+          <el-input v-model="courseModal.courseInfo.code"/>
+        </el-form-item>
+        <el-form-item label="课程名称：" prop="name" :rules="{ required: true, message: '请输入课程名称'}">
+          <el-input v-model="courseModal.courseInfo.name"/>
+        </el-form-item>
+        <el-form-item label="任课教师：" prop="teacher.id" :rules="{ required: true, message: '请选择任课教师'}">
+          <el-select v-model="courseModal.courseInfo.teacher.id">
+            <el-option
+              v-for="item of teacherList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="实验项目：" prop="program" :rules="{ required: true, message: '请选择实验项目'}">
+          <el-select v-model="courseModal.courseInfo.program" multiple>
+            <el-option
+              v-for="item of experimentList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, validator:validator}">
+          <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[0]"/>
+        </el-form-item>
+        <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, validator:validator}">
+          <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[1]"/>
+        </el-form-item>
+      </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="experiment"
       :modal="experimentModal"
       :confirm="experimentUpdate"
       width="1000px">
@@ -84,10 +86,10 @@
         <el-table-column label="实验类型" prop="label"/>
         <el-table-column label="附件" prop="attachment">
           <div slot-scope="{row}">
-          <div v-for="(item,i) in row.attachment" :key="i">
-            {{item.split('/')[item.split('/').length-1]}}
+            <div v-for="(item,i) in row.attachment" :key="i">
+              {{item.split('/')[item.split('/').length-1]}}
+            </div>
           </div>
-        </div>
         </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="{row}">
@@ -99,13 +101,14 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted } from '@vue/composition-api';
+import {ref, Ref, onMounted} from '@vue/composition-api';
 import {ElForm} from 'element-ui/types/form';
-import { useLoading, useConfirm, useSearch } from 'web-toolkit/src/service';
-import { Message } from 'element-ui';
+import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
+import {Message} from 'element-ui';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
-import {CourseList, CourseAdd, CourseUpdate, CourseDel, ProgramList, UnbindProgram } from '@/dao/courseProgramDao';
+import {CourseList, CourseAdd, CourseUpdate, CourseDel, ProgramList, UnbindProgram} from '@/dao/courseProgramDao';
 import {TeacherList} from '@/dao/userDao';
+
 export default {
   setup() {
     const loading = ref(false);
@@ -129,7 +132,7 @@ export default {
         containPrograms: true,
       });
     };
-    const form = ref<ElForm|null>(null);
+    const form = ref<ElForm | null>(null);
     const courseModal = ref<any>({
       visible: false,
       courseInfo: {name: '', teacher: {name: ''}, program: [], extend: {scoreRatio: []}},
@@ -140,7 +143,9 @@ export default {
       experimentInfo: null,
     });
     const showCourseForm = async (data?: any) => {
-      if (form.value) { (form.value as ElForm).clearValidate(); }
+      if (form.value) {
+        (form.value as ElForm).clearValidate();
+      }
       if (data) {
         data = deepClone(data);
         courseModal.value.type = 'update';
@@ -177,75 +182,80 @@ export default {
       });
       expOfCourseList.value = updateExpList[0].programList;
     };
+
     async function experimentUpdate() {
       courseList.value = await CourseList({
         containPrograms: true,
       });
       experimentModal.value.visible = false;
     }
+
     function validator(rule: any, value: string, callback: Function) {
-    if (value && (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] !== 100)) {
-      callback(new Error('分数比相加需为100'));
-    } else if (!value) {
-      callback(new Error('请输入占比'));
-    } else {
-      callback();
+      if (value && (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] !== 100)) {
+        callback(new Error('分数比相加需为100'));
+      } else if (!value) {
+        callback(new Error('请输入占比'));
+      } else {
+        callback();
+      }
     }
-  }
+
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
-          if (courseModal.value.type === 'add') {
-            await CourseAdd({
-              // *code, *name, *teacherId, extendJson, programJson
-              // id: courseModal.value.courseInfo.id,
-              code: courseModal.value.courseInfo.code,
-              name: courseModal.value.courseInfo.name,
-              teacherId: courseModal.value.courseInfo.teacher.id,
-              extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
-              programJson: JSON.stringify(courseModal.value.courseInfo.program),
-            });
-          } else {
-            await CourseUpdate({
-              id: courseModal.value.courseInfo.id,
-              code: courseModal.value.courseInfo.code,
-              name: courseModal.value.courseInfo.name,
-              teacherId: courseModal.value.courseInfo.teacher.id,
-              extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
-              programJson: JSON.stringify(courseModal.value.courseInfo.program),
-            });
-          }
-          courseModal.value.visible = false;
-          Message.success(`${courseModal.value.type === 'add' ? '添加' : '修改'}成功`);
-          courseList.value = await CourseList({
-            containPrograms: true,
+        if (courseModal.value.type === 'add') {
+          await CourseAdd({
+            // *code, *name, *teacherId, extendJson, programJson
+            // id: courseModal.value.courseInfo.id,
+            code: courseModal.value.courseInfo.code,
+            name: courseModal.value.courseInfo.name,
+            teacherId: courseModal.value.courseInfo.teacher.id,
+            extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
+            programJson: JSON.stringify(courseModal.value.courseInfo.program),
           });
-      }
-    }
-    onMounted(useLoading(loading, async () => {
-        teacherList.value = await TeacherList();
-        experimentList.value = await ProgramList();
+        } else {
+          await CourseUpdate({
+            id: courseModal.value.courseInfo.id,
+            code: courseModal.value.courseInfo.code,
+            name: courseModal.value.courseInfo.name,
+            teacherId: courseModal.value.courseInfo.teacher.id,
+            extendJson: JSON.stringify(courseModal.value.courseInfo.extend),
+            programJson: JSON.stringify(courseModal.value.courseInfo.program),
+          });
+        }
+        courseModal.value.visible = false;
+        Message.success(`${courseModal.value.type === 'add' ? '添加' : '修改'}成功`);
         courseList.value = await CourseList({
           containPrograms: true,
         });
+      }
+    }
+
+    onMounted(useLoading(loading, async () => {
+      teacherList.value = await TeacherList();
+      experimentList.value = await ProgramList();
+      courseList.value = await CourseList({
+        containPrograms: true,
+      });
     }));
-    return{
-        loading, courseList, form, keywords, filtered, teacherList,
-        courseRemove: useConfirm('确认删除？', useLoading(loading, courseRemove)),
-        courseModal, showCourseForm, experimentList,
-        courseUpdate: useLoading(loading, courseUpdate),
-        experimentModal, showExperimentForm, expOfCourseList,
-        keywords2, filtered2, courseID, validator,
-        experimentUpdate: useLoading(loading, experimentUpdate),
-        experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
+    return {
+      loading, courseList, form, keywords, filtered, teacherList,
+      courseRemove: useConfirm('确认删除？', useLoading(loading, courseRemove)),
+      courseModal, showCourseForm, experimentList,
+      courseUpdate: useLoading(loading, courseUpdate),
+      experimentModal, showExperimentForm, expOfCourseList,
+      keywords2, filtered2, courseID, validator,
+      experimentUpdate: useLoading(loading, experimentUpdate),
+      experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
     };
   },
 };
+
 function initCourseForm() {
-    return {
-        name: '', code: '', teacher: {id: '', name: ''}, program: [],
-        extend: {scoreRatio: []},
-    };
+  return {
+    name: '', code: '', teacher: {id: '', name: ''}, program: [],
+    extend: {scoreRatio: []},
+  };
 }
 </script>
 <style scoped lang="scss">

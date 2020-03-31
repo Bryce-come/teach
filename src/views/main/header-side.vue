@@ -41,6 +41,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <kit-dialog-simple
+      id="user-pwd"
       :modal="modalUpdatePwd"
       :confirm="updatePwd"
       width="30%">
@@ -68,6 +69,7 @@
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="user-info"
       :modal="modalUpdateInfo"
       :confirm="updateInfo"
       width="30%">
@@ -172,7 +174,6 @@ export default createComponent({
     async function updatePwd() {
       const valid = await (form.value as ElForm).validate();
       if (!valid) {
-        Message.error('请填写完整');
         return;
       }
       await UserUpdatePwd(modalUpdatePwd.params);
@@ -183,7 +184,6 @@ export default createComponent({
     async function updateInfo() {
       const valid = await (formInfo.value as ElForm).validate();
       if (!valid) {
-        Message.error('请填写完整');
         return;
       }
       await UserUpdateInfo({

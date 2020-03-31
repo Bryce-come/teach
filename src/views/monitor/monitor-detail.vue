@@ -169,7 +169,7 @@ export default {
         videoChannel.value[0] = cameras[0].channelId;
         if (cameras.length > 1) { videoChannel.value[1] = cameras[1].channelId; }
       }
-      if (courseRecord.value.stationBind && courseRecord.value.stationBind[station.value.id.toString()]) {
+      if (courseRecord.value && courseRecord.value.stationBind && courseRecord.value.stationBind[station.value.id.toString()]) {
         station.value.extend.students = courseRecord.value.stationBind[station.value.id.toString()];
       }
       device.value = station.value.deviceList[0];

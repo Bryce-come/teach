@@ -36,7 +36,7 @@
               <el-table-column prop="deviceType.name" label="设备型号"/>
               <el-table-column prop="extend.ip" label="设备IP"/>
               <el-table-column prop="collector.id" label="网关编号"/>
-              <el-table-column prop="collector.extend.outerIp" label="网关外IP"/>
+<!--              <el-table-column prop="collector.extend.outerIp" label="网关外IP"/>-->
               <el-table-column prop="collector.extend.innerIp" label="网关内IP"/>
               <el-table-column label="操作" width="100px">
                 <div slot-scope="{row}">
@@ -88,6 +88,7 @@
       </el-col>
     </el-row>
     <kit-dialog-simple
+      id="station"
       @submit.native.prevent
       :modal="modal"
       :confirm="update"
@@ -101,6 +102,7 @@
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="station-device"
       :modal="addDeviceModal"
       :confirm="deviceUpdate"
       width="500px">
@@ -120,17 +122,19 @@
           <el-input v-model="addDeviceModal.deviceInfo.collector.id" maxlength="15" clearable/>
         </el-form-item>
         <el-form-item label="设备IP：" prop="device.extend.ip" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.device.extend.ip" clearable/>
+          <el-input v-model="addDeviceModal.deviceInfo.device.extend.ip" clearable style="width: 220px"/>
         </el-form-item>
-        <el-form-item label="网关外IP：" prop="collector.extend.outerIp" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.outerIp" clearable/>
-        </el-form-item>
+<!--        <el-form-item label="网关外IP：" prop="collector.extend.outerIp" :rules="{ required: true, message: '请填入信息'}">-->
+<!--          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.outerIp" clearable/>-->
+<!--        </el-form-item>-->
         <el-form-item label="网关内IP：" prop="collector.extend.innerIp" :rules="{ required: true, message: '请填入信息'}">
-          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.innerIp" clearable/>
+          <el-input v-model="addDeviceModal.deviceInfo.collector.extend.innerIp" clearable style="width: 220px"/>
+          <kit-tip content="设备网关内部IP，需要和设备/PC在同一网段" />
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="station-pc"
       :modal="addPCModal"
       :confirm="PCUpdate"
       width="500px">
@@ -156,6 +160,7 @@
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="station-camera"
       :modal="addCameraModal"
       :confirm="infoUpdate"
       width="500px">
@@ -171,6 +176,7 @@
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      id="station-del"
       :modal="stationModel"
       :confirm="confirmStation"
       width="400px">
@@ -186,7 +192,7 @@ import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
 import {ElTree} from 'element-ui/types/tree';
 import {ElForm} from 'element-ui/types/form';
 import {Message} from 'element-ui';
-import {isUndefined, deepClone} from 'web-toolkit/src/utils';
+import {deepClone} from 'web-toolkit/src/utils';
 import {
   StationList,
   StationInfo,
@@ -324,7 +330,7 @@ export default {
           deviceId: addDeviceModal.value.deviceInfo.device.id ,
           adapterId: addDeviceModal.value.deviceInfo.collector.id,
           deviceIP: addDeviceModal.value.deviceInfo.device.extend.ip,
-          adapterOuterIP: addDeviceModal.value.deviceInfo.collector.extend.outerIp,
+          // adapterOuterIP: addDeviceModal.value.deviceInfo.collector.extend.outerIp,
           adapterInnerIP: addDeviceModal.value.deviceInfo.collector.extend.innerIp,
         });
         addDeviceModal.value.visible = false;
@@ -441,13 +447,6 @@ function initPCForm() {
   };
 }
 
-function initCameraForm() {
-  return {
-    name: '',
-    channelId: '',
-    remark: '',
-  };
-}
 </script>
 <style scoped lang="scss">
 

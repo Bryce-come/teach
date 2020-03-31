@@ -6,6 +6,7 @@
     </div>
     <monitor v-if="record" />
     <kit-dialog-simple
+      id="teach-monitor"
       :modal="delayMode"
       :confirm="confirm"
       width="500px">
@@ -18,8 +19,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
-import { router } from '@/main';
+import { ref, onMounted, onUnmounted, watch, createComponent } from '@vue/composition-api';
 import { Message } from 'element-ui';
 import { useLoading, useConfirm } from 'web-toolkit/src/service';
 import monitor from '../monitor/monitor.vue';

@@ -79,9 +79,9 @@
 <script lang="ts">
   import {onMounted, ref} from '@vue/composition-api';
   import {useConfirm, useLoading} from 'web-toolkit/src/service';
-  import {ReportList, ReportSubmit, ReportTemplateList} from '../../dao/reportDao';
-  import {CourseList} from '../../dao/courseProgramDao';
-  import {DownLoadPrivate} from '../../dao/commonDao';
+  import {ReportList, ReportSubmit, ReportTemplateList} from '@/dao/reportDao';
+  import {CourseList} from '@/dao/courseProgramDao';
+  import {DownLoadPrivate} from '@/dao/commonDao';
 
   export default {
   setup() {

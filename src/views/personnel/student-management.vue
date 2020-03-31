@@ -119,6 +119,7 @@
       </el-col>
     </el-row>
     <kit-dialog-simple
+      id="student-1"
       @submit.native.prevent
       :modal="upClazGropFlag"
       :confirm="upClazGropdate"
@@ -130,8 +131,8 @@
           </el-form-item>
         </el-form>
     </kit-dialog-simple>
-    
     <kit-dialog-simple
+      id="student-2"
       :modal="modal"
       :confirm="update"
       width="700px">

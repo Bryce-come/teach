@@ -15,6 +15,7 @@
           <el-form-item prop="pwd" label="密码：" >
             <el-input type="password" v-model="form.pwd" placeholder="密  码" @keyup.enter.native="login($refs.formRef)" />
           </el-form-item>
+          <kit-err-channel id="login" style="margin-bottom: 5px" />
           <el-button style="width: 100%;margin-top: 1rem;font-size: 1.2em" type="primary" @click="login($refs.formRef)">登录</el-button>
         </el-form>
       </el-card>
@@ -26,13 +27,11 @@
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { ElForm } from 'element-ui/types/form';
 import { useLoading } from 'web-toolkit/src/service';
-import { storeUserInfo, storePageMenu, updateStoreUserInfo } from 'web-toolkit/src/case-main';
+import { storeUserInfo, updateStoreUserInfo, submitErrChanel, pushMsgErr } from 'web-toolkit/src/case-main';
 import {loginTitle1, loginTitle2, loginLogo, scheme} from '@/config';
 import {router} from '@/main';
-import { Route } from 'vue-router';
 import {assert} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
-import {Department} from '@/types/privilege';
 
 export default createComponent({
   setup() {
@@ -59,6 +58,7 @@ export default createComponent({
     async function login() {
       const valid = await (formRef.value as ElForm).validate();
       assert(valid);
+      submitErrChanel('login');
       const data = await Login( {
         ...form.value,
         schema: scheme,

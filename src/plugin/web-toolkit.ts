@@ -22,3 +22,7 @@ import LktCheck from 'web-toolkit/src/components/lkt-check.vue';
 Vue.component('lkt-check', LktCheck);
 import KitDialogSimple from 'web-toolkit/src/components/kit-dialog-simple.vue';
 Vue.component('kit-dialog-simple', KitDialogSimple);
+import KitErrChannel from 'web-toolkit/src/components/kit-err-channel.vue';
+Vue.component('kit-err-channel', KitErrChannel);
+import KitTip from 'web-toolkit/src/components/kit-tip.vue';
+Vue.component('kit-tip', KitTip);

@@ -106,11 +106,12 @@
       </el-tab-pane>
     </el-tabs>
     <kit-dialog-simple
+      id="maintenance"
       :modal="modal"
       :confirm="update"
       width="600px">
-        <div slot="title">添加设备维保记录</div>
-        <el-form v-if="modal.maintainRecordInfo" ref="form" :model="modal.maintainRecordInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
+      <div slot="title">添加设备维保记录</div>
+      <el-form v-if="modal.maintainRecordInfo" ref="form" :model="modal.maintainRecordInfo" label-width="160px" label-position="left" style="width: 377px;margin: 0 auto">
           <el-form-item label="设备名称：" prop="device.name" :rules="{ required: true, message: '请输入设备名称'}">
             <el-select value-key="id" v-model="modal.maintainRecordInfo.device"  placeholder="请选择设备名称">
               <el-option

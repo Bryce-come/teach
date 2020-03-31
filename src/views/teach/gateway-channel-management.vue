@@ -30,10 +30,10 @@
   </div>
 </template>
 <script lang="ts">
-  import {onMounted, ref} from '@vue/composition-api';
+import {onMounted, ref} from '@vue/composition-api';
   import {useLoading} from 'web-toolkit/src/service';
   import {Message} from 'element-ui';
-  import {CNCLinkSet, CNCLinkStatus} from '../../dao/inClassDao';
+  import {CNCLinkSet, CNCLinkStatus} from '@/dao/inClassDao';
 
   export default {
   setup() {
@@ -99,17 +99,16 @@
       const id = JSON.stringify(status.value.rowIDList);
       const result = {
           stationJson: id,
-          status: row.extend.linkStatus
+          status: row.extend.linkStatus,
         };
-      try{
+      try {
         await CNCLinkSet(result);
-      }finally {
+      } finally {
         await getStatusList();
       }
     }
     const query = async () => {
-      const result = await CNCLinkStatus();
-      list.value = result;
+      list.value = await CNCLinkStatus();
     };
     onMounted(useLoading(loading, async () => {
       // await query();

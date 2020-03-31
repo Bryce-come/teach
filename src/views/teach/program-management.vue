@@ -21,7 +21,7 @@
       <div class="block_title flex between">NC程序审核</div>
         <div v-if="turn">
           <div style="display:flex;justify-content:flex-end">
-            <el-input class="search-bar" style="margin: 10px;width:400px" v-model="keywords" placeholder="输入程序名查询" clearable></el-input>
+            <el-input class="search-bar" style="margin: 10px;width:400px" v-model="keywords" placeholder="输入程序名查询" clearable/>
           </div>
           <lkt-table
             :data="filtered"
@@ -46,7 +46,6 @@
               <div class="flex center little-space wrap" slot-scope="{ row }">
                 <el-button type="text" @click="turnToExamine();cheakDetail(row);moveNow(row)" >审核查看</el-button>
               </div>
-
             </el-table-column>
           </lkt-table>
         </div>
@@ -62,7 +61,7 @@
           <el-row>
             <el-col :span="12">
               <div style="margin-left:20px;font-weight:bold">NC程序代码</div>
-              <el-input type="textarea" :rows="18" style="width:96%;margin:10px 10px 0 10px" v-model="EtInfo.contentWord"></el-input>
+              <el-input type="textarea" :rows="18" style="width:96%;margin:10px 10px 0 10px" v-model="EtInfo.contentWord"/>
               <div class="flex start little-space" style="margin-left:10px">
                 <el-button type="primary" @click="downFile(EtInfo.data)">下载程序</el-button>
               </div>
@@ -92,14 +91,14 @@
                 <el-table-column label="操作">
                   <div class="flex center little-space wrap" slot-scope="{ row }">
                   <el-button class="btn" type="text"
-                  :style="row.id===moveNowTrue.moveNowId?'color:green':''" 
+                  :style="row.id===moveNowTrue.moveNowId?'color:green':''"
                   @click="cheakDetail(row);moveNow(row)">{{row.id===moveNowTrue.moveNowId?'查看中':'查看程序'}}</el-button>
                   </div>
                 </el-table-column>
               </el-table>
               <div style="margin-top:10px">
                 <div>修改意见：</div>
-                <el-input type="textarea" :rows="2" style="width:98%" v-model="reviewInfo.remark"></el-input>
+                <el-input type="textarea" :rows="2" style="width:98%" v-model="reviewInfo.remark"/>
                 <div class="flex start little-space">
                   <el-button type="primary" v-if="areThey.status" @click="agreeUp()">通过审核同意加工</el-button>
                   <el-button type="danger" v-if="areThey.status" style="margin-left:20px" @click="disAgreeUp()">退回修改</el-button>

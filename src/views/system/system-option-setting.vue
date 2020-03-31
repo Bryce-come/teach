@@ -16,8 +16,9 @@
             year: modal.year,
             term: modal.term,
             terms: [modal.termsDt[0].getTime(), modal.termsDt[1].getTime()]
-          })">保存设置</el-button>
+          },'setting-term')">保存设置</el-button>
         </el-form-item>
+        <kit-err-channel id="setting-term" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
     <el-tab-pane label="作息时间设定">
@@ -42,6 +43,7 @@
         <el-form-item>
           <el-button type="primary" @click="updateTerms()">保存设置</el-button>
         </el-form-item>
+        <kit-err-channel id="setting-terms" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
     <el-tab-pane label="报警提醒开关">
@@ -66,8 +68,9 @@
             stationUsageAlarmOn: modal.stationUsageAlarmOn,
             deviceMaintenAlarmOn: modal.deviceMaintenAlarmOn,
             deviceMaintenAlarmTimeLimit: modal.deviceMaintenAlarmTimeLimit
-          })">保存设置</el-button>
+          },'setting-alarm')">保存设置</el-button>
         </el-form-item>
+        <kit-err-channel id="setting-alarm" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
     <el-tab-pane label="网关通道开关">
@@ -83,8 +86,9 @@
           <el-button type="primary" @click="update({
             CNCLinkOn: modal.CNCLinkOn,
             CNCLinkTimeout: modal.CNCLinkTimeout
-          })">保存设置</el-button>
+          },'setting-link')">保存设置</el-button>
         </el-form-item>
+        <kit-err-channel id="setting-link" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
     <el-tab-pane label="NVR访问配置">
@@ -109,6 +113,7 @@
             nvrPwd: modal.nvrPwd,
           })">保存设置</el-button>
         </el-form-item>
+        <kit-err-channel id="setting-nvr" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
   </el-tabs>
@@ -119,6 +124,7 @@ import { useLoading} from 'web-toolkit/src/service';
 import { SettingGet, SettingSet } from '@/dao/settingDao';
 import { Message } from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
+import { pushMsgErr, submitErrChanel } from 'web-toolkit/src/case-main';
 
 export default {
   setup() {
@@ -140,7 +146,8 @@ export default {
       modal.value = m;
     }
     // 直接传要修改的参数
-    async function update(params: any) {
+    async function update(params: any, id: string) {
+      submitErrChanel(id);
       await SettingSet(params);
       Message.success('设置成功');
     }
@@ -149,13 +156,14 @@ export default {
       if (!valid) {
         return ;
       }
-      await update(params);
+      await update(params, 'setting-nvr');
     }
     async function updateTerms() {
       const valid = await (form2.value as ElForm).validate();
       if (!valid) {
         return ;
       }
+      submitErrChanel('setting-terms');
       const params = { lessonNum: modal.value.lessonNum };
       let flagTime;
       for (let i = 1; i <= modal.value.lessonNum; i++) {
@@ -163,12 +171,12 @@ export default {
         modal.value['lesson' + i][1].setSeconds(0);
         (params as any)['lesson' + i] = [modal.value['lesson' + i][0].getTime(), modal.value['lesson' + i][1].getTime()];
         if (flagTime && modal.value['lesson' + i][0].getTime() < flagTime) {
-          Message.error('课时时间存在冲突');
+          pushMsgErr('课时时间存在冲突');
           return ;
         }
         flagTime = modal.value['lesson' + i][1].getTime();
       }
-      await update(params);
+      await update(params, 'setting-terms');
     }
     onMounted(useLoading(loading, async () => {
       await query();

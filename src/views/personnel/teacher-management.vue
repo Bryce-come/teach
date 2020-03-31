@@ -21,6 +21,7 @@
       </el-table-column>
     </lkt-table>
     <kit-dialog-simple
+      id="teacher"
       :modal="addModal"
       :confirm="update"
       width="700px">
