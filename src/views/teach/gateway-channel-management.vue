@@ -31,11 +31,11 @@
 </template>
 <script lang="ts">
 import {onMounted, ref} from '@vue/composition-api';
-  import {useLoading} from 'web-toolkit/src/service';
-  import {Message} from 'element-ui';
-  import {CNCLinkSet, CNCLinkStatus} from '@/dao/inClassDao';
+import {useLoading} from 'web-toolkit/src/service';
+import {Message} from 'element-ui';
+import {CNCLinkSet, CNCLinkStatus} from '@/dao/inClassDao';
 
-  export default {
+export default {
   setup() {
     const loading = ref(false);
     const list = ref<any>({

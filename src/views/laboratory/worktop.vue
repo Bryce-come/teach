@@ -94,14 +94,16 @@
       :confirm="update"
       width="500px">
       <div slot="title">添加操作台</div>
-      <el-form v-if="modal.workTopInfo" ref="form" :model="modal.workTopInfo" label-width="120px" label-position="left"
-               style="width: 300px;margin: 0 auto">
+      <el-form
+        v-if="modal.workTopInfo" ref="form" :model="modal.workTopInfo"
+        label-width="120px" label-position="left" style="width: 300px;margin: 0 auto">
         <el-form-item label="操作台名称：" prop="name" :rules="{ required: true, message: '请输入操作台名称'}">
           <el-input v-model="modal.workTopInfo.name" clearable/>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      v-loading="loading"
       id="station-device"
       :modal="addDeviceModal"
       :confirm="deviceUpdate"
@@ -134,13 +136,16 @@
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
+      v-loading="loading"
       id="station-pc"
       :modal="addPCModal"
       :confirm="PCUpdate"
       width="500px">
       <div slot="title">添加PC信息</div>
-      <el-form v-if="addPCModal.PCInfo" ref="form2" :model="addPCModal.PCInfo" label-width="120px" label-position="left"
-               style="width: 300px;margin: 0 auto">
+      <el-form
+        v-if="addPCModal.PCInfo" ref="form2" :model="addPCModal.PCInfo"
+        label-width="120px" label-position="left"
+        style="width: 300px;margin: 0 auto">
         <el-form-item label="PC编号：" prop="PCNo" :rules="{ required: true, message: '请输入PC编号'}">
           <el-input v-model="addPCModal.PCInfo.PCNo"/>
         </el-form-item>
@@ -165,8 +170,10 @@
       :confirm="infoUpdate"
       width="500px">
       <div slot="title">添加摄像头信息</div>
-      <el-form v-if="addCameraModal.cameraInfo" ref="form3" :model="addCameraModal.cameraInfo" label-width="140px"
-               label-position="left" style="width: 300px;margin: 0 auto">
+      <el-form
+        v-if="addCameraModal.cameraInfo" ref="form3"
+        :model="addCameraModal.cameraInfo" label-width="140px"
+        label-position="left" style="width: 300px;margin: 0 auto">
         <el-form-item label="摄像头名称：" prop="name" :rules="{ required: true, message: '请输入摄像头名称'}">
           <el-input v-model="addCameraModal.cameraInfo.name"/>
         </el-form-item>
@@ -188,7 +195,7 @@
 </template>
 <script lang="ts">
 import {ref, onMounted, watch} from '@vue/composition-api';
-import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
+import {useLoading, useConfirm, useSearch, useLoadingDirect} from 'web-toolkit/src/service';
 import {ElTree} from 'element-ui/types/tree';
 import {ElForm} from 'element-ui/types/form';
 import {Message} from 'element-ui';
@@ -232,6 +239,7 @@ export default {
     });
     const modal = ref<any>({
       visible: false,
+      loading: false,
       workTopInfo: null,
     });
     // 添加操作台
@@ -276,6 +284,7 @@ export default {
     //
     const addDeviceModal = ref<any>({
       visible: false,
+      loading: false,
       deviceInfo: null,
     });
     const showDeviceForm = async (data?: any) => {
@@ -292,6 +301,7 @@ export default {
     };
     const addPCModal = ref<any>({
       visible: false,
+      loading: false,
       PCInfo: null,
     });
     const showPCForm = async (data?: any) => {
@@ -308,6 +318,7 @@ export default {
     };
     const addCameraModal = ref<any>({
       visible: false,
+      loading: false,
       cameraInfo: null,
     });
     const showCameraForm = async (data?: any) => {
@@ -406,15 +417,15 @@ export default {
       query: useLoading(loading, query),
       modal, form, showForm,
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
-      update: useLoading(loading, update),
+      update: useLoadingDirect(modal, update),
       queryStation: useLoading(loading, queryStation),
       stationId,
       showDeviceForm, showPCForm, showCameraForm,
       addDeviceModal, addPCModal, addCameraModal,
       form1, form2, form3, deviceNameList,
       infoUpdate: useLoading(loading, infoUpdate),
-      deviceUpdate: useLoading(loading, deviceUpdate),
-      PCUpdate: useLoading(loading, PCUpdate),
+      deviceUpdate: useLoadingDirect(addDeviceModal, deviceUpdate),
+      PCUpdate: useLoadingDirect(addPCModal, PCUpdate),
       del: useLoading(loading, del),
       stationModel,
       confirmStation: useLoading(loading, confirmStation),
@@ -446,7 +457,6 @@ function initPCForm() {
     remark: '',
   };
 }
-
 </script>
 <style scoped lang="scss">
 

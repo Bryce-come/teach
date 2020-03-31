@@ -113,7 +113,7 @@ export default createComponent({
     const alarms = ref([]);
     const alarmsMsg = ref({});
     const alarmsLength = ref(0);
-    const modalUpdatePwd = reactive({
+    const modalUpdatePwd = ref<any>({
       visible: false,
       loading: false,
       flag: '',
@@ -140,7 +140,7 @@ export default createComponent({
     function validatePassCheck(rule: any, value: string, callback: (...arg: any[]) => any) {
       if (value === '' || value === undefined) {
         callback(new Error('请再次输入密码'));
-      } else if (value !== modalUpdatePwd.params.newPwd) {
+      } else if (value !== modalUpdatePwd.value.params.newPwd) {
         callback(new Error('两次输入密码不一致!'));
       } else {
         callback();
@@ -158,7 +158,7 @@ export default createComponent({
           router.push({name: 'login'});
           break;
         case 'updatePwd':
-          modalUpdatePwd.visible = true;
+          modalUpdatePwd.value.visible = true;
           if (form.value) { (form.value as ElForm).clearValidate(); }
           break;
         case 'updateInfo':
@@ -176,10 +176,10 @@ export default createComponent({
       if (!valid) {
         return;
       }
-      await UserUpdatePwd(modalUpdatePwd.params);
+      await UserUpdatePwd(modalUpdatePwd.value.params);
       Message.success('修改成功');
       (form.value as ElForm).resetFields();
-      modalUpdatePwd.visible = false;
+      modalUpdatePwd.value.visible = false;
     }
     async function updateInfo() {
       const valid = await (formInfo.value as ElForm).validate();
@@ -248,7 +248,7 @@ export default createComponent({
       validatePassCheck,
       noMessage,
       handleCmdOfUser,
-      updatePwd: useLoadingDirect(modalUpdatePwd.loading, updatePwd),
+      updatePwd: useLoadingDirect(modalUpdatePwd, updatePwd),
       updateInfo: useLoading(loading, updateInfo),
       query,
       isNotStudent,
