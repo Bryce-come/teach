@@ -78,7 +78,9 @@
                   'rgb(244,213,71)':(itemb.type===2?
                   'rgb(197,150,196)':'white'))):'white',
                   'cursor': mode==='readOnly'?'default':'pointer',
-                  'height': divHeight*itemb.extend.lessons.length+'px'
+                  'height': itemb.extend.lessons[itemb.extend.lessons.length-1]>courseCount.count.length?
+                    (divHeight*(itemb.extend.lessons.length-itemb.extend.lessons[itemb.extend.lessons.length-1]+courseCount.count.length)) +'px':
+                      divHeight*itemb.extend.lessons.length+'px'
                 }">
                 <div style="line-height:26px;font-weight:bold" v-if="itemb.course">
                   {{itemb.course?itemb.course.name:''}}
@@ -106,7 +108,9 @@
                   'rgb(244,213,71)':(itemb.type===2?
                   'rgb(197,150,196)':'white'))):'white',
                   'cursor': mode==='readOnly'?'default':'pointer',
-                  'height': divHeight*itemb.extend.lessons.length+'px'
+                  'height': itemb.extend.lessons[itemb.extend.lessons.length-1]>courseCount.count.length?
+                    (divHeight*(itemb.extend.lessons.length-itemb.extend.lessons[itemb.extend.lessons.length-1]+courseCount.count.length)) +'px':
+                      divHeight*itemb.extend.lessons.length+'px'
                 }">
               <div style="line-height:26px;font-weight:bold;" v-if="itemb.course">
                 {{itemb.course?itemb.course.name:''}}
@@ -492,6 +496,7 @@ export default createComponent({
       }
       if (data) {
         data = deepClone(data);
+        console.log(data)
         showModal.value.type = 'update';
         // 转化 startLesson endLesson, appointDate
         if (data.startDt) {
@@ -550,6 +555,9 @@ export default createComponent({
           },
         };
         showModal.value.type = 'add';
+      }
+      if(data.endLesson>courseCount.value.count.length){
+        data.endLesson = courseCount.value.count[courseCount.value.count.length-1]
       }
       showModal.value.oneLesson = data;
       showModal.value.visible = true;
@@ -634,6 +642,15 @@ export default createComponent({
         for (const d of result) {
           // 课时矩阵
           originList.value.lessonsList[setThisDay(new Date(d.startDt).getDay()) - 1].lesson.splice(d.extend.lessons[0] - 1, 1, d);
+          // 挤掉的div 隐藏
+          for (let j = 0; j < d.extend.lessons.length - 1; j++) {
+            if (d.extend.lessons[0] + j===courseCount.value.count.length){
+              break;
+            }
+            // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
+            const str1 = document.getElementById((setThisDay(new Date(d.startDt).getDay()) - 1) + '-' + (d.extend.lessons[0] + j)) as HTMLElement;
+            str1.style.display = 'none';
+          }
         }
         // for (let i = 0; i < result.length; i++) {
         //   // 课时矩阵
@@ -645,12 +662,6 @@ export default createComponent({
           // 有课程时的高度
           // const str = document.getElementById((setThisDay(new Date(result[i].startDt).getDay())-1)+"-"+(result[i].extend.lessons[0] - 1)) as HTMLElement;
           // str.style.height = divHeight.value * result[i].extend.lessons.length + 'px';
-          // 挤掉的div 隐藏
-          for (let j = 0; j < d.extend.lessons.length - 1; j++) {
-            // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
-            const str1 = document.getElementById((setThisDay(new Date(d.startDt).getDay()) - 1) + '-' + (d.extend.lessons[0] + j)) as HTMLElement;
-            str1.style.display = 'none';
-          }
         }
       }
     }
@@ -702,6 +713,7 @@ export default createComponent({
       }
     }
     onMounted(useLoading(loading, async () => {
+      
       await getCourseCount();
       await setWeekSection(props.dt ? props.dt : new Date());
       await Promise.all([
