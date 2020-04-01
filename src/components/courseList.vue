@@ -80,7 +80,7 @@
                   'cursor': mode==='readOnly'?'default':'pointer',
                   'height': divHeight*itemb.extend.lessons.length+'px'
                 }">
-                <div style="line-height:26px" v-if="itemb.course">
+                <div style="line-height:26px;font-weight:bold" v-if="itemb.course">
                   {{itemb.course?itemb.course.name:''}}
                 </div>
                 <div style="line-height:26px" v-if="itemb.teacher">
