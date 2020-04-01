@@ -122,7 +122,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="维保时间：" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
+          <el-form-item label="维保时间：" prop="restorationDt" :rules="{ required: true,validator: validatorA}">
               <el-date-picker v-model="modal.maintainRecordInfo.restorationDt" type="date"></el-date-picker>
           </el-form-item>
           <el-form-item label="保养内容：" prop="treatment" :rules="{ required: true, message: '请输入保养内容'}">
@@ -161,7 +161,7 @@
               </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="下次维保时间：" prop="nextDt">
+          <el-form-item label="下次维保时间：" prop="nextDt" :rules="{validator: validatorB}">
             <el-date-picker v-model="modal.maintainRecordInfo.nextDt" type="date"/>
           </el-form-item>
         </el-form>
@@ -210,6 +210,25 @@ export default {
       modal.value.maintainRecordInfo = data;
       modal.value.visible = true;
     };
+    function validatorA(rule: any, value: string, callback: Function) {
+      if (!value) {
+        callback(new Error('请选择时间'));
+      } else if (new Date(modal.value.maintainRecordInfo.restorationDt).getTime()>new Date().getTime()) {
+        callback(new Error('维保时间不能超过现在'));
+      } else {
+        callback();
+      }
+    }
+    function validatorB(rule: any, value: string, callback: Function) {
+      // if (!value) {
+      //   callback(new Error('请选择时间'));
+      // } else 
+      if (modal.value.maintainRecordInfo.nextDt && (new Date(modal.value.maintainRecordInfo.nextDt).getTime()<new Date().getTime())) {
+        callback(new Error('下次维保时间不能在过去'));
+      } else {
+        callback();
+      }
+    }
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
@@ -280,10 +299,10 @@ export default {
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       update: useLoading(loading, update),
       showForm,
-      deviceMaintenanceHistoryRecord,
+      deviceMaintenanceHistoryRecord, validatorB,
       form,
       executorList,
-      statusList,
+      statusList, validatorA,
       queryMaintainRecordHistory: useLoading(loading, queryMaintainRecordHistory),
     };
   },
