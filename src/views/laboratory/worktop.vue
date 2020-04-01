@@ -5,6 +5,7 @@
         <el-input placeholder="输入关键字搜索" v-model="filterText" clearable style="margin-bottom:5px"/>
         <div class='flex end' style="margin-bottom:5px">
           <el-button type="success" size="small" style="margin-left:5px" @click="showForm()">添加</el-button>
+          <el-button type="success" size="small" style="margin-left:5px" @click="showForm(cheakIn)">修改</el-button>
           <el-button type="danger" size="small" style="margin-left:5px" @click="del()">删除</el-button>
         </div>
         <div class="block-card">
@@ -244,11 +245,13 @@ export default {
     });
     // 添加操作台
     const showForm = async (data?: any) => {
+        console.log(data)
       if (form.value) {
         (form.value as ElForm).clearValidate();
       }
       if (data) {
         data = deepClone(data);
+        console.log(data)
       } else {
         data = initForm();
       }
@@ -259,12 +262,22 @@ export default {
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
-        await StationAdd({
-          name: modal.value.workTopInfo.name,
-        });
-        modal.value.visible = false;
-        Message.success('添加成功');
-        await queryStation();
+        if(modal.value.workTopInfo.id){
+          await StationUpdate({
+            id: modal.value.workTopInfo.id,
+            name: modal.value.workTopInfo.name,
+          })
+          modal.value.visible = false;
+          Message.success('修改成功');
+          await queryStation();
+        } else {
+          await StationAdd({
+            name: modal.value.workTopInfo.name,
+          });
+          modal.value.visible = false;
+          Message.success('添加成功');
+          await queryStation();
+        }
       }
     }
 
@@ -383,12 +396,15 @@ export default {
       await query(stationId.value);
       Message.success('删除成功');
     };
+    const cheakIn = ref<any>({});
     const query = async (id?: any) => {
       if (id) {
         stationId.value = id;
+        cheakIn.value = list.value.filter((cc:any)=>cc.id===id)[0];
       } else {
         if (list.value) {
           stationId.value = list.value[0].id;
+          cheakIn.value = list.value[0];
         }
       }
       if (stationId.value !== null) {
@@ -403,6 +419,9 @@ export default {
         simple: true,
       });
     };
+    function test(row:any){
+      console.log(row)
+    }
     onMounted(useLoading(loading, async () => {
       deviceNameList.value = await DeviceList({
         types: null,
@@ -419,7 +438,7 @@ export default {
       remove: useConfirm('确认删除？', useLoading(loading, remove)),
       update: useLoadingDirect(modal, update),
       queryStation: useLoading(loading, queryStation),
-      stationId,
+      stationId, test, cheakIn,
       showDeviceForm, showPCForm, showCameraForm,
       addDeviceModal, addPCModal, addCameraModal,
       form1, form2, form3, deviceNameList,
@@ -436,8 +455,14 @@ export default {
 
 function initForm() {
   return {
-    id: '', name: '', devices: [], deviceList: [], off: '',
-    extend: {PCs: [], remark: '', cameras: []},
+    id: '', 
+    name: '', 
+    devices: [], 
+    deviceList: [],
+     off: '',
+    extend: {
+      PCs: [], remark: '', cameras: []
+      },
   };
 }
 
