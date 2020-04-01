@@ -122,7 +122,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="保养时间：" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
+          <el-form-item label="维保时间：" prop="restorationDt" :rules="{ required: true, message: '请选择保养时间'}">
               <el-date-picker v-model="modal.maintainRecordInfo.restorationDt" type="date"></el-date-picker>
           </el-form-item>
           <el-form-item label="保养内容：" prop="treatment" :rules="{ required: true, message: '请输入保养内容'}">
@@ -161,7 +161,7 @@
               </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="下次保养时间：" prop="nextDt" v-if="modal.maintainRecordInfo.type===1">
+          <el-form-item label="下次维保时间：" prop="nextDt">
             <el-date-picker v-model="modal.maintainRecordInfo.nextDt" type="date"/>
           </el-form-item>
         </el-form>
