@@ -13,7 +13,7 @@
             min-width="350px"
             ref="tree">
             <div
-              :style="data.freez?'background-color:	Tomato':''"
+              :style="data.freez?'background-color:DarkGray':''"
               class="flex between align-center"
               style="width: 100%; cursor: default"
               slot-scope="{ node, data }"
