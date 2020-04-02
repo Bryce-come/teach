@@ -134,6 +134,7 @@
           }
         }
         chart.value = lineConfig(option, {series: [{type: 'bar'}]});
+        chart.value.yAxis.name = '课时'
       };
       const queryTime = async () => {
         const start = timeRange1.value[0].getTime();
