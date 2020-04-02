@@ -46,7 +46,7 @@
       width="600px">
       <div slot="title">{{modal.deviceInfo && modal.deviceInfo.id ? '修改' : '添加'}}设备信息</div>
       <el-form v-if="modal.deviceInfo" ref="form" :model="modal.deviceInfo" label-width="120px" label-position="left" style="margin: 0 10px">
-        <el-form-item label="设备编号：" prop="id" :rules="{ required: true, message: '请填写设备编号'}">
+        <el-form-item label="设备编号：" prop="id" :rules="[{ required: true, message: '请填写设备编号'},{ pattern: /^[0-9a-zA-z-_]+$/g, message: '限字母、数字、下划线、减号'}]">
           <el-input v-model="modal.deviceInfo.id"  :disabled="modal.deviceInfo.deviceType.id"/>
         </el-form-item>
         <el-form-item label="设备名称：" prop="name" :rules="{ required: true, message: '请填写设备名称'}">

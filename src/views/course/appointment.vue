@@ -248,7 +248,7 @@ export default createComponent({
       appointModal.value.visible = true;
     };
     function setEndtimeValue() {
-      // appointModal.value.appointInfo.endLesson = appointModal.value.appointInfo.startLesson;
+      appointModal.value.appointInfo.endLesson = undefined;
     }
     function setEndSelfValue() {
       // appointModal.value.appointInfo.endLesson = appointModal.value.appointInfo.endLesson;
@@ -375,7 +375,9 @@ function transformDate(template: Date, timestamp: number): number {
 
 function initAppointForm() {
   return {
-    extend: {},
+    extend: {
+      claszGroup:undefined
+    },
   };
 }
 </script>
