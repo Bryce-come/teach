@@ -59,7 +59,7 @@
             <el-button type="success" :plain="flag!==2" @click="restartVideo(videoChannel[1],2)">通道2</el-button>
             <el-button type="primary" plain @click="fullScreen()">全屏</el-button>
           </div>
-          <div id="contain"></div>
+          <div id="contain" v-loading="loadingCamera"></div>
           <div class="flex center little-space"><el-button type="primary" @click="connectPC()">连接学生屏幕</el-button></div>
           <div class="watch2">
             <iframe v-if="pcIp" id="iframe" name="iframe" :src="'http://'+pcIp+':9000'" style="width:100%;height:100%"></iframe>
@@ -103,6 +103,7 @@ import {SettingGet} from '@/dao/settingDao';
 export default {
   setup() {
     const loading = ref(false);
+    const loadingCamera = ref(false);
     const over = ref(false);
     const station = ref<any>();
     const device = ref<any>();
@@ -159,6 +160,24 @@ export default {
         Message.error('无PC配置');
       }
     }
+    async function initVideo(){
+      // video
+      loadingCamera.value = true;
+      const setting = await SettingGet({onlyNVR: true});
+      modalVideo.value.ip = setting.nvrIp;
+      modalVideo.value.port = setting.nvrPort;
+      modalVideo.value.username = setting.nvrUsername;
+      modalVideo.value.pwd = setting.nvrPwd;
+      await init('contain', 1);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
+      const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if (msg) {
+        alert(msg);
+        return ;
+      }
+      loadingCamera.value = false;
+      startVideo(null);
+    }
     onMounted(useLoading(loading, async () => {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
@@ -184,20 +203,7 @@ export default {
         timeLine.value = timelineConfig(list, statusMap, { height: 40, dataZoomTop: 70, dataZoom: true, showTime: true });
         query();
       }
-      // video
-      const setting = await SettingGet({onlyNVR: true});
-      modalVideo.value.ip = setting.nvrIp;
-      modalVideo.value.port = setting.nvrPort;
-      modalVideo.value.username = setting.nvrUsername;
-      modalVideo.value.pwd = setting.nvrPwd;
-      await init('contain', 1);
-      modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
-      const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-      if (msg) {
-        alert(msg);
-        return ;
-      }
-      startVideo(null);
+      initVideo();
     }));
     onUnmounted(() => {
       over.value = true;
@@ -382,7 +388,7 @@ export default {
       }
     }
     return{
-      loading, courseRecord, modal,
+      loading, loadingCamera, courseRecord, modal,
       station, timeLine,
       query,
       timeDiff,

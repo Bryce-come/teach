@@ -91,7 +91,7 @@ export default {
     }
     function img(path: any) {
       if (path) {
-        return ImageLink(path);
+        return ImageLink(path, new Date());
       }
     }
     const query = async () => {
