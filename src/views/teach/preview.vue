@@ -20,37 +20,37 @@
           <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-tickets" style="font-size:16px"/>{{courseInfo.course.name}}</div>
           <el-form label-width="120px" class="flex between wrap" style="width:80%">
             <el-form-item label="上课时间：">{{courseInfo.startDt + '-' + courseInfo.endDt}}</el-form-item>
-            <el-form-item label="授课教师：">{{courseInfo.teacher.name}}</el-form-item>
-            <el-form-item label="上课班级：">{{courseInfo.clasz.name + '-' + courseInfo.claszGroup.name}}</el-form-item>
+            <el-form-item label="授课教师：" v-if="courseInfo.teacher">{{courseInfo.teacher.name}}</el-form-item>
+            <el-form-item label="上课班级：">{{courseInfo.clasz.name + (courseInfo.claszGroup?('-'+courseInfo.claszGroup.name):'')}}</el-form-item>
           </el-form>
           <div class="liner"></div>
       </div>
-      <div style="margin-top:20px">
+      <div style="margin-top:20px" v-if="courseInfo.program">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-document-checked" style="font-size:16px"/>{{courseInfo.program.name}}</div>
         <el-form label-width="120px" class="flex">
           <el-form-item label="实验类型：">{{courseInfo.program.label}}</el-form-item>
-          <el-form-item label="操作台：">
+          <el-form-item label="操作台：" v-if="courseInfo.stations">
             <div v-for="item of courseInfo.stations" :key="item.id">{{item.name + ','}}</div>
           </el-form-item>
         </el-form>
         <div class="liner"></div>
       </div>
-      <div style="margin-top:20px">
+      <div style="margin-top:20px" v-if="courseInfo.program">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-document" style="font-size:16px"/>{{' 实验目的'}}</div>
         <div style="margin:20px 40px">{{courseInfo.program.purpose}}</div>
         <div class="liner"></div>
       </div>
-      <div style="margin-top:20px">
+      <div style="margin-top:20px" v-if="courseInfo.program">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-notebook-1" style="font-size:16px"/>{{' 实验原理'}}</div>
         <div style="margin:20px 40px">{{courseInfo.program.principle}}</div>
         <div class="liner"></div>
       </div>
-      <div style="margin-top:20px">
+      <div style="margin-top:20px" v-if="courseInfo.program">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-notebook-2" style="font-size:16px"/>{{' 实验步骤'}}</div>
         <div style="margin: 20px 40px">{{courseInfo.program.steps}}</div>
         <div class="liner"></div>
       </div>
-      <div style="margin-top:20px">
+      <div style="margin-top:20px" v-if="courseInfo.program">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-paperclip" style="font-size:16px"/>{{' 实验结果'}}</div>
         <div style="margin:20px 40px">{{courseInfo.program.results}}</div>
         <div class="liner"></div>
@@ -63,7 +63,7 @@
         </el-link>
         <div class="liner"></div>
       </div>
-      <div style="margin-top:20px">
+      <div style="margin-top:20px" v-if="courseInfo.program">
         <div style="font-weight:bold;margin: 10px 20px"><i class="el-icon-files" style="font-size:16px"/>{{' 项目附件'}}</div>
         <el-link
           type="primary" style="margin:20px 40px"
@@ -81,6 +81,7 @@ import { CourseList4Student} from '@/dao/courseProgramDao';
 import { CourseRecordPreview} from '@/dao/courseRecordDao';
 import {DownLoadPrivate} from '@/dao/commonDao';
 import {StationList} from '@/dao/stationDao';
+import { Message } from 'element-ui';
 export default {
   setup() {
     const loading = ref(false);
@@ -92,14 +93,22 @@ export default {
       coursePreviewList.value = await CourseList4Student();
     };
     const queryCourseInfo = async () => {
-      const courseID = coursePreview.value;
-      courseInfo.value = await CourseRecordPreview({
-        courseId: courseID,
-      });
-      for (let i = 0; i < courseInfo.value.stations; i++) {
-        const station = stationList.value.filter((item: any) => {
-          return item.id === courseInfo.value.stations[i];
+      if (coursePreview.value===undefined){
+        Message.warning('请选择课程')
+      } else {
+        const courseID = coursePreview.value;
+        courseInfo.value = await CourseRecordPreview({
+          courseId: courseID,
         });
+        if (courseInfo.value===undefined){
+          Message.warning('此课程并无预习信息')
+        } else {
+          for (let i = 0; i < courseInfo.value.stations; i++) {
+            const station = stationList.value.filter((item: any) => {
+              return item.id === courseInfo.value.stations[i];
+            });
+          }
+        }
       }
     };
     async function downFile(item: any) {
