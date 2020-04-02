@@ -31,7 +31,7 @@
         <el-button type="primary" style="margin-left: 60px" @click="query()">查询</el-button>
       </el-form-item>
     </el-form>
-    <div>
+    <div v-if="show.flag===false">
       <lkt-table
         :data="deviceAlarmList"
         style="width:100%">
@@ -63,6 +63,9 @@
           </div>
         </el-table-column>
       </lkt-table>
+    </div>
+    <div class="flex center" v-if="show.flag===true">
+      <p>最近3天内没有设备报警信息</p> 
     </div>
     <kit-dialog-simple
       :modal="modal"
@@ -110,6 +113,9 @@ export default {
       visible: false,
       data: {},
     });
+    const show = ref<any>({
+      flag:true
+    });
     const paramCharts = ref<any[]>([]);
     const timeChart = ref<any>();
     const remove = async (row: any) => {
@@ -125,6 +131,7 @@ export default {
           start: date.value && date.value[0] ? (date.value[0] as Date).getTime() : null,
           end: date.value && date.value[1] ? (date.value[1] as Date).getTime() : null,
         });
+      show.value.flag = false
       }
     };
     const snapshot = async (row: any) => {
@@ -295,7 +302,14 @@ export default {
       modal.value.data = row;
       modal.value.visible = true;
     };
+    async function setFlag(){
+      show.value.flag = false;
+      if (deviceAlarmList.value.length !== 0){
+        // show.value.flag = true;
+      }
+    }
     onMounted(useLoading(loading, async () => {
+      await setFlag();
       await query();
       deviceTypeList.value = await DeviceTypeList();
       devicesList.value = await DeviceList({
@@ -320,6 +334,7 @@ export default {
       query,
       snapshot: useLoading(loading, snapshot),
       timeChart, paramCharts,
+      show,
     };
   },
 };
