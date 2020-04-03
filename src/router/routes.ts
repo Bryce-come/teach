@@ -151,7 +151,7 @@ const courseManagement = {
   meta: {
     CName: '课程管理',
     parentCName: '实验课程管理',
-    privileges: [PRIVILEGE.courseMng],
+    privileges: [PRIVILEGE.courseMng, PRIVILEGE.courseUpdate],
   },
 };
 const reportTemplateManagement = {
