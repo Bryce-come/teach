@@ -9,9 +9,10 @@ export const PRIVILEGE = {
   deviceComponentMng: 'deviceComponentMng', // 刀具管理
   deviceAnalysis: 'deviceAnalysis', // 统计分析
   courseRecordMng: 'courseRecordMng', // 排课管理
-  courseRecordUpdate: 'courseRecordUpdate', // 排课修改
+  courseRecordUpdate: 'courseRecordUpdate', // 排课管理(自己)
   programMng: 'programMng', // 实验项目管理
   courseMng: 'courseMng', // 课程管理
+  courseUpdate: 'courseUpdate', // 课程管理（自己）
   reportTemplateMng: 'reportTemplateMng', // 实验报告模板管理
   appoint: 'appoint', // 实验室预约
   appointMng: 'appointMng', // 预约审核
