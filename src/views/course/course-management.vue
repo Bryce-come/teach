@@ -21,8 +21,12 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <div class="flex center little-space wrap" slot-scope="{row}">
-          <el-button type="warning" size="mini" @click="showCourseForm(row)">修改</el-button>
-          <el-button type="danger" size="mini" @click="courseRemove(row)">删除</el-button>
+          <el-button type="warning" size="mini" @click="showCourseForm(row)" 
+            v-if="storeUserInfo.user.role.privileges.indexOf('courseMng')>=0?true: 
+              (storeUserInfo.user.role.privileges.indexOf('courseUpdate')>=0?row.teacher.id===storeUserInfo.user.id:false)">修改</el-button>
+          <el-button type="danger" size="mini" @click="courseRemove(row)" 
+            v-if="storeUserInfo.user.role.privileges.indexOf('courseMng')>=0?true: 
+              (storeUserInfo.user.role.privileges.indexOf('courseUpdate')>=0?row.teacher.id===storeUserInfo.user.id:false)">删除</el-button>
         </div>
       </el-table-column>
     </lkt-table>
@@ -40,7 +44,9 @@
           <el-input v-model="courseModal.courseInfo.name"/>
         </el-form-item>
         <el-form-item label="任课教师：" prop="teacher.id" :rules="{ required: true, message: '请选择任课教师'}">
-          <el-select v-model="courseModal.courseInfo.teacher.id">
+          <!-- <el-input v-model="courseModal.courseInfo.teacher.id" maxlength='11' clearable/> -->
+          <el-select v-model="courseModal.courseInfo.teacher.id" :disabled="storeUserInfo.user.role.privileges.indexOf('courseMng')>=0?false: 
+              (storeUserInfo.user.role.privileges.indexOf('courseUpdate')>=0?true:false)">
             <el-option
               v-for="item of teacherList"
               :key="item.id"
@@ -105,6 +111,7 @@ import {ref, Ref, onMounted} from '@vue/composition-api';
 import {ElForm} from 'element-ui/types/form';
 import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {CourseList, CourseAdd, CourseUpdate, CourseDel, ProgramList, UnbindProgram} from '@/dao/courseProgramDao';
 import {TeacherList} from '@/dao/userDao';
@@ -142,7 +149,12 @@ export default {
       visible: false,
       experimentInfo: null,
     });
+    function userRole(ror: any){
+      
+    };
+    const userInfo = ref<any>({});
     const showCourseForm = async (data?: any) => {
+      userInfo.value = storeUserInfo;
       if (form.value) {
         (form.value as ElForm).clearValidate();
       }
@@ -155,6 +167,8 @@ export default {
         data = initCourseForm();
         courseModal.value.type = 'add';
         courseModal.value.courseInfo = data;
+        courseModal.value.courseInfo.teacher.id = userInfo.value.user.role.privileges.indexOf('courseMng')>=0?null:
+          (userInfo.value.user.role.privileges.indexOf('courseUpdate')>=0?userInfo.value.user.id:null);
       }
       courseModal.value.visible = true;
     };
@@ -244,7 +258,7 @@ export default {
       courseModal, showCourseForm, experimentList,
       courseUpdate: useLoading(loading, courseUpdate),
       experimentModal, showExperimentForm, expOfCourseList,
-      keywords2, filtered2, courseID, validator,
+      keywords2, filtered2, courseID, validator, storeUserInfo,
       experimentUpdate: useLoading(loading, experimentUpdate),
       experimentRemove: useConfirm('确认删除？', useLoading(loading, experimentRemove)),
     };

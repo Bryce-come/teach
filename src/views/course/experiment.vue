@@ -169,6 +169,7 @@ import {ref, Ref, onMounted} from '@vue/composition-api';
 import {ElForm} from 'element-ui/types/form';
 import {useLoading, useConfirm, useSearch} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
 import {isUndefined, deepClone} from 'web-toolkit/src/utils';
 import {
   ProgramList,
@@ -388,7 +389,7 @@ export default {
       showInExp: useLoading(loading, showInExp),
       showOutExp: useLoading(loading, showOutExp),
       detailModal, detailForm, detailUpdate, downFile,
-      stationList,
+      stationList, storeUserInfo,
       upload, form2, attachmentModal, attachmentForm, fileList, expID,
       attachmentUpdate: useLoading(loading, attachmentUpdate),
       attachmentList,
