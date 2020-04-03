@@ -99,7 +99,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <div slot-scope="{row}">
-            <el-button type="danger" size="mini" @click="experimentRemove(row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="experimentRemove(row)" 
+              v-if="experimentFormShow.flag">删除</el-button>
           </div>
         </el-table-column>
       </lkt-table>
@@ -172,7 +173,11 @@ export default {
       }
       courseModal.value.visible = true;
     };
+    const experimentFormShow = ref<any>({
+      flag:false,
+    })
     const showExperimentForm = async (data?: any) => {
+      userInfo.value = storeUserInfo;
       if (data) {
         expOfCourseList.value = data.programList;
         courseID.value = data.id;
@@ -181,6 +186,8 @@ export default {
       courseList.value = await CourseList({
         containPrograms: true,
       });
+      experimentFormShow.value.flag = userInfo.value.user.role.privileges.indexOf('courseMng')>=0?true: 
+              (userInfo.value.user.role.privileges.indexOf('courseUpdate')>=0?data.teacher.id===userInfo.value.user.id:false)
     };
     const experimentRemove = async (row: any) => {
       await UnbindProgram({
@@ -255,7 +262,7 @@ export default {
     return {
       loading, courseList, form, keywords, filtered, teacherList,
       courseRemove: useConfirm('确认删除？', useLoading(loading, courseRemove)),
-      courseModal, showCourseForm, experimentList,
+      courseModal, showCourseForm, experimentList, experimentFormShow,
       courseUpdate: useLoading(loading, courseUpdate),
       experimentModal, showExperimentForm, expOfCourseList,
       keywords2, filtered2, courseID, validator, storeUserInfo,
