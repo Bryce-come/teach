@@ -1,10 +1,11 @@
 <template v-loading="loading">
   <div>
-    <div class="flex end" style="margin-bottom:10px">
+    <div class="flex end" style="margin-bottom:10px" v-if="show.flag">
       <el-button type="primary" @click="delay()" style='margin-right:10px'>延迟下课</el-button>
       <el-button type="danger" v-if="linkOn" @click="off()">下课</el-button>
     </div>
-    <monitor v-if="record" />
+    <monitor v-if="show.flag" />
+    <div style="color: grey;text-align: center" v-if="!show.flag">暂无上课信息</div>
     <kit-dialog-simple
       id="teach-monitor"
       :modal="delayMode"
@@ -36,6 +37,9 @@ export default createComponent({
     });
     const linkOn = ref<boolean>(false);
     const record = ref<any>();
+    const show = ref<any>({
+      flag:false
+    });
 
     const delay = async () => {
       delayMode.value.visible = true;
@@ -56,11 +60,11 @@ export default createComponent({
     onMounted(useLoading(loading, async () => {
       const data = await SettingGet({onlyLinkOn: true});
       linkOn.value = data.on;
-      record.value = await CourseRecordInClass();
+      show.value.flag = await CourseRecordInClass();
     }));
     return{
      loading, linkOn, record,
-     delay,
+     delay, show,
      delayMode,
      off: useConfirm('点击“确定”按钮后将断开所有电脑与机床的通信连接,请确认所有学生完成机床操作！', useLoading(loading, off)),
      confirm,

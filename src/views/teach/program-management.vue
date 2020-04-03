@@ -1,6 +1,7 @@
 <template>
   <div v-loading="loading" class="program-management">
-    <div style="margin: 10px 0" class="block_background">
+    <div style="color: grey;text-align: center" v-if="!show.flag">暂无上课信息</div>
+    <div style="margin: 10px 0" class="block_background" v-if="show.flag">
       <div class="block_title flex between">上课班级信息</div>
       <el-form label-width="100px" style="margin-top:10px" :inline="true">
         <el-form-item label="上课时间：">
@@ -9,7 +10,7 @@
         <el-form-item label="上课班级：">
           <span>{{ courseNow.className}}</span>
         </el-form-item>
-        <el-form-item label="上课分组：">
+        <el-form-item label="上课分组：" v-if="courseNow.classGroupName">
           <span>{{courseNow.classGroupName}}</span>
         </el-form-item>
         <el-form-item label="学生人数：">
@@ -17,7 +18,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div style="margin: 10px 0" class="block_background">
+    <div style="margin: 10px 0" class="block_background" v-if="show.flag">
       <div class="block_title flex between">NC程序审核</div>
         <div v-if="turn">
           <div style="display:flex;justify-content:flex-end">
@@ -146,6 +147,10 @@ export default {
     const moveNowTrue = ref<any>({
       moveNowId: '',
     });
+    const show = ref<any>({
+      flag:false
+    });
+
     function moveNow(row: any) {
       moveNowTrue.value.moveNowId = row.id;
     }
@@ -169,10 +174,11 @@ export default {
       if (result !== null) {
         courseNow.value.startdate = result.startDt;
         courseNow.value.enddate = result.endDt;
-        courseNow.value.className = result.clasz.name;
-        courseNow.value.classGroupName = result.claszGroup.name;
+        courseNow.value.className = result.clasz?result.clasz.name:undefined;
+        courseNow.value.classGroupName = result.claszGroup?result.claszGroup.name:undefined;
         courseNow.value.id = result.id;
         courseNow.value.studentCount = result.studentList.length;
+        show.value.flag = true;
       } else {
         courseNow.value.startdate = '当前无课';
         courseNow.value.enddate = '当前无课';
@@ -260,7 +266,7 @@ export default {
     return {
       getClassNow, courseNow, downFile, cheakDetail, EtInfo, reviewInfo, areThey,
       loading, ncProgramList, query, turn, filtered, keywords, tableRowClassName, sameStudent,
-      moveNow, moveNowTrue,
+      moveNow, moveNowTrue, show,
       turnToExamine: useLoading(loading, turnToExamine), backUp,
       agreeUp: useConfirm('确认通过？', useLoading(loading, agreeUp)),
       disAgreeUp: useConfirm('确认退回？', useLoading(loading, disAgreeUp)),
