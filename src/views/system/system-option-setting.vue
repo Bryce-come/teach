@@ -97,7 +97,7 @@
           <el-input v-model="modal.nvrIp"/>
         </el-form-item>
         <el-form-item label="端口：" prop="nvrPort" :rules="{ required: true, message: '请填写' }">
-          <el-input-number v-model="modal.nvrPort" controls-position="right" :min="1000" />
+          <el-input-number v-model="modal.nvrPort" controls-position="right" :min="10" />
         </el-form-item>
         <el-form-item label="用户名：" prop="nvrUsername" :rules="{ required: true, message: '请填写' }">
           <el-input v-model="modal.nvrUsername"/>

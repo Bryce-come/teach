@@ -42,13 +42,12 @@ export async function login(ip: string, port: string, username: string, pwd: str
       ip, 1, port, username, pwd,
       {
         success(xmlDoc: any) {
-          // console.log(' 登录成功！');
           resolve();
           //   getChannelInfo();
           //   getDevicePort();
         },
         error(status: any, xmlDoc: any) {
-          reject(' 登录失败！' + status);
+          resolve('NVR登录失败: ' + status);
         },
       });
     if (-1 === iRet) {
