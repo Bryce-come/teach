@@ -24,6 +24,7 @@ export const PRIVILEGE = {
   inClassMng: 'inClassMng', // 教学过程管理
   systemSetting: 'systemSetting', // 系统选项设置
   deviceTypeMng: 'deviceTypeMng', // 设备型号配置
+  newsMng: 'newsMng', // 通知公告管理
 };
 export const Department = {
   Admin: 0,
