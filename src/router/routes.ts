@@ -318,7 +318,7 @@ const systemOptionSetting = {
 const newsMng = {
   path: '/system/news-mng',
   name: 'newsMng',
-  component: () => import('../views/news-mng.vue'),
+  component: () => import('../views/system/news-mng.vue'),
   meta: {
     CName: '消息管理设置',
     parentCName: '系统管理',
