@@ -315,6 +315,16 @@ const systemOptionSetting = {
     privileges: [PRIVILEGE.systemSetting],
   },
 };
+const newsMng = {
+  path: '/system/news-mng',
+  name: 'newsMng',
+  component: () => import('../views/news-mng.vue'),
+  meta: {
+    CName: '消息管理设置',
+    parentCName: '系统管理',
+    privileges: [PRIVILEGE.systemSetting],
+  },
+};
 const equipmentModelConfiguration = {
   path: '/system/equipment-model-configuration',
   name: 'equipmentModelConfiguration',
@@ -390,6 +400,7 @@ const indexChildren = [
   // 系统管理
   systemOptionSetting,
   equipmentModelConfiguration,
+  newsMng,
   userMng,
   roleMng,
   // test,
