@@ -95,10 +95,9 @@
               </div>
             </el-popover>
             <div
-              v-if="itemb.extend && itemb.extend.lessons"
               :key="ii"
               :id="i+'-'+ii"
-              v-else
+              v-else-if="itemb && itemb.extend.lessons && mode !== ''"
               @click='()=> {
                 if(mode==="timeRange"){
                   choose(i, ii, itemb);
@@ -554,6 +553,7 @@ export default createComponent({
             },
             lessons: undefined,
             clasz: null,
+            claszGroup: null,
           },
         };
         showModal.value.type = 'add';
