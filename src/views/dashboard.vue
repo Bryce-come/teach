@@ -33,6 +33,17 @@
 			</div>
 			<stateCount/>
 		</div>
+    <hr>
+    <div class="flex">
+      <div class="flex column">
+        <useTime class="bk" style="width:500px;height:250px"/>
+        <useCount class="bk" style="width:500px;height:250px"/>
+        <div class="flex">
+          <timeOn class="bk" style="width:250px;height:125px"/>
+          <onTimeWeek class="bk" style="width:250px;height:125px"/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -46,9 +57,13 @@ import {router} from '@/main';
 import {assert, sleep} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
 import stateCount from '@/views/dashboardComp/stateCount.vue';
+import useTime from '@/views/dashboardComp/useTime.vue';
+import useCount from '@/views/dashboardComp/useCount.vue';
+import timeOn from '@/views/dashboardComp/useCount.vue';
+import onTimeWeek from '@/views/dashboardComp/onTimeWeek.vue';
 
 export default createComponent({
-  components: { stateCount },
+  components: { stateCount, useTime, useCount, timeOn, onTimeWeek},
   setup() {
     const loading = ref(false);
     const timeBoard = ref<any>({
@@ -114,6 +129,10 @@ export default createComponent({
 }
 .weatherbk{
 	background: url("../assets/dashboard/weatherbk.png") no-repeat;
+  background-size: 100% 100%;
+}
+.bk {
+  background: url("../assets/dashboard/chartbk.png") no-repeat;
   background-size: 100% 100%;
 }
 </style>

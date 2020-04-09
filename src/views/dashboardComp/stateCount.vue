@@ -1,24 +1,24 @@
 <template>
   <div class="flex" v-loading="loading">
       <div>
-        <el-progress type="dashboard" :percentage="state.wp" color="#26b229"></el-progress>
-        <div>
-        </div>
+        <el-progress type="dashboard" :percentage="state.wp" color="#26b229" :show-text='false' :stroke-width="25"></el-progress>
+        <div style="color:#26b229;margin-left:35px;font-size:17px">{{'运行中:'}}</div>
+        <div style="color:#26b229;margin-left:50px;font-size:17px">{{state.workingNum}}</div>
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.ep" color="#ff4949"></el-progress>
-        <div>
-        </div>
+        <el-progress type="dashboard" :percentage="state.ep" color="#ff4949" :show-text='false' :stroke-width="25"></el-progress>
+        <div style="color:#ff4949;margin-left:40px;font-size:17px">{{'故障:'}}</div>
+        <div style="color:#ff4949;margin-left:55px;font-size:17px">{{state.emergencyNum}}</div>
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.op" color="#3d3d3d"></el-progress>
-        <div>
-        </div>
+        <el-progress type="dashboard" :percentage="state.op" color="#3d3d3d" :show-text='false' :stroke-width="25"></el-progress>
+        <div style="color:#E6E6FA;margin-left:40px;font-size:17px">{{'关机:'}}</div>
+        <div style="color:#E6E6FA;margin-left:55px;font-size:17px">{{state.offlineNum}}</div>
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.cp" color="#d7d400"></el-progress>
-        <div>
-        </div>
+        <el-progress type="dashboard" :percentage="state.qp" color="#d7d400" :show-text='false' :stroke-width="25"></el-progress>
+        <div style="color:#d7d400;margin-left:40px;font-size:17px">{{'其他:'}}</div>
+        <div style="color:#d7d400;margin-left:55px;font-size:17px">{{state.qitaNum}}</div>
       </div>
   </div>
 </template>
@@ -30,27 +30,92 @@ import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
-import {MonitorStationList} from '@/dao/monitorDao';
+import { CourseRecordInClass } from '@/dao/courseRecordDao';
+import { MonitorStationList } from '@/dao/monitorDao';
 
 export default {
   name: 'stateCount',
   setup() {
     const loading = ref(false);
     const state = ref<any>({
-      workingNum: undefined,
-      wp: undefined,
-      emergencyNum: undefined,
-      ep: undefined,
-      offlineNum: undefined,
-      op: undefined,
-      closeNum: undefined,
-      cp: undefined,
+      workingNum: 0,
+      wp: 0,
+      emergencyNum: 0,
+      ep: 0,
+      offlineNum: 0,
+      op: 0,
+      qitaNum: 0,
+      qp: 0,
     });
     const stationList = ref<any>([]);
+    const courseRecord = ref<any>();    
+    function summaryHandle(summary: any, key: string) {
+      if (summary[key]) {
+        summary[key] = summary[key] + 1;
+      } else {
+        summary[key] = 1;
+      }
+    }
+    function setState(){
+      for (let i = 0;i < stationList.value.length; i++) {
+        if (stationList.value[i].extend.status === 'working') {
+          state.value.workingNum++;
+        } else if (stationList.value[i].extend.status === 'emergency') {
+          state.value.emergencyNum++;
+        } else if (stationList.value[i].extend.status === 'offline') {
+          state.value.offlineNum++;
+        } else if (stationList.value[i].extend.status === 'close') {
+          state.value.offlineNum++;
+        } else {
+          state.value.qitaNum++;
+        }        
+      }
+      const count = state.value.workingNum + state.value.emergencyNum + state.value.offlineNum + state.value.qitaNum;
+      state.value.wp = state.value.workingNum / count * 100;
+      state.value.ep = state.value.emergencyNum / count * 100;
+      state.value.op = state.value.offlineNum / count * 100;
+      state.value.qp = state.value.qitaNum / count * 100;
+    }
     onMounted(useLoading(loading, async () => {
-      await Promise.all([
-        stationList.value = await MonitorStationList(),
-      ]);
+      try {
+        await Promise.all([
+          courseRecord.value = await CourseRecordInClass(),
+          stationList.value = await MonitorStationList(),
+        ]);
+        const data = [];
+        const summary: any = {};
+        for (const station of stationList.value) {
+          if (!station.deviceList || station.deviceList.length === 0) {
+            summaryHandle(summary, 'offline');
+            station.extend.status = 'offline';
+          } else {
+            const device = station.deviceList[0];
+            if (device.extend.status) {
+              summaryHandle(summary, device.extend.status);
+            } else {
+              summaryHandle(summary, 'offline');
+            }
+            station.extend.status = device.extend.status;
+            // 数据二次处理
+            station.extend.deviceId = device.id;
+            station.extend.deviceImg = device.deviceType.img;
+            if (courseRecord.value && courseRecord.value.stationBind && courseRecord.value.stationBind[station.id.toString()]) {
+              station.extend.students = courseRecord.value.stationBind[station.id.toString()];
+            }
+          }
+        }
+        for (const key of Object.keys(summary)) {
+          data.push({
+            name: statusMap(key).arrName,
+            itemStyle: {
+              color: statusMap(key).color,
+            },
+            value: summary[key],
+          });
+        }
+        setState();
+      }
+      catch(err) {}
     }));
     return {
       state,
