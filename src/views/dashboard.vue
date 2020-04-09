@@ -36,11 +36,31 @@
     <hr>
     <div class="flex">
       <div class="flex column">
-        <useTime class="bk" style="width:500px;height:250px"/>
-        <useCount class="bk" style="width:500px;height:250px"/>
+        <useTime class="bk" style="width:33vw;height:250px"/>
+        <useCount class="bk" style="width:33vw;height:250px"/>
         <div class="flex">
-          <timeOn class="bk" style="width:250px;height:125px"/>
-          <onTimeWeek class="bk" style="width:250px;height:125px"/>
+          <timeOn class="bk" style="width:17vw;height:125px"/>
+          <onTimeWeek class="bk" style="width:16vw;height:125px"/>
+        </div>
+      </div>
+      <div class="flex column">
+        <iframe id="iframe" name="iframe" :src="'http://192.168.0.132:9000'" style="width:33vw;height:280px"></iframe>
+        <div class="flex column bk" style="width:33vw;height:350px">
+          <div style="color:#28D0F1">学生操作监控</div>
+          <div class="flex">
+            <div class="bk" style="width:15vw;height:150px"></div>
+            <div class="bk" style="width:15vw;height:150px"></div>
+          </div>
+          <div style="color:#28D0F1">设备运行参数</div>
+          <parameter style="width:30vw;height:150px;" />
+        </div>
+      </div>
+      <div class="flex column">
+        <div class="bk" style="width:33vw;height:250px">
+          <news style="width:100%;height:100%"/>
+        </div>
+        <div class="bk" style="width:33vw;height:380px">
+          <timeLine style="width:100%;height:100%"/>
         </div>
       </div>
     </div>
@@ -59,11 +79,14 @@ import {Login} from '@/dao/userDao';
 import stateCount from '@/views/dashboardComp/stateCount.vue';
 import useTime from '@/views/dashboardComp/useTime.vue';
 import useCount from '@/views/dashboardComp/useCount.vue';
-import timeOn from '@/views/dashboardComp/useCount.vue';
+import timeOn from '@/views/dashboardComp/timeOn.vue';
 import onTimeWeek from '@/views/dashboardComp/onTimeWeek.vue';
+import parameter from '@/views/dashboardComp/parameter.vue';
+import news from '@/views/dashboardComp/news.vue';
+import timeLine from '@/views/dashboardComp/timeLine.vue';
 
 export default createComponent({
-  components: { stateCount, useTime, useCount, timeOn, onTimeWeek},
+  components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine},
   setup() {
     const loading = ref(false);
     const timeBoard = ref<any>({

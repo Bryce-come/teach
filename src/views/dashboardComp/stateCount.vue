@@ -114,8 +114,11 @@ export default {
           });
         }
         setState();
+        if (!stationList.value) throw "参数错误";
       }
-      catch(err) {}
+      catch(err) {
+        console.log(err)
+      }
     }));
     return {
       state,

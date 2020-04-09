@@ -1,6 +1,6 @@
 <template>
   <div class="flex" v-loading="loading">
-      <v-chart autoresize style="width:100%;height: calc(100% - 33px);margin-top:30px" :options="option"/>
+      <v-chart autoresize style="width:100%;height: calc(100% - 33px)" :options="option"/>
   </div>
 </template>
 
@@ -32,14 +32,14 @@ export default {
       legend: {
         orient: 'vertical',
         left: 10,
-        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎'],
+        data: ['运行', '故障', '关机', '其他'],
         textStyle: {
           color: '#28D0F1',
         }
       },
       series: [
         {
-          name: '访问来源',
+          name: '状态',
           type: 'pie',
           radius: ['10%', '70%'],
           avoidLabelOverlap: false,
@@ -51,11 +51,10 @@ export default {
             show: false
           },
           data: [
-            {value: 335, name: '直接访问'},
-            {value: 310, name: '邮件营销'},
-            {value: 234, name: '联盟广告'},
-            {value: 135, name: '视频广告'},
-            {value: 1548, name: '搜索引擎'}
+            {value: 12, name: '运行'},
+            {value: 0, name: '故障'},
+            {value: 2, name: '关机'},
+            {value: 0, name: '其他'},
           ]
         }
       ]

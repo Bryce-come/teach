@@ -43,7 +43,7 @@ export default {
       xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+        data: ['周六', '周日', '周一', '周二', '周三', '周四', '周五'],
         axisLabel: {
           show: true,
           textStyle: {
@@ -66,14 +66,14 @@ export default {
           type: 'line',
           smooth: true,
           areaStyle: {},
-          data: [0, 132, 101, 134, 90, 230, 210]
+          data: [210, 0, 132, 101, 134, 90, 230]
         },
         {
           name: '教师',
           type: 'line',
           smooth: true,
           areaStyle: {},
-          data: [0, 182, 191, 234, 290, 330, 310]
+          data: [310, 0, 182, 191, 234, 290, 330]
         },
       ]
     };
