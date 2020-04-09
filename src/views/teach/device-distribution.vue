@@ -154,6 +154,7 @@
           }
           //  console.log(stationExtend.value);
         } else {
+          //todo 初始化stationExtend.value时可能把班级信息挤掉了
           stationExtend.value = initExtend();
         }
         studentMode.value.visible = true;
