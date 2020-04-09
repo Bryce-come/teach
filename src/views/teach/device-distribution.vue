@@ -68,6 +68,7 @@
       </div>
     </div>
     <kit-dialog-simple
+      v-if="courseRecordInClass"
       id="device-distribute"
       :modal="studentMode"
       :confirm="update"
@@ -127,6 +128,7 @@
       };
       const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
+        if(!courseRecordInClass.value) return
         studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
         if (courseRecordInClass.value.extend.stationBind) {
           const obj = Object.values(courseRecordInClass.value.extend.stationBind);
@@ -145,17 +147,14 @@
       const distribution = async (id: any) => {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
-        if (courseRecordInClass.value.extend.stationBind) {
-          stationExtend.value = courseRecordInClass.value.extend;
-          if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {
-            checkList.value = courseRecordInClass.value.extend.stationBind[id.toString()];
-          } else {
-            checkList.value = [];
-          }
-          //  console.log(stationExtend.value);
+        if(!courseRecordInClass.value.extend.stationBind){
+          courseRecordInClass.value.extend.stationBind = {}
+        }
+        stationExtend.value = courseRecordInClass.value.extend;
+        if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {
+          checkList.value = courseRecordInClass.value.extend.stationBind[id.toString()];
         } else {
-          //todo 初始化stationExtend.value时可能把班级信息挤掉了
-          stationExtend.value = initExtend();
+          checkList.value = [];
         }
         studentMode.value.visible = true;
       };
@@ -233,12 +232,6 @@
       };
     },
   };
-
-  function initExtend() {
-    return {
-      stationBind: {},
-    };
-  }
 </script>
 <style scoped lang="scss">
   //  .card{
