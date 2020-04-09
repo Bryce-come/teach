@@ -288,7 +288,7 @@
         </el-form-item>
         <el-form-item
           label="上课班级：" prop="extend.clasz"
-          :rules="showModal.oneLesson.type!==1&&showModal.oneLesson.type!==2? { required: true, message: '请选择班级'} : { required: false}"
+          :rules="showModal.oneLesson.type!==2? { required: true, message: '请选择班级'} : { required: false}"
           v-if="showModal.oneLesson.type!==2">
           <el-select filterable v-model="showModal.oneLesson.extend.clasz" @change="setGroupValue()">
             <el-option
@@ -552,8 +552,8 @@ export default createComponent({
               result: undefined,
             },
             lessons: undefined,
-            clasz: null,
-            claszGroup: null,
+            clasz: undefined,
+            claszGroup: undefined,
           },
         };
         showModal.value.type = 'add';
