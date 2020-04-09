@@ -424,6 +424,12 @@ export const routes = [
     meta: { authDisabled: true },
   },
   {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../views/dashboard.vue'),
+    meta: { authDisabled: true },
+  },
+  {
     path: '/404',
     name: '404',
     component: () => import('../components/page404.vue'),
