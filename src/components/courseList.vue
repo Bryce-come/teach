@@ -70,6 +70,7 @@
                 <span style="margin-left:5px;cursor: pointer;">删除</span>
               </div>
               <div
+                v-if="itemb.extend && itemb.extend.lessons"
                 slot="reference"
                 :id="i+'-'+ii"
                 class="course-list-content flex center column"
@@ -94,6 +95,7 @@
               </div>
             </el-popover>
             <div
+              v-if="itemb.extend && itemb.extend.lessons"
               :key="ii"
               :id="i+'-'+ii"
               v-else
@@ -640,7 +642,8 @@ export default createComponent({
       }
       if (result.length > 0) {
         for (const d of result) {
-          // 课时矩阵
+          // 课时矩阵 todo
+          if(!d.extend || !d.extend.lessons) continue
           originList.value.lessonsList[setThisDay(new Date(d.startDt).getDay()) - 1].lesson.splice(d.extend.lessons[0] - 1, 1, d);
           // 挤掉的div 隐藏
           for (let j = 0; j < d.extend.lessons.length - 1; j++) {
@@ -713,7 +716,7 @@ export default createComponent({
       }
     }
     onMounted(useLoading(loading, async () => {
-      
+
       await getCourseCount();
       await setWeekSection(props.dt ? props.dt : new Date());
       await Promise.all([

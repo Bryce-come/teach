@@ -6,7 +6,8 @@ import {postService} from 'web-toolkit/src/case-main/index';
  * RequestParam(required = false, defaultValue = "false")boolean onlyLinkOn
  * RequestParam(required = false, defaultValue = "false")boolean onlyNVR
  */
-export async function SettingGet(params: any) {
+export async function SettingGet(params?: any) {
+  if(!params) params = {};
   const {data} = await postService('/rest/setting/get', params);
   return data;
 }

@@ -1,6 +1,6 @@
 <template>
-  <el-tabs type="border-card" v-loading="loading">
-    <el-tab-pane label="当前学期设定">
+  <el-tabs type="border-card" v-loading="loading" v-model="tabName">
+    <el-tab-pane name="1" label="当前学期设定">
       <el-form label-width="120px">
         <el-form-item label="学年设置：">
           <el-input-number v-model="modal.year" controls-position="right" :min="2019" :max="new Date().getFullYear()" />
@@ -21,7 +21,7 @@
         <kit-err-channel id="setting-term" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
-    <el-tab-pane label="作息时间设定">
+    <el-tab-pane name="2" label="作息时间设定">
       <el-form ref="form2" label-width="180px" :model="modal">
         <el-form-item
           :rules="{ required: true, message: '请填写' }"
@@ -46,7 +46,7 @@
         <kit-err-channel id="setting-terms" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
-    <el-tab-pane label="报警提醒开关">
+    <el-tab-pane name="3" label="报警提醒开关">
       <el-form ref="form3" label-width="180px">
         <el-form-item label="设备报警提醒开关：">
           <el-switch v-model="modal.deviceAlarmOn"/>
@@ -73,12 +73,12 @@
         <kit-err-channel id="setting-alarm" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
-    <el-tab-pane label="网关通道开关">
+    <el-tab-pane name="4" label="网关通道开关">
       <el-form ref="form4" label-width="260px">
         <el-form-item label="LKT-MAN是否能控制CNC网络连通：">
           <el-switch v-model="modal.CNCLinkOn"/>
         </el-form-item>
-        <el-form-item label="默认超时时间：" v-if="modal.CNCLinkOn">
+        <el-form-item label="默认下课后关闭时间：" v-if="modal.CNCLinkOn">
           <el-input-number v-model="modal.CNCLinkTimeout" controls-position="right" :min="0" />
           <span style="margin-left: 10px">分钟</span>
         </el-form-item>
@@ -91,7 +91,7 @@
         <kit-err-channel id="setting-link" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
-    <el-tab-pane label="NVR访问配置">
+    <el-tab-pane name="5" label="NVR访问配置">
       <el-form ref="form5" label-width="100px" style="width: 350px" :model="modal">
         <el-form-item label="IP：" prop="nvrIp" :rules="{ required: true, message: '请填写' }">
           <el-input v-model="modal.nvrIp"/>
@@ -125,10 +125,12 @@ import { SettingGet, SettingSet } from '@/dao/settingDao';
 import { Message } from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import { pushMsgErr, submitErrChanel } from 'web-toolkit/src/case-main';
+import {router} from "@/main";
 
 export default {
   setup() {
     const loading = ref(false);
+    const tabName = ref<string>("1");
     const form2 = ref<ElForm|null>(null);
     const form5 = ref<ElForm|null>(null);
     const modal = ref<any>({
@@ -179,10 +181,13 @@ export default {
       await update(params, 'setting-terms');
     }
     onMounted(useLoading(loading, async () => {
+      if(router.currentRoute.query.tab){
+        tabName.value = router.currentRoute.query.tab as string;
+      }
       await query();
     }));
     return{
-      loading, modal, form2, form5,
+      loading, modal, form2, form5, tabName,
       update: useLoading(loading, update),
       updateTerms: useLoading(loading, updateTerms),
       updateNVR: useLoading(loading, updateNVR),

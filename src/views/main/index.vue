@@ -30,11 +30,16 @@
   </div>
 </template>
 <script lang="ts">
-import LktMenu from './Menu.vue';
+  import LktMenu from './Menu.vue';
 import LktNavbar from './Navbar.vue';
-import { ref, Ref } from '@vue/composition-api';
+import { ref, onMounted } from '@vue/composition-api';
 import {router} from '@/main';
 import {routes} from '@/router/routes';
+import {storeUserInfo} from 'web-toolkit/src/case-main'
+  import {PRIVILEGE} from "@/types/privilege";
+  import {SettingGet} from "@/dao/settingDao";
+  import { MessageBox } from 'element-ui';
+
 export default {
   components: { LktMenu, LktNavbar },
   setup() {
@@ -62,9 +67,23 @@ export default {
         route,
       }];
     };
-    const path: Ref<PathItem[]> = ref(resolveRouteMeta(router.currentRoute.meta.CName));
+    const path = ref<PathItem[]>(resolveRouteMeta(router.currentRoute.meta.CName));
     router.afterEach((to, from) => {
       path.value = resolveRouteMeta(to.meta.CName);
+    });
+    onMounted(async ()=>{
+      if(storeUserInfo.user && storeUserInfo.user.role.privileges.indexOf(PRIVILEGE.systemSetting)>-1){
+        const setting = await SettingGet();
+        if(setting.terms && setting.terms[1]<new Date().getTime()){
+          MessageBox.confirm('当前学年学期的配置已过期，请前往配置', '注意', {
+            confirmButtonText: '前往配置',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            router.push({name: "systemOptionSetting", query:{tab:"1"}})
+          }).catch(() => {});
+        }
+      }
     });
     return { path };
   },
