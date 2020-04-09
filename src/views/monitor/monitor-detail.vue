@@ -130,7 +130,7 @@ export default {
 
     const query = async () => {
       while (!over.value) {
-        await sleep(1500);
+        await sleep(2000);
         const data = await AnalysisDeviceParam({
           deviceId: device.value.id,
         });
