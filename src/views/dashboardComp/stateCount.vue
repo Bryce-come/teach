@@ -46,17 +46,15 @@ export default {
 			closeNum: undefined,
 			cp: undefined,
 		})
-		const stationList = ref<any>([]);
-
-		onMounted(useLoading(loading, async () => {
-      await Promise.all([
-        stationList.value = await MonitorStationList(),
-      ]);
-			console.log(stationList)
-		}))
-    return{
-			state, loading,
-    };
+	const stationList = ref<any>([]);
+	onMounted(useLoading(loading, async () => {
+		await Promise.all([
+			stationList.value = await MonitorStationList(),
+		]);
+	}))
+	return{
+		state, loading,
+	};
   },
 };
 </script>

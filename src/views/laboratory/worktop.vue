@@ -245,13 +245,11 @@ export default {
     });
     // 添加操作台
     const showForm = async (data?: any) => {
-        console.log(data)
       if (form.value) {
         (form.value as ElForm).clearValidate();
       }
       if (data) {
         data = deepClone(data);
-        console.log(data)
       } else {
         data = initForm();
       }
@@ -262,11 +260,11 @@ export default {
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {
-        if(modal.value.workTopInfo.id){
+        if (modal.value.workTopInfo.id) {
           await StationUpdate({
             id: modal.value.workTopInfo.id,
             name: modal.value.workTopInfo.name,
-          })
+          });
           modal.value.visible = false;
           Message.success('修改成功');
           await queryStation();
@@ -400,7 +398,7 @@ export default {
     const query = async (id?: any) => {
       if (id) {
         stationId.value = id;
-        cheakIn.value = list.value.filter((cc:any)=>cc.id===id)[0];
+        cheakIn.value = list.value.filter((cc: any) => cc.id === id)[0];
       } else {
         if (list.value) {
           stationId.value = list.value[0].id;
@@ -419,8 +417,7 @@ export default {
         simple: true,
       });
     };
-    function test(row:any){
-      console.log(row)
+    function test(row: any) {
     }
     onMounted(useLoading(loading, async () => {
       deviceNameList.value = await DeviceList({
@@ -455,13 +452,13 @@ export default {
 
 function initForm() {
   return {
-    id: '', 
-    name: '', 
-    devices: [], 
+    id: '',
+    name: '',
+    devices: [],
     deviceList: [],
      off: '',
     extend: {
-      PCs: [], remark: '', cameras: []
+      PCs: [], remark: '', cameras: [],
       },
   };
 }

@@ -168,8 +168,8 @@ export default {
         data = initCourseForm();
         courseModal.value.type = 'add';
         courseModal.value.courseInfo = data;
-        courseModal.value.courseInfo.teacher.id = userInfo.value.user.role.privileges.indexOf('courseMng')>=0?null:
-          (userInfo.value.user.role.privileges.indexOf('courseUpdate')>=0?userInfo.value.user.id:null);
+        courseModal.value.courseInfo.teacher.id = userInfo.value.user.role.privileges.indexOf('courseMng') >= 0 ? null:
+          (userInfo.value.user.role.privileges.indexOf('courseUpdate') >= 0 ? userInfo.value.user.id: null);
       }
       courseModal.value.visible = true;
     };
@@ -186,8 +186,8 @@ export default {
       courseList.value = await CourseList({
         containPrograms: true,
       });
-      experimentFormShow.value.flag = userInfo.value.user.role.privileges.indexOf('courseMng')>=0?true: 
-              (userInfo.value.user.role.privileges.indexOf('courseUpdate')>=0?data.teacher.id===userInfo.value.user.id:false)
+      experimentFormShow.value.flag = userInfo.value.user.role.privileges.indexOf('courseMng') >= 0 ? true: 
+        (userInfo.value.user.role.privileges.indexOf('courseUpdate')>=0?data.teacher.id===userInfo.value.user.id:false);
     };
     const experimentRemove = async (row: any) => {
       await UnbindProgram({

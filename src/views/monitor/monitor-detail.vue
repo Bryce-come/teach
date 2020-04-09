@@ -160,7 +160,7 @@ export default {
         Message.error('无PC配置');
       }
     }
-    async function initVideo(){
+    async function initVideo() {
       // video
       loadingCamera.value = true;
       const setting = await SettingGet({onlyNVR: true});
