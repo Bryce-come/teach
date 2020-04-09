@@ -148,7 +148,7 @@ export default {
       moveNowId: '',
     });
     const show = ref<any>({
-      flag:false
+      flag: false,
     });
 
     function moveNow(row: any) {
@@ -174,8 +174,8 @@ export default {
       if (result !== null) {
         courseNow.value.startdate = result.startDt;
         courseNow.value.enddate = result.endDt;
-        courseNow.value.className = result.clasz?result.clasz.name:undefined;
-        courseNow.value.classGroupName = result.claszGroup?result.claszGroup.name:undefined;
+        courseNow.value.className = result.clasz ? result.clasz.name : undefined;
+        courseNow.value.classGroupName = result.claszGroup ? result.claszGroup.name : undefined;
         courseNow.value.id = result.id;
         courseNow.value.studentCount = result.studentList.length;
         show.value.flag = true;

@@ -149,6 +149,8 @@ export default createComponent({
         courseRecord.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
       ]);
+      console.log(stationList.value);
+      
       if (courseRecord.value === undefined) {
         clearInterval(timer);
       } else {

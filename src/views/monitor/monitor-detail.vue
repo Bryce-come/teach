@@ -169,10 +169,8 @@ export default {
       modalVideo.value.username = setting.nvrUsername;
       modalVideo.value.pwd = setting.nvrPwd;
       await init('contain', 1);
-      console.log(setting)
       modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
       const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-      console.log(msg)
       if (msg) {
         alert(msg);
         return ;

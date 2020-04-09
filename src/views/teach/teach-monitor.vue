@@ -38,7 +38,7 @@ export default createComponent({
     const linkOn = ref<boolean>(false);
     const record = ref<any>();
     const show = ref<any>({
-      flag:false
+      flag: false,
     });
 
     const delay = async () => {

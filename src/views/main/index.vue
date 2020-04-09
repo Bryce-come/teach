@@ -36,9 +36,9 @@ import { ref, onMounted } from '@vue/composition-api';
 import {router} from '@/main';
 import {routes} from '@/router/routes';
 import {storeUserInfo} from 'web-toolkit/src/case-main'
-  import {PRIVILEGE} from "@/types/privilege";
-  import {SettingGet} from "@/dao/settingDao";
-  import { MessageBox } from 'element-ui';
+import {PRIVILEGE} from "@/types/privilege";
+import {SettingGet} from "@/dao/settingDao";
+import { MessageBox } from 'element-ui';
 
 export default {
   components: { LktMenu, LktNavbar },

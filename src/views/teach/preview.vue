@@ -93,15 +93,15 @@ export default {
       coursePreviewList.value = await CourseList4Student();
     };
     const queryCourseInfo = async () => {
-      if (coursePreview.value===undefined){
-        Message.warning('请选择课程')
+      if (coursePreview.value === undefined) {
+        Message.warning('请选择课程');
       } else {
         const courseID = coursePreview.value;
         courseInfo.value = await CourseRecordPreview({
           courseId: courseID,
         });
-        if (courseInfo.value===undefined){
-          Message.warning('此课程并无预习信息')
+        if (courseInfo.value === undefined) {
+          Message.warning('此课程并无预习信息');
         } else {
           for (let i = 0; i < courseInfo.value.stations; i++) {
             const station = stationList.value.filter((item: any) => {

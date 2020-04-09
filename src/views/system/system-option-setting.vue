@@ -125,12 +125,12 @@ import { SettingGet, SettingSet } from '@/dao/settingDao';
 import { Message } from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
 import { pushMsgErr, submitErrChanel } from 'web-toolkit/src/case-main';
-import {router} from "@/main";
+import {router} from '@/main';
 
 export default {
   setup() {
     const loading = ref(false);
-    const tabName = ref<string>("1");
+    const tabName = ref<string>('1');
     const form2 = ref<ElForm|null>(null);
     const form5 = ref<ElForm|null>(null);
     const modal = ref<any>({
@@ -181,7 +181,7 @@ export default {
       await update(params, 'setting-terms');
     }
     onMounted(useLoading(loading, async () => {
-      if(router.currentRoute.query.tab){
+      if (router.currentRoute.query.tab) {
         tabName.value = router.currentRoute.query.tab as string;
       }
       await query();
