@@ -213,7 +213,7 @@ export default {
     function validatorA(rule: any, value: string, callback: Function) {
       if (!value) {
         callback(new Error('请选择时间'));
-      } else if (new Date(modal.value.maintainRecordInfo.restorationDt).getTime()>new Date().getTime()) {
+      } else if (new Date(modal.value.maintainRecordInfo.restorationDt).getTime() > new Date().getTime()) {
         callback(new Error('维保时间不能超过现在'));
       } else {
         callback();
@@ -222,8 +222,8 @@ export default {
     function validatorB(rule: any, value: string, callback: Function) {
       // if (!value) {
       //   callback(new Error('请选择时间'));
-      // } else 
-      if (modal.value.maintainRecordInfo.nextDt && (new Date(modal.value.maintainRecordInfo.nextDt).getTime()<new Date().getTime())) {
+      // } else
+      if (modal.value.maintainRecordInfo.nextDt && (new Date(modal.value.maintainRecordInfo.nextDt).getTime() < new Date().getTime())) {
         callback(new Error('下次维保时间不能在过去'));
       } else {
         callback();

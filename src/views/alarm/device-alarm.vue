@@ -111,7 +111,7 @@ export default {
       data: {},
     });
     const show = ref<any>({
-      flag:true
+      flag: true,
     });
     const paramCharts = ref<any[]>([]);
     const timeChart = ref<any>();
@@ -308,8 +308,8 @@ export default {
       });
       // console.log(devicesList.value);
       // console.log(deviceTypeList.value);
-      if (deviceAlarmList.value.length === 0){
-        Message.warning('最近3天内没有设备报警信息')
+      if (deviceAlarmList.value.length === 0) {
+        Message.warning('最近3天内没有设备报警信息');
       }
     }));
     return {

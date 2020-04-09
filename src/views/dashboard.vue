@@ -33,6 +33,17 @@
 			</div>
 			<stateCount/>
 		</div>
+    <hr>
+    <div class="flex">
+      <div class="flex column">
+        <useTime class="bk" style="width:500px;height:250px"/>
+        <useCount class="bk" style="width:500px;height:250px"/>
+        <div class="flex">
+          <timeOn class="bk" style="width:250px;height:125px"/>
+          <onTimeWeek class="bk" style="width:250px;height:125px"/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -46,55 +57,60 @@ import {router} from '@/main';
 import {assert, sleep} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
 import stateCount from '@/views/dashboardComp/stateCount.vue';
+import useTime from '@/views/dashboardComp/useTime.vue';
+import useCount from '@/views/dashboardComp/useCount.vue';
+import timeOn from '@/views/dashboardComp/useCount.vue';
+import onTimeWeek from '@/views/dashboardComp/onTimeWeek.vue';
 
 export default createComponent({
-	components: { stateCount },
+  components: { stateCount, useTime, useCount, timeOn, onTimeWeek},
   setup() {
-		const loading = ref(false);
-		const timeBoard = ref<any>({
-			now: undefined,
-			time: undefined,
-			month: undefined,
-			day: undefined,
-			timeOn: undefined,
-		})
-		const week = ['日','一','二','三','四','五','六'];
+    const loading = ref(false);
+    const timeBoard = ref<any>({
+      now: undefined,
+      time: undefined,
+      month: undefined,
+      day: undefined,
+      timeOn: undefined,
+    });
+    const week = ['日', '一', '二', '三', '四', '五', '六'];
 
-		function getTimeBoard(){
-			const str = new Date();
-			timeBoard.value.time = str.toTimeString().slice(0,8)
-			timeBoard.value.month = (str.getMonth()+1) + '月' + str.getDate() + '日';
-			timeBoard.value.day = '星期'+ week[str.getDay()];
-		}
-		async function setTimeBoard(){
-			while (timeBoard) {
-				getTimeBoard();
-				await sleep(1000);
-			}
-		}
-		function getTimeOn(){
-			const str = new Date();
-			timeBoard.value.timeOn = (str.getHours()-8)*2;
-		}
-		async function setTimeOn(){
-			while (timeBoard) {
-				getTimeOn();
-				await sleep(1800000);
-				// await sleep(1000);
-			}
-		}
+    function getTimeBoard() {
+      const str = new Date();
+      timeBoard.value.time = str.toTimeString().slice(0, 8);
+      timeBoard.value.month = (str.getMonth() + 1) + '月' + str.getDate() + '日';
+      timeBoard.value.day = '星期' + week[str.getDay()];
+    }
+    async function setTimeBoard() {
+      while (timeBoard) {
+        getTimeBoard();
+        await sleep(1000);
+      }
+    }
+    function getTimeOn() {
+      const str = new Date();
+      timeBoard.value.timeOn = (str.getHours() - 8) * 2;
+    }
+    async function setTimeOn() {
+      while (timeBoard) {
+        getTimeOn();
+        await sleep(1800000);
+        // await sleep(1000);
+      }
+    }
     onMounted(useLoading(loading, async () => {
-			const data = await Login( {
-					username: 'admin',
-					pwd: '666666',
-					schema: scheme,
-			});
-			updateStoreUserInfo(data);
-			setTimeBoard();
-			setTimeOn();
+      const data = await Login( {
+          username: 'admin',
+          pwd: '666666',
+          schema: scheme,
+      });
+      updateStoreUserInfo(data);
+      setTimeBoard();
+      setTimeOn();
     }));
     return {
-      loading, timeBoard,
+      loading,
+      timeBoard,
     };
   },
 });
@@ -113,6 +129,10 @@ export default createComponent({
 }
 .weatherbk{
 	background: url("../assets/dashboard/weatherbk.png") no-repeat;
+  background-size: 100% 100%;
+}
+.bk {
+  background: url("../assets/dashboard/chartbk.png") no-repeat;
   background-size: 100% 100%;
 }
 </style>

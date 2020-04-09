@@ -19,11 +19,11 @@ export function ImageLink(path: string, dt?: Date) {
 /**
  * 获取天气预报
  * list:
- *    "date": "2020-04-11",
- *    "dayweather": "小雨-中雨", // 这里用weather.ts获取图标
- *    "daytemp": "16", 温度
+ *    'date': '2020-04-11',
+ *    'dayweather': '小雨-中雨', // 这里用weather.ts获取图标
+ *    'daytemp': '16', 温度
  */
 export async function weather() {
-  const {data: {list}} = await postService("/rest/common/weather");
+  const {data: {list}} = await postService('/rest/common/weather');
   return list;
 }

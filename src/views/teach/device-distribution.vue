@@ -126,7 +126,9 @@
       };
       const queryCourseInClass = async () => {
         courseRecordInClass.value = await CourseRecordInClass();
-        if(!courseRecordInClass.value) return
+        if (!courseRecordInClass.value) {
+          return;
+        }
         studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
         if (courseRecordInClass.value.extend.stationBind) {
           const obj = Object.values(courseRecordInClass.value.extend.stationBind);
@@ -145,8 +147,8 @@
       const distribution = async (id: any) => {
         stationID.value = id;
         studentMode.value.data = studentsList.value;
-        if(!courseRecordInClass.value.extend.stationBind){
-          courseRecordInClass.value.extend.stationBind = {}
+        if (!courseRecordInClass.value.extend.stationBind) {
+          courseRecordInClass.value.extend.stationBind = {};
         }
         stationExtend.value = courseRecordInClass.value.extend;
         if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {

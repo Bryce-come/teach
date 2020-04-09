@@ -376,7 +376,7 @@ function transformDate(template: Date, timestamp: number): number {
 function initAppointForm() {
   return {
     extend: {
-      claszGroup:undefined
+      claszGroup: undefined,
     },
   };
 }

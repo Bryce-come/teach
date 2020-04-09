@@ -497,7 +497,6 @@ export default createComponent({
       }
       if (data) {
         data = deepClone(data);
-        console.log(data)
         showModal.value.type = 'update';
         // 转化 startLesson endLesson, appointDate
         if (data.startDt) {
@@ -558,8 +557,8 @@ export default createComponent({
         };
         showModal.value.type = 'add';
       }
-      if(data.endLesson>courseCount.value.count.length){
-        data.endLesson = courseCount.value.count[courseCount.value.count.length-1]
+      if (data.endLesson > courseCount.value.count.length) {
+        data.endLesson = courseCount.value.count[courseCount.value.count.length - 1];
       }
       showModal.value.oneLesson = data;
       showModal.value.visible = true;
@@ -643,11 +642,11 @@ export default createComponent({
       if (result.length > 0) {
         for (const d of result) {
           // 课时矩阵 todo
-          if(!d.extend || !d.extend.lessons) continue
+          if (!d.extend || !d.extend.lessons) { continue; }
           originList.value.lessonsList[setThisDay(new Date(d.startDt).getDay()) - 1].lesson.splice(d.extend.lessons[0] - 1, 1, d);
           // 挤掉的div 隐藏
           for (let j = 0; j < d.extend.lessons.length - 1; j++) {
-            if (d.extend.lessons[0] + j===courseCount.value.count.length){
+            if (d.extend.lessons[0] + j === courseCount.value.count.length) {
               break;
             }
             // const str = document.getElementsByClassName('tabDiv')[setThisDay(new Date(result[i].startDt).getDay()) - 1].childNodes[result[i].extend.lessons[0] + j] as HTMLElement;
