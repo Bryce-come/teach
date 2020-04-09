@@ -48,53 +48,54 @@ import {Login} from '@/dao/userDao';
 import stateCount from '@/views/dashboardComp/stateCount.vue';
 
 export default createComponent({
-	components: { stateCount },
+  components: { stateCount },
   setup() {
-		const loading = ref(false);
-		const timeBoard = ref<any>({
-			now: undefined,
-			time: undefined,
-			month: undefined,
-			day: undefined,
-			timeOn: undefined,
-		})
-		const week = ['日','一','二','三','四','五','六'];
+    const loading = ref(false);
+    const timeBoard = ref<any>({
+      now: undefined,
+      time: undefined,
+      month: undefined,
+      day: undefined,
+      timeOn: undefined,
+    });
+    const week = ['日', '一', '二', '三', '四', '五', '六'];
 
-		function getTimeBoard(){
-			const str = new Date();
-			timeBoard.value.time = str.toTimeString().slice(0,8)
-			timeBoard.value.month = (str.getMonth()+1) + '月' + str.getDate() + '日';
-			timeBoard.value.day = '星期'+ week[str.getDay()];
-		}
-		async function setTimeBoard(){
-			while (timeBoard) {
-				getTimeBoard();
-				await sleep(1000);
-			}
-		}
-		function getTimeOn(){
-			const str = new Date();
-			timeBoard.value.timeOn = (str.getHours()-8)*2;
-		}
-		async function setTimeOn(){
-			while (timeBoard) {
-				getTimeOn();
-				await sleep(1800000);
-				// await sleep(1000);
-			}
-		}
+    function getTimeBoard() {
+      const str = new Date();
+      timeBoard.value.time = str.toTimeString().slice(0, 8);
+      timeBoard.value.month = (str.getMonth() + 1) + '月' + str.getDate() + '日';
+      timeBoard.value.day = '星期' + week[str.getDay()];
+    }
+    async function setTimeBoard() {
+      while (timeBoard) {
+        getTimeBoard();
+        await sleep(1000);
+      }
+    }
+    function getTimeOn() {
+      const str = new Date();
+      timeBoard.value.timeOn = (str.getHours() - 8) * 2;
+    }
+    async function setTimeOn() {
+      while (timeBoard) {
+        getTimeOn();
+        await sleep(1800000);
+        // await sleep(1000);
+      }
+    }
     onMounted(useLoading(loading, async () => {
-			const data = await Login( {
-					username: 'admin',
-					pwd: '666666',
-					schema: scheme,
-			});
-			updateStoreUserInfo(data);
-			setTimeBoard();
-			setTimeOn();
+      const data = await Login( {
+          username: 'admin',
+          pwd: '666666',
+          schema: scheme,
+      });
+      updateStoreUserInfo(data);
+      setTimeBoard();
+      setTimeOn();
     }));
     return {
-      loading, timeBoard,
+      loading,
+      timeBoard,
     };
   },
 });

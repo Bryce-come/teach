@@ -150,9 +150,8 @@ export default {
       visible: false,
       experimentInfo: null,
     });
-    function userRole(ror: any){
-      
-    };
+    function userRole(ror: any) {
+    }
     const userInfo = ref<any>({});
     const showCourseForm = async (data?: any) => {
       userInfo.value = storeUserInfo;
@@ -168,14 +167,14 @@ export default {
         data = initCourseForm();
         courseModal.value.type = 'add';
         courseModal.value.courseInfo = data;
-        courseModal.value.courseInfo.teacher.id = userInfo.value.user.role.privileges.indexOf('courseMng') >= 0 ? null:
-          (userInfo.value.user.role.privileges.indexOf('courseUpdate') >= 0 ? userInfo.value.user.id: null);
+        courseModal.value.courseInfo.teacher.id = userInfo.value.user.role.privileges.indexOf('courseMng') >= 0 ? null :
+          (userInfo.value.user.role.privileges.indexOf('courseUpdate') >= 0 ? userInfo.value.user.id : null);
       }
       courseModal.value.visible = true;
     };
     const experimentFormShow = ref<any>({
-      flag:false,
-    })
+      flag: false,
+    });
     const showExperimentForm = async (data?: any) => {
       userInfo.value = storeUserInfo;
       if (data) {
@@ -186,8 +185,8 @@ export default {
       courseList.value = await CourseList({
         containPrograms: true,
       });
-      experimentFormShow.value.flag = userInfo.value.user.role.privileges.indexOf('courseMng') >= 0 ? true: 
-        (userInfo.value.user.role.privileges.indexOf('courseUpdate')>=0?data.teacher.id===userInfo.value.user.id:false);
+      experimentFormShow.value.flag = userInfo.value.user.role.privileges.indexOf('courseMng') >= 0 ? true :
+        (userInfo.value.user.role.privileges.indexOf('courseUpdate') >= 0 ? data.teacher.id === userInfo.value.user.id : false);
     };
     const experimentRemove = async (row: any) => {
       await UnbindProgram({
