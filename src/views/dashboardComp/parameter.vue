@@ -6,10 +6,10 @@
         <div style="color:#28D0F1;font-weight:bold;margin-left: 1rem;font-size: 1.3rem">学生操作监控</div>
       </div>
       <div class="flex center">
-        <div id="video" style="margin-top:1rem;width:52vh;height:24vh;"></div>
+        <div id="video" style="padding:1rem 0;width:52vh;height:25vh;"></div>
       </div>
     </div>
-    <div style="width:30vw;height:33vh;margin-top:1vh">
+    <div style="width:30vw;height:33vh;margin-top:2vh">
       <div class="flex" style="margin-left:1rem;">
         <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
         <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
@@ -17,14 +17,14 @@
       <div
         v-if="device && device.extend && device.extend.paramsMap"
         class="flex wrap between"
-        style="margin-left:2vw;overflow:hidden;height:15vh;margin-top: 1rem">
+        style="margin-left:2vw;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
           class="monitor-detail--param-item flex between"
           v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
-          <div class="flex between" style="margin-top:5px;width:13rem;height:40%">
-            <span style="text-align:center;color:white;font-size:1rem;padding-left:20px">{{ param.nameSimple }}：</span>
-            <div style="text-align:center;color:white;font-size:1rem;">{{ param.value }}</div>
+          <div class="flex between" style="margin-top:0.5rem;width:13rem;height:40%">
+            <span style="text-align:center;color:white;font-size:1.2rem;padding-left:20px">{{ param.nameSimple }}：</span>
+            <div style="text-align:center;color:white;font-size:1.2rem;">{{ param.value }}</div>
           </div>
         </div>
       </div>

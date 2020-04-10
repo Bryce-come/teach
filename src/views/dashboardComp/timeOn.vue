@@ -1,10 +1,10 @@
 <template>
   <div class="flex column" style="height:30vh; overflow:hidden" v-loading="loading">
     <div class="flex" style="margin-left:1vw;margin-top:1vh">
-      <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
-      <div style="color:#28D0F1;font-weight:bold;font-size:1rem;margin-left: 1rem">实训室近一周开机总时长统计</div>
+      <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
+      <div style="color:#28D0F1;font-weight:bold;font-size:1.3rem;margin-left: 1rem">实训室近一周开机总时长统计</div>
     </div>
-    <v-chart autoresize style="width:100%;height:24vh;" :options="option"/>
+    <v-chart autoresize style="width:100%;height:25vh;" :options="option"/>
   </div>
 </template>
 
@@ -52,7 +52,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-            fontSize:'25'
+            fontSize:'14'
           },
         },
       },
@@ -62,7 +62,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-            fontSize:'25'
+            fontSize:'14'
           },
         },
       },

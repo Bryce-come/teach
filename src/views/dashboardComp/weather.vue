@@ -2,9 +2,9 @@
   <div  style="" v-loading="loading">
     <div class="flex" style="justify-content:space-between;width:20vw;">
       <div v-for="(item,i) of weatherList" :key="i" class="flex column center weatherbk" style="width:4.5vw;height:10vh">
-        <div><img :src="iList[i]" style="height: 2rem"/></div>
-        <div style="color:white;font-size:1rem;">{{imgList[i]}}</div>
-        <div style="color:white;font-size:1rem;">{{item.date.slice(5,10)}}</div>
+        <div><img :src="iList[i]" style="height: 2rem;margin-bottom: 1rem"/></div>
+        <div style="color:white;font-size:1.1rem;">{{imgList[i]}}</div>
+        <div style="color:white;font-size:1.1rem;">{{item.date.slice(5,10)}}</div>
       </div>
     </div>
   </div>

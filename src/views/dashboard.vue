@@ -14,7 +14,7 @@
         教学实训数据展示平台
       </div>
       <div id="timeOn">
-        <div style="color:white;font-size: 1.3rem;">当日开机总时长</div>
+        <div style="color:white;font-size: 1.4rem;margin-bottom: 1rem">当日开机总时长</div>
         <div style="color:#F6EB1C;font-size: 2rem;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
       </div>
       <stateCount ref="stateCount" style="width:20vw"/>
