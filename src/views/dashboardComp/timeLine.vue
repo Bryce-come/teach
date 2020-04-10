@@ -15,7 +15,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
-            style="width:22vw; height: 5vh"
+            style="width:22vw; height: 6vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>
@@ -32,7 +32,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{'fanuc0'+(i+3)}}</div>
         <div class="device-time">
           <v-chart
-            style="width:22vw; height: 5vh"
+            style="width:22vw; height: 6vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>

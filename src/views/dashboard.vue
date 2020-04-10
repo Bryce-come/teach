@@ -10,7 +10,7 @@
       <div id="weatherBoard" class="flex" style="justify-content:space-around;align-items:center;width:12vw">
         <weather ref="weather" style="width:19vw"/>
       </div>
-      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:3rem;font-weight:bold;width:33vw">
+      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:3.5rem;font-weight:bold;width:33vw">
         教学实训数据展示平台
       </div>
       <div id="timeOn">
