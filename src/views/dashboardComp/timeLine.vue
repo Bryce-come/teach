@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <div class="flex center wrap column content" style="margin-top:-2vh;overflow:hidden;height:25vh;width:30vw;margin-left:2vw;">
+    <div class="flex center wrap column content" style="margin-top:-3vh;overflow:hidden;height:25vh;width:30vw;margin-left:2vw;">
       <div class="device-card flex center" style="width:18vw;margin-left:1vw;" v-for="(item,i) in stationList" :key="i">
         <div
           class="flex align-center center" style="margin-top:1vh;">
