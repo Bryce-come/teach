@@ -86,7 +86,7 @@
           <el-checkbox-group class="flex little-space" v-model="checkList">
             <el-checkbox
               style="min-width: 50%;font-weight: 700;padding: 5px 20px"
-              v-if="courseRecordInClass.extend.stationBind && courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
+              v-if="courseRecordInClass.extend.stationBind && courseRecordInClass.extend.stationBind[stationID.toString()] && courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
               :label="param.id">
               {{param.name}}
             </el-checkbox>
@@ -97,10 +97,8 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, Ref, onMounted, onUnmounted, watch, createComponent} from '@vue/composition-api';
-  import {router} from '@/main';
+  import {ref, onMounted, watch} from '@vue/composition-api';
   import {useLoading} from 'web-toolkit/src/service';
-  import monitor from '../monitor/monitor.vue';
   import {CourseRecordInClass, CourseRecordUpdate} from '@/dao/courseRecordDao';
   import {StationList} from '@/dao/stationDao';
   import {ImageLink} from '@/dao/commonDao.ts';

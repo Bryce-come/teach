@@ -1,17 +1,29 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vh">
-      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
-      <div style="color:#28D0F1;font-weight:bold">设备运行参数</div>
+    <div class="flex column bk" style="width:33vw;height:48vh">
+      <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;">
+        <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+        <div style="color:#28D0F1;font-weight:bold">学生操作监控</div>
+      </div>
+      <div class="flex center between" style="margin-top:1vh">
+        <div id="video" style="width:100%;height:26vh;"></div>
+      </div>
     </div>
-    <div class="flex wrap between" style="margin-left:2vw;overflow:hidden;height:16vh">
-      <div
-        class="monitor-detail--param-item flex between" style="width:"
-        v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
-        :key="index">
-        <div class="flex between" style="margin-top:5px;width:8vw;height:40%">
-          <span style="text-align:center;color:white;font-size:10px;padding-left:20px">{{ param.nameSimple }}：</span>
-          <div style="text-align:center;color:white;font-size:10px;">{{ param.value }}</div>
+    <div style="width:30vw;height:33vh;margin-top:1vh">
+      <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;">
+        <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+        <div style="color:#28D0F1;font-weight:bold">设备运行参数</div>
+      </div>
+      <div class="flex wrap between" style="margin-left:2vw;overflow:hidden;height:15vh">
+        <div
+          v-if="device && device.extend.paramsMap"
+          class="monitor-detail--param-item flex between"
+          v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
+          :key="index">
+          <div class="flex between" style="margin-top:5px;width:145px;height:40%">
+            <span style="text-align:center;color:white;font-size:10px;padding-left:20px">{{ param.nameSimple }}：</span>
+            <div style="text-align:center;color:white;font-size:10px;">{{ param.value }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -19,16 +31,16 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from '@vue/composition-api';
-import { ref, createComponent, Ref} from '@vue/composition-api';
-import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
-import { urlMap } from '@/config';
+import { onMounted,onUnmounted } from '@vue/composition-api';
+import { ref, createComponent} from '@vue/composition-api';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
-import { CourseRecordInClass } from '@/dao/courseRecordDao';
 import { MonitorStationList } from '@/dao/monitorDao';
 import {MonitorStationDetail} from '@/dao/monitorDao';
 import { sleep } from 'web-toolkit/src/utils';
+import {SettingGet} from "@/dao/settingDao";
+import {init, login, startRealPlay, stopPlay} from "@/utils/video";
+import {Message} from 'element-ui'
 
 export default {
   name: 'parameter',
@@ -36,24 +48,65 @@ export default {
     const loading = ref(false);
     const device = ref<any>();
     const station = ref<any>();
+    const count = ref<any>(0);
+    const active = ref<boolean>(true);
+    const modalVideo = ref<any>({
+      szDeviceIdentify: '',
+      start: '2020-02-26 07:00:00',
+      end: '2020-02-26 14:11:11',
+    });
+
     async function getData(){
-      await Promise.all([
-          station.value = await MonitorStationDetail({stationId: 36}),
-      ]);
+      station.value = await MonitorStationDetail({stationId: 36});
       device.value = station.value.deviceList[0];
     }
     async function setData(){
+<<<<<<< HEAD
       while(1 === 1){
           getData()
           await sleep(3000);
+=======
+      // 异步
+      // initVideo();
+      while(active.value){
+        await getData();
+        await sleep(3000)
+>>>>>>> c7a49ff2a8b0f5df879ce3c395d4985258e7e0ba
       }
     }
+    async function initVideo() {
+      const setting = await SettingGet({onlyNVR: true});
+      modalVideo.value.ip = setting.nvrIp;
+      modalVideo.value.port = setting.nvrPort;
+      modalVideo.value.username = setting.nvrUsername;
+      modalVideo.value.pwd = setting.nvrPwd;
+      await init('video', 1);
+      modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
+      const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
+      if(msg) Message.error(msg+"");
+      await startVideo(2);
+    }
+    async function startVideo(id:any){
+      console.log(23)
+      await stopPlay(0);
+      console.log(12)
+      if (id === undefined || id === null) { id = 1; }
+      // if (id === undefined || id === null) { return ; }
+      await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
+    }
     onMounted(useLoading(loading, async () => {
+<<<<<<< HEAD
       try {
         setData();
         // if (!device.value) throw "设备不存在";
       } catch (err) {}
+=======
+      setData()
+>>>>>>> c7a49ff2a8b0f5df879ce3c395d4985258e7e0ba
     }));
+    onUnmounted(()=>{
+      active.value = false;
+    });
     return {
       loading, device,
     };
@@ -63,4 +116,8 @@ export default {
 
 
 <style scoped lang="scss">
+  .bk {
+    background: url("../../assets/dashboard/chartbk.png") no-repeat;
+    background-size: 100% 100%;
+  }
 </style>

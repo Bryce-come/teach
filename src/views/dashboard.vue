@@ -28,7 +28,7 @@
       <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:40px;font-weight:bold;width:33vw">
         教学实训数据展示平台
       </div>
-      <div id="timeOn" style="wid">
+      <div id="timeOn">
         <div style="color:white">当日开机总时长</div>
         <div style="color:#F6EB1C;font-size: 25px;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
       </div>
@@ -44,20 +44,9 @@
           <onTimeWeek class="bk" style="width:15vw;height:24vh;margin-left:2vh"/>
         </div>
       </div>
-      <div class="flex column" style="height:87vh;">
-        <iframe id="iframe" name="iframe" :src="'http://192.168.0.132:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
-        <div class="flex column bk" style="width:33vw;height:48vh;margin-top:1vh">
-          <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
-            <div style="background-color:#28D0F1;width:5px;height:20px"></div>
-            <div style="color:#28D0F1;font-weight:bold">学生操作监控</div>
-          </div>
-          <div class="flex center" style="margin-top:1vh">
-            <div class="bk" style="width:15vw;height:20vh;"></div>
-            <div class="bk" style="width:15vw;height:20vh;"></div>
-          </div>
-          <!-- <div style="color:#28D0F1">设备运行参数</div> -->
-          <parameter style="width:30vw;height:36vh;margin-top:1vh" />
-        </div>
+      <div class="flex column" style="height:84vh;">
+        <iframe id="iframe" name="iframe" :src="'http://192.168.0.130:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
+        <parameter style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:87vh;">
         <div class="bk" style="width:33vw;height:32vh;margin-top:1vh">
@@ -111,8 +100,8 @@ export default createComponent({
     }
     async function setTimeBoard() {
       while (timeBoard) {
-        getTimeBoard();
-        await sleep(1000);
+        await getTimeBoard();
+        await sleep(2000);
       }
     }
     function getTimeOn() {
@@ -121,7 +110,7 @@ export default createComponent({
     }
     async function setTimeOn() {
       while (timeBoard) {
-        getTimeOn();
+        await getTimeOn();
         await sleep(1800000);
         // await sleep(1000);
       }
