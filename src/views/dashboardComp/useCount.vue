@@ -52,8 +52,8 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-          }
-        }
+          },
+        },
       },
       yAxis: {
         type: 'value',
@@ -61,8 +61,8 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-          }
-        }
+          },
+        },
       },
       series: [
         {
@@ -70,22 +70,33 @@ export default {
           type: 'line',
           smooth: true,
           areaStyle: {},
-          data: [210, 0, 132, 101, 134, 90, 230]
+          itemStyle : {
+            normal : {
+              lineStyle: {
+                color: '#FFFF00',
+              },
+            },
+          },
+          data: [210, 0, 132, 101, 134, 90, 230],
         },
         {
           name: '教师',
           type: 'line',
           smooth: true,
           areaStyle: {},
-          data: [310, 0, 182, 191, 234, 290, 330]
+          itemStyle : {
+            normal : {
+              lineStyle: {
+                color: '#ADFF2F',
+              },
+            },
+          },
+          data: [310, 0, 182, 191, 234, 290, 330],
         },
-      ]
+      ],
     };
     onMounted(useLoading(loading, async () => {
-      try {
-        
-      }
-      catch(err) {}
+      try {} catch (err) {}
     }));
     return {
       loading, option,

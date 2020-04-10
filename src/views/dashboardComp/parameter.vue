@@ -45,17 +45,14 @@ export default {
     async function setData(){
       while(1 === 1){
           getData()
-          await sleep(3000)
+          await sleep(3000);
       }
     }
     onMounted(useLoading(loading, async () => {
       try {
-        setData()
-        if (!device.value) throw "设备不存在";
-      }
-      catch(err) {
-        console.log(err)
-      }
+        setData();
+        // if (!device.value) throw "设备不存在";
+      } catch (err) {}
     }));
     return {
       loading, device,
