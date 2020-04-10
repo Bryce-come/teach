@@ -25,7 +25,7 @@
         </div> -->
         <weather ref="weather" style="width:19vw"/>
       </div>
-      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:40px;font-weight:bold;width:33vw">
+      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:1rem;font-weight:bold;width:33vw">
         教学实训数据展示平台
       </div>
       <div id="timeOn">
