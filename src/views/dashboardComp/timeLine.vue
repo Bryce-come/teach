@@ -63,19 +63,10 @@ export default {
   name: 'timeLine',
   setup() {
     const loading = ref(false);
-    const courseRecord = ref<any>();
     const stationList = ref<any>([]);
     const chart = ref<any>({});
     const times = ref<any>({});
 
-    const percentage = () => {
-      const now = new Date().getTime();
-      const start = new Date(courseRecord.value.startDt).getTime();
-      const end = new Date(courseRecord.value.endDt).getTime();
-      let ratio = 100 * (now - start) / (end - start);
-      if (ratio > 100) { ratio = 100; }
-      return parseInt(ratio.toFixed(0));
-    };
     const timeDiff = (time2: any) => {
       if (!time2) { return ; }
       const dateDiff = time2.getTime() - new Date().getTime();
@@ -86,24 +77,10 @@ export default {
       const seconds = Math.round(leave2 / 1000);
       return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
     };
-    function countTime(this: any) {
-      timeCount.value.timeValue = timeDiff(new Date(courseRecord.value.endDt));
-      if (new Date(timeCount.value.timeIf) <= new Date() ) {
-        clearInterval(timer);
-      }
-    }
     const timeCount = ref<any>({
       timeValue: null,
       timeIf: null,
     });
-    const timer = setInterval(countTime, 5000);
-    function summaryHandle(summary: any, key: string) {
-      if (summary[key]) {
-        summary[key] = summary[key] + 1;
-      } else {
-        summary[key] = 1;
-      }
-    }
     async function fetchTimes() {
       const d2 = new Date();
       const d1 = new Date();
@@ -124,39 +101,19 @@ export default {
         };
       }
     }
-    onUnmounted(() => {
-        clearInterval(timer);
-    });
     async function init() {
-      await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
-        stationList.value = await MonitorStationList(),
-      ]);
-      if (courseRecord.value === undefined) {
-        clearInterval(timer);
-      } else {
-        timeCount.value.timeIf = courseRecord.value.endDt;
-      }
+      stationList.value = await MonitorStationList();
       const data = [];
       const summary: any = {};
       for (const station of stationList.value) {
         if (!station.deviceList || station.deviceList.length === 0) {
-          summaryHandle(summary, 'offline');
           station.extend.status = 'offline';
         } else {
           const device = station.deviceList[0];
-          if (device.extend.status) {
-            summaryHandle(summary, device.extend.status);
-          } else {
-            summaryHandle(summary, 'offline');
-          }
           station.extend.status = device.extend.status;
           // 数据二次处理
           station.extend.deviceId = device.id;
           station.extend.deviceImg = device.deviceType.img;
-          if (courseRecord.value && courseRecord.value.stationBind && courseRecord.value.stationBind[station.id.toString()]) {
-            station.extend.students = courseRecord.value.stationBind[station.id.toString()];
-          }
         }
       }
       for (const key of Object.keys(summary)) {
@@ -180,17 +137,14 @@ export default {
           },
         }],
       };
-      // todo times的异步动态添加无效
       await fetchTimes();
-      timer;
     }
     return {
       init,
-      loading, courseRecord,
+      loading,
       timeDiff, chart, times,
-      stationList, countTime,
-      ImageLink, timeCount, timer,
-      percentage, statusMap,
+      stationList,
+      ImageLink, timeCount, statusMap,
     };
   },
 };
