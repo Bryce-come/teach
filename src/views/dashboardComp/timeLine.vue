@@ -5,7 +5,7 @@
       <div style="color:#28D0F1;font-weight:bold;font-size:1rem;">设备运行时间轴</div>
     </div>
     <div class="flex center wrap column content" style="margin-top:-1vh;overflow:hidden;height:27vh;width:30vw;margin-left:2vw;">
-      <div class="device-card flex center" style="width:18vw;margin-left:1vw;" v-for="(item,i) in stationList" :key="i">
+      <div class="device-card flex center" style="width:18vw;margin-left:1rem;" v-for="(item,i) in stationList" :key="i">
         <div
           class="flex align-center center" style="margin-top:1vh;">
           <div class="device-img">

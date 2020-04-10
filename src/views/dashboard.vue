@@ -1,5 +1,5 @@
 <template>
-  <div class="backwall" v-loading="loading">
+  <div class="backwall max-width" v-loading="loading">
     <div class="flex" style="justify-content:space-around;align-items:center;height:12vh">
       <div id="timeBoard" class="flex column center" style="width:14vw">
         <div>{{timeBoard.time}}</div>
