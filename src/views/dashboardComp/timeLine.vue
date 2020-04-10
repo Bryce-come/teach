@@ -1,7 +1,7 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
     <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
-      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+      <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
       <div style="color:#28D0F1;font-weight:bold;font-size:1rem;">设备运行时间轴</div>
     </div>
     <div class="flex center wrap column content" style="margin-top:-1vh;overflow:hidden;height:27vh;width:30vw;margin-left:2vw;">
