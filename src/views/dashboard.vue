@@ -8,21 +8,6 @@
         </div>
       </div>
       <div id="weatherBoard" class="flex" style="justify-content:space-around;align-items:center;width:12vw">
-        <!-- <div style="color:white" class="flex column center weatherbk">
-          <i class="el-icon-cloudy cloudy">多云</i>
-          <div>周六</div>
-          <div>4/11</div>
-        </div>
-        <div style="color:white" class="flex column center weatherbk">
-          <i class="el-icon-cloudy cloudy">多云</i>
-          <div>周日</div>
-          <div>4/12</div>
-        </div>
-        <div style="color:white" class="flex column center weatherbk">
-          <i class="el-icon-cloudy cloudy">多云</i>
-          <div>周一</div>
-          <div>4/13</div>
-        </div> -->
         <weather ref="weather" style="width:19vw"/>
       </div>
       <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:1rem;font-weight:bold;width:33vw">
@@ -61,13 +46,11 @@
 </template>
 <script lang="ts">
 import { onMounted} from '@vue/composition-api';
-import { ref, createComponent, Ref} from '@vue/composition-api';
-import { ElForm } from 'element-ui/types/form';
+import { ref, createComponent} from '@vue/composition-api';
 import { useLoading } from 'web-toolkit/src/service';
-import { storeUserInfo, updateStoreUserInfo, submitErrChanel, pushMsgErr } from 'web-toolkit/src/case-main';
-import {loginTitle1, loginTitle2, loginLogo, scheme} from '@/config';
-import {router} from '@/main';
-import {assert, sleep} from 'web-toolkit/src/utils/index';
+import { updateStoreUserInfo} from 'web-toolkit/src/case-main';
+import {scheme} from '@/config';
+import {sleep} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
 import stateCount from '@/views/dashboardComp/stateCount.vue';
 import useTime from '@/views/dashboardComp/useTime.vue';
@@ -135,10 +118,10 @@ export default createComponent({
       setTimeOn();
       parameter.value.init0();
       stateCount.value.init();
-      useTime.value.init();
-      useCount.value.init();
-      timeOn.value.init();
-      onTimeWeek.value.init();
+      // useTime.value.init();
+      // useCount.value.init();
+      // timeOn.value.init();
+      // onTimeWeek.value.init();
       news.value.init();
       timeLine.value.init();
       weather.value.init()
