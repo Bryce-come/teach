@@ -25,22 +25,22 @@
 </template>
 
 <script lang="ts">
-import { onMounted,onUnmounted } from '@vue/composition-api';
-import {leftFill0} from 'web-toolkit/src/utils';
+import { onMounted, onUnmounted } from '@vue/composition-api';
+import { leftFill0 } from 'web-toolkit/src/utils';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
 import { CourseRecordInClass } from '@/dao/courseRecordDao';
-import {ImageLink} from '@/dao/commonDao';
+import { ImageLink } from '@/dao/commonDao';
 import { MonitorStationList } from '@/dao/monitorDao';
-import {MonitorStationDetail} from '@/dao/monitorDao';
-import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
+import { MonitorStationDetail} from '@/dao/monitorDao';
+import { AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams } from '@/dao/analysisDao';
 import { sleep } from 'web-toolkit/src/utils';
-import {NewsList} from '@/dao/newsDao';
-import {AnalysisDeviceTimes} from '@/dao/analysisDao';
-import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import { NewsList } from '@/dao/newsDao';
+import { AnalysisDeviceTimes } from '@/dao/analysisDao';
+import { timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 
 export default {
   name: 'timeLine',
@@ -98,14 +98,13 @@ export default {
       });
       for (const d of list) {
         const time = d.extend.times || [];
-        times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true, });
-        // times.value[d.id].xAxis.axisLabel= {
-        //   show: true,
-        //   textStyle: {
-        //     color: '#28D0F1',
-        //   }
-        // }
-        console.log(times.value[d.id])
+        times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true});
+        times.value[d.id].xAxis.axisLabel = {
+          show: true,
+          textStyle: {
+            color: '#28D0F1',
+          },
+        };
       }
     }
     onUnmounted(() => {

@@ -32,26 +32,23 @@ export default {
     const weatherList = ref<any>();
     const imgList = ref<any>();
     const iList = ref<any>([]);
-    async function getData(){
+    const weatherMap: any = weatherIconMap;
+    async function getData() {
       weatherList.value = await weather();
       imgList.value = weatherList.value.map((cc: any) => cc.dayweather);
       for (const d of imgList.value) {
-        const str = weatherIconMap[d]
-        iList.value.push(str)
+        const str = weatherMap[d];
+        iList.value.push(str);
       }
-      console.log(iList)
     }
-    async function setData(){
+    async function setData() {
       getData();
     }
     onMounted(useLoading(loading, async () => {
       try {
-        setData()
+        setData();
         // if (!message.value) throw "设备不存在";
-      }
-      catch(err) {
-        console.log(err)
-      }
+      } catch (err) {}
     }));
     return {
       loading, weatherList, weatherIconMap, iList, imgList,

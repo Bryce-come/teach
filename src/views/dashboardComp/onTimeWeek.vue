@@ -36,7 +36,7 @@ export default {
       legend: {
         orient: 'vertical',
         left: 1,
-        data: ['运行', '故障', '关机', '其他'],
+        data: ['运行', '故障', '关机', '空闲'],
         textStyle: {
           color: '#28D0F1',
           fontSize: '10px'
@@ -56,10 +56,10 @@ export default {
             show: false
           },
           data: [
-            {value: 12, name: '运行'},
-            {value: 0, name: '故障'},
-            {value: 2, name: '关机'},
-            {value: 2, name: '其他'},
+            {value: 12, name: '运行', itemStyle: {color: '#26b229'}},
+            {value: 0, name: '故障', itemStyle: {color: '#ff4949'}},
+            {value: 2, name: '关机', itemStyle: {color: '#3d3d3d'}},
+            {value: 2, name: '空闲', itemStyle: {color: '#d7d400'}},
           ]
         }
       ]

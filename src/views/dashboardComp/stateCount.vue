@@ -17,7 +17,7 @@
       </div>
       <div>
         <el-progress type="dashboard" :percentage="state.qp" color="#d7d400" :show-text='false' :stroke-width="15" :width="70"></el-progress>
-        <div style="color:#d7d400;margin-left:1vw;margin-top:-1vh;font-size:12px">{{'其他:'+state.qitaNum}}</div>
+        <div style="color:#d7d400;margin-left:1vw;margin-top:-1vh;font-size:12px">{{'空闲:'+state.qitaNum}}</div>
         <!-- <div style="color:#d7d400;margin-left:2vw;font-size:17px">{{state.qitaNum}}</div> -->
       </div>
   </div>
@@ -48,7 +48,7 @@ export default {
       qp: 0,
     });
     const stationList = ref<any>([]);
-    const courseRecord = ref<any>();    
+    const courseRecord = ref<any>();
     function summaryHandle(summary: any, key: string) {
       if (summary[key]) {
         summary[key] = summary[key] + 1;
@@ -56,19 +56,19 @@ export default {
         summary[key] = 1;
       }
     }
-    function setState(){
-      for (let i = 0;i < stationList.value.length; i++) {
-        if (stationList.value[i].extend.status === 'working') {
+    function setState() {
+      for (const d of stationList.value) {
+        if (d.extend.status === 'working') {
           state.value.workingNum++;
-        } else if (stationList.value[i].extend.status === 'emergency') {
+        } else if (d.extend.status === 'emergency') {
           state.value.emergencyNum++;
-        } else if (stationList.value[i].extend.status === 'offline') {
+        } else if (d.extend.status === 'offline') {
           state.value.offlineNum++;
-        } else if (stationList.value[i].extend.status === 'close') {
+        } else if (d.extend.status === 'close') {
           state.value.offlineNum++;
         } else {
           state.value.qitaNum++;
-        }        
+        }
       }
       const count = state.value.workingNum + state.value.emergencyNum + state.value.offlineNum + state.value.qitaNum;
       state.value.wp = state.value.workingNum / count * 100;
@@ -114,11 +114,8 @@ export default {
           });
         }
         setState();
-        if (!stationList.value) throw "参数错误";
-      }
-      catch(err) {
-        console.log(err)
-      }
+        // if (stationList.value === undefined) throw 'wrong';
+      } catch (err) {}
     }));
     return {
       state,
