@@ -42,16 +42,13 @@ export default {
       }
     }
     async function setData() {
-      getData();
+      await getData();
     }
-    onMounted(useLoading(loading, async () => {
-      try {
-        setData();
-        // if (!message.value) throw "设备不存在";
-      } catch (err) {}
-    }));
+    function init(){
+      setData();
+    }
     return {
-      loading, weatherList, weatherIconMap, iList, imgList,
+      loading, weatherList, weatherIconMap, iList, imgList, init,
     };
   },
 };

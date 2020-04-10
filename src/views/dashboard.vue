@@ -23,7 +23,7 @@
           <div>周一</div>
           <div>4/13</div>
         </div> -->
-        <weather style="width:19vw"/>
+        <weather ref="weather" style="width:19vw"/>
       </div>
       <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:40px;font-weight:bold;width:33vw">
         教学实训数据展示平台
@@ -32,28 +32,28 @@
         <div style="color:white">当日开机总时长</div>
         <div style="color:#F6EB1C;font-size: 25px;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
       </div>
-      <stateCount style="width:20vw"/>
+      <stateCount ref="stateCount" style="width:20vw"/>
     </div>
     <hr style="color:#28D0F1;">
     <div class="flex" style="height:84vh;justify-content:space-around;">
       <div class="flex column" style="width:32vw;height:84vh;">
-        <useTime class="bk" style="width:32vw;height:30vh;margin-top:1vh"/>
-        <useCount class="bk" style="width:32vw;height:30vh;margin-top:1vh"/>
+        <useTime ref="useTime" class="bk" style="width:32vw;height:30vh;margin-top:1vh"/>
+        <useCount ref="useCount" class="bk" style="width:32vw;height:30vh;margin-top:1vh"/>
         <div class="flex" style="margin-top:1vh">
-          <timeOn class="bk" style="width:16vw;height:24vh"/>
-          <onTimeWeek class="bk" style="width:15vw;height:24vh;margin-left:2vh"/>
+          <timeOn ref="timeOn" class="bk" style="width:16vw;height:24vh"/>
+          <onTimeWeek ref="onTimeWeek" class="bk" style="width:15vw;height:24vh;margin-left:2vh"/>
         </div>
       </div>
       <div class="flex column" style="height:84vh;">
         <iframe id="iframe" name="iframe" :src="'http://192.168.0.130:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
-        <parameter style="width:33vw;height:48vh;margin-top:1vh"/>
+        <parameter ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:87vh;">
         <div class="bk" style="width:33vw;height:32vh;margin-top:1vh">
-          <news style="width:100%;height:100%"/>
+          <news ref="news" style="width:100%;height:100%"/>
         </div>
         <div class="bk" style="width:33vw;height:54vh;margin-top:1vh">
-          <timeLine style="width:100%;height:100%"/>
+          <timeLine ref="timeLine" style="width:100%;height:100%"/>
         </div>
       </div>
     </div>
@@ -91,6 +91,15 @@ export default createComponent({
       timeOn: undefined,
     });
     const week = ['日', '一', '二', '三', '四', '五', '六'];
+    const stateCount = ref<any>();
+    const useTime = ref<any>();
+    const useCount = ref<any>();
+    const timeOn = ref<any>();
+    const onTimeWeek = ref<any>();
+    const parameter = ref<any>();
+    const news = ref<any>();
+    const timeLine = ref<any>();
+    const weather = ref<any>();
 
     function getTimeBoard() {
       const str = new Date();
@@ -124,10 +133,20 @@ export default createComponent({
       updateStoreUserInfo(data);
       setTimeBoard();
       setTimeOn();
+      parameter.value.init0();
+      stateCount.value.init();
+      useTime.value.init();
+      useCount.value.init();
+      timeOn.value.init();
+      onTimeWeek.value.init();
+      news.value.init();
+      timeLine.value.init();
+      weather.value.init()
     }));
     return {
       loading,
       timeBoard,
+      stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather
     };
   },
 });

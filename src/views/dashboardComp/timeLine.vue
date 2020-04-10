@@ -110,7 +110,7 @@ export default {
     onUnmounted(() => {
         clearInterval(timer);
     });
-    onMounted(useLoading(loading, async () => {
+    async function init() {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
@@ -166,8 +166,9 @@ export default {
       // todo times的异步动态添加无效
       await fetchTimes();
       timer;
-    }));
+    }
     return {
+      init,
       loading, courseRecord,
       timeDiff, chart, times,
       stationList, countTime,

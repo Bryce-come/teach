@@ -95,9 +95,6 @@ export default {
         },
       ],
     };
-    onMounted(useLoading(loading, async () => {
-      try {} catch (err) {}
-    }));
     return {
       loading, option,
     };

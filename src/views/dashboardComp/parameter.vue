@@ -90,14 +90,15 @@ export default {
       // if (id === undefined || id === null) { return ; }
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
     }
-    onMounted(useLoading(loading, async () => {
+    function init0(){
       setData()
-    }));
+    }
     onUnmounted(()=>{
       active.value = false;
     });
     return {
       loading, device,
+      init0
     };
   },
 };

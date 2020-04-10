@@ -76,7 +76,7 @@ export default {
       state.value.op = state.value.offlineNum / count * 100;
       state.value.qp = state.value.qitaNum / count * 100;
     }
-    onMounted(useLoading(loading, async () => {
+    async function init(){
       try {
         await Promise.all([
           courseRecord.value = await CourseRecordInClass(),
@@ -116,10 +116,11 @@ export default {
         setState();
         // if (stationList.value === undefined) throw 'wrong';
       } catch (err) {}
-    }));
+    }
     return {
       state,
       loading,
+      init
     };
   },
 };

@@ -38,19 +38,20 @@ export default {
       message.value = await NewsList({count: 5});
     }
     async function setData(){
-      getData();
+      await getData();
     }
-    onMounted(useLoading(loading, async () => {
+    async function init(){
       try {
-        setData()
+        await setData()
         // if (!message.value) throw "设备不存在";
       }
       catch(err) {
         console.log(err)
       }
-    }));
+    }
     return {
       loading, message,
+      init,
     };
   },
 };
