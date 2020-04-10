@@ -62,7 +62,7 @@ export default {
     }
     async function setData(){
       // 异步
-      initVideo();
+      // initVideo();
       while(active.value){
         await getData();
         await sleep(3000)
