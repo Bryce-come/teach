@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
 import { leftFill0 } from 'web-toolkit/src/utils';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
@@ -139,6 +139,9 @@ export default {
       };
       await fetchTimes();
     }
+    onBeforeUpdate( async () => {
+      await init()
+    });
     return {
       init,
       loading,
