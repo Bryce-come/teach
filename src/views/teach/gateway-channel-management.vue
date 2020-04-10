@@ -63,13 +63,14 @@ export default {
       }
     }
     async function closeSomething() {
-      if (status.value.rowIDLis.length !== 0) {
+      if (status.value.rowIDList.length !== 0) {
         const idList = JSON.stringify(status.value.rowIDList);
         const result = {
           stationJson: idList,
           status: false,
         };
         await CNCLinkSet(result);
+        await getStatusList();
       } else {
         Message.error('请选择操作台');
       }
@@ -82,6 +83,7 @@ export default {
           status: true,
         };
         await CNCLinkSet(result);
+        await getStatusList();
       } else {
         Message.error('请选择操作台');
       }
