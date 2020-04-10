@@ -14,9 +14,11 @@
         <div style="background-color:#28D0F1;width:5px;height:20px"></div>
         <div style="color:#28D0F1;font-weight:bold">设备运行参数</div>
       </div>
-      <div class="flex wrap between" style="margin-left:2vw;overflow:hidden;height:15vh">
+      <div
+        v-if="device && device.extend && device.extend.paramsMap"
+        class="flex wrap between"
+        style="margin-left:2vw;overflow:hidden;height:15vh">
         <div
-          v-if="device && device.extend.paramsMap"
           class="monitor-detail--param-item flex between"
           v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
@@ -46,7 +48,7 @@ export default {
   name: 'parameter',
   setup() {
     const loading = ref(false);
-    const device = ref<any>();
+    const device = ref<any>({});
     const station = ref<any>();
     const count = ref<any>(0);
     const active = ref<boolean>(true);

@@ -127,8 +127,7 @@ export default createComponent({
       weather.value.init()
     }));
     return {
-      loading,
-      timeBoard,
+      loading, timeBoard,
       stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather
     };
   },
