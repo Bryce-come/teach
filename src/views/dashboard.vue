@@ -128,7 +128,7 @@ export default createComponent({
     }
     onMounted(useLoading(loading, async () => {
       const data = await Login( {
-          username: 'admin',
+          username: '@dashboard',
           pwd: '666666',
           schema: scheme,
       });
