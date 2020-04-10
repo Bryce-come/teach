@@ -15,7 +15,6 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
-            v-if="times[item.extend.deviceId]"
             style="width:22vw; height: 5vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
@@ -45,7 +44,7 @@
 <script lang="ts">
 import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
 import { leftFill0 } from 'web-toolkit/src/utils';
-import { ref, createComponent} from '@vue/composition-api';
+import { ref,set} from '@vue/composition-api';
 import { statusMap } from '@/utils/device-utils';
 import { ImageLink } from '@/dao/commonDao';
 import { MonitorStationList } from '@/dao/monitorDao';
@@ -88,7 +87,7 @@ export default {
       });
       for (const d of list) {
         const time = d.extend.times || [];
-        times.value[d.id] = timelineConfig(time, statusMap, { height: 60, dataZoom: false, showTime: true});
+        set(times.value, d.id, timelineConfig(time, statusMap, { height: 40, dataZoom: false, showTime: true}));
         times.value[d.id].xAxis.axisLabel = {
           show: true,
           textStyle: {
@@ -96,6 +95,7 @@ export default {
           },
         };
       }
+      console.log(times.value)
     }
     async function init() {
       stationList.value = await MonitorStationList();
