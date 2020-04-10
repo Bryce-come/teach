@@ -140,7 +140,7 @@ export default {
       await fetchTimes();
     }
     onBeforeUpdate( async () => {
-      await init()
+      // await init()
     });
     return {
       init,

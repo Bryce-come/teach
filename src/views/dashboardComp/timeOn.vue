@@ -68,20 +68,6 @@ export default {
       },
       series: [
         {
-          name: '学生',
-          type: 'line',
-          smooth: true,
-          areaStyle: {},
-          itemStyle : {
-            normal : {
-              lineStyle: {
-                color: '#FFFF00',
-              },
-            },
-          },
-          data: [210, 0, 132, 101, 134, 90, 230],
-        },
-        {
           name: '教师',
           type: 'line',
           smooth: true,
