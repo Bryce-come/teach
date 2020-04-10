@@ -124,11 +124,11 @@ export default createComponent({
       // onTimeWeek.value.init();
       news.value.init();
       timeLine.value.init();
-      weather.value.init()
+      weather.value.init();
     }));
     return {
       loading, timeBoard,
-      stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather
+      stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather,
     };
   },
 });

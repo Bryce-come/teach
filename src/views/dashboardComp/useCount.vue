@@ -31,7 +31,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-            fontSize:'14'
+            fontSize: '14',
           },
         },
       },
@@ -41,7 +41,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-            fontSize:'14'
+            fontSize: '14',
           },
         },
       },
@@ -63,7 +63,7 @@ export default {
       ],
     };
     return {
-      loading, option
+      loading, option,
     };
   },
 };

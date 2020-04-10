@@ -44,7 +44,7 @@ export default {
     async function setData() {
       await getData();
     }
-    function init(){
+    function init() {
       setData();
     }
     // onMounted(useLoading(loading, async () => {

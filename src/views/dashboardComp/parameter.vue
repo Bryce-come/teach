@@ -33,16 +33,16 @@
 </template>
 
 <script lang="ts">
-import { onMounted,onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent} from '@vue/composition-api';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
 import { MonitorStationList } from '@/dao/monitorDao';
 import {MonitorStationDetail} from '@/dao/monitorDao';
 import { sleep } from 'web-toolkit/src/utils';
-import {SettingGet} from "@/dao/settingDao";
-import {init, login, startRealPlay, stopPlay} from "@/utils/video";
-import {Message} from 'element-ui'
+import {SettingGet} from '@/dao/settingDao';
+import {init, login, startRealPlay, stopPlay} from '@/utils/video';
+import {Message} from 'element-ui';
 
 export default {
   name: 'parameter',
@@ -58,20 +58,20 @@ export default {
       end: '2020-02-26 14:11:11',
     });
 
-    async function getData(){
+    async function getData() {
       station.value = await MonitorStationDetail({stationId: 36});
       device.value = station.value.deviceList[0];
     }
-    async function setData(){
+    async function setData() {
       // 异步
       initVideo();
-      while(active.value){
+      while (active.value) {
         await getData();
-        if(count.value>0 && count.value%5===0){
-          await startVideo((count.value%2+1))
+        if (count.value > 0 && count.value % 5 === 0) {
+          await startVideo((count.value % 2 + 1));
         }
         await sleep(3000);
-        count.value++
+        count.value++;
       }
     }
     async function initVideo() {
@@ -83,24 +83,24 @@ export default {
       await init('video', 1);
       modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
       const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-      if(msg) Message.error(msg+"");
+      if (msg) { Message.error(msg + ''); }
       await startVideo(null);
     }
-    async function startVideo(id:any){
+    async function startVideo(id: any) {
       await stopPlay(0);
       if (id === undefined || id === null) { id = 1; }
       // if (id === undefined || id === null) { return ; }
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
     }
-    function init0(){
-      setData()
+    function init0() {
+      setData();
     }
-    onUnmounted(()=>{
+    onUnmounted(() => {
       active.value = false;
     });
     return {
       loading, device,
-      init0
+      init0,
     };
   },
 };
