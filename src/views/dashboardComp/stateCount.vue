@@ -83,7 +83,7 @@ export default {
       state.value.op = state.value.offlineNum / count * 100;
       state.value.qp = state.value.qitaNum / count * 100;
     }
-    async function init(){
+    async function init() {
       try {
         stationList.value = await MonitorStationList();
         const data = [];
@@ -121,7 +121,7 @@ export default {
     return {
       state,
       loading,
-      init
+      init,
     };
   },
 };

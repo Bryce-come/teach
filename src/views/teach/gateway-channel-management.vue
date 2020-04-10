@@ -39,7 +39,7 @@
 import {onMounted, ref} from '@vue/composition-api';
 import {useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
-import {SettingGet} from '@/dao/settingDao'
+import {SettingGet} from '@/dao/settingDao';
 import {CNCLinkSet, CNCLinkStatus} from '@/dao/inClassDao';
 
 export default {
@@ -63,13 +63,14 @@ export default {
       }
     }
     async function closeSomething() {
-      if (status.value.rowIDLis.length !== 0) {
+      if (status.value.rowIDList.length !== 0) {
         const idList = JSON.stringify(status.value.rowIDList);
         const result = {
           stationJson: idList,
           status: false,
         };
         await CNCLinkSet(result);
+        await getStatusList();
       } else {
         Message.error('请选择操作台');
       }
@@ -82,6 +83,7 @@ export default {
           status: true,
         };
         await CNCLinkSet(result);
+        await getStatusList();
       } else {
         Message.error('请选择操作台');
       }
@@ -120,11 +122,11 @@ export default {
     const query = async () => {
       list.value = await CNCLinkStatus();
     };
-    async function getOnlyLinkOn(){
+    async function getOnlyLinkOn() {
       const params = {
         onlyLinkOn: true,
-      } 
-      const str = await SettingGet(params)
+      };
+      const str = await SettingGet(params);
       if (str.on === true) {
         show.value.flag = true;
       }

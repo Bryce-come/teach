@@ -33,21 +33,18 @@ export default {
   name: 'news',
   setup() {
     const loading = ref(false);
-    const message = ref<any>([])
-    async function getData(){
+    const message = ref<any>([]);
+    async function getData() {
       message.value = await NewsList({count: 5});
     }
-    async function setData(){
+    async function setData() {
       await getData();
     }
-    async function init(){
+    async function init() {
       try {
-        await setData()
+        await setData();
         // if (!message.value) throw "设备不存在";
-      }
-      catch(err) {
-        console.log(err)
-      }
+      } catch (err) {}
     }
     return {
       loading, message,

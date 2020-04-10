@@ -44,7 +44,7 @@
 <script lang="ts">
 import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
 import { leftFill0 } from 'web-toolkit/src/utils';
-import { ref,set} from '@vue/composition-api';
+import { ref, set} from '@vue/composition-api';
 import { statusMap } from '@/utils/device-utils';
 import { ImageLink } from '@/dao/commonDao';
 import { MonitorStationList } from '@/dao/monitorDao';
@@ -95,7 +95,6 @@ export default {
           },
         };
       }
-      console.log(times.value)
     }
     async function init() {
       stationList.value = await MonitorStationList();
