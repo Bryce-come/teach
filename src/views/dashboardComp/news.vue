@@ -33,7 +33,7 @@ export default {
   name: 'news',
   setup() {
     const loading = ref(false);
-    const message = ref<any>()
+    const message = ref<any>([])
     async function getData(){
       message.value = await NewsList({count: 5});
     }
@@ -59,4 +59,8 @@ export default {
 
 
 <style scoped lang="scss">
+  .no-msg{
+    color: white;
+    text-align: center;
+  }
 </style>
