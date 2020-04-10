@@ -1,24 +1,24 @@
 <template>
-  <div class="flex" v-loading="loading">
+  <div class="flex" style="justify-content:space-around;align-items:center;" v-loading="loading">
       <div>
-        <el-progress type="dashboard" :percentage="state.wp" color="#26b229" :show-text='false' :stroke-width="25"></el-progress>
-        <div style="color:#26b229;margin-left:35px;font-size:17px">{{'运行中:'}}</div>
-        <div style="color:#26b229;margin-left:50px;font-size:17px">{{state.workingNum}}</div>
+        <el-progress type="dashboard" :percentage="state.wp" color="#26b229" :show-text='false' :stroke-width="15" :width="70"></el-progress>
+        <div style="color:#26b229;margin-left:1vw;margin-top:-1vh;font-size:12px">{{'运行中:'}}</div>
+        <div style="color:#26b229;margin-left:2vw;font-size:17px">{{state.workingNum}}</div>
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.ep" color="#ff4949" :show-text='false' :stroke-width="25"></el-progress>
-        <div style="color:#ff4949;margin-left:40px;font-size:17px">{{'故障:'}}</div>
-        <div style="color:#ff4949;margin-left:55px;font-size:17px">{{state.emergencyNum}}</div>
+        <el-progress type="dashboard" :percentage="state.ep" color="#ff4949" :show-text='false' :stroke-width="15" :width="70"></el-progress>
+        <div style="color:#ff4949;margin-left:1.5vw;margin-top:-1vh;font-size:12px">{{'故障:'}}</div>
+        <div style="color:#ff4949;margin-left:2vw;font-size:17px">{{state.emergencyNum}}</div>
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.op" color="#3d3d3d" :show-text='false' :stroke-width="25"></el-progress>
-        <div style="color:#E6E6FA;margin-left:40px;font-size:17px">{{'关机:'}}</div>
-        <div style="color:#E6E6FA;margin-left:55px;font-size:17px">{{state.offlineNum}}</div>
+        <el-progress type="dashboard" :percentage="state.op" color="#3d3d3d" :show-text='false' :stroke-width="15" :width="70"></el-progress>
+        <div style="color:#E6E6FA;margin-left:1.5vw;margin-top:-1vh;font-size:12px">{{'关机:'}}</div>
+        <div style="color:#E6E6FA;margin-left:2vw;font-size:17px">{{state.offlineNum}}</div>
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.qp" color="#d7d400" :show-text='false' :stroke-width="25"></el-progress>
-        <div style="color:#d7d400;margin-left:40px;font-size:17px">{{'其他:'}}</div>
-        <div style="color:#d7d400;margin-left:55px;font-size:17px">{{state.qitaNum}}</div>
+        <el-progress type="dashboard" :percentage="state.qp" color="#d7d400" :show-text='false' :stroke-width="15" :width="70"></el-progress>
+        <div style="color:#d7d400;margin-left:1.5vw;margin-top:-1vh;font-size:12px">{{'其他:'}}</div>
+        <div style="color:#d7d400;margin-left:2vw;font-size:17px">{{state.qitaNum}}</div>
       </div>
   </div>
 </template>

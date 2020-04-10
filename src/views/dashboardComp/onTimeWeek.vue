@@ -1,6 +1,10 @@
 <template>
-  <div class="flex" v-loading="loading">
-      <v-chart autoresize style="width:100%;height: calc(100% - 33px)" :options="option"/>
+  <div class="flex column" style="" v-loading="loading">
+    <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
+      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+      <div style="color:#28D0F1;font-weight:bold">本周设备使用率</div>
+    </div>
+    <v-chart autoresize style="width:100%;height:100%;margin-left:1vw;margin-top:0.5vw" :options="option"/>
   </div>
 </template>
 
@@ -15,16 +19,16 @@ import { CourseRecordInClass } from '@/dao/courseRecordDao';
 import { MonitorStationList } from '@/dao/monitorDao';
 
 export default {
-  name: 'useTimeWeek',
+  name: 'onTimeWeek',
   setup() {
     const loading = ref(false);
     const option = {
-      title: {
-        text: '本周设备使用率',
-        textStyle: {
-          color: '#28D0F1',
-        }
-      },
+      // title: {
+      //   text: '本周设备使用率',
+      //   textStyle: {
+      //     color: '#28D0F1',
+      //   }
+      // },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -45,7 +49,7 @@ export default {
           avoidLabelOverlap: false,
           label: {
             show: false,
-            position: 'center'
+            position: 'center',
           },
           labelLine: {
             show: false
@@ -54,7 +58,7 @@ export default {
             {value: 12, name: '运行'},
             {value: 0, name: '故障'},
             {value: 2, name: '关机'},
-            {value: 0, name: '其他'},
+            {value: 2, name: '其他'},
           ]
         }
       ]

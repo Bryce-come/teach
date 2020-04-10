@@ -1,17 +1,21 @@
 <template>
-  <div class="flex column" v-loading="loading" >
-    <div style="color:#28D0F1">设备运行时间轴</div>
-    <div class="flex center wrap column content">
-      <div class="device-card flex center" v-for="(item,i) in stationList" :key="i">
+  <div class="flex column" style="" v-loading="loading">
+    <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
+      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+      <div style="color:#28D0F1;font-weight:bold">设备运行时间轴</div>
+    </div>
+    <div class="flex center wrap column content" style="margin-top:1vh;overflow:hidden;height:30vh;width:30vw;margin-left:2vw;">
+      <div class="device-card flex center" style="width:18vw;margin-left:1vw;" v-for="(item,i) in stationList" :key="i">
         <div
-          class="flex align-center center">
+          class="flex align-center center" style="margin-top:1vh;">
           <div class="device-img">
-            <img class="image" style="width:100px;height:100px" :src='ImageLink(item.extend.deviceImg)' alt="">
+            <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
           </div>
         </div>
+        <div style="color:#28D0F1;margin-left:1vw">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
-            style="width:400px; height: 70px"
+            style="width:20vw; height: 5vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>
@@ -94,7 +98,14 @@ export default {
       });
       for (const d of list) {
         const time = d.extend.times || [];
-        times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true });
+        times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true, });
+        // times.value[d.id].xAxis.axisLabel= {
+        //   show: true,
+        //   textStyle: {
+        //     color: '#28D0F1',
+        //   }
+        // }
+        console.log(times.value[d.id])
       }
     }
     onUnmounted(() => {
