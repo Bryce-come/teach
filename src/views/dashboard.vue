@@ -1,46 +1,70 @@
 <template>
   <div class="backwall " v-loading="loading">
-		<div class="flex">
-			<div id="timeBoard" class="flex column center">
-				<div>{{timeBoard.time}}</div>
-				<div class="flex center">
-					<div>{{timeBoard.month}}</div><div>{{timeBoard.day}}</div>
-				</div>
-			</div>
-			<div id="weatherBoard" class="flex">
-				<div style="color:white" class="flex column center weatherbk">
-					<i class="el-icon-cloudy cloudy">多云</i>
-					<div>周六</div>
-					<div>4/11</div>
-				</div>
-				<div style="color:white" class="flex column center weatherbk">
-					<i class="el-icon-cloudy cloudy">多云</i>
-					<div>周日</div>
-					<div>4/12</div>
-				</div>
-				<div style="color:white" class="flex column center weatherbk">
-					<i class="el-icon-cloudy cloudy">多云</i>
-					<div>周一</div>
-					<div>4/13</div>
-				</div>
-			</div>
-			<div id="mainTitle" style="color:#28D0F1;font-size:30px;font-weight:bold;">
-				教学实训数据展示平台
-			</div>
-			<div id="timeOn">
-				<div style="color:white">当日开机总时长</div>
-				<div style="color:#F6EB1C;font-size: 25px;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
-			</div>
-			<stateCount/>
-		</div>
-    <hr>
-    <div class="flex">
-      <div class="flex column">
-        <useTime class="bk" style="width:500px;height:250px"/>
-        <useCount class="bk" style="width:500px;height:250px"/>
-        <div class="flex">
-          <timeOn class="bk" style="width:250px;height:125px"/>
-          <onTimeWeek class="bk" style="width:250px;height:125px"/>
+    <div class="flex" style="justify-content:space-around;align-items:center;height:15vh">
+      <div id="timeBoard" class="flex column center" style="width:14vw">
+        <div>{{timeBoard.time}}</div>
+        <div class="flex center">
+          <div>{{timeBoard.month}}</div><div>{{timeBoard.day}}</div>
+        </div>
+      </div>
+      <div id="weatherBoard" class="flex" style="justify-content:space-around;align-items:center;width:12vw">
+        <div style="color:white" class="flex column center weatherbk">
+          <i class="el-icon-cloudy cloudy">多云</i>
+          <div>周六</div>
+          <div>4/11</div>
+        </div>
+        <div style="color:white" class="flex column center weatherbk">
+          <i class="el-icon-cloudy cloudy">多云</i>
+          <div>周日</div>
+          <div>4/12</div>
+        </div>
+        <div style="color:white" class="flex column center weatherbk">
+          <i class="el-icon-cloudy cloudy">多云</i>
+          <div>周一</div>
+          <div>4/13</div>
+        </div>
+        <!-- <weather style="width:15vw"/> -->
+      </div>
+      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:40px;font-weight:bold;width:33vw">
+        教学实训数据展示平台
+      </div>
+      <div id="timeOn" style="wid">
+        <div style="color:white">当日开机总时长</div>
+        <div style="color:#F6EB1C;font-size: 25px;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
+      </div>
+      <stateCount style="width:20vw"/>
+    </div>
+    <hr style="color:#28D0F1;">
+    <div class="flex" style="height:84vh;justify-content:space-around;">
+      <div class="flex column" style="width:32vw;height:84vh;">
+        <useTime class="bk" style="width:32vw;height:30vh;margin-top:1vh"/>
+        <useCount class="bk" style="width:32vw;height:30vh;margin-top:1vh"/>
+        <div class="flex" style="margin-top:1vh">
+          <timeOn class="bk" style="width:16vw;height:24vh"/>
+          <onTimeWeek class="bk" style="width:15vw;height:24vh;margin-left:2vh"/>
+        </div>
+      </div>
+      <div class="flex column" style="height:84vh;">
+        <iframe id="iframe" name="iframe" :src="'http://192.168.0.132:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
+        <div class="flex column bk" style="width:33vw;height:48vh;margin-top:1vh">
+          <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
+            <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+            <div style="color:#28D0F1;font-weight:bold">学生操作监控</div>
+          </div>
+          <div class="flex center" style="margin-top:1vh">
+            <div class="bk" style="width:15vw;height:20vh;"></div>
+            <div class="bk" style="width:15vw;height:20vh;"></div>
+          </div>
+          <!-- <div style="color:#28D0F1">设备运行参数</div> -->
+          <parameter style="width:30vw;height:33vh;margin-top:1vh" />
+        </div>
+      </div>
+      <div class="flex column" style="height:84vh;">
+        <div class="bk" style="width:33vw;height:32vh;margin-top:1vh">
+          <news style="width:100%;height:100%"/>
+        </div>
+        <div class="bk" style="width:33vw;height:54vh;margin-top:1vh">
+          <timeLine style="width:100%;height:100%"/>
         </div>
       </div>
     </div>
@@ -59,11 +83,15 @@ import {Login} from '@/dao/userDao';
 import stateCount from '@/views/dashboardComp/stateCount.vue';
 import useTime from '@/views/dashboardComp/useTime.vue';
 import useCount from '@/views/dashboardComp/useCount.vue';
-import timeOn from '@/views/dashboardComp/useCount.vue';
+import timeOn from '@/views/dashboardComp/timeOn.vue';
 import onTimeWeek from '@/views/dashboardComp/onTimeWeek.vue';
+import parameter from '@/views/dashboardComp/parameter.vue';
+import news from '@/views/dashboardComp/news.vue';
+import timeLine from '@/views/dashboardComp/timeLine.vue';
+import weather from '@/views/dashboardComp/weather.vue';
 
 export default createComponent({
-  components: { stateCount, useTime, useCount, timeOn, onTimeWeek},
+  components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather},
   setup() {
     const loading = ref(false);
     const timeBoard = ref<any>({
@@ -117,19 +145,15 @@ export default createComponent({
 </script>
 <style lang="scss" scoped>
 .backwall{
-	width: 100vw;
+  width: 100vw;
   height: 100vh;
   background: url("../assets/dashboard/bw.png") no-repeat;
   background-size: 100% 100%;
 }
 #timeBoard{
-	color:#F6EB1C;
-	font-size: 25px;
-	font-weight: bold;
-}
-.weatherbk{
-	background: url("../assets/dashboard/weatherbk.png") no-repeat;
-  background-size: 100% 100%;
+  color:#F6EB1C;
+  font-size: 25px;
+  font-weight: bold;
 }
 .bk {
   background: url("../assets/dashboard/chartbk.png") no-repeat;

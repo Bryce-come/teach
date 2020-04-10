@@ -1,6 +1,10 @@
 <template>
-  <div class="flex" v-loading="loading">
-      <v-chart autoresize style="width:100%;height: calc(100% - 33px);margin-top:30px" :options="option"/>
+  <div class="flex column" style="" v-loading="loading">
+    <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
+      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+      <div style="color:#28D0F1;font-weight:bold">本周设备使用率</div>
+    </div>
+    <v-chart autoresize style="width:100%;height:100%;margin-left:1vw;margin-top:0.5vw" :options="option"/>
   </div>
 </template>
 
@@ -15,16 +19,16 @@ import { CourseRecordInClass } from '@/dao/courseRecordDao';
 import { MonitorStationList } from '@/dao/monitorDao';
 
 export default {
-  name: 'useTimeWeek',
+  name: 'onTimeWeek',
   setup() {
     const loading = ref(false);
     const option = {
-      title: {
-        text: '本周设备使用率',
-        textStyle: {
-          color: '#28D0F1',
-        }
-      },
+      // title: {
+      //   text: '本周设备使用率',
+      //   textStyle: {
+      //     color: '#28D0F1',
+      //   }
+      // },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -32,30 +36,29 @@ export default {
       legend: {
         orient: 'vertical',
         left: 10,
-        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎'],
+        data: ['运行', '故障', '关机', '其他'],
         textStyle: {
           color: '#28D0F1',
         }
       },
       series: [
         {
-          name: '访问来源',
+          name: '状态',
           type: 'pie',
           radius: ['10%', '70%'],
           avoidLabelOverlap: false,
           label: {
             show: false,
-            position: 'center'
+            position: 'center',
           },
           labelLine: {
             show: false
           },
           data: [
-            {value: 335, name: '直接访问'},
-            {value: 310, name: '邮件营销'},
-            {value: 234, name: '联盟广告'},
-            {value: 135, name: '视频广告'},
-            {value: 1548, name: '搜索引擎'}
+            {value: 12, name: '运行'},
+            {value: 0, name: '故障'},
+            {value: 2, name: '关机'},
+            {value: 2, name: '其他'},
           ]
         }
       ]
