@@ -33,12 +33,6 @@ export default {
     async function getData(){
       weatherList.value = await weather();
       imgList.value = weatherList.value.map((cc: any) => cc.dayweather);
-      const str = new Object(weatherIconMap);
-      for (const d of str) {
-        str
-        console.log(str)
-      }
-      console.log(imgList.value)
     }
     async function setData(){
       getData();
