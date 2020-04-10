@@ -5,7 +5,7 @@
       <div style="color:#28D0F1;font-weight:bold;font-size:1rem;margin-left: 1rem">设备运行时间轴</div>
     </div>
     <div class="flex center wrap column content" style="margin-top:-1vh;overflow:hidden;height:27vh;width:30vw;margin-left:2vw;">
-      <div class="device-card flex center" style="width:18vw;margin-left:1vw;" v-for="(item,i) in stationList" :key="i">
+      <div class="device-card flex center" style="width:18vw;margin-left:1rem;" v-for="(item,i) in stationList" :key="i">
         <div
           class="flex align-center center" style="margin-top:1vh;">
           <div class="device-img">
@@ -15,7 +15,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1rem;">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
-            style="width:20vw; height: 5vh"
+            style="width:20vw; height: 5rem"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>
@@ -32,7 +32,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1rem;">{{'fanuc0'+(i+3)}}</div>
         <div class="device-time">
           <v-chart
-            style="width:20vw; height: 5vh"
+            style="width:20vw; height: 5rem"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
 import { leftFill0 } from 'web-toolkit/src/utils';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
@@ -139,6 +139,9 @@ export default {
       };
       await fetchTimes();
     }
+    onBeforeUpdate( async () => {
+      await init()
+    });
     return {
       init,
       loading,
