@@ -30,7 +30,8 @@
       </el-table>
     </div>
     <div v-if="!show.flag" class="flex column center">
-      <div style="font-size:20px">当前CNC网络默认连通</div>
+      <div style="font-size:20px;margin-bottom:20px">当前CNC网络默认连通</div>
+      <el-button type="primary" @click="$router.push({name:'systemOptionSetting',query:{tab:'4'}})">前往系统选项设置</el-button>
     </div>
   </div>
 </template>
@@ -54,7 +55,7 @@ export default {
     });
     const show = ref<any>({
       flag: false,
-    })
+    });
     function handleSelectionChange(row: any) {
       status.value.rowIDList = [];
       for (let i = 0; i < row.length; i++) {
@@ -124,7 +125,9 @@ export default {
         onlyLinkOn: true,
       } 
       const str = await SettingGet(params)
-      console.log(str)
+      if (str.on === true) {
+        show.value.flag = true;
+      }
     }
     onMounted(useLoading(loading, async () => {
       // await query();
