@@ -5,8 +5,8 @@
         <div style="background-color:#28D0F1;width:5px;height:20px"></div>
         <div style="color:#28D0F1;font-weight:bold">学生操作监控</div>
       </div>
-      <div class="flex center between" style="margin-top:1vh">
-        <div id="video" style="width:100%;height:26vh;"></div>
+      <div class="flex center" style="margin-top:1vh">
+        <div id="video" style="width:48vh;height:23vh;"></div>
       </div>
     </div>
     <div style="width:30vw;height:33vh;margin-top:1vh">
@@ -62,10 +62,14 @@ export default {
     }
     async function setData(){
       // 异步
-      // initVideo();
+      initVideo();
       while(active.value){
         await getData();
-        await sleep(3000)
+        if(count.value>0 && count.value%5===0){
+          await startVideo((count.value%2+1))
+        }
+        await sleep(3000);
+        count.value++
       }
     }
     async function initVideo() {
@@ -78,12 +82,10 @@ export default {
       modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
       const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
       if(msg) Message.error(msg+"");
-      await startVideo(2);
+      await startVideo(null);
     }
     async function startVideo(id:any){
-      console.log(23)
       await stopPlay(0);
-      console.log(12)
       if (id === undefined || id === null) { id = 1; }
       // if (id === undefined || id === null) { return ; }
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
