@@ -15,6 +15,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
+            v-if="times[item.extend.deviceId]"
             style="width:22vw; height: 5vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
@@ -44,18 +45,13 @@
 <script lang="ts">
 import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
 import { leftFill0 } from 'web-toolkit/src/utils';
-import { ref, createComponent, Ref} from '@vue/composition-api';
-import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
-import { urlMap } from '@/config';
-import { useLoading } from 'web-toolkit/src/service';
+import { ref, createComponent} from '@vue/composition-api';
 import { statusMap } from '@/utils/device-utils';
-import { CourseRecordInClass } from '@/dao/courseRecordDao';
 import { ImageLink } from '@/dao/commonDao';
 import { MonitorStationList } from '@/dao/monitorDao';
 import { MonitorStationDetail} from '@/dao/monitorDao';
 import { AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams } from '@/dao/analysisDao';
 import { sleep } from 'web-toolkit/src/utils';
-import { NewsList } from '@/dao/newsDao';
 import { AnalysisDeviceTimes } from '@/dao/analysisDao';
 import { timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 
@@ -92,7 +88,7 @@ export default {
       });
       for (const d of list) {
         const time = d.extend.times || [];
-        times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true});
+        times.value[d.id] = timelineConfig(time, statusMap, { height: 60, dataZoom: false, showTime: true});
         times.value[d.id].xAxis.axisLabel = {
           show: true,
           textStyle: {
@@ -116,32 +112,11 @@ export default {
           station.extend.deviceImg = device.deviceType.img;
         }
       }
-      for (const key of Object.keys(summary)) {
-        data.push({
-          name: statusMap(key).arrName,
-          itemStyle: {
-            color: statusMap(key).color,
-          },
-          value: summary[key],
-        });
-      }
-      chart.value = {
-        series: [{
-          name: '设备数量',
-          type: 'pie',
-          data,
-          radius: 50,
-          label: {
-            formatter: '{b}：{c}',
-            fontSize: 14,
-          },
-        }],
-      };
       await fetchTimes();
     }
-    onBeforeUpdate( async () => {
-      await init()
-    });
+    // onBeforeUpdate( async () => {
+    //   await init()
+    // });
     return {
       init,
       loading,
