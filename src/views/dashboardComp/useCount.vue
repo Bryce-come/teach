@@ -60,20 +60,6 @@ export default {
           },
           data: [210, 0, 132, 101, 134, 90, 230],
         },
-        {
-          name: '教师',
-          type: 'line',
-          smooth: true,
-          areaStyle: {},
-          itemStyle : {
-            normal : {
-              lineStyle: {
-                color: '#ADFF2F',
-              },
-            },
-          },
-          data: [310, 0, 182, 191, 234, 290, 330],
-        },
       ],
     };
     return {

@@ -1,38 +1,44 @@
 <template>
   <div v-loading="loading" class="gateway-channel-management">
-    <div class="flex between">
-      <div class="flex center little-space wrap">
-        <el-button type="primary" @click="openSomething()">批量开启</el-button>
-        <el-button type="danger" @click="closeSomething()">批量关闭</el-button>
+    <div v-if="show.flag">
+      <div class="flex between">
+        <div class="flex center little-space wrap">
+          <el-button type="primary" @click="openSomething()">批量开启</el-button>
+          <el-button type="danger" @click="closeSomething()">批量关闭</el-button>
+        </div>
       </div>
+      <el-table
+        :data="list"
+        @selection-change="handleSelectionChange">
+        <el-table-column type="selection"/>
+        <el-table-column label="操作台" prop="name"/>
+        <el-table-column label="设备名称" prop="deviceList[0].name"/>
+        <el-table-column label="设备型号" prop="deviceList[0].type"/>
+        <el-table-column label="设备编号" prop="deviceList[0].id"/>
+        <el-table-column label="LKT-MAN编号" prop="collector.id"/>
+        <el-table-column label="网管通道">
+          <template slot-scope="{ row }">
+            <el-switch
+              :disabled='row.disabledMa'
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              v-model="row.extend.linkStatus"
+              @change="toggleStatus(row)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-    <el-table
-      :data="list"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection"/>
-      <el-table-column label="操作台" prop="name"/>
-      <el-table-column label="设备名称" prop="deviceList[0].name"/>
-      <el-table-column label="设备型号" prop="deviceList[0].type"/>
-      <el-table-column label="设备编号" prop="deviceList[0].id"/>
-      <el-table-column label="LKT-MAN编号" prop="collector.id"/>
-      <el-table-column label="网管通道">
-        <template slot-scope="{ row }">
-          <el-switch
-            :disabled='row.disabledMa'
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            v-model="row.extend.linkStatus"
-            @change="toggleStatus(row)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+    <div v-if="!show.flag" class="flex column center">
+      <div style="font-size:20px">当前CNC网络默认连通</div>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import {onMounted, ref} from '@vue/composition-api';
 import {useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
+import {SettingGet} from '@/dao/settingDao'
 import {CNCLinkSet, CNCLinkStatus} from '@/dao/inClassDao';
 
 export default {
@@ -46,6 +52,9 @@ export default {
        disabledList: [],
        rowIDList: [],
     });
+    const show = ref<any>({
+      flag: false,
+    })
     function handleSelectionChange(row: any) {
       status.value.rowIDList = [];
       for (let i = 0; i < row.length; i++) {
@@ -110,13 +119,21 @@ export default {
     const query = async () => {
       list.value = await CNCLinkStatus();
     };
+    async function getOnlyLinkOn(){
+      const params = {
+        onlyLinkOn: true,
+      } 
+      const str = await SettingGet(params)
+      console.log(str)
+    }
     onMounted(useLoading(loading, async () => {
       // await query();
+      await getOnlyLinkOn();
       await getStatusList();
     }));
     return {
       loading, list, query, toggleStatus, status, getStatusList, handleSelectionChange, openSomething,
-      closeSomething,
+      closeSomething, show,
     };
   },
 };
