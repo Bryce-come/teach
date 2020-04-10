@@ -1,9 +1,10 @@
 <template>
   <div  style="" v-loading="loading">
-    <div class="flex between">
-        <div v-for="(item,i) of weatherList" :key="i" class="weatherbk" style="width:5vw;height:10vh">
+    <div class="flex" style="justify-content:space-between">
+        <div v-for="(item,i) of weatherList" :key="i" class="flex column center" style="width:5vw;height:10vh">
+            <div><img :src="iList[i]"/></div>
+            <div style="color:white">{{imgList[i]}}</div>
             <div style="color:white">{{item.date.slice(5,10)}}</div>
-            <div><img :src="weatherIconMap.itme.dayweather"/></div>
         </div>
     </div>
   </div>
@@ -30,9 +31,15 @@ export default {
     const loading = ref(false);
     const weatherList = ref<any>();
     const imgList = ref<any>();
+    const iList = ref<any>([]);
     async function getData(){
       weatherList.value = await weather();
       imgList.value = weatherList.value.map((cc: any) => cc.dayweather);
+      for (const d of imgList.value) {
+        const str = weatherIconMap[d]
+        iList.value.push(str)
+      }
+      console.log(iList)
     }
     async function setData(){
       getData();
@@ -47,7 +54,7 @@ export default {
       }
     }));
     return {
-      loading, weatherList, weatherIconMap,
+      loading, weatherList, weatherIconMap, iList, imgList,
     };
   },
 };

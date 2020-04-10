@@ -29,16 +29,17 @@ export default {
       //     color: '#28D0F1',
       //   }
       // },
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b}: {c} ({d}%)'
-      },
+      // tooltip: {
+      //   trigger: 'item',
+      //   formatter: '{a} <br/>{b}: {c} ({d}%)'
+      // },
       legend: {
         orient: 'vertical',
-        left: 10,
+        left: 1,
         data: ['运行', '故障', '关机', '其他'],
         textStyle: {
           color: '#28D0F1',
+          fontSize: '10px'
         }
       },
       series: [
