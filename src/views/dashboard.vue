@@ -1,6 +1,6 @@
 <template>
   <div class="backwall " v-loading="loading">
-    <div class="flex" style="justify-content:space-around;align-items:center;height:15vh">
+    <div class="flex" style="justify-content:space-around;align-items:center;height:12vh">
       <div id="timeBoard" class="flex column center" style="width:14vw">
         <div>{{timeBoard.time}}</div>
         <div class="flex center">
@@ -8,7 +8,7 @@
         </div>
       </div>
       <div id="weatherBoard" class="flex" style="justify-content:space-around;align-items:center;width:12vw">
-        <div style="color:white" class="flex column center weatherbk">
+        <!-- <div style="color:white" class="flex column center weatherbk">
           <i class="el-icon-cloudy cloudy">多云</i>
           <div>周六</div>
           <div>4/11</div>
@@ -22,8 +22,8 @@
           <i class="el-icon-cloudy cloudy">多云</i>
           <div>周一</div>
           <div>4/13</div>
-        </div>
-        <!-- <weather style="width:15vw"/> -->
+        </div> -->
+        <weather style="width:19vw"/>
       </div>
       <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:40px;font-weight:bold;width:33vw">
         教学实训数据展示平台
@@ -44,7 +44,7 @@
           <onTimeWeek class="bk" style="width:15vw;height:24vh;margin-left:2vh"/>
         </div>
       </div>
-      <div class="flex column" style="height:84vh;">
+      <div class="flex column" style="height:87vh;">
         <iframe id="iframe" name="iframe" :src="'http://192.168.0.132:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
         <div class="flex column bk" style="width:33vw;height:48vh;margin-top:1vh">
           <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
@@ -56,10 +56,10 @@
             <div class="bk" style="width:15vw;height:20vh;"></div>
           </div>
           <!-- <div style="color:#28D0F1">设备运行参数</div> -->
-          <parameter style="width:30vw;height:33vh;margin-top:1vh" />
+          <parameter style="width:30vw;height:36vh;margin-top:1vh" />
         </div>
       </div>
-      <div class="flex column" style="height:84vh;">
+      <div class="flex column" style="height:87vh;">
         <div class="bk" style="width:33vw;height:32vh;margin-top:1vh">
           <news style="width:100%;height:100%"/>
         </div>

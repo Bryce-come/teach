@@ -1,10 +1,10 @@
 <template>
-  <div class="flex column" style="" v-loading="loading">
-    <div class="flex" style="justify-content:space-around;width:11vw;margin-left:1vw;margin-top:1vw">
+  <div class="flex column" style="height:30vh; overflow:hidden" v-loading="loading">
+    <div class="flex" style="justify-content:space-around;width:13vw;margin-left:1vw;margin-top:1vh;margin-bottom:4vh">
       <div style="background-color:#28D0F1;width:5px;height:20px"></div>
-      <div style="color:#28D0F1;font-weight:bold">实训室近一个月使用率</div>
+      <div style="color:#28D0F1;font-weight:bold">实训室近一周开机总时长统计</div>
     </div>
-    <v-chart autoresize style="width:100%;height:100%;margin-top:2vw" :options="option"/>
+    <v-chart autoresize style="width:100%;height:35vh;margin-top:-8vh;margin-left:1vh;" :options="option"/>
   </div>
 </template>
 
@@ -29,21 +29,21 @@ export default {
       //     color: '#28D0F1',
       //   }
       // },
-      legend: {
-        data: ['教师', '学生'],
-        textStyle: {
-          color: '#28D0F1',
-        }
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-          type: 'cross',
-          label: {
-              backgroundColor: '#6a7985'
-          }
-      }
-    },
+    //   legend: {
+    //     data: ['教师', '学生'],
+    //     textStyle: {
+    //       color: '#28D0F1',
+    //     }
+    // },
+    // tooltip: {
+    //   trigger: 'axis',
+    //   axisPointer: {
+    //       type: 'cross',
+    //       label: {
+    //           backgroundColor: '#6a7985'
+    //       }
+    //   }
+    // },
       xAxis: {
         type: 'category',
         boundaryGap: false,

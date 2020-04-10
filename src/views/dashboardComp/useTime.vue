@@ -1,10 +1,10 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex" style="justify-content:space-around;width:11vw;margin-left:1vw;margin-top:1vw">
+    <div class="flex" style="justify-content:space-around;width:11vw;margin-left:1vw;margin-top:2vh;margin-bottom:12vh">
       <div style="background-color:#28D0F1;width:5px;height:20px"></div>
       <div style="color:#28D0F1;font-weight:bold">实训室近一个月使用率</div>
     </div>
-    <v-chart autoresize style="width:100%;height:100%;margin-top:2vw" :options="option"/>
+    <v-chart autoresize style="width:100%;height:35vh;margin-top:-17vh;" :options="option"/>
   </div>
 </template>
 
@@ -42,15 +42,15 @@ export default {
       //     color: '#28D0F1',
       //   }
       // },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-            type: 'cross',
-            label: {
-                backgroundColor: '#6a7985'
-            }
-        }
-      },
+      // tooltip: {
+      //   trigger: 'axis',
+      //   axisPointer: {
+      //       type: 'cross',
+      //       label: {
+      //           backgroundColor: '#6a7985'
+      //       }
+      //   }
+      // },
       xAxis: {
         type: 'category',
         boundaryGap: false,
@@ -68,6 +68,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
+            height: ''
           }
         }
       },
