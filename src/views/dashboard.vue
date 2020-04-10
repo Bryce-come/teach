@@ -1,7 +1,7 @@
 <template>
   <div class="backwall" v-loading="loading">
     <div class="flex" style="justify-content:space-around;align-items:center;height:12vh">
-      <div id="timeBoard" class="flex column center" style="width:14vw">
+      <div id="timeBoard" class="flex column center" style="width:12vw">
         <div>{{timeBoard.time}}</div>
         <div class="flex center">
           <div>{{timeBoard.month}}</div><div>{{timeBoard.day}}</div>
@@ -14,7 +14,7 @@
         教学实训数据展示平台
       </div>
       <div id="timeOn">
-        <div style="color:white;font-size: 1rem;">当日开机总时长</div>
+        <div style="color:white;font-size: 1.3rem;">当日开机总时长</div>
         <div style="color:#F6EB1C;font-size: 2rem;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
       </div>
       <stateCount ref="stateCount" style="width:20vw"/>

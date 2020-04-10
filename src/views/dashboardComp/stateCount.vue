@@ -1,23 +1,32 @@
 <template>
   <div class="flex" style="justify-content:space-around;align-items:center;" v-loading="loading">
       <div>
-        <el-progress type="dashboard" :percentage="state.wp" color="#26b229" :show-text='false' :stroke-width="15" :width="70"></el-progress>
-        <div style="color:#26b229;margin-left:0.5vw;margin-top:-1vh;font-size:1rem">{{'运行中:'+state.workingNum}}</div>
+        <el-progress
+          type="dashboard" :percentage="state.wp"
+          color="#26b229" :show-text='false'
+          :stroke-width="30" :width="100"/>
+        <div style="color:#26b229;margin-left:0.5vw;margin-top:-1vh;font-size:1.2rem">{{'运行: '+state.workingNum}}</div>
         <!-- <div style="color:#26b229;margin-left:2vw;font-size:17px">{{state.workingNum}}</div> -->
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.ep" color="#ff4949" :show-text='false' :stroke-width="15" :width="70"></el-progress>
-        <div style="color:#ff4949;margin-left:1vw;margin-top:-1vh;font-size:1rem">{{'故障:'+state.emergencyNum}}</div>
+        <el-progress
+          type="dashboard" :percentage="state.ep"
+          color="#ff4949" :show-text='false' :stroke-width="30" :width="100"/>
+        <div style="color:#ff4949;margin-left:1vw;margin-top:-1vh;font-size:1.2rem">{{'故障: '+state.emergencyNum}}</div>
         <!-- <div style="color:#ff4949;margin-left:2vw;font-size:17px">{{state.emergencyNum}}</div> -->
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.op" color="#3d3d3d" :show-text='false' :stroke-width="15" :width="70"></el-progress>
-        <div style="color:#E6E6FA;margin-left:1vw;margin-top:-1vh;font-size:1rem">{{'关机:'+state.offlineNum}}</div>
+        <el-progress
+          type="dashboard" :percentage="state.op"
+          color="#3d3d3d" :show-text='false' :stroke-width="30" :width="100"/>
+        <div style="color:#E6E6FA;margin-left:1vw;margin-top:-1vh;font-size:1.2rem">{{'关机: '+state.offlineNum}}</div>
         <!-- <div style="color:#E6E6FA;margin-left:2vw;font-size:17px">{{state.offlineNum}}</div> -->
       </div>
       <div>
-        <el-progress type="dashboard" :percentage="state.qp" color="#d7d400" :show-text='false' :stroke-width="15" :width="70"></el-progress>
-        <div style="color:#d7d400;margin-left:1vw;margin-top:-1vh;font-size:1rem">{{'空闲:'+state.qitaNum}}</div>
+        <el-progress
+          type="dashboard" :percentage="state.qp"
+          color="#d7d400" :show-text='false' :stroke-width="30" :width="100"/>
+        <div style="color:#d7d400;margin-left:1vw;margin-top:-1vh;font-size:1.2rem">{{'空闲: '+state.qitaNum}}</div>
         <!-- <div style="color:#d7d400;margin-left:2vw;font-size:17px">{{state.qitaNum}}</div> -->
       </div>
   </div>
@@ -30,7 +39,6 @@ import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
-import { CourseRecordInClass } from '@/dao/courseRecordDao';
 import { MonitorStationList } from '@/dao/monitorDao';
 
 export default {
@@ -48,7 +56,6 @@ export default {
       qp: 0,
     });
     const stationList = ref<any>([]);
-    const courseRecord = ref<any>();
     function summaryHandle(summary: any, key: string) {
       if (summary[key]) {
         summary[key] = summary[key] + 1;
@@ -78,10 +85,7 @@ export default {
     }
     async function init(){
       try {
-        await Promise.all([
-          courseRecord.value = await CourseRecordInClass(),
-          stationList.value = await MonitorStationList(),
-        ]);
+        stationList.value = await MonitorStationList();
         const data = [];
         const summary: any = {};
         for (const station of stationList.value) {
@@ -99,9 +103,6 @@ export default {
             // 数据二次处理
             station.extend.deviceId = device.id;
             station.extend.deviceImg = device.deviceType.img;
-            if (courseRecord.value && courseRecord.value.stationBind && courseRecord.value.stationBind[station.id.toString()]) {
-              station.extend.students = courseRecord.value.stationBind[station.id.toString()];
-            }
           }
         }
         for (const key of Object.keys(summary)) {

@@ -1,28 +1,28 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
     <div class="flex column bk" style="width:33vw;height:48vh">
-      <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;">
-        <div style="background-color:#28D0F1;width:5px;height:20px"></div>
-        <div style="color:#28D0F1;font-weight:bold">学生操作监控</div>
+      <div class="flex" style="margin-left:1vw;">
+        <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
+        <div style="color:#28D0F1;font-weight:bold;margin-left: 1rem;font-size: 1.3rem">学生操作监控</div>
       </div>
-      <div class="flex center" style="margin-top:1vh">
-        <div id="video" style="width:48vh;height:23vh;"></div>
+      <div class="flex center">
+        <div id="video" style="margin-top:1rem;width:52vh;height:24vh;"></div>
       </div>
     </div>
     <div style="width:30vw;height:33vh;margin-top:1vh">
-      <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;">
-        <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
-        <div style="color:#28D0F1;font-weight:bold">设备运行参数</div>
+      <div class="flex" style="margin-left:1rem;">
+        <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
       </div>
       <div
         v-if="device && device.extend && device.extend.paramsMap"
         class="flex wrap between"
-        style="margin-left:2vw;overflow:hidden;height:15vh">
+        style="margin-left:2vw;overflow:hidden;height:15vh;margin-top: 1rem">
         <div
           class="monitor-detail--param-item flex between"
           v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
-          <div class="flex between" style="margin-top:5px;width:145px;height:40%">
+          <div class="flex between" style="margin-top:5px;width:13rem;height:40%">
             <span style="text-align:center;color:white;font-size:1rem;padding-left:20px">{{ param.nameSimple }}：</span>
             <div style="text-align:center;color:white;font-size:1rem;">{{ param.value }}</div>
           </div>

@@ -1,10 +1,10 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex" style="justify-content:space-around;width:11vw;margin-left:1vw;margin-top:2vh;margin-bottom:12vh">
+    <div class="flex" style="margin-left:1vw;margin-top:2vh;">
       <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
-      <div style="color:#28D0F1;font-weight:bold">实训室近一个月使用率</div>
+      <div style="color:#28D0F1;font-weight:bold;margin-left: 1rem">实训室近一个月使用率</div>
     </div>
-    <v-chart autoresize style="width:100%;height:35vh;margin-top:-17vh;" :options="option"/>
+    <v-chart autoresize style="width:100%;height:30vh;" :options="option"/>
   </div>
 </template>
 
@@ -36,21 +36,6 @@ export default {
       '0', '90', '70', '88', '83', '72',
     ];
     const option = {
-      // title: {
-      //   text: '实训室近一个月使用率',
-      //   textStyle: {
-      //     color: '#28D0F1',
-      //   }
-      // },
-      // tooltip: {
-      //   trigger: 'axis',
-      //   axisPointer: {
-      //       type: 'cross',
-      //       label: {
-      //           backgroundColor: '#6a7985'
-      //       }
-      //   }
-      // },
       xAxis: {
         type: 'category',
         boundaryGap: false,
@@ -59,7 +44,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-            fontSize: '12',
+            fontSize:'25'
           },
         },
       },
@@ -69,7 +54,7 @@ export default {
           show: true,
           textStyle: {
             color: '#28D0F1',
-            height: '',
+            fontSize:'25'
           },
         },
       },

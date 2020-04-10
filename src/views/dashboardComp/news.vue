@@ -1,14 +1,14 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex" style="justify-content:space-around;width:6vw;margin-left:1vw;margin-top:1vw">
-      <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
-      <div style="color:#28D0F1;font-weight:bold;;font-size:1rem;">通知公告</div>
+    <div class="flex" style="margin-left:1vw;margin-top:1rem">
+      <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
+      <div style="color:#28D0F1;font-weight:bold; margin-left: 1rem;font-size: 1.3rem">通知公告</div>
     </div>
     <div style="height:100%;overflow:hidden" class="flex column">
-      <div v-for="(item, k) in message" :key="k" style="width:30vw;margin-left:1vw;margin-top:1vw">
-        <div class="flex align-center" style="margin-bottom:1rem;color:white">
-          <div style="width:100%;overflow:auto;padding:0.5rem 0.5rem;cursor:pointer;font-size:1rem;">{{item.content}}</div>
-          <div style="width:30%;font-size:1rem;">{{item.createDt}}</div>
+      <div v-for="(item, k) in message" :key="k" style="width:30vw;margin-left:1rem;margin-top:1rem">
+        <div class="flex align-center" style="margin-bottom:0.5rem;color:white;font-size:1.3rem;">
+          <div style="width:100%;overflow:auto;padding:0.5rem 0.5rem;cursor:pointer;">{{item.content}}</div>
+          <div style="width:30%">{{item.createDt}}</div>
         </div>
       </div>
       <div v-if="message.length === 0" class="no-msg" style=";font-size:1rem;">暂无通知</div>
