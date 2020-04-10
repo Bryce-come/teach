@@ -31,16 +31,16 @@
 </template>
 
 <script lang="ts">
-import { onMounted,onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent} from '@vue/composition-api';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
 import { MonitorStationList } from '@/dao/monitorDao';
-import {MonitorStationDetail} from '@/dao/monitorDao';
+import { MonitorStationDetail } from '@/dao/monitorDao';
 import { sleep } from 'web-toolkit/src/utils';
-import {SettingGet} from "@/dao/settingDao";
-import {init, login, startRealPlay, stopPlay} from "@/utils/video";
-import {Message} from 'element-ui'
+import { SettingGet } from '@/dao/settingDao';
+import { init, login, startRealPlay, stopPlay} from '@/utils/video';
+import { Message } from 'element-ui';
 
 export default {
   name: 'parameter',
@@ -56,22 +56,16 @@ export default {
       end: '2020-02-26 14:11:11',
     });
 
-    async function getData(){
+    async function getData() {
       station.value = await MonitorStationDetail({stationId: 36});
       device.value = station.value.deviceList[0];
     }
-    async function setData(){
-<<<<<<< HEAD
-      while(1 === 1){
-          getData()
-          await sleep(3000);
-=======
+    async function setData() {
       // 异步
       // initVideo();
-      while(active.value){
+      while (active.value) {
         await getData();
-        await sleep(3000)
->>>>>>> c7a49ff2a8b0f5df879ce3c395d4985258e7e0ba
+        await sleep(3000);
       }
     }
     async function initVideo() {
@@ -83,28 +77,19 @@ export default {
       await init('video', 1);
       modalVideo.value.szDeviceIndentify = modalVideo.value.ip + '_' + modalVideo.value.port;
       const msg = await login(modalVideo.value.ip, modalVideo.value.port, modalVideo.value.username, modalVideo.value.pwd);
-      if(msg) Message.error(msg+"");
+      if (msg) { Message.error(msg + ''); }
       await startVideo(2);
     }
-    async function startVideo(id:any){
-      console.log(23)
+    async function startVideo(id: any) {
       await stopPlay(0);
-      console.log(12)
       if (id === undefined || id === null) { id = 1; }
       // if (id === undefined || id === null) { return ; }
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
     }
     onMounted(useLoading(loading, async () => {
-<<<<<<< HEAD
-      try {
-        setData();
-        // if (!device.value) throw "设备不存在";
-      } catch (err) {}
-=======
-      setData()
->>>>>>> c7a49ff2a8b0f5df879ce3c395d4985258e7e0ba
+      setData();
     }));
-    onUnmounted(()=>{
+    onUnmounted(() => {
       active.value = false;
     });
     return {

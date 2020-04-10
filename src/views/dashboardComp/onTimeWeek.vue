@@ -39,8 +39,8 @@ export default {
         data: ['运行', '故障', '关机', '空闲'],
         textStyle: {
           color: '#28D0F1',
-          fontSize: '10px'
-        }
+          fontSize: '10px',
+        },
       },
       series: [
         {
@@ -53,22 +53,19 @@ export default {
             position: 'center',
           },
           labelLine: {
-            show: false
+            show: false,
           },
           data: [
             {value: 12, name: '运行', itemStyle: {color: '#26b229'}},
             {value: 0, name: '故障', itemStyle: {color: '#ff4949'}},
             {value: 2, name: '关机', itemStyle: {color: '#3d3d3d'}},
             {value: 2, name: '空闲', itemStyle: {color: '#d7d400'}},
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     };
     onMounted(useLoading(loading, async () => {
-      try {
-        
-      }
-      catch(err) {}
+      try {} catch (err) {}
     }));
     return {
       loading, option,
