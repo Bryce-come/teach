@@ -1,7 +1,7 @@
 <template>
   <div  style="" v-loading="loading">
-    <div class="flex" style="justify-content:space-between">
-        <div v-for="(item,i) of weatherList" :key="i" class="flex column center" style="width:5vw;height:10vh">
+    <div class="flex" style="justify-content:space-between;width:20vw;">
+        <div v-for="(item,i) of weatherList" :key="i" class="flex column center weatherbk" style="width:4.5vw;height:10vh">
             <div><img :src="iList[i]"/></div>
             <div style="color:white">{{imgList[i]}}</div>
             <div style="color:white">{{item.date.slice(5,10)}}</div>
