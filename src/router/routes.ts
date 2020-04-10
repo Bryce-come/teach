@@ -322,7 +322,7 @@ const newsMng = {
   meta: {
     CName: '消息管理设置',
     parentCName: '系统管理',
-    privileges: [PRIVILEGE.systemSetting],
+    privileges: [PRIVILEGE.newsMng],
   },
 };
 const equipmentModelConfiguration = {
@@ -332,7 +332,7 @@ const equipmentModelConfiguration = {
   meta: {
     CName: '设备型号配置',
     parentCName: '系统管理',
-    privileges: [PRIVILEGE.systemSetting],
+    privileges: [PRIVILEGE.deviceTypeMng],
   },
 };
 const preview = {

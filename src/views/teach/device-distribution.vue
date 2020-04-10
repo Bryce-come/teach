@@ -86,7 +86,7 @@
           <el-checkbox-group class="flex little-space" v-model="checkList">
             <el-checkbox
               style="min-width: 50%;font-weight: 700;padding: 5px 20px"
-              v-if="courseRecordInClass.extend.stationBind && courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
+              v-if="courseRecordInClass.extend.stationBind && courseRecordInClass.extend.stationBind[stationID.toString()] && courseRecordInClass.extend.stationBind[stationID.toString()].includes(param.id) || !overStudentList.includes(param.id)"
               :label="param.id">
               {{param.name}}
             </el-checkbox>
