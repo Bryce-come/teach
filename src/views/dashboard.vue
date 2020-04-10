@@ -25,12 +25,12 @@
         </div> -->
         <weather ref="weather" style="width:19vw"/>
       </div>
-      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:1rem;font-weight:bold;width:33vw">
+      <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:3rem;font-weight:bold;width:33vw">
         教学实训数据展示平台
       </div>
       <div id="timeOn">
-        <div style="color:white">当日开机总时长</div>
-        <div style="color:#F6EB1C;font-size: 25px;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
+        <div style="color:white;font-size: 1rem;">当日开机总时长</div>
+        <div style="color:#F6EB1C;font-size: 2rem;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
       </div>
       <stateCount ref="stateCount" style="width:20vw"/>
     </div>
@@ -160,7 +160,7 @@ export default createComponent({
 }
 #timeBoard{
   color:#F6EB1C;
-  font-size: 25px;
+  font-size: 2rem;
   font-weight: bold;
 }
 .bk {

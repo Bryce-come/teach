@@ -21,8 +21,8 @@
           v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
           <div class="flex between" style="margin-top:5px;width:145px;height:40%">
-            <span style="text-align:center;color:white;font-size:10px;padding-left:20px">{{ param.nameSimple }}：</span>
-            <div style="text-align:center;color:white;font-size:10px;">{{ param.value }}</div>
+            <span style="text-align:center;color:white;font-size:1rem;padding-left:20px">{{ param.nameSimple }}：</span>
+            <div style="text-align:center;color:white;font-size:1rem;">{{ param.value }}</div>
           </div>
         </div>
       </div>
