@@ -4,7 +4,7 @@
       <div style="background-color:#28D0F1;width:5px;height:20px"></div>
       <div style="color:#28D0F1;font-weight:bold">设备运行时间轴</div>
     </div>
-    <div class="flex center wrap column content" style="margin-top:1vh;overflow:hidden;height:30vh;width:30vw;margin-left:2vw;">
+    <div class="flex center wrap column content" style="margin-top:-1vh;overflow:hidden;height:27vh;width:30vw;margin-left:2vw;">
       <div class="device-card flex center" style="width:18vw;margin-left:1vw;" v-for="(item,i) in stationList" :key="i">
         <div
           class="flex align-center center" style="margin-top:1vh;">
@@ -13,6 +13,23 @@
           </div>
         </div>
         <div style="color:#28D0F1;margin-left:1vw">{{item.extend.deviceId}}</div>
+        <div class="device-time">
+          <v-chart
+            style="width:20vw; height: 5vh"
+            autoresize
+            :options="times[item.extend.deviceId]"/>
+        </div>
+      </div>
+    </div>
+    <div class="flex center wrap column content" style="margin-top:-2vh;overflow:hidden;height:25vh;width:30vw;margin-left:2vw;">
+      <div class="device-card flex center" style="width:18vw;margin-left:1vw;" v-for="(item,i) in stationList" :key="i">
+        <div
+          class="flex align-center center" style="margin-top:1vh;">
+          <div class="device-img">
+            <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
+          </div>
+        </div>
+        <div style="color:#28D0F1;margin-left:1vw">{{'fanuc0'+(i+3)}}</div>
         <div class="device-time">
           <v-chart
             style="width:20vw; height: 5vh"
