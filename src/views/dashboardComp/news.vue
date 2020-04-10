@@ -1,13 +1,13 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
     <div class="flex" style="justify-content:space-around;width:6vw;margin-left:1vw;margin-top:1vw">
-      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+      <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
       <div style="color:#28D0F1;font-weight:bold;;font-size:1rem;">通知公告</div>
     </div>
     <div style="height:100%;overflow:hidden" class="flex column">
       <div v-for="(item, k) in message" :key="k" style="width:30vw;margin-left:1vw;margin-top:1vw">
-        <div class="flex align-center" style="margin-bottom:5px;color:white">
-          <div style="width:100%;overflow:auto;padding:5px 5px;cursor:pointer;font-size:1rem;">{{item.content}}</div>
+        <div class="flex align-center" style="margin-bottom:1rem;color:white">
+          <div style="width:100%;overflow:auto;padding:0.5rem 0.5rem;cursor:pointer;font-size:1rem;">{{item.content}}</div>
           <div style="width:30%;font-size:1rem;">{{item.createDt}}</div>
         </div>
       </div>

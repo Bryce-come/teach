@@ -1,7 +1,7 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
     <div class="flex" style="justify-content:space-around;width:8vw;margin-left:1vw;margin-top:1vw">
-      <div style="background-color:#28D0F1;width:5px;height:20px"></div>
+      <div style="background-color:#28D0F1;width:0.5rem;height:1.5rem"></div>
       <div style="color:#28D0F1;font-weight:bold;font-size:1rem;">本周设备使用率</div>
     </div>
     <v-chart autoresize style="width:100%;height:100%;margin-left:1vw;margin-top:0.5vw" :options="option"/>
