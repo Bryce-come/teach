@@ -22,7 +22,7 @@
           class="monitor-detail--param-item flex between"
           v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
-          <div class="flex between" style="margin-top:0.5rem;width:13rem;height:40%">
+          <div class="flex between" style="margin-top:0.5rem;width:14rem;height:40%">
             <span style="text-align:center;color:white;font-size:1.2rem;padding-left:20px">{{ param.nameSimple }}：</span>
             <div style="text-align:center;color:white;font-size:1.2rem;">{{ param.value }}</div>
           </div>
