@@ -119,7 +119,7 @@ export default {
     return {
       init,
       loading,
-      // timeDiff, 
+      // timeDiff,
       chart, times,
       stationList,
       ImageLink, timeCount, statusMap,
