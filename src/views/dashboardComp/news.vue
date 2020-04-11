@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from '@vue/composition-api';
+import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
@@ -34,11 +34,15 @@ export default {
   setup() {
     const loading = ref(false);
     const message = ref<any>([]);
+    const active = ref<boolean>(true);
     async function getData() {
       message.value = await NewsList({count: 5});
     }
     async function setData() {
-      await getData();
+      while (active.value) {
+        await getData();
+        await sleep(21600000);
+      }
     }
     async function init() {
       try {
@@ -46,6 +50,9 @@ export default {
         // if (!message.value) throw "设备不存在";
       } catch (err) {}
     }
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
       loading, message,
       init,

@@ -62,16 +62,16 @@ export default {
     const chart = ref<any>({});
     const times = ref<any>({});
 
-    const timeDiff = (time2: any) => {
-      if (!time2) { return ; }
-      const dateDiff = time2.getTime() - new Date().getTime();
-      const hours = Math.floor(dateDiff / (3600 * 1000));
-      const leave1 = dateDiff % (3600 * 1000);
-      const minutes = Math.floor(leave1 / (60 * 1000));
-      const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
-      const seconds = Math.round(leave2 / 1000);
-      return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
-    };
+    // const timeDiff = (time2: any) => {
+    //   if (!time2) { return ; }
+    //   const dateDiff = time2.getTime() - new Date().getTime();
+    //   const hours = Math.floor(dateDiff / (3600 * 1000));
+    //   const leave1 = dateDiff % (3600 * 1000);
+    //   const minutes = Math.floor(leave1 / (60 * 1000));
+    //   const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
+    //   const seconds = Math.round(leave2 / 1000);
+    //   return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
+    // };
     const timeCount = ref<any>({
       timeValue: null,
       timeIf: null,
@@ -119,7 +119,8 @@ export default {
     return {
       init,
       loading,
-      timeDiff, chart, times,
+      // timeDiff, 
+      chart, times,
       stationList,
       ImageLink, timeCount, statusMap,
     };

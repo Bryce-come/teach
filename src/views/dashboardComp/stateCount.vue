@@ -101,19 +101,19 @@ export default {
             }
             station.extend.status = device.extend.status;
             // 数据二次处理
-            station.extend.deviceId = device.id;
-            station.extend.deviceImg = device.deviceType.img;
+            // station.extend.deviceId = device.id;
+            // station.extend.deviceImg = device.deviceType.img;
           }
         }
-        for (const key of Object.keys(summary)) {
-          data.push({
-            name: statusMap(key).arrName,
-            itemStyle: {
-              color: statusMap(key).color,
-            },
-            value: summary[key],
-          });
-        }
+        // for (const key of Object.keys(summary)) {
+        //   data.push({
+        //     name: statusMap(key).arrName,
+        //     itemStyle: {
+        //       color: statusMap(key).color,
+        //     },
+        //     value: summary[key],
+        //   });
+        // }
         setState();
         // if (stationList.value === undefined) throw 'wrong';
       } catch (err) {}
