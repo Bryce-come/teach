@@ -46,11 +46,10 @@ export default {
     const loading = ref(false);
     const courseRecord = ref<any>();
 
-    async function getLessonInfo(){
+    async function getLessonInfo() {
       await Promise.all([
         courseRecord.value = await CourseRecordInClass(),
       ]);
-      console.log(courseRecord)
     }
     async function init() {
       try {
