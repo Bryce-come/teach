@@ -16,7 +16,7 @@
                   <el-tag type="danger" size="small" v-if="b.type==='serious'">严重</el-tag>
                   <el-tag type="warning" size="small" v-else>警告</el-tag>
                 </div>
-                <div class="message" :title="b.msg === undefined ? '无描述' : b.msg">
+                <div class="message" slot="text-align:left" :title="b.msg === undefined ? '无描述' : b.msg">
                   {{ b.msg === undefined ? '无描述' : b.msg }}
                 </div>
                 <span class="no-message" @click="noMessage(b.id)">不再提醒</span>
