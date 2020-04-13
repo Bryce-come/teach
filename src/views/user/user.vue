@@ -34,7 +34,7 @@
       width="40%">
       <div slot="title">{{modal.data.id? '修改':'添加'}}账户</div>
       <el-form ref="form" label-position="left" label-width="120px" :model="modal.data">
-        <el-form-item label="账户登录名：" prop="username" :rules="{ required: true, message: '请填写账户登录名' }">
+        <el-form-item label="账户登录名：" prop="username" :rules="[{ required: true, message: '请填写账户登录名' },{ pattern: /^[0-9a-zA-z-_]+$/g, message: '限字母、数字、下划线、减号'}]">
           <el-input clearable v-model="modal.data.username" placeholder="请输入账户登录名" />
         </el-form-item>
         <el-form-item label="角色：" prop="role" :rules="{ required: true, message: '请选择角色' }">

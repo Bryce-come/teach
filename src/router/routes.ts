@@ -430,6 +430,12 @@ export const routes = [
     meta: { authDisabled: true },
   },
   {
+    path: '/laboratoryDash',
+    name: 'laboratoryDash',
+    component: () => import('../views/laboratoryDash.vue'),
+    meta: { authDisabled: true },
+  },
+  {
     path: '/404',
     name: '404',
     component: () => import('../components/page404.vue'),
