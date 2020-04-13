@@ -29,3 +29,15 @@ export async function MonitorStationDetail(params: any) {
   const {data: {station}} = await postService('/rest/monitor/station/detail', params);
   return station;
 }
+
+/**
+ * 实训室使用率日变化
+ * 返回 x, y
+ *
+ * long start,
+ * long end
+ */
+export async function ClassroomUsageDaily(params:any) {
+  const {data:{list}} = await postService("/rest/monitor/dashboard/classroomUsageDaily",params);
+  return list
+}
