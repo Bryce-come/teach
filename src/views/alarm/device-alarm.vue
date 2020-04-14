@@ -140,7 +140,6 @@ export default {
         start,
         end,
       });
-      // console.log(list);
       const time = data.list;
       timeChart.value = timelineConfig(time, statusMap, {
         left: '2%',
@@ -306,8 +305,6 @@ export default {
         start: null,
         end: null,
       });
-      // console.log(devicesList.value);
-      // console.log(deviceTypeList.value);
       if (deviceAlarmList.value.length === 0) {
         Message.warning('最近3天内没有设备报警信息');
       }

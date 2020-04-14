@@ -8,13 +8,19 @@
     <hr style="color:#28D0F1;">
     <div class="flex" style="height:90vh;justify-content:space-around;">
       <div class="flex column center bk" style="width:32vw;height:89vh;margin-top:1vh;">
-        <stateCount ref="stateCount" style="width:20vw"/>
+        <div class="flex" style="margin-left:1rem;margin-top:1vh">
+          <div class="yuan" style="width:2vw;height:3vh"></div>
+          <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行统计</div>
+          <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
+        </div>
+        <stateCount ref="stateCount" style="width:28vw;margin-top:3vh"/>
         <timeLine ref="timeLine" style="width:100%;height:100%;width:33vw;height:54vh;margin-top:1vh"/>
+        <NCExam ref="NCExam" style="width:33vw;height:54vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:84vh;">
         <parameter ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
-      <div class="flex column" style="height:89vh;">
+      <div class="flex column" style="height:90vh;">
         <div class="bk" style="width:33vw;height:22vh;margin-top:1vh">
           <news ref="news" style="width:100%;height:100%"/>
         </div>
@@ -38,9 +44,10 @@ import parameter from '@/views/LabDashComp/parameter.vue';
 import timeLine from '@/views/LabDashComp/timeLine.vue';
 import lessonInfo from '@/views/LabDashComp/lessonInfo.vue';
 import news from '@/views/LabDashComp/news.vue';
+import NCExam from '@/views/LabDashComp/NCExam.vue';
 
 export default createComponent({
-  components: { stateCount, parameter, timeLine, lessonInfo, news},
+  components: { stateCount, parameter, timeLine, lessonInfo, news, NCExam},
   setup() {
     const loading = ref(false);
     const stateCount = ref<any>();
@@ -48,6 +55,7 @@ export default createComponent({
     const timeLine = ref<any>();
     const lessonInfo = ref<any>();
     const news = ref<any>();
+    const NCExam = ref<any>();
 
     onMounted(useLoading(loading, async () => {
       const data = await Login( {
@@ -61,9 +69,10 @@ export default createComponent({
       timeLine.value.init();
       lessonInfo.value.init();
       news.value.init();
+      NCExam.value.init();
     }));
     return {
-      loading, lessonInfo, news,
+      loading, lessonInfo, news, NCExam,
       stateCount, parameter, timeLine,
     };
   },
@@ -73,7 +82,7 @@ export default createComponent({
 .backwall{
   width: 100vw;
   height: 100vh;
-  background: url("../assets/dashboard/bw.png") no-repeat;
+  background: url("../assets/dashboard/dabeijing.png") no-repeat;
   background-size: 100% 100%;
 }
 #timeBoard{
@@ -82,7 +91,15 @@ export default createComponent({
   font-weight: bold;
 }
 .bk {
-  background: url("../assets/dashboard/chartbk.png") no-repeat;
+  background: url("../assets/dashboard/toumingbeijing.png") no-repeat;
+  background-size: 100% 100%;
+}
+.yuan {
+  background: url("../assets/dashboard/yuan.png") no-repeat;
+  background-size: 100% 100%;
+}
+.hengxian {
+  background: url("../assets/dashboard/hengxian.png") no-repeat;
   background-size: 100% 100%;
 }
 </style>

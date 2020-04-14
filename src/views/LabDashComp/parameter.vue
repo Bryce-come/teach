@@ -1,18 +1,15 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex column" style="width:33vw;height:48vh">
-      <div class="flex" style="margin-left:1vw;">
-        <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
-        <div style="color:#28D0F1;font-weight:bold;margin-left: 1rem;font-size: 1.3rem">学生操作监控</div>
-      </div>
+    <div class="flex column" style="width:33vw;height:48vh;margin-top:1vh">
       <div class="flex center">
         <div id="video" style="padding:1rem 0;width:52vh;height:25vh;"></div>
       </div>
     </div>
     <div style="width:33vw;height:71vh;margin-top:1vh" class="bk">
       <div class="flex" style="margin-left:1rem;margin-top:1vh">
-        <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
+        <div class="yuan" style="width:2vw;height:3vh"></div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行参数</div>
+        <div class="hengxian" style="width:15vw;height:3vh;margin-left:8vw"></div>
       </div>
       <div
         v-if="device && device.extend && device.extend.paramsMap"
@@ -273,7 +270,15 @@ export default {
 
 <style scoped lang="scss">
   .bk {
-    background: url("../../assets/dashboard/chartbk.png") no-repeat;
+    background: url("../../assets/dashboard/toumingbeijing.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .yuan {
+    background: url("../../assets/dashboard/yuan.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .hengxian {
+    background: url("../../assets/dashboard/hengxian.png") no-repeat;
     background-size: 100% 100%;
   }
 </style>

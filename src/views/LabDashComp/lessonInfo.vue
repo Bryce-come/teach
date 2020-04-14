@@ -1,30 +1,51 @@
 <template>
   <div class="flex column" style="justify-content:space-around" v-loading="loading">
-    <div style="color: white; font-size:3rem">授课内容</div>
+    <div class="flex" style="margin-left:1rem;margin-top:1vh">
+        <div class="yuan" style="width:2vw;height:3vh"></div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">授课内容</div>
+        <div class="hengxian" style="width:15vw;height:3vh;margin-left:10vw"></div>
+      </div>
     <div class="flex column center">
-      <div class="monitor-left" style="border:0.1rem solid white;width:32vw;">
+      <div class="monitor-left" style="border:0.5rem solid #263B5A;width:32vw;margin-top:3vh">
         <div class="title" style="color: white; font-size:2rem">授课信息</div>
         <div v-if="!courseRecord" style="color: grey;text-align: center">暂无上课信息</div>
         <div v-else-if="courseRecord" class="content">
-          <div class="flex wrap" style="width:60vh;justify-content:space-around;">
-            <div style="color: white; font-size:1.5rem">{{'课程名称：' + (courseRecord.course?courseRecord.course.name:'') }}</div>
-            <div style="color: white; font-size:1.5rem">{{"实验项目：" + (courseRecord.program?courseRecord.program.name:'') }}</div>
-            <div style="color: white; font-size:1.5rem">{{"授课老师：" + (courseRecord.teacher?courseRecord.teacher.name:'') }}</div>
-            <div style="color: white; font-size:1.5rem">{{"授课班级分组：" + (courseRecord.clasz?courseRecord.clasz.name:'')
-              +' '+(courseRecord.claszGroup?courseRecord.claszGroup.name:'') }}</div>
-            <div style="color: white; font-size:1.5rem">{{'上课时间：' + 
-              (courseRecord.course?(courseRecord.extend.lessons[0] + '-' + 
-              courseRecord.extend.lessons[courseRecord.extend.lessons.length-1] + '节'):'') }}</div>
+          <div class="flex wrap" style="width:60vh;">
+            <div style="color: white; font-size:1.5rem;width:8vw" class="flex between">
+              <div>{{'课程名称：'}}</div>
+              <div>{{courseRecord.course?courseRecord.course.name:''}}</div>
+            </div>
+            <div style="color: white; font-size:1.5rem;width:15vw" class="flex between">
+              <div>{{"实验项目："}}</div>
+              <div>{{courseRecord.program?courseRecord.program.name:''}}</div>
+            </div>
+            <div style="color: white; font-size:1.5rem;width:8vw" class="flex between">
+              <div>{{"授课老师："}}</div>
+              <div>{{courseRecord.teacher?courseRecord.teacher.name:''}}</div>
+            </div>
+            <div style="color: white; font-size:1.5rem;width:15vw" class="flex between">
+              <div>{{"授课班级分组："}}</div>
+              <div>{{courseRecord.clasz?courseRecord.clasz.name:''}}</div>
+              <!-- <div>{{courseRecord.clasz?courseRecord.clasz.name:''}}</div> -->
+            </div>
+            <div style="color: white; font-size:1.5rem;width:10vw" class="flex between">
+              <div>{{"上课时间："}}</div>
+              <div>{{courseRecord.course?(courseRecord.extend.lessons[0] + '-' + 
+              courseRecord.extend.lessons[courseRecord.extend.lessons.length-1] + '节'):''}}</div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="flex column wrap" style="border:0.1rem solid white;width:32vw;margin-top:2vh">
-        <div class="title" style="color: white; font-size:2rem">实验介绍</div>
-        <div style="color: white; font-size:1.5rem">{{courseRecord.clasz?courseRecord.program.purpose:''}}</div>
-        <div class="title" style="color: white; font-size:2rem">实验原理</div>
-        <div style="color: white; font-size:1.5rem">{{courseRecord.clasz?courseRecord.program.steps:''}}</div>
-        <div class="title" style="color: white; font-size:2rem">实验结果</div>
-        <div style="color: white; font-size:1.5rem">{{courseRecord.clasz?courseRecord.program.results:''}}</div>
+      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh">
+        <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验介绍</div>
+        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
+          {{courseRecord.clasz?courseRecord.program.purpose:''}}</div>
+        <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验原理</div>
+        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
+          {{courseRecord.clasz?courseRecord.program.steps:''}}</div>
+        <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验结果</div>
+        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
+          {{courseRecord.clasz?courseRecord.program.results:''}}</div>
       </div>
     </div>
   </div>
@@ -66,4 +87,12 @@ export default {
 
 
 <style scoped lang="scss">
+  .yuan {
+    background: url("../../assets/dashboard/yuan.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .hengxian {
+    background: url("../../assets/dashboard/hengxian.png") no-repeat;
+    background-size: 100% 100%;
+  }
 </style>

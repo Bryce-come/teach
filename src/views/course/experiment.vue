@@ -295,7 +295,6 @@ export default {
       attachmentModal.value.visible = true;
       attachmentModal.value.attachmentInfo = data;
       expID.value = data.id;
-      // console.log(expID.value);
       // 将附件字符串数组转化成对象
       const turnObj: any = [];
       data.attachment.forEach((item: any, index: any) => {
@@ -305,7 +304,6 @@ export default {
         turnObj.push(obj);
       });
       attachmentList.value = turnObj;
-      // console.log(attachmentList.value);
       await showAllExp();
     };
     const attachmentUpdate = async () => {

@@ -179,7 +179,6 @@ export default {
     }
     watch(slide, () => {
       if (!starting.value) {
-        // console.log(slide.value)
         const dif = endTimestamp.value - startTimestamp.value;
         start.value = parseInt(slide.value[0] * dif / 100 + startTimestamp.value);
         end.value = parseInt(slide.value[1] * dif / 100 + startTimestamp.value);
@@ -201,7 +200,6 @@ export default {
     async function monitor() {
       const arr = [slide.value[0], slide.value[1]];
       start.value = start.value + 3000;
-      // console.log(new Date(start.value));
       let s = parseInt((start.value - startTimestamp.value) * 100 / (endTimestamp.value - startTimestamp.value) as any);
       if (s > slide.value[1]) {
         s = slide.value[1];

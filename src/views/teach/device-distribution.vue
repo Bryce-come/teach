@@ -186,8 +186,6 @@
             ...obj1,
             ...obj,
           };
-          // console.log(checkList.value);
-          // console.log(stationExtend.value);
           await courseRecordUpdate();
           await queryCourseInClass();
           studentMode.value.visible = false;

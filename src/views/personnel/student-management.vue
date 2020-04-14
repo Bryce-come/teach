@@ -275,7 +275,6 @@ export default {
     // }
     // cilckIng.value.str = row.target
     // cilckIng.value.str.style.backgroundColor = 'PaleTurquoise';
-    // console.log(node);
   }
   function firstTab(node: any, row: any) {
     if (cilckIng.value.str !== null) {

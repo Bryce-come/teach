@@ -4,29 +4,29 @@
         <el-progress
           type="dashboard" :percentage="state.wp"
           color="#26b229" :show-text='false'
-          :stroke-width="30" :width="100"/>
-        <div style="color:#26b229;margin-left:0.5vw;margin-top:-1vh;font-size:1.2rem">{{'运行: '+state.workingNum}}</div>
+          :stroke-width="30" :width="110"/>
+        <div style="color:#26b229;margin-left:0.6vw;margin-top:-1vh;font-size:2rem">{{'运行: '+state.workingNum}}</div>
         <!-- <div style="color:#26b229;margin-left:2vw;font-size:17px">{{state.workingNum}}</div> -->
       </div>
       <div>
         <el-progress
           type="dashboard" :percentage="state.ep"
-          color="#ff4949" :show-text='false' :stroke-width="30" :width="100"/>
-        <div style="color:#ff4949;margin-left:1vw;margin-top:-1vh;font-size:1.2rem">{{'故障: '+state.emergencyNum}}</div>
+          color="#ff4949" :show-text='false' :stroke-width="30" :width="110"/>
+        <div style="color:#ff4949;margin-left:0.6vw;margin-top:-1vh;font-size:2rem">{{'故障: '+state.emergencyNum}}</div>
         <!-- <div style="color:#ff4949;margin-left:2vw;font-size:17px">{{state.emergencyNum}}</div> -->
       </div>
       <div>
         <el-progress
           type="dashboard" :percentage="state.op"
-          color="#3d3d3d" :show-text='false' :stroke-width="30" :width="100"/>
-        <div style="color:#E6E6FA;margin-left:1vw;margin-top:-1vh;font-size:1.2rem">{{'关机: '+state.offlineNum}}</div>
+          color="#3d3d3d" :show-text='false' :stroke-width="30" :width="110"/>
+        <div style="color:#E6E6FA;margin-left:0.6vw;margin-top:-1vh;font-size:2rem">{{'关机: '+state.offlineNum}}</div>
         <!-- <div style="color:#E6E6FA;margin-left:2vw;font-size:17px">{{state.offlineNum}}</div> -->
       </div>
       <div>
         <el-progress
           type="dashboard" :percentage="state.qp"
-          color="#d7d400" :show-text='false' :stroke-width="30" :width="100"/>
-        <div style="color:#d7d400;margin-left:1vw;margin-top:-1vh;font-size:1.2rem">{{'空闲: '+state.qitaNum}}</div>
+          color="#d7d400" :show-text='false' :stroke-width="30" :width="110"/>
+        <div style="color:#d7d400;margin-left:0.6vw;margin-top:-1vh;font-size:2rem">{{'空闲: '+state.qitaNum}}</div>
         <!-- <div style="color:#d7d400;margin-left:2vw;font-size:17px">{{state.qitaNum}}</div> -->
       </div>
   </div>

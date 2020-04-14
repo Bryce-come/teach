@@ -1,11 +1,12 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex center wrap column content" style="margin-top:-1vh;overflow:hidden;height:27vh;width:30vw;margin-left:4vh;">
-      <div class="device-card flex center" style="width:18vw;margin-left:1vh;" v-for="(item,i) in stationList" :key="i">
+    <div class="flex center wrap column content" style="margin-top:1vh;overflow:hidden;height:30vh;width:30vw;margin-left:4vh;">
+      <div class="device-card flex center" v-for="(item,i) in stationList.slice(0,3)" :key="i"
+        style="width:18vw;margin-left:1vh;align-items:center;" >
         <div
           class="flex align-center center" style="margin-top:1vh;">
           <div class="device-img">
-            <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
+            <img class="image" style="width:4vw;height:8vh" :src='ImageLink(item.extend.deviceImg)' alt="">
           </div>
         </div>
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
@@ -91,6 +92,9 @@ export default {
         }
       }
       await fetchTimes();
+      
+      stationList.value.push(stationList.value[0])
+      console.log(stationList.value)
     }
     // onBeforeUpdate( async () => {
     //   await init()
