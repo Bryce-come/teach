@@ -15,10 +15,10 @@
         <parameter ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:89vh;">
-        <div class="bk" style="width:33vw;height:32vh;margin-top:1vh">
+        <div class="bk" style="width:33vw;height:22vh;margin-top:1vh">
           <news ref="news" style="width:100%;height:100%"/>
         </div>
-        <div class="bk" style="width:33vw;height:60vh;margin-top:1vh">
+        <div class="bk" style="width:33vw;height:89vh;margin-top:1vh">
           <lessonInfo ref="lessonInfo"/>
         </div>
       </div>

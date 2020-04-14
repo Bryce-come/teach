@@ -9,7 +9,7 @@
         <div id="video" style="padding:1rem 0;width:52vh;height:25vh;"></div>
       </div>
     </div>
-    <div style="width:30vw;height:33vh;margin-top:2vh">
+    <div style="width:30vw;height:32vh;margin-top:1vh">
       <div class="flex" style="margin-left:1rem;">
         <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
         <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
@@ -39,9 +39,11 @@ import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
 import { MonitorStationList } from '@/dao/monitorDao';
 import {MonitorStationDetail} from '@/dao/monitorDao';
+import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import { sleep } from 'web-toolkit/src/utils';
 import {SettingGet} from '@/dao/settingDao';
 import {init, login, startRealPlay, stopPlay} from '@/utils/video';
+import {StationList} from '@/dao/stationDao';
 import {Message} from 'element-ui';
 
 export default {
@@ -52,21 +54,56 @@ export default {
     const station = ref<any>();
     const count = ref<any>(0);
     const active = ref<boolean>(true);
+    const stationList = ref<any>([]);
+    const courseRecord = ref<any>();
     const modalVideo = ref<any>({
       szDeviceIdentify: '',
       start: '2020-02-26 07:00:00',
       end: '2020-02-26 14:11:11',
     });
-
+    function summaryHandle(summary: any, key: string) {
+      if (summary[key]) {
+        summary[key] = summary[key] + 1;
+      } else {
+        summary[key] = 1;
+      }
+    }
     async function getData() {
-      station.value = await MonitorStationDetail({stationId: 36});
-      device.value = station.value.deviceList[0];
+      await Promise.all([
+        stationList.value = await MonitorStationList(),
+      ]);
+      const summary: any = {};
+      for (const station of stationList.value) {
+        if (!station.deviceList || station.deviceList.length === 0) {
+          summaryHandle(summary, 'offline');
+          station.extend.status = 'offline';
+        } else {
+          const device = station.deviceList[0];
+          if (device.extend.status) {
+            summaryHandle(summary, device.extend.status);
+          } else {
+            summaryHandle(summary, 'offline');
+          }
+          station.extend.status = device.extend.status;
+          // 数据二次处理
+          station.extend.deviceId = device.id;
+        }
+      }
+      for (const station of stationList.value) {
+        if (station.extend.status !== 'offline' || station.extend.status !== 'close') {
+          device.value = (await MonitorStationDetail({stationId: station.id})).deviceList[0];
+          break;
+        }
+      }
     }
     async function setData() {
       // 异步
       initVideo();
       while (active.value) {
         await getData();
+        await sleep(180000);
+      }
+      while (active.value) {
         if (count.value > 0 && count.value % 5 === 0) {
           await startVideo((count.value % 2 + 1));
         }

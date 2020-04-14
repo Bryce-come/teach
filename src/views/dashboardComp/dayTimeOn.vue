@@ -23,8 +23,7 @@ export default {
     const loading = ref(false);
     const active = ref<boolean>(true);
     const timeSum = ref<any>();
-    
-    async function getData(){
+    async function getData() {
       const result = await TodayOpenHours();
       timeSum.value = result;
     }

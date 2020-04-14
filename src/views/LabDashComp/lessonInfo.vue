@@ -6,7 +6,7 @@
         <div class="title" style="color: white; font-size:2rem">授课信息</div>
         <div v-if="!courseRecord" style="color: grey;text-align: center">暂无上课信息</div>
         <div v-else-if="courseRecord" class="content">
-          <div class="flex wrap" style="width:60vh">
+          <div class="flex wrap" style="width:60vh;justify-content:space-around;">
             <div style="color: white; font-size:1.5rem">{{'课程名称：' + (courseRecord.course?courseRecord.course.name:'') }}</div>
             <div style="color: white; font-size:1.5rem">{{"实验项目：" + (courseRecord.program?courseRecord.program.name:'') }}</div>
             <div style="color: white; font-size:1.5rem">{{"授课老师：" + (courseRecord.teacher?courseRecord.teacher.name:'') }}</div>
@@ -18,7 +18,7 @@
           </div>
         </div>
       </div>
-      <div class="flex column wrap" style="border:0.1rem solid white;width:32vw;">
+      <div class="flex column wrap" style="border:0.1rem solid white;width:32vw;margin-top:2vh">
         <div class="title" style="color: white; font-size:2rem">实验介绍</div>
         <div style="color: white; font-size:1.5rem">{{courseRecord.clasz?courseRecord.program.purpose:''}}</div>
         <div class="title" style="color: white; font-size:2rem">实验原理</div>

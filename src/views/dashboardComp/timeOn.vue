@@ -35,7 +35,7 @@ export default {
       const params = {
         start: lastDay,
         end: today,
-      }
+      };
       const result = await OpenHoursDaily(params);
       weekNow.value = result.map((cc: any) => cc.x);
       dataNow.value = result.map((cc: any) => cc.y);
