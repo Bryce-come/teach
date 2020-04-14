@@ -5,17 +5,17 @@
       <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">程序审核记录</div>
       <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
     </div>
-    <div style="height:100%;overflow:hidden;margin-top:2vh;margin-left:1vw" class="flex column">
+    <div style="height:100%;overflow:hidden;margin-top:2vh;margin-left:1vw;" class="flex column">
       <div v-for="(item,i) of ncProgramList.slice(0,8)" :key="i" class="flex"
         style="color:white;justify-content:space-around;align-items:center;font-size:1.5rem">
-        <div>{{item.student.name}}</div>
-        <div>{{item.station.name}}</div>
-        <div>
-          <el-tag v-if="item.result === true" type="success">通过审核</el-tag>
-          <el-tag v-if="item.result === false" type="danger">未通过审核</el-tag>
+        <div style="width:3vw">{{item.student.name}}</div>
+        <div style="width:3vw">{{item.station.name}}</div>
+        <div style="width:3vw">
+          <el-tag v-if="item.result === true" type="success">已通过</el-tag>
+          <el-tag v-if="item.result === false" type="danger">未通过</el-tag>
           <el-tag v-if="item.result === undefined" type="warning">未审核</el-tag>
         </div>
-        <div>{{item.createDt}}</div>
+        <div style="width:9vw">{{item.createDt}}</div>
       </div>
     </div>
   </div>

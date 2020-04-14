@@ -35,7 +35,7 @@ export default {
         start: lastDay,
         end: today,
       };
-      dataNow.value = await StatusAnalysisThisWeek(params);
+      dataNow.value = await StatusAnalysisThisWeek();
     }
     async function setData() {
       while (active.value) {

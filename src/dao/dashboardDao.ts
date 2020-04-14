@@ -49,6 +49,6 @@ export async function TodayOpenHours() {
  * 本周运行状态统计饼图
  */
 export async function StatusAnalysisThisWeek() {
-  const {data} = await postService("/rest/monitor/dashboard/statusAnalysisThisWeek");
-  return data
+  const {data} = await postService('/rest/monitor/dashboard/statusAnalysisThisWeek');
+  return data;
 }

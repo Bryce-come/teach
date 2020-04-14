@@ -1,14 +1,10 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
-    <div class="flex center wrap column content" style="margin-top:1vh;overflow:hidden;height:30vh;width:30vw;margin-left:4vh;">
-      <div class="device-card flex center" v-for="(item,i) in stationList.slice(0,3)" :key="i"
+    <div class="flex wrap column content" 
+      style="align-items:flex-start;margin-top:1vh;height:30vh;margin-left:14vh;">
+      <div class="device-card flex center" v-for="(item,i) in stationList.slice(sort.up*3,(sort.up+1)*3)" :key="i"
         style="width:18vw;margin-left:1vh;align-items:center;" >
-        <div
-          class="flex align-center center" style="margin-top:1vh;">
-          <div class="device-img">
-            <img class="image" style="width:4vw;height:8vh" :src='ImageLink(item.extend.deviceImg)' alt="">
-          </div>
-        </div>
+        <img class="image" style="width:4vw;height:8vh" :src='ImageLink(item.extend.deviceImg)' alt="">
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
@@ -41,17 +37,12 @@ export default {
     const stationList = ref<any>([]);
     const chart = ref<any>({});
     const times = ref<any>({});
-
-    // const timeDiff = (time2: any) => {
-    //   if (!time2) { return ; }
-    //   const dateDiff = time2.getTime() - new Date().getTime();
-    //   const hours = Math.floor(dateDiff / (3600 * 1000));
-    //   const leave1 = dateDiff % (3600 * 1000);
-    //   const minutes = Math.floor(leave1 / (60 * 1000));
-    //   const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
-    //   const seconds = Math.round(leave2 / 1000);
-    //   return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
-    // };
+    const active = ref<boolean>(true);
+    const sort = ref<any>({
+      up: 0,
+      count: 0,
+      sum: 0,
+    });
     const timeCount = ref<any>({
       timeValue: null,
       timeIf: null,
@@ -76,7 +67,24 @@ export default {
         };
       }
     }
-    async function init() {
+    async function draw() {
+      while (active.value) {
+        await fetchTimes();
+        await sleep(1000);
+      }
+    }
+    async function tagPage() {
+      while (active.value) {
+        sort.value.up += 1;
+        sort.value.count += 1;
+        if (sort.value.count >= sort.value.sum) {
+          sort.value.up = 0;
+          sort.value.count = 0;
+        }
+        await sleep(5000);
+      }
+    }
+    async function getData() {
       stationList.value = await MonitorStationList();
       const data = [];
       const summary: any = {};
@@ -91,20 +99,26 @@ export default {
           station.extend.deviceImg = device.deviceType.img;
         }
       }
-      await fetchTimes();
-      
-      stationList.value.push(stationList.value[0])
-      console.log(stationList.value)
+      if (stationList.value.length > 3) {
+        sort.value.up = -1;
+        sort.value.count = -1;
+        sort.value.sum = stationList.value.length / 3;
+        tagPage();
+      }
     }
-    // onBeforeUpdate( async () => {
-    //   await init()
-    // });
+    async function init() {
+      await getData();
+      await draw();
+    }
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
       init,
       loading,
       // timeDiff,
       chart, times,
-      stationList,
+      stationList, sort,
       ImageLink, timeCount, statusMap,
     };
   },

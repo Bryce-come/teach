@@ -4,35 +4,15 @@
       <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
       <div style="color:#28D0F1;font-weight:bold;font-size:1.3rem;margin-left: 1rem">设备运行时间轴</div>
     </div>
-    <div class="flex center wrap column content" style="margin-top:-1vh;overflow:hidden;height:27vh;width:30vw;margin-left:4vh;">
-      <div class="device-card flex center" style="width:18vw;margin-left:2vh;" v-for="(item,i) in stationList" :key="i">
-        <div
-          class="flex align-center center" style="margin-top:1vh;">
-          <div class="device-img">
-            <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
-          </div>
-        </div>
+    <div class="flex wrap column content" 
+      style="align-items:flex-start;margin-top:2vh;height:50vh;margin-left:14vh;">
+      <div class="device-card flex center" v-for="(item,i) in stationList.slice(sort.up*4,(sort.up+1)*4)" :key="i"
+        style="width:18vw;margin-left:1vh;align-items:center;margin-top:1vh" >
+        <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
         <div class="device-time">
           <v-chart
-            style="width:22vw; height: 6vh"
-            autoresize
-            :options="times[item.extend.deviceId]"/>
-        </div>
-      </div>
-    </div>
-    <div class="flex center wrap column content" style="margin-top:-3vh;overflow:hidden;height:25vh;width:30vw;margin-left:4vh;">
-      <div class="device-card flex center" style="width:18vw;margin-left:2vh;" v-for="(item,i) in stationList" :key="i">
-        <div
-          class="flex align-center center" style="margin-top:1vh;">
-          <div class="device-img">
-            <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
-          </div>
-        </div>
-        <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{'fanuc0'+(i+3)}}</div>
-        <div class="device-time">
-          <v-chart
-            style="width:22vw; height: 6vh"
+            style="width:20vw; height: 7vh;margin-top: 2vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>
@@ -61,21 +41,33 @@ export default {
     const stationList = ref<any>([]);
     const chart = ref<any>({});
     const times = ref<any>({});
-
-    // const timeDiff = (time2: any) => {
-    //   if (!time2) { return ; }
-    //   const dateDiff = time2.getTime() - new Date().getTime();
-    //   const hours = Math.floor(dateDiff / (3600 * 1000));
-    //   const leave1 = dateDiff % (3600 * 1000);
-    //   const minutes = Math.floor(leave1 / (60 * 1000));
-    //   const leave2 = leave1 % (60 * 1000);     // 计算分钟数后剩余的毫秒数
-    //   const seconds = Math.round(leave2 / 1000);
-    //   return leftFill0(hours) + ' : ' + leftFill0(minutes) + ' : ' + leftFill0(seconds);
-    // };
+    const active = ref<boolean>(true);
+    const sort = ref<any>({
+      up: 0,
+      count: 0,
+      sum: 0,
+    });
     const timeCount = ref<any>({
       timeValue: null,
       timeIf: null,
     });
+    async function draw() {
+      while (active.value) {
+        await fetchTimes();
+        await sleep(1000);
+      }
+    }
+    async function tagPage() {
+      while (active.value) {
+        sort.value.up += 1;
+        sort.value.count += 1;
+        if (sort.value.count >= sort.value.sum) {
+          sort.value.up = 0;
+          sort.value.count = 0;
+        }
+        await sleep(5000);
+      }
+    }
     async function fetchTimes() {
       const d2 = new Date();
       const d1 = new Date();
@@ -96,7 +88,7 @@ export default {
         };
       }
     }
-    async function init() {
+    async function getData() {
       stationList.value = await MonitorStationList();
       const data = [];
       const summary: any = {};
@@ -111,16 +103,25 @@ export default {
           station.extend.deviceImg = device.deviceType.img;
         }
       }
-      await fetchTimes();
+      if (stationList.value.length > 4) {
+        sort.value.up = -1;
+        sort.value.count = -1;
+        sort.value.sum = stationList.value.length / 4;
+        tagPage();
+      }
     }
-    // onBeforeUpdate( async () => {
-    //   await init()
-    // });
+    async function init() {
+      await getData();
+      await draw();
+    }
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
       init,
       loading,
       // timeDiff,
-      chart, times,
+      chart, times, sort,
       stationList,
       ImageLink, timeCount, statusMap,
     };

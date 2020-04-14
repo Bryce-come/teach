@@ -105,9 +105,9 @@ export async function CourseRecordPreview(params: any) {
 /**
  * 获取上次同等的学生分配 如果返回不存在则不操作
  */
-export async function ListLastStationBind(recordId:number) {
-  const {data: {stationBind}} = await postService('/rest/course/record/listLastStationBind',{
-    recordId
+export async function ListLastStationBind(recordId: number) {
+  const {data: {stationBind}} = await postService('/rest/course/record/listLastStationBind', {
+    recordId,
   });
   return stationBind;
 }
