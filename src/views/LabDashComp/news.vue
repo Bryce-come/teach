@@ -36,7 +36,7 @@ export default {
     const message = ref<any>([]);
     const active = ref<boolean>(true);
     async function getData() {
-      message.value = await NewsList({count: 5});
+      message.value = await NewsList({count: 3});
     }
     async function setData() {
       while (active.value) {

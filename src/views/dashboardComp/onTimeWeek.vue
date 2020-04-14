@@ -28,47 +28,13 @@ export default {
     const weekNow = ref<any>([]);
     const dataNow = ref<any>([]);
     const option = ref<any>({});
-
-
-    // const option = {
-    //   legend: {
-    //     orient: 'vertical',
-    //     left: 1,
-    //     data: ['运行', '故障', '关机', '空闲'],
-    //     textStyle: {
-    //       color: '#28D0F1',
-    //       fontSize: '14',
-    //     },
-    //   },
-    //   series: [
-    //     {
-    //       name: '状态',
-    //       type: 'pie',
-    //       radius: ['10%', '70%'],
-    //       avoidLabelOverlap: false,
-    //       label: {
-    //         show: false,
-    //         position: 'center',
-    //       },
-    //       labelLine: {
-    //         show: false,
-    //       },
-    //       data: [
-    //         {value: 12, name: '运行', itemStyle: {color: '#26b229'}},
-    //         {value: 0, name: '故障', itemStyle: {color: '#ff4949'}},
-    //         {value: 2, name: '关机', itemStyle: {color: '#3d3d3d'}},
-    //         {value: 2, name: '空闲', itemStyle: {color: '#d7d400'}},
-    //       ],
-    //     },
-    //   ],
-    // };
     async function getData() {
       const today = (new Date()).getTime();
       const lastDay = today - 604800000;
       const params = {
         start: lastDay,
         end: today,
-      }
+      };
       dataNow.value = await StatusAnalysisThisWeek(params);
     }
     async function setData() {
