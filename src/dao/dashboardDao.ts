@@ -7,9 +7,9 @@ import {postService} from 'web-toolkit/src/case-main/index';
  * long start,
  * long end
  */
-export async function ClassroomUsageDaily(params:any) {
-  const {data:{list}} = await postService("/rest/monitor/dashboard/classroomUsageDaily",params);
-  return list
+export async function ClassroomUsageDaily(params: any) {
+  const {data: {list}} = await postService('/rest/monitor/dashboard/classroomUsageDaily', params);
+  return list;
 }
 
 /**
@@ -19,9 +19,9 @@ export async function ClassroomUsageDaily(params:any) {
  * long start,
  * long end
  */
-export async function CountUsage(params:any) {
-  const {data:{list}} = await postService("/rest/monitor/dashboard/countUsage",params);
-  return list
+export async function CountUsage(params: any) {
+  const {data: {list}} = await postService('/rest/monitor/dashboard/countUsage', params);
+  return list;
 }
 
 /**
@@ -31,9 +31,9 @@ export async function CountUsage(params:any) {
  * long start,
  * long end
  */
-export async function OpenHoursDaily(params:any) {
-  const {data:{list}} = await postService("/rest/monitor/dashboard/openHoursDaily",params);
-  return list
+export async function OpenHoursDaily(params: any) {
+  const {data: {list}} = await postService('/rest/monitor/dashboard/openHoursDaily', params);
+  return list;
 }
 
 /**
@@ -41,8 +41,8 @@ export async function OpenHoursDaily(params:any) {
  * 返回 sum 小时
  */
 export async function TodayOpenHours() {
-  const {data:{sum}} = await postService("/rest/monitor/dashboard/todayOpenHours");
-  return sum
+  const {data: {sum}} = await postService('/rest/monitor/dashboard/todayOpenHours');
+  return sum;
 }
 
 /**
@@ -50,7 +50,7 @@ export async function TodayOpenHours() {
  * long start,
  * long end
  */
-export async function StatusAnalysisThisWeek(params:any) {
-  const {data} = await postService("/rest/monitor/dashboard/statusAnalysisThisWeek",params);
-  return data
+export async function StatusAnalysisThisWeek(params: any) {
+  const {data} = await postService('/rest/monitor/dashboard/statusAnalysisThisWeek', params);
+  return data;
 }
