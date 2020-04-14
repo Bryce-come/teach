@@ -9,69 +9,89 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from '@vue/composition-api';
+import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
 import { useLoading } from 'web-toolkit/src/service';
+import { sleep } from 'web-toolkit/src/utils';
 import { statusMap } from '@/utils/device-utils';
 import { CourseRecordInClass } from '@/dao/courseRecordDao';
 import { MonitorStationList } from '@/dao/monitorDao';
+import { ClassroomUsageDaily } from '@/dao/dashboardDao';
 
 export default {
   name: 'useTime',
   setup() {
     const loading = ref(false);
-    const monthNow = [
-      '3.11', '3.12', '3.13', '3.14', '3.15', '3.16',
-      '3.17', '3.18', '3.19', '3.20', '3.21', '3.22', '3.23', '3.24', '3.25',
-      '3.26', '3.27', '3.28', '3.29', '3.30', '3.31', '4.1', '4.2', '4.3',
-      '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', '4.11',
-    ];
-    const dataNow = [
-      '70', '88', '83', '72', '0',
-      '64', '90', '70', '88', '83', '72', '0',
-      '64', '90', '70', '88', '83', '72', '0',
-      '64', '90', '70', '88', '83', '0', '0',
-      '0', '90', '70', '88', '83', '72',
-    ];
-    const option = {
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: monthNow,
-        axisLabel: {
-          show: true,
-          textStyle: {
-            color: '#28D0F1',
-            fontSize: '14',
-          },
-        },
-      },
-      yAxis: {
-        type: 'value',
-        axisLabel: {
-          show: true,
-          textStyle: {
-            color: '#28D0F1',
-            fontSize: '14',
-          },
-        },
-      },
-      series: [{
-        data: dataNow,
-        type: 'line',
-        itemStyle: {
-          normal: {
-            lineStyle: {
-              color: '#ADFF2F',
+    const active = ref<boolean>(true);
+    const monthNow = ref<any>([]);
+    const dataNow = ref<any>([]);
+    const option = ref<any>({});
+
+    async function getData() {
+      const today = (new Date()).getTime();
+      const lastDay = today - 2592000000;
+      const params = {
+        start: lastDay,
+        end: today,
+      }
+      const result = await ClassroomUsageDaily(params);
+      monthNow.value = result.map((cc: any) => cc.x);
+      dataNow.value = result.map((cc: any) => cc.y);
+    }
+    async function setData() {
+      while (active.value) {
+        await getData();
+        await drawLine();
+        await sleep(21600000);
+      }
+    }
+    async function drawLine() {
+      option.value = {
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: monthNow.value,
+          axisLabel: {
+            show: true,
+            textStyle: {
+              color: '#28D0F1',
+              fontSize: '14',
             },
           },
         },
-      }],
-    };
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            show: true,
+            textStyle: {
+              color: '#28D0F1',
+              fontSize: '14',
+            },
+          },
+        },
+        series: [{
+          data: dataNow.value,
+          type: 'line',
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                color: '#ADFF2F',
+              },
+            },
+          },
+        }],
+      };
+    }
+    function init() {
+      setData();
+    }
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
-      loading, option,
+      loading, option, init,
     };
   },
 };

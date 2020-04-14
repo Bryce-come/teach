@@ -13,9 +13,8 @@
       <div id="mainTitle" class="flex center" style="color:#28D0F1;font-size:3.5rem;font-weight:bold;width:33vw">
         教学实训数据展示平台
       </div>
-      <div id="timeOn">
-        <div style="color:white;font-size: 1.4rem;margin-bottom: 1rem">当日开机总时长</div>
-        <div style="color:#F6EB1C;font-size: 2rem;font-weight: bold;" class="flex center">{{timeBoard.timeOn + '小时'}}</div>
+      <div id="timeOn" style="margin-left:-5vh">
+        <dayTimeOn ref="dayTimeOn"/>
       </div>
       <stateCount ref="stateCount" style="width:20vw"/>
     </div>
@@ -61,9 +60,10 @@ import parameter from '@/views/dashboardComp/parameter.vue';
 import news from '@/views/dashboardComp/news.vue';
 import timeLine from '@/views/dashboardComp/timeLine.vue';
 import weather from '@/views/dashboardComp/weather.vue';
+import dayTimeOn from '@/views/dashboardComp/dayTimeOn.vue';
 
 export default createComponent({
-  components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather},
+  components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather, dayTimeOn},
   setup() {
     const loading = ref(false);
     const timeBoard = ref<any>({
@@ -71,7 +71,6 @@ export default createComponent({
       time: undefined,
       month: undefined,
       day: undefined,
-      timeOn: undefined,
     });
     const week = ['日', '一', '二', '三', '四', '五', '六'];
     const stateCount = ref<any>();
@@ -83,6 +82,7 @@ export default createComponent({
     const news = ref<any>();
     const timeLine = ref<any>();
     const weather = ref<any>();
+    const dayTimeOn = ref<any>();
 
     function getTimeBoard() {
       const str = new Date();
@@ -100,13 +100,6 @@ export default createComponent({
       const str = new Date();
       timeBoard.value.timeOn = (str.getHours() - 8) * 2;
     }
-    async function setTimeOn() {
-      while (timeBoard) {
-        await getTimeOn();
-        await sleep(1800000);
-        // await sleep(1000);
-      }
-    }
     onMounted(useLoading(loading, async () => {
       const data = await Login( {
           username: '@dashboard',
@@ -115,19 +108,19 @@ export default createComponent({
       });
       updateStoreUserInfo(data);
       setTimeBoard();
-      setTimeOn();
       parameter.value.init0();
       stateCount.value.init();
-      // useTime.value.init();
-      // useCount.value.init();
-      // timeOn.value.init();
-      // onTimeWeek.value.init();
+      useTime.value.init();
+      useCount.value.init();
+      timeOn.value.init();
+      onTimeWeek.value.init();
       news.value.init();
       timeLine.value.init();
       weather.value.init();
+      dayTimeOn.value.init();
     }));
     return {
-      loading, timeBoard,
+      loading, timeBoard, dayTimeOn,
       stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather,
     };
   },
