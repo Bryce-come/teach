@@ -87,7 +87,6 @@ export async function CourseRecordDel(params: any) {
 
 /**
  * 当前上课的记录
- *
  */
 export async function CourseRecordInClass() {
   const {data: {record}} = await postService('/rest/course/record/findInClass');
@@ -101,4 +100,14 @@ export async function CourseRecordInClass() {
 export async function CourseRecordPreview(params: any) {
   const {data: {record}} = await postService('/rest/course/record/findPreview', params);
   return record;
+}
+
+/**
+ * 获取上次同等的学生分配 如果返回不存在则不操作
+ */
+export async function ListLastStationBind(recordId:number) {
+  const {data: {stationBind}} = await postService('/rest/course/record/listLastStationBind',{
+    recordId
+  });
+  return stationBind;
 }
