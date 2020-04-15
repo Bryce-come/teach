@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
@@ -32,6 +32,7 @@ export default {
     const weatherList = ref<any>();
     const imgList = ref<any>();
     const iList = ref<any>([]);
+    const active = ref<boolean>(true);
     const weatherMap: any = weatherIconMap;
     async function getData() {
       weatherList.value = await weather();
@@ -42,14 +43,17 @@ export default {
       }
     }
     async function setData() {
-      await getData();
+      while (active.value) {
+        await getData();
+        await sleep(21600000);
+      }
     }
     function init() {
       setData();
     }
-    // onMounted(useLoading(loading, async () => {
-    //   setData();
-    // }));
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
       loading, weatherList, weatherIconMap, iList, imgList, init,
     };

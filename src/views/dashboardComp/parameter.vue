@@ -10,9 +10,12 @@
       </div>
     </div>
     <div style="width:30vw;height:32vh;margin-top:1vh">
-      <div class="flex" style="margin-left:1rem;">
-        <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
+      <div class="flex between">
+        <div class="flex" style="margin-left:1rem;">
+          <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
+          <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
+        </div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;">{{'操作台名称：' + device.name}}</div>
       </div>
       <div
         v-if="device && device.extend && device.extend.paramsMap"

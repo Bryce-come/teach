@@ -9,7 +9,16 @@
       <div class="device-card flex center" v-for="(item,i) in stationList.slice(sort.up*4,(sort.up+1)*4)" :key="i"
         style="width:18vw;margin-left:1vh;align-items:center;margin-top:1vh" >
         <img class="image" style="width:5vw;height:10vh" :src='ImageLink(item.extend.deviceImg)' alt="">
-        <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
+        <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;" class="flex column center">
+          <div>{{item.extend.deviceId}}</div>
+          <div>
+            <el-tag v-if="item.extend.status === 'working'" type="success">运行</el-tag>
+            <el-tag v-if="item.extend.status === 'emergency'" type="danger">故障</el-tag>
+            <el-tag v-if="item.extend.status === 'offline' || item.extend.status === 'close'" type="info">关机</el-tag>
+            <el-tag v-if="item.extend.status !== 'working' && item.extend.status !== 'emergency' &&
+            item.extend.status !== 'offline'" type="warning">空闲</el-tag>
+          </div>
+        </div>
         <div class="device-time">
           <v-chart
             style="width:20vw; height: 7vh;margin-top: 2vh"
@@ -55,7 +64,7 @@ export default {
       while (active.value) {
         await fetchTimes();
         await getData();
-        await sleep(180000);
+        await sleep(300000);
       }
     }
     async function tagPage() {

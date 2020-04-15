@@ -41,7 +41,7 @@ export default {
     async function setData() {
       while (active.value) {
         await getData();
-        await sleep(21600000);
+        await sleep(3600000);
       }
     }
     async function init() {

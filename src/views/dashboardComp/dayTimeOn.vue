@@ -31,7 +31,6 @@ export default {
       while (active.value) {
         await getData();
         await sleep(1800000);
-        // await sleep(1000);
       }
     }
     function init() {
