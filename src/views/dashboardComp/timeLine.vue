@@ -54,7 +54,7 @@ export default {
     async function draw() {
       while (active.value) {
         await fetchTimes();
-        await sleep(1000);
+        await sleep(300000);
       }
     }
     async function tagPage() {
