@@ -430,7 +430,7 @@ export const routes = [
     meta: { authDisabled: true },
   },
   {
-    path: '/laboratoryDash',
+    path: '/dashboard2',
     name: 'laboratoryDash',
     component: () => import('../views/laboratoryDash.vue'),
     meta: { authDisabled: true },
