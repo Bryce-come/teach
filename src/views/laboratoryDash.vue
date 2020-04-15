@@ -15,7 +15,7 @@
         </div>
         <stateCount ref="stateCount" style="width:28vw;margin-top:3vh"/>
         <timeLine ref="timeLine" style="width:100%;height:100%;width:33vw;height:54vh;margin-top:1vh"/>
-        <NCExam ref="NCExam" style="width:33vw;height:54vh;margin-top:1vh"/>
+        <NCExam ref="NCExam" :courseRecord="courseRecord" style="width:33vw;height:54vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:84vh;">
         <parameter ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
@@ -25,7 +25,7 @@
           <news ref="news" style="width:100%;height:100%"/>
         </div>
         <div class="bk" style="width:33vw;height:89vh;margin-top:1vh">
-          <lessonInfo ref="lessonInfo"/>
+          <lessonInfo  :courseRecord="courseRecord" ref="lessonInfo"/>
         </div>
       </div>
     </div>
@@ -45,6 +45,8 @@ import timeLine from '@/views/LabDashComp/timeLine.vue';
 import lessonInfo from '@/views/LabDashComp/lessonInfo.vue';
 import news from '@/views/LabDashComp/news.vue';
 import NCExam from '@/views/LabDashComp/NCExam.vue';
+import {CourseRecordInClass} from '@/dao/courseRecordDao';
+import {SettingGet} from '@/dao/settingDao';
 
 export default createComponent({
   components: { stateCount, parameter, timeLine, lessonInfo, news, NCExam},
@@ -56,8 +58,12 @@ export default createComponent({
     const lessonInfo = ref<any>();
     const news = ref<any>();
     const NCExam = ref<any>();
+    const courseRecord = ref<any>();
 
     onMounted(useLoading(loading, async () => {
+      await Promise.all([
+        courseRecord.value = await CourseRecordInClass(),
+      ]);
       const data = await Login( {
           username: '@dashboard',
           pwd: '666666',
@@ -74,6 +80,7 @@ export default createComponent({
     return {
       loading, lessonInfo, news, NCExam,
       stateCount, parameter, timeLine,
+      courseRecord,
     };
   },
 });

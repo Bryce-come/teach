@@ -37,14 +37,20 @@ import {NewsList} from '@/dao/newsDao';
 
 export default {
   name: 'NCExam',
-  setup() {
+  props: {
+    courseRecord: {
+      type: Object,
+      default: {},
+    },
+  },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
     const ncProgramList = ref<any>([]);
-    const courseRecord = ref<any>([]);
+    const courseRecord = ref<any>({});
     const active = ref<boolean>(true);
     async function getData() {
+      courseRecord.value = props.courseRecord;
       await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
         ncProgramList.value = await NCExamList({recordId: courseRecord.value.id}),
       ]);
     }

@@ -21,7 +21,7 @@
             </div>
             <div style="width:8vw" class="flex between">
               <div>{{"授课老师："}}</div>
-              <div>{{courseRecord.teacher?courseRecord.teacher.name:''}}</div>
+              <div>{{courseRecord.teacher.name?courseRecord.teacher.name:''}}</div>
             </div>
             <div style="width:18vw" class="flex between">
               <div>{{"授课班级分组："}}</div>
@@ -37,16 +37,16 @@
           </div>
         </div>
       </div>
-      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh">
+      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh" v-if="courseRecord.program">
         <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验介绍</div>
         <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
-          {{courseRecord.clasz?courseRecord.program.purpose:''}}</div>
+          {{courseRecord.program.purpose?courseRecord.program.purpose:''}}</div>
         <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验原理</div>
         <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
-          {{courseRecord.clasz?courseRecord.program.steps:''}}</div>
+          {{courseRecord.program.steps?courseRecord.program.steps:''}}</div>
         <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验结果</div>
         <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
-          {{courseRecord.clasz?courseRecord.program.results:''}}</div>
+          {{courseRecord.program.results?courseRecord.program.results:''}}</div>
       </div>
     </div>
   </div>
@@ -66,10 +66,16 @@ import {SettingGet} from '@/dao/settingDao';
 
 export default {
   name: 'lessonInfo',
-  setup() {
+  props: {
+    courseRecord: {
+      type: Object,
+      default: {},
+    },
+  },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
-    const courseRecord = ref<any>();
-    const lessonMap = ref<any>();
+    const courseRecord = ref<any>({});
+    const lessonMap = ref<any>({});
     const lessonTime = ref<any>({
       str: undefined,
       end: undefined,
@@ -77,9 +83,9 @@ export default {
     const active = ref<boolean>(true);
     async function getLessonInfo() {
       await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
         lessonMap.value = await SettingGet({onlyLesson: true}),
       ]);
+      courseRecord.value = props.courseRecord;
       lessonTime.value.str = new Date(lessonMap.value['lesson' + courseRecord.value.extend.lessons[0]][0]).toTimeString().slice(0, 8);
       lessonTime.value.end = new Date(lessonMap.value['lesson' + courseRecord.value.extend.lessons[courseRecord.value.extend.lessons.length - 1]][1]).toTimeString().slice(0, 8);
     }
