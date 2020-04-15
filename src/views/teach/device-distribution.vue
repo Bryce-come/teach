@@ -20,7 +20,10 @@
         </el-form>
       </div>
       <div style="margin: 10px 0" class="block_background">
-        <div class="block_title flex between">操作台分配</div>
+        <div class="block_title flex between">
+          <div>操作台分配</div>
+          <el-button style="margin-right:1vh" type="primary" size="mini" @click="getBefor()">获取上次分配</el-button>
+        </div>
         <div class="flex">
           <div style="padding-left: 10px;width:20%;margin-top:10px">
             <el-card class="box-card">
@@ -99,7 +102,7 @@
 <script lang="ts">
   import {ref, onMounted, watch} from '@vue/composition-api';
   import {useLoading} from 'web-toolkit/src/service';
-  import {CourseRecordInClass, CourseRecordUpdate} from '@/dao/courseRecordDao';
+  import {CourseRecordInClass, CourseRecordUpdate, ListLastStationBind} from '@/dao/courseRecordDao';
   import {StationList} from '@/dao/stationDao';
   import {ImageLink} from '@/dao/commonDao.ts';
 
@@ -196,14 +199,21 @@
         const obj4 = obj3.reduce((a, b) => a.concat(b), []);
       };
       const courseRecordUpdate = async () => {
+        console.log(stationExtend.value)
         await CourseRecordUpdate({
           id: courseRecordInClass.value.id,
           type: courseRecordInClass.value.type,
           extendJson: JSON.stringify(stationExtend.value),
         });
       };
-      const ceshi = async () => {
-
+      const getBefor = async () => {
+        const result = await ListLastStationBind(courseRecordInClass.value.id);
+        for (const d in result) {
+          courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
+        }
+        stationExtend.value = courseRecordInClass.value.extend;
+        await courseRecordUpdate();
+        await queryCourseInClass();
       };
       onMounted(useLoading(loading, async () => {
         await queryCourseInClass();
@@ -223,7 +233,7 @@
         queryCourseInClass,
         img,
         stationID, stationExtend, courseRecordUpdate,
-        studentID,
+        studentID, getBefor,
         overStudentList,
         delectClick,
         //  StuUpdate,
