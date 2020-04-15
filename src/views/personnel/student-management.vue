@@ -93,7 +93,13 @@
               <el-table-column prop="username" label="登录用户名" width="120px"/>
               <el-table-column prop="name" label="姓名" width="90px"/>
               <el-table-column prop="extend.claszName" label="班级" width="100px"/>
-              <el-table-column prop="extend.claszGroupName" label="教学分组" width="100px"/>
+              <el-table-column label="教学分组" width="100px">
+                <template slot-scope="{ row }">
+                  <div class="flex column">
+                    <div v-for="(item,i) of row.extend.claszGroupName" :key="i">{{item}}</div>
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column prop="role.name" label="角色" width="80px"/>
               <el-table-column prop="phone" label="联系电话" width="120px"/>
               <el-table-column label="账号状态" sortable width="100">
@@ -155,7 +161,7 @@
               </el-select>
           </el-form-item>
           <el-form-item label="教学分组：" prop="extend.claszGroup" :rules="{ required: true, message: '请选择分组'}">
-              <el-select v-model="modal.studentInfo.extend.claszGroup">
+              <el-select multiple v-model="modal.studentInfo.extend.claszGroup">
                 <el-option v-for="grop in groupList" :key="grop.id" :label="grop.name" :value="grop.id" />
               </el-select>
           </el-form-item>
@@ -200,7 +206,7 @@ export default {
   const tree = ref<ElTree<any, any>|null>(null);
   const roleList = ref<any>([]);
   const clasz = ref<any>({});
-  const claszGroup = ref<any>({});
+  const claszGroup = ref<any>([]);
   const studentUserList = ref<any>();
   const classList = ref<any>();
   const ctogList = ref<any>();

@@ -96,13 +96,13 @@ export default {
         }
       }
     }
-    async function setData() {
-      // 异步
-      initVideo();
-      while (active.value) {
+    async function darwDate() {
+       while (active.value) {
         await getData();
-        await sleep(180000);
+        await sleep(3000);
       }
+    }
+    async function darwVideo() {
       while (active.value) {
         if (count.value > 0 && count.value % 5 === 0) {
           await startVideo((count.value % 2 + 1));
@@ -110,6 +110,12 @@ export default {
         await sleep(3000);
         count.value++;
       }
+    }
+    async function setData() {
+      // 异步
+      initVideo();
+      darwDate();
+      darwVideo();
     }
     async function initVideo() {
       const setting = await SettingGet({onlyNVR: true});

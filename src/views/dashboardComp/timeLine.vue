@@ -54,7 +54,8 @@ export default {
     async function draw() {
       while (active.value) {
         await fetchTimes();
-        await sleep(1000);
+        await getData();
+        await sleep(180000);
       }
     }
     async function tagPage() {
@@ -110,9 +111,12 @@ export default {
         tagPage();
       }
     }
+    async function setDate() {
+      getData();
+      draw();
+    }
     async function init() {
-      await getData();
-      await draw();
+      setDate();
     }
     onUnmounted(() => {
       active.value = false;

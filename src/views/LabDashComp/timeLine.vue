@@ -47,6 +47,24 @@ export default {
       timeValue: null,
       timeIf: null,
     });
+    async function draw() {
+      while (active.value) {
+        await fetchTimes();
+        await getData();
+        await sleep(180000);
+      }
+    }
+    async function tagPage() {
+      while (active.value) {
+        sort.value.up += 1;
+        sort.value.count += 1;
+        if (sort.value.count >= sort.value.sum) {
+          sort.value.up = 0;
+          sort.value.count = 0;
+        }
+        await sleep(5000);
+      }
+    }
     async function fetchTimes() {
       const d2 = new Date();
       const d1 = new Date();
@@ -65,23 +83,6 @@ export default {
             color: '#28D0F1',
           },
         };
-      }
-    }
-    async function draw() {
-      while (active.value) {
-        await fetchTimes();
-        await sleep(1000);
-      }
-    }
-    async function tagPage() {
-      while (active.value) {
-        sort.value.up += 1;
-        sort.value.count += 1;
-        if (sort.value.count >= sort.value.sum) {
-          sort.value.up = 0;
-          sort.value.count = 0;
-        }
-        await sleep(5000);
       }
     }
     async function getData() {
@@ -106,9 +107,12 @@ export default {
         tagPage();
       }
     }
+    async function setDate() {
+      getData();
+      draw();
+    }
     async function init() {
-      await getData();
-      await draw();
+      setDate();
     }
     onUnmounted(() => {
       active.value = false;
