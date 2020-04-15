@@ -199,7 +199,6 @@
         const obj4 = obj3.reduce((a, b) => a.concat(b), []);
       };
       const courseRecordUpdate = async () => {
-        console.log(stationExtend.value)
         await CourseRecordUpdate({
           id: courseRecordInClass.value.id,
           type: courseRecordInClass.value.type,
@@ -209,7 +208,9 @@
       const getBefor = async () => {
         const result = await ListLastStationBind(courseRecordInClass.value.id);
         for (const d in result) {
-          courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
+          if (d) {
+            courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
+          }
         }
         stationExtend.value = courseRecordInClass.value.extend;
         await courseRecordUpdate();
