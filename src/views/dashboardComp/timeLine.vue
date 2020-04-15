@@ -113,6 +113,8 @@ export default {
           station.extend.deviceImg = device.deviceType.img;
         }
       }
+    }
+    async function changeList() {
       if (stationList.value.length > 4) {
         sort.value.up = -1;
         sort.value.count = -1;
@@ -121,7 +123,8 @@ export default {
       }
     }
     async function setDate() {
-      getData();
+      await getData();
+      changeList();
       draw();
     }
     async function init() {

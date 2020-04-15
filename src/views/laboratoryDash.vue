@@ -7,16 +7,19 @@
     </div>
     <hr style="color:#28D0F1;">
     <div class="flex" style="height:90vh;justify-content:space-around;">
-      <div class="flex column center bk" style="width:32vw;height:89vh;margin-top:1vh;">
-        <div class="flex" style="margin-left:1rem;margin-top:1vh">
-          <div class="yuan" style="width:2vw;height:3vh"></div>
-          <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行统计</div>
-          <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
-        </div>
-        <stateCount ref="stateCount" style="width:28vw;margin-top:3vh"/>
-        <timeLine ref="timeLine" style="width:100%;height:100%;width:33vw;height:54vh;margin-top:1vh"/>
-        <NCExam ref="NCExam" :courseRecord="courseRecord" style="width:33vw;height:54vh;margin-top:1vh"/>
+      <div>
+        <div class="flex column center bk" style="width:32vw;height:60vh;margin-top:1vh;">
+          <div class="flex" style="margin-left:1rem;margin-top:1vh">
+            <div class="yuan" style="width:2vw;height:3vh"></div>
+            <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行统计</div>
+            <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
+          </div>
+          <stateCount ref="stateCount" style="width:28vw;margin-top:3vh"/>
+          <timeLine ref="timeLine" style="width:100%;height:100%;width:33vw;height:54vh;margin-top:1vh"/>
+        </div> 
+        <NCExam ref="NCExam" :courseRecord="courseRecord" class="bk" style="width:32vw;height:28vh;margin-top:1vh"/>
       </div>
+      
       <div class="flex column" style="height:84vh;">
         <parameter ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>

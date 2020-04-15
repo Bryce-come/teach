@@ -2,9 +2,11 @@
   <div class="flex column" style="" v-loading="loading">
     <div class="flex" style="margin-left:2rem;margin-top:1vh">
       <div class="yuan" style="width:2vw;height:3vh"></div>
-      <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">程序审核记录</div>
+      <div style="color:#28D0F1;width:8vw;font-weight:bold;font-size: 2rem;margin-left: 1rem">程序审核记录</div>
       <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
     </div>
+    <div v-if="ncProgramList.length === 0" class="flex center" 
+      style="color:#28D0F1;font-weight:bold;font-size: 3rem;margin-top: 5rem">暂无内容</div>
     <div style="height:100%;overflow:hidden;margin-top:2vh;margin-left:1vw;" class="flex column">
       <div v-for="(item,i) of ncProgramList.slice(0,8)" :key="i" class="flex"
         style="color:white;justify-content:space-around;align-items:center;font-size:1.5rem">
@@ -57,7 +59,7 @@ export default {
     async function setData() {
       while (active.value) {
         await getData();
-        await sleep(21600000);
+        await sleep(180000);
       }
     }
     async function init() {

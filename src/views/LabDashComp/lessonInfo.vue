@@ -92,7 +92,7 @@ export default {
     async function drawLine() {
       while (active.value) {
         await getLessonInfo();
-        await sleep(300000);
+        await sleep(600000);
       }
     }
     async function init() {

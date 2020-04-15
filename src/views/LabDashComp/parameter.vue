@@ -6,10 +6,12 @@
       </div>
     </div>
     <div style="width:33vw;height:71vh;margin-top:1vh" class="bk">
-      <div class="flex" style="margin-left:1rem;margin-top:1vh">
-        <div class="yuan" style="width:2vw;height:3vh"></div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行参数</div>
-        <div class="hengxian" style="width:15vw;height:3vh;margin-left:8vw"></div>
+      <div class="flex between" style="margin-left:1rem;margin-top:1vh">
+        <div class="flex">
+          <div class="yuan" style="width:2vw;height:3vh"></div>
+          <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行参数</div>
+        </div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-right:1vh">{{'操作台名称：' + device.name}}</div>
       </div>
       <div
         v-if="device && device.extend && device.extend.paramsMap"
@@ -176,22 +178,6 @@ export default {
     }
     function getOption() {
       return {
-        // legend: {
-        //   show: true,
-        // },
-        // tooltip: {
-        //   trigger: 'axis',
-        //   formatter: (params: any) => {
-        //     if (params.length === 0) { return ''; }
-        //     let res = '';
-        //     const date = new Date(params[0].data.value[0]);
-        //     res += '<div>' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + formatTime(date) + '</div>';
-        //     for (const p of params) {
-        //       res += `${p.marker}<span>${p.seriesName}: ${p.data.value[1]}</span><br/>`;
-        //     }
-        //     return res;
-        //   },
-        // },
         color: getColors(),
         xAxis: {
           type: 'time',

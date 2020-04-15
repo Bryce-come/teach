@@ -1,8 +1,8 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
     <div class="flex wrap column content" 
-      style="align-items:flex-start;margin-top:1vh;height:30vh;margin-left:14vh;">
-      <div class="device-card flex center" v-for="(item,i) in stationList.slice(sort.up*3,(sort.up+1)*3)" :key="i"
+      style="align-items:flex-start;margin-top:1vh;height:36vh;margin-left:14vh;">
+      <div class="device-card flex center" v-for="(item,i) in stationList.slice(sort.up*4,(sort.up+1)*4)" :key="i"
         style="width:18vw;margin-left:1vh;align-items:center;" >
         <img class="image" style="width:4vw;height:8vh" :src='ImageLink(item.extend.deviceImg)' alt="">
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;">{{item.extend.deviceId}}</div>
@@ -100,15 +100,18 @@ export default {
           station.extend.deviceImg = device.deviceType.img;
         }
       }
-      if (stationList.value.length > 3) {
+    }
+    async function changeList() {
+      if (stationList.value.length > 4) {
         sort.value.up = -1;
         sort.value.count = -1;
-        sort.value.sum = stationList.value.length / 3;
+        sort.value.sum = stationList.value.length / 4;
         tagPage();
       }
     }
     async function setDate() {
-      getData();
+      await getData();
+      changeList();
       draw();
     }
     async function init() {
