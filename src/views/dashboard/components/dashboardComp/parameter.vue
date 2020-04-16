@@ -18,7 +18,7 @@
         <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
       </div>
       <div
-        v-if="paramList"
+        v-if="paramList && paramList.record && paramList.record.paramsMap"
         class="flex wrap between"
         style="margin-left:2vw;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
@@ -37,17 +37,13 @@
 
 <script lang="ts">
 import { onMounted, onUnmounted } from '@vue/composition-api';
-import { ref, createComponent} from '@vue/composition-api';
-import { useLoading } from 'web-toolkit/src/service';
-import { statusMap } from '@/utils/device-utils';
+import { ref} from '@vue/composition-api';
 import { MonitorStationList } from '@/dao/monitorDao';
 import {MonitorStationDetail} from '@/dao/monitorDao';
-import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import { sleep } from 'web-toolkit/src/utils';
 import {SettingGet} from '@/dao/settingDao';
 import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
 import {init, login, startRealPlay, stopPlay} from '@/utils/video';
-import {StationList} from '@/dao/stationDao';
 import {Message} from 'element-ui';
 
 export default {
@@ -55,11 +51,9 @@ export default {
   setup() {
     const loading = ref(false);
     const device = ref<any>({});
-    const station = ref<any>();
     const count = ref<any>(0);
     const active = ref<boolean>(true);
     const stationList = ref<any>([]);
-    const courseRecord = ref<any>();
     const modalVideo = ref<any>({
       szDeviceIdentify: '',
       start: '2020-02-26 07:00:00',
@@ -109,7 +103,9 @@ export default {
           if (sort.value.count >= stationList.value.length) {
             sort.value.count = 0;
           }
-          // startVideo((count.value % 2 + 1));
+          if(stationList.value[sort.value.up] && stationList.value[sort.value.up].extend && stationList.value[sort.value.up].extend.cameras && stationList.value[sort.value.up].extend.cameras.length>0 && stationList.value[sort.value.up].extend.cameras[0].channelId!==undefined){
+            startVideo(stationList.value[sort.value.up].extend.cameras[0].channelId);
+          }
           break;
         }
       }
@@ -150,7 +146,7 @@ export default {
     async function setData() {
       // await getData();
       initVideo();
-      getData();
+      await getData();
       drawStation();
       updata();
     }

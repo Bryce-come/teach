@@ -112,7 +112,7 @@
       const stationList = ref<any>([]);
       const stationID = ref(-1);
       const studentID = ref(-1);
-      const stationExtend = ref<any>();
+      const stationExtend = ref<any>({});
       const studentsList = ref<any>([]);
       const overStudentList = ref<any>([]);
       const studentMode = ref<any>({
@@ -133,7 +133,7 @@
           return;
         }
         studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
-        if (courseRecordInClass.value.extend.stationBind) {
+        if (courseRecordInClass.value.extend && courseRecordInClass.value.extend.stationBind) {
           const obj = Object.values(courseRecordInClass.value.extend.stationBind);
           // @ts-ignore
           overStudentList.value = obj.reduce((a, b) => a.concat(b), []);
@@ -207,6 +207,9 @@
       };
       const getBefor = async () => {
         const result = await ListLastStationBind(courseRecordInClass.value.id);
+        if (!courseRecordInClass.value.extend.stationBind) {
+          courseRecordInClass.value.extend.stationBind = {};
+        }
         for (const d in result) {
           if (d) {
             courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
