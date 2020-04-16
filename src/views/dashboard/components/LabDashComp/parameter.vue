@@ -124,8 +124,7 @@ export default {
     }
     async function setDevice() {
       if (stationList.value[sort.value.up]) {
-        device.value = (await MonitorStationDetail({stationId: stationList.value[sort.value.up].id})).deviceList[0];
-        paramList.value = await AnalysisDeviceParam({deviceId: device.value.id});
+        paramList.value = await AnalysisDeviceParam({deviceId: stationList.value[sort.value.up].deviceList[0].id});
       }
     }
     async function drawStation() {

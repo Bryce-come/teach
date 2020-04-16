@@ -112,8 +112,7 @@ export default {
     }
     async function setDevice() {
       if (stationList.value[sort.value.up]) {
-        device.value = (await MonitorStationDetail({stationId: stationList.value[sort.value.up].id})).deviceList[0];
-        paramList.value = await AnalysisDeviceParam({deviceId: device.value.id});
+        paramList.value = await AnalysisDeviceParam({deviceId: stationList.value[sort.value.up].deviceList[0].id});
       }
     }
     async function drawStation() {
@@ -166,7 +165,6 @@ export default {
     async function startVideo(id: any) {
       await stopPlay(0);
       if (id === undefined || id === null) { id = 1; }
-      console.log("play ",id)
       // if (id === undefined || id === null) { return ; }
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
     }
