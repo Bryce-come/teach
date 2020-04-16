@@ -119,7 +119,7 @@ export default {
     async function drawStation() {
       while (active.value) {
         await changeStation();
-        await sleep(6000);
+        await sleep(180000);
       }
     }
     async function darwDate() {
