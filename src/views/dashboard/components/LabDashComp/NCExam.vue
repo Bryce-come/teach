@@ -42,19 +42,19 @@ export default {
   props: {
     courseRecord: {
       type: Object,
-      default: {},
+      default:() => {},
     },
   },
   setup(props: any, ctx: any) {
     const loading = ref(false);
     const ncProgramList = ref<any>([]);
-    const courseRecord = ref<any>({});
+    const courseId = ref<any>({});
     const active = ref<boolean>(true);
     async function getData() {
-      courseRecord.value = props.courseRecord;
-      if (courseRecord.value.id) {
+      courseId.value = props.courseRecord;
+      if (courseId.value.id) {
         await Promise.all([
-          ncProgramList.value = await NCExamList({recordId: courseRecord.value.id}),
+          ncProgramList.value = await NCExamList({recordId: courseId.value.id}),
         ]);
       }
     }

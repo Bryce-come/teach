@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh;max-height:40vh;overflow:hidden;" v-if="courseRecord.program">
+      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh;max-height:40vh;overflow:hidden;" v-if="courseRecord&&courseRecord.program">
         <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验介绍</div>
         <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
           {{courseRecord.program.purpose?courseRecord.program.purpose:''}}</div>
@@ -69,12 +69,12 @@ export default {
   props: {
     courseRecord: {
       type: Object,
-      default: {},
+      default:() => {},
     },
   },
   setup(props: any, ctx: any) {
     const loading = ref(false);
-    const courseRecord = ref<any>({});
+    const courseId = ref<any>({});
     const lessonMap = ref<any>({});
     const lessonTime = ref<any>({
       str: undefined,
@@ -85,9 +85,9 @@ export default {
       await Promise.all([
         lessonMap.value = await SettingGet({onlyLesson: true}),
       ]);
-      courseRecord.value = props.courseRecord;
-      lessonTime.value.str = new Date(lessonMap.value['lesson' + courseRecord.value.extend.lessons[0]][0]).toTimeString().slice(0, 8);
-      lessonTime.value.end = new Date(lessonMap.value['lesson' + courseRecord.value.extend.lessons[courseRecord.value.extend.lessons.length - 1]][1]).toTimeString().slice(0, 8);
+      courseId.value = props.courseRecord;
+      lessonTime.value.str = new Date(lessonMap.value['lesson' + courseId.value.extend.lessons[0]][0]).toTimeString().slice(0, 8);
+      lessonTime.value.end = new Date(lessonMap.value['lesson' + courseId.value.extend.lessons[courseId.value.extend.lessons.length - 1]][1]).toTimeString().slice(0, 8);
     }
     async function drawLine() {
       while (active.value) {
@@ -104,7 +104,7 @@ export default {
       active.value = false;
     });
     return {
-      loading, courseRecord,
+      loading, courseId,
       init, lessonTime,
     };
   },
