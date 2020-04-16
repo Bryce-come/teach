@@ -18,7 +18,7 @@
         <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
       </div>
       <div
-        v-if="device && device.extend && device.extend.paramsMap"
+        v-if="paramList"
         class="flex wrap between"
         style="margin-left:2vw;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
@@ -116,8 +116,7 @@ export default {
     }
     async function setDevice() {
       if (stationList.value[sort.value.up]) {
-        device.value = (await MonitorStationDetail({stationId: stationList.value[sort.value.up].id})).deviceList[0];
-        paramList.value = await AnalysisDeviceParam({deviceId: device.value.id});
+        paramList.value = await AnalysisDeviceParam({deviceId: stationList.value[sort.value.up].deviceList[0].id});
       }
     }
     async function drawStation() {
