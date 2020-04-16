@@ -4,7 +4,7 @@
       <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
       <div style="color:#28D0F1;font-weight:bold;font-size:1.3rem;margin-left: 1rem">设备运行时间轴</div>
     </div>
-    <div class="flex wrap column content" 
+    <div class="flex wrap column content"
       style="align-items:flex-start;margin-top:2vh;height:50vh;margin-left:14vh;">
       <div class="device-card flex center" v-for="(item,i) in stationList.slice(sort.up*4,(sort.up+1)*4)" :key="i"
         style="width:18vw;margin-left:1vh;align-items:center;margin-top:1vh" >
@@ -12,11 +12,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;" class="flex column center">
           <div>{{item.extend.deviceId}}</div>
           <div>
-            <el-tag v-if="item.extend.status === 'working'" type="success">运行</el-tag>
-            <el-tag v-if="item.extend.status === 'emergency'" type="danger">故障</el-tag>
-            <el-tag v-if="item.extend.status === 'offline' || item.extend.status === 'close'" type="info">关机</el-tag>
-            <el-tag v-if="item.extend.status !== 'working' && item.extend.status !== 'emergency' &&
-            item.extend.status !== 'offline'" type="warning">空闲</el-tag>
+            <el-tag style="margin-bottom: 5px" :type="statusMap(item.extend.status) && statusMap(item.extend.status).tag">{{ statusMap(item.extend.status) && statusMap(item.extend.status).arrName }}</el-tag>
           </div>
         </div>
         <div class="device-time">

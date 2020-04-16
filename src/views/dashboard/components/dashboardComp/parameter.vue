@@ -107,6 +107,8 @@ export default {
           if (sort.value.count >= stationList.value.length) {
             sort.value.count = 0;
           }
+          console.log(stationList.value[i].extend)
+          // startVideo((count.value % 2 + 1));
           break;
         }
       }
@@ -119,10 +121,11 @@ export default {
     async function drawStation() {
       while (active.value) {
         await changeStation();
+        // darwVideo();
         await sleep(180000);
       }
     }
-    async function darwDate() {
+    async function drawDate() {
       while (active.value) {
         await getData();
         await sleep(300000);
@@ -134,23 +137,19 @@ export default {
         await sleep(3000);
       }
     }
-    async function darwVideo() {
-      while (active.value) {
-        if (count.value > 0 && count.value % 5 === 0) {
-          await startVideo((count.value % 2 + 1));
-        }
-        await sleep(3000);
-        count.value++;
-      }
-    }
-    async function setVideo() {
-      // 异步
-      initVideo();
-      darwVideo();
-    }
+    // async function darwVideo() {
+    //   while (active.value) {
+    //     if (count.value > 0 && count.value % 5 === 0) {
+    //       await startVideo((count.value % 2 + 1));
+    //     }
+    //     await sleep(3000);
+    //     count.value++;
+    //   }
+    // }
     async function setData() {
       // await getData();
-      darwDate();
+      initVideo();
+      drawDate();
       drawStation();
       updata();
     }
@@ -173,9 +172,6 @@ export default {
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
     }
     async function init0() {
-      // initVideo();
-      // darwVideo();
-      setVideo();
       setData();
     }
     onUnmounted(() => {
