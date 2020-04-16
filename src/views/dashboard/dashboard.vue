@@ -16,7 +16,7 @@
       <div id="timeOn" style="margin-left:-5vh">
         <dayTimeOn ref="dayTimeOn"/>
       </div>
-      <stateCount ref="stateCount" style="width:20vw"/>
+      <stateCount :stationAll="stationAll" ref="stateCount" style="width:20vw"/>
     </div>
     <hr style="color:#28D0F1;">
     <div class="flex" style="height:84vh;justify-content:space-around;">
@@ -30,14 +30,14 @@
       </div>
       <div class="flex column" style="height:84vh;">
         <iframe id="iframe" name="iframe" :src="'http://192.168.0.130:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
-        <parameter ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
+        <parameter :stationAll="stationAll" ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:87vh;">
         <div class="bk" style="width:33vw;height:32vh;margin-top:1vh">
           <news ref="news" style="width:100%;height:100%"/>
         </div>
         <div class="bk" style="width:33vw;height:54vh;margin-top:1vh">
-          <timeLine ref="timeLine" style="width:100%;height:100%"/>
+          <timeLine :stationAll="stationAll" ref="timeLine" style="width:100%;height:100%"/>
         </div>
       </div>
     </div>
@@ -61,6 +61,7 @@ import news from '@/views/dashboard/components/dashboardComp/news.vue';
 import timeLine from '@/views/dashboard/components/dashboardComp/timeLine.vue';
 import weather from '@/views/dashboard/components/dashboardComp/weather.vue';
 import dayTimeOn from '@/views/dashboard/components/dashboardComp/dayTimeOn.vue';
+import { MonitorStationList } from '@/dao/monitorDao';
 
 export default createComponent({
   components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather, dayTimeOn},
@@ -83,7 +84,18 @@ export default createComponent({
     const timeLine = ref<any>();
     const weather = ref<any>();
     const dayTimeOn = ref<any>();
+    const active = ref<boolean>(true);
+    const stationAll = ref<any>();
 
+    async function getStationAll() {
+      stationAll.value = await MonitorStationList();
+    }
+    async function setStationAll() {
+      while (active.value) {
+        await getStationAll();
+        await sleep(180000);
+      }
+    }
     function getTimeBoard() {
       const str = new Date();
       timeBoard.value.time = str.toTimeString().slice(0, 8);
@@ -101,6 +113,7 @@ export default createComponent({
       timeBoard.value.timeOn = (str.getHours() - 8) * 2;
     }
     onMounted(useLoading(loading, async () => {
+      setStationAll();
       const data = await Login( {
           username: '@dashboard',
           pwd: '666666',
@@ -120,7 +133,7 @@ export default createComponent({
       dayTimeOn.value.init();
     }));
     return {
-      loading, timeBoard, dayTimeOn,
+      loading, timeBoard, dayTimeOn, stationAll,
       stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather,
     };
   },

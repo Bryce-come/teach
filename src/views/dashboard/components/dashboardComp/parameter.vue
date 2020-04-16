@@ -48,7 +48,13 @@ import {Message} from 'element-ui';
 
 export default {
   name: 'parameter',
-  setup() {
+  props: {
+    stationAll: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
     const device = ref<any>({});
     const count = ref<any>(0);
@@ -73,9 +79,7 @@ export default {
       }
     }
     async function getData() {
-      await Promise.all([
-        stationList.value = await MonitorStationList(),
-      ]);
+      stationList.value = props.stationAll;
       const summary: any = {};
       for (const station of stationList.value) {
         if (!station.deviceList || station.deviceList.length === 0) {

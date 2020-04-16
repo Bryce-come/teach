@@ -41,7 +41,13 @@ import { timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echart
 
 export default {
   name: 'timeLine',
-  setup() {
+  props: {
+    stationAll: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
     const stationList = ref<any>([]);
     const chart = ref<any>({});
@@ -95,7 +101,7 @@ export default {
       }
     }
     async function getData() {
-      stationList.value = await MonitorStationList();
+      stationList.value = props.stationAll;
       const data = [];
       const summary: any = {};
       for (const station of stationList.value) {

@@ -33,9 +33,10 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from '@vue/composition-api';
+import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
+import {leftFill0, sleep, formatTime} from 'web-toolkit/src/utils';
 import { urlMap } from '@/config';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
@@ -43,8 +44,15 @@ import { MonitorStationList } from '@/dao/monitorDao';
 
 export default {
   name: 'stateCount',
-  setup() {
+  props: {
+    stationAll: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
+    const active = ref<boolean>(true);
     const state = ref<any>({
       workingNum: 0,
       wp: 0,
@@ -83,41 +91,38 @@ export default {
       state.value.op = state.value.offlineNum / count * 100;
       state.value.qp = state.value.qitaNum / count * 100;
     }
-    async function init() {
-      try {
-        stationList.value = await MonitorStationList();
-        const data = [];
-        const summary: any = {};
-        for (const station of stationList.value) {
-          if (!station.deviceList || station.deviceList.length === 0) {
-            summaryHandle(summary, 'offline');
-            station.extend.status = 'offline';
+    async function getData() {
+      stationList.value = props.stationAll;
+      const data = [];
+      const summary: any = {};
+      for (const station of stationList.value) {
+        if (!station.deviceList || station.deviceList.length === 0) {
+          summaryHandle(summary, 'offline');
+          station.extend.status = 'offline';
+        } else {
+          const device = station.deviceList[0];
+          if (device.extend.status) {
+            summaryHandle(summary, device.extend.status);
           } else {
-            const device = station.deviceList[0];
-            if (device.extend.status) {
-              summaryHandle(summary, device.extend.status);
-            } else {
-              summaryHandle(summary, 'offline');
-            }
-            station.extend.status = device.extend.status;
-            // 数据二次处理
-            // station.extend.deviceId = device.id;
-            // station.extend.deviceImg = device.deviceType.img;
+            summaryHandle(summary, 'offline');
           }
+          station.extend.status = device.extend.status;
         }
-        // for (const key of Object.keys(summary)) {
-        //   data.push({
-        //     name: statusMap(key).arrName,
-        //     itemStyle: {
-        //       color: statusMap(key).color,
-        //     },
-        //     value: summary[key],
-        //   });
-        // }
-        setState();
-        // if (stationList.value === undefined) throw 'wrong';
-      } catch (err) {}
+      }
+      setState();
     }
+    async function setData() {
+      while (active.value) {
+        await getData();
+        await sleep(180000);
+      }
+    }
+    async function init() {
+      setData();
+    }
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
       state,
       loading,

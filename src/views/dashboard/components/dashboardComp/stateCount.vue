@@ -44,7 +44,13 @@ import { sleep } from 'web-toolkit/src/utils';
 
 export default {
   name: 'stateCount',
-  setup() {
+  props: {
+    stationAll: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  setup(props: any, ctx: any) {
     const loading = ref(false);
     const active = ref<boolean>(true);
     const state = ref<any>({
@@ -86,7 +92,7 @@ export default {
       state.value.qp = state.value.qitaNum / count * 100;
     }
     async function getData() {
-      stationList.value = await MonitorStationList();
+      stationList.value = props.stationAll;
       const data = [];
       const summary: any = {};
       for (const station of stationList.value) {
