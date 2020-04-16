@@ -11,7 +11,7 @@
           <div class="yuan" style="width:2vw;height:3vh"></div>
           <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行参数</div>
         </div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-right:1vh">{{'操作台名称：' + device.name}}</div>
       </div>
       <div
         v-if="device && device.extend && device.extend.paramsMap"
@@ -61,91 +61,27 @@ export default {
     const refreshTimeRatio = ref(false);
     const paramNameString = ref('');
     const checkList = ref<any>([]);
-    const stationList = ref<any>([]);
     const modalVideo = ref<any>({
       szDeviceIdentify: '',
       start: '2020-02-26 07:00:00',
       end: '2020-02-26 14:11:11',
     });
 
-    // async function getData() {
-    //   station.value = await MonitorStationDetail({stationId: 36});
-    //   device.value = station.value.deviceList[0];
-    //   checkList.value = ['params.103', 'params.109', 'params.105'];
-    // }
-    const paramList = ref<any>();
-    const sort = ref<any>({
-      up: 0,
-      count: 0,
-      sum: 0,
-    });
-    function summaryHandle(summary: any, key: string) {
-      if (summary[key]) {
-        summary[key] = summary[key] + 1;
-      } else {
-        summary[key] = 1;
-      }
-    }
     async function getData() {
-      await Promise.all([
-        stationList.value = await MonitorStationList(),
-      ]);
-      const summary: any = {};
-      for (const station of stationList.value) {
-        if (!station.deviceList || station.deviceList.length === 0) {
-          summaryHandle(summary, 'offline');
-          station.extend.status = 'offline';
-        } else {
-          const device = station.deviceList[0];
-          if (device.extend.status) {
-            summaryHandle(summary, device.extend.status);
-          } else {
-            summaryHandle(summary, 'offline');
-          }
-          station.extend.status = device.extend.status;
-          // 数据二次处理
-          station.extend.deviceId = device.id;
-        }
-      }
-    }
-    async function changeStation() {
-      for (let i = sort.value.count; i < stationList.value.length; i++) {
-        sort.value.count = i + 1;
-        if (stationList.value[i].extend.status !== 'offline' || stationList.value[i].extend.status !== 'close') {
-          sort.value.up = i;
-          // device.value = (await MonitorStationDetail({stationId: stationList.value[i].id})).deviceList[0];
-          if (sort.value.count >= stationList.value.length) {
-            sort.value.count = 0;
-          }
-          // startVideo((count.value % 2 + 1));
-          break;
-        }
-      }
-    }
-    async function setDevice() {
-      if (stationList.value[sort.value.up]) {
-        device.value = (await MonitorStationDetail({stationId: stationList.value[sort.value.up].id})).deviceList[0];
-        paramList.value = await AnalysisDeviceParam({deviceId: device.value.id});
-      }
-    }
-    async function drawStation() {
-      while (active.value) {
-        await changeStation();
-        // darwVideo();
-        await sleep(180000);
-      }
+      station.value = await MonitorStationDetail({stationId: 36});
+      device.value = station.value.deviceList[0];
+      checkList.value = ['params.103', 'params.109', 'params.105'];
     }
     async function setData() {
-      // await getData();
+      // 异步
       initVideo();
-      getData();
-      drawStation();
-      updata();
-    }
-    async function updata() {
       while (active.value) {
-        await setDevice();
+        await getData();
+        if (count.value > 0 && count.value % 5 === 0) {
+          await startVideo((count.value % 2 + 1));
+        }
         await sleep(3000);
+        count.value++;
       }
     }
     async function initVideo() {
@@ -310,8 +246,8 @@ export default {
       active.value = false;
     });
     return {
-      loading, device, init0,
-      sort, stationList, paramList,
+      loading, device,
+      init0, line1,
     };
   },
 };

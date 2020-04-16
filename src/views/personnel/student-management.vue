@@ -325,6 +325,7 @@ export default {
     await queryClassList();
   }
   async function showForm(row: any) {
+    groupList.value = [];
     if (form.value) { (form.value as ElForm).clearValidate(); }
     modal.value.studentInfo = row ? deepClone(row) : initForm();
     modal.value.visible = true;

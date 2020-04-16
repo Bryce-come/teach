@@ -97,7 +97,6 @@ export default {
           station.extend.deviceId = device.id;
         }
       }
-      console.log(stationList.value)
     }
     async function changeStation() {
       for (let i = sort.value.count; i < stationList.value.length; i++) {
@@ -113,7 +112,7 @@ export default {
       }
     }
     async function setDevice() {
-      if(stationList.value[sort.value.up]) {
+      if (stationList.value[sort.value.up]) {
         device.value = (await MonitorStationDetail({stationId: stationList.value[sort.value.up].id})).deviceList[0];
       }
     }

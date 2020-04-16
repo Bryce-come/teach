@@ -23,7 +23,7 @@
         style="margin-left:2vw;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
           class="monitor-detail--param-item flex between"
-          v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
+          v-for="(param,index) of paramList.record.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
           <div class="flex between" style="margin-top:0.5rem;width:14rem;height:40%">
             <span style="text-align:center;color:white;font-size:1.2rem;padding-left:20px">{{ param.nameSimple }}：</span>
@@ -45,6 +45,7 @@ import {MonitorStationDetail} from '@/dao/monitorDao';
 import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import { sleep } from 'web-toolkit/src/utils';
 import {SettingGet} from '@/dao/settingDao';
+import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
 import {init, login, startRealPlay, stopPlay} from '@/utils/video';
 import {StationList} from '@/dao/stationDao';
 import {Message} from 'element-ui';
@@ -64,6 +65,7 @@ export default {
       start: '2020-02-26 07:00:00',
       end: '2020-02-26 14:11:11',
     });
+    const paramList = ref<any>();
     const sort = ref<any>({
       up: 0,
       count: 0,
@@ -107,15 +109,15 @@ export default {
           if (sort.value.count >= stationList.value.length) {
             sort.value.count = 0;
           }
-          console.log(stationList.value[i].extend)
           // startVideo((count.value % 2 + 1));
           break;
         }
       }
     }
     async function setDevice() {
-      if(stationList.value[sort.value.up]) {
+      if (stationList.value[sort.value.up]) {
         device.value = (await MonitorStationDetail({stationId: stationList.value[sort.value.up].id})).deviceList[0];
+        paramList.value = await AnalysisDeviceParam({deviceId: device.value.id});
       }
     }
     async function drawStation() {
@@ -125,12 +127,12 @@ export default {
         await sleep(180000);
       }
     }
-    async function drawDate() {
-      while (active.value) {
-        await getData();
-        await sleep(300000);
-      }
-    }
+    // async function drawDate() {
+    //   while (active.value) {
+    //     await getData();
+    //     await sleep(300000);
+    //   }
+    // }
     async function updata() {
       while (active.value) {
         await setDevice();
@@ -149,7 +151,7 @@ export default {
     async function setData() {
       // await getData();
       initVideo();
-      drawDate();
+      getData();
       drawStation();
       updata();
     }
@@ -179,7 +181,7 @@ export default {
     });
     return {
       loading, device, init0,
-      sort, stationList,
+      sort, stationList, paramList,
     };
   },
 };

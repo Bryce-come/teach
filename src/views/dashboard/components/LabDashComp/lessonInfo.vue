@@ -69,7 +69,7 @@ export default {
   props: {
     courseRecord: {
       type: Object,
-      default:() => {},
+      default: () => {},
     },
   },
   setup(props: any, ctx: any) {
