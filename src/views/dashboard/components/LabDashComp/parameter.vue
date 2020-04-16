@@ -56,7 +56,7 @@ export default {
     const station = ref<any>();
     const count = ref<any>(0);
     const active = ref<boolean>(true);
-    const line1 = ref<any>({});
+    const line1 = ref<any>(null);
     const datetimeRange = ref<any>([]);
     const refreshTimeRatio = ref(false);
     const paramNameString = ref('');
@@ -142,6 +142,7 @@ export default {
       await getData();
       drawStation();
       updata();
+      setLine();
     }
     async function updata() {
       while (active.value) {
@@ -188,7 +189,7 @@ export default {
       }
       const allParams: any[] = [{
         deviceId: stationList.value[sort.value.up].deviceList[0].id,
-        keys: checkList.value,
+        keys: ['params.103', 'params.109', 'params.105'],
       }];
       const list = await AnalysisParams({
         paramsJson: JSON.stringify(allParams),
@@ -302,15 +303,14 @@ export default {
         series: [],
       };
     }
-    function init0() {
-      setData();
-      setLine();
+    async function init0() {
+      await setData();
     }
     onUnmounted(() => {
       active.value = false;
     });
     return {
-      loading, device, init0,
+      loading, device, init0, line1,
       sort, stationList, paramList,
     };
   },
