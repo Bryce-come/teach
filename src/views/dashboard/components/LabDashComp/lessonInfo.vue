@@ -19,16 +19,16 @@
               <div>{{"实验项目："}}</div>
               <div>{{courseRecord.program?courseRecord.program.name:''}}</div>
             </div>
-            <div style="width:8vw" class="flex between">
+            <div style="width:8vw;margin-top:1vh" class="flex between">
               <div>{{"授课老师："}}</div>
               <div>{{courseRecord.teacher.name?courseRecord.teacher.name:''}}</div>
             </div>
-            <div style="width:18vw" class="flex between">
+            <div style="width:18vw;margin-top:1vh" class="flex between">
               <div>{{"授课班级分组："}}</div>
               <div>{{courseRecord.clasz?courseRecord.clasz.name:''}}</div>
               <div>{{courseRecord.claszGroup?courseRecord.claszGroup.name:''}}</div>
             </div>
-            <div style="width:18vw" class="flex between">
+            <div style="width:18vw;margin-top:1vh;;margin-bottom:1vh" class="flex between">
               <div>{{"上课时间："}}</div>
               <div>{{courseRecord.course?('第' + courseRecord.extend.lessons[0] + '-' + 
               courseRecord.extend.lessons[courseRecord.extend.lessons.length-1] + '节'):''}}</div>
@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh" v-if="courseRecord.program">
+      <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh;max-height:40vh;overflow:hidden;" v-if="courseRecord.program">
         <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验介绍</div>
         <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
           {{courseRecord.program.purpose?courseRecord.program.purpose:''}}</div>
@@ -45,7 +45,7 @@
         <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
           {{courseRecord.program.steps?courseRecord.program.steps:''}}</div>
         <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验结果</div>
-        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
+        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;margin-bottom:1vh;">
           {{courseRecord.program.results?courseRecord.program.results:''}}</div>
       </div>
     </div>

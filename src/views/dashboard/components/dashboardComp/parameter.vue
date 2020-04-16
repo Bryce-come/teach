@@ -99,16 +99,13 @@ export default {
       }
     }
     async function changeStation() {
-      console.log(stationList.value.length)
       for (let i = sort.value.count; i < stationList.value.length; i++) {
         sort.value.count = i + 1;
-        console.log(sort.value.count)
         if (stationList.value[i].extend.status !== 'offline' || stationList.value[i].extend.status !== 'close') {
           sort.value.up = i;
           // device.value = (await MonitorStationDetail({stationId: stationList.value[i].id})).deviceList[0];
           if (sort.value.count >= stationList.value.length) {
             sort.value.count = 0;
-            console.log(sort.value.count )
           }
           break;
         }
