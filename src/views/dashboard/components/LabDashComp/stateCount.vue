@@ -46,7 +46,7 @@ export default {
   name: 'stateCount',
   props: {
     stationAll: {
-      type: Object,
+      type: Array,
       default: () => {},
     },
   },

@@ -39,7 +39,7 @@ export default {
   name: 'timeLine',
   props: {
     stationAll: {
-      type: Object,
+      type: Array,
       default: () => {},
     },
   },

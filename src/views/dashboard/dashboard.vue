@@ -44,7 +44,7 @@
   </div>
 </template>
 <script lang="ts">
-import { onMounted} from '@vue/composition-api';
+import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent} from '@vue/composition-api';
 import { useLoading } from 'web-toolkit/src/service';
 import { updateStoreUserInfo} from 'web-toolkit/src/case-main';
@@ -89,6 +89,7 @@ export default createComponent({
 
     async function getStationAll() {
       stationAll.value = await MonitorStationList();
+      console.log(stationAll.value)
     }
     async function setStationAll() {
       while (active.value) {
@@ -132,6 +133,9 @@ export default createComponent({
       weather.value.init();
       dayTimeOn.value.init();
     }));
+    onUnmounted(() => {
+      active.value = false;
+    });
     return {
       loading, timeBoard, dayTimeOn, stationAll,
       stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather,

@@ -52,7 +52,7 @@ export default {
   name: 'parameter',
   props: {
     stationAll: {
-      type: Object,
+      type: Array,
       default: () => {},
     },
   },

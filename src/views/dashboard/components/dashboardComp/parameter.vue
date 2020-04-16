@@ -50,7 +50,7 @@ export default {
   name: 'parameter',
   props: {
     stationAll: {
-      type: Object,
+      type: Array,
       default: () => {},
     },
   },
@@ -128,29 +128,13 @@ export default {
         await sleep(180000);
       }
     }
-    // async function drawDate() {
-    //   while (active.value) {
-    //     await getData();
-    //     await sleep(300000);
-    //   }
-    // }
     async function updata() {
       while (active.value) {
         await setDevice();
         await sleep(3000);
       }
     }
-    // async function darwVideo() {
-    //   while (active.value) {
-    //     if (count.value > 0 && count.value % 5 === 0) {
-    //       await startVideo((count.value % 2 + 1));
-    //     }
-    //     await sleep(3000);
-    //     count.value++;
-    //   }
-    // }
     async function setData() {
-      // await getData();
       initVideo();
       await getData();
       drawStation();
