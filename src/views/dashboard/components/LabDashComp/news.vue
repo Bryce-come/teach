@@ -69,11 +69,11 @@ export default {
     text-align: center;
   }
   .yuan {
-    background: url("../../assets/dashboard/yuan.png") no-repeat;
+    background: url("../../../../assets/dashboard/yuan.png") no-repeat;
     background-size: 100% 100%;
   }
   .hengxian {
-    background: url("../../assets/dashboard/hengxian.png") no-repeat;
+    background: url("../../../../assets/dashboard/hengxian.png") no-repeat;
     background-size: 100% 100%;
   }
 </style>

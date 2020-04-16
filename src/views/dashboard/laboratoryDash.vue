@@ -42,12 +42,12 @@ import { updateStoreUserInfo} from 'web-toolkit/src/case-main';
 import {scheme} from '@/config';
 import {sleep} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
-import stateCount from '@/views/LabDashComp/stateCount.vue';
-import parameter from '@/views/LabDashComp/parameter.vue';
-import timeLine from '@/views/LabDashComp/timeLine.vue';
-import lessonInfo from '@/views/LabDashComp/lessonInfo.vue';
-import news from '@/views/LabDashComp/news.vue';
-import NCExam from '@/views/LabDashComp/NCExam.vue';
+import stateCount from '@/views/dashboard/components/LabDashComp/stateCount.vue';
+import parameter from '@/views/dashboard/components/LabDashComp/parameter.vue';
+import timeLine from '@/views/dashboard/components/LabDashComp/timeLine.vue';
+import lessonInfo from '@/views/dashboard/components/LabDashComp/lessonInfo.vue';
+import news from '@/views/dashboard/components/LabDashComp/news.vue';
+import NCExam from '@/views/dashboard/components/LabDashComp/NCExam.vue';
 import {CourseRecordInClass} from '@/dao/courseRecordDao';
 import {SettingGet} from '@/dao/settingDao';
 
@@ -92,7 +92,7 @@ export default createComponent({
 .backwall{
   width: 100vw;
   height: 100vh;
-  background: url("../assets/dashboard/dabeijing.png") no-repeat;
+  background: url("../../assets/dashboard/dabeijing.png") no-repeat;
   background-size: 100% 100%;
 }
 #timeBoard{
@@ -101,15 +101,15 @@ export default createComponent({
   font-weight: bold;
 }
 .bk {
-  background: url("../assets/dashboard/toumingbeijing.png") no-repeat;
+  background: url("../../assets/dashboard/toumingbeijing.png") no-repeat;
   background-size: 100% 100%;
 }
 .yuan {
-  background: url("../assets/dashboard/yuan.png") no-repeat;
+  background: url("../../assets/dashboard/yuan.png") no-repeat;
   background-size: 100% 100%;
 }
 .hengxian {
-  background: url("../assets/dashboard/hengxian.png") no-repeat;
+  background: url("../../assets/dashboard/hengxian.png") no-repeat;
   background-size: 100% 100%;
 }
 </style>

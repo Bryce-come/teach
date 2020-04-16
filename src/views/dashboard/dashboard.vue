@@ -51,16 +51,16 @@ import { updateStoreUserInfo} from 'web-toolkit/src/case-main';
 import {scheme} from '@/config';
 import {sleep} from 'web-toolkit/src/utils/index';
 import {Login} from '@/dao/userDao';
-import stateCount from '@/views/dashboardComp/stateCount.vue';
-import useTime from '@/views/dashboardComp/useTime.vue';
-import useCount from '@/views/dashboardComp/useCount.vue';
-import timeOn from '@/views/dashboardComp/timeOn.vue';
-import onTimeWeek from '@/views/dashboardComp/onTimeWeek.vue';
-import parameter from '@/views/dashboardComp/parameter.vue';
-import news from '@/views/dashboardComp/news.vue';
-import timeLine from '@/views/dashboardComp/timeLine.vue';
-import weather from '@/views/dashboardComp/weather.vue';
-import dayTimeOn from '@/views/dashboardComp/dayTimeOn.vue';
+import stateCount from '@/views/dashboard/components/dashboardComp/stateCount.vue';
+import useTime from '@/views/dashboard/components/dashboardComp/useTime.vue';
+import useCount from '@/views/dashboard/components/dashboardComp/useCount.vue';
+import timeOn from '@/views/dashboard/components/dashboardComp/timeOn.vue';
+import onTimeWeek from '@/views/dashboard/components/dashboardComp/onTimeWeek.vue';
+import parameter from '@/views/dashboard/components/dashboardComp/parameter.vue';
+import news from '@/views/dashboard/components/dashboardComp/news.vue';
+import timeLine from '@/views/dashboard/components/dashboardComp/timeLine.vue';
+import weather from '@/views/dashboard/components/dashboardComp/weather.vue';
+import dayTimeOn from '@/views/dashboard/components/dashboardComp/dayTimeOn.vue';
 
 export default createComponent({
   components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather, dayTimeOn},
@@ -130,7 +130,7 @@ export default createComponent({
 .backwall{
   width: 100vw;
   height: 100vh;
-  background: url("../assets/dashboard/bw.png") no-repeat;
+  background: url("../../assets/dashboard/bw.png") no-repeat;
   background-size: 100% 100%;
 }
 #timeBoard{
@@ -139,7 +139,7 @@ export default createComponent({
   font-weight: bold;
 }
 .bk {
-  background: url("../assets/dashboard/chartbk.png") no-repeat;
+  background: url("../../assets/dashboard/chartbk.png") no-repeat;
   background-size: 100% 100%;
 }
 </style>

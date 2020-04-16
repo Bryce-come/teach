@@ -256,15 +256,15 @@ export default {
 
 <style scoped lang="scss">
   .bk {
-    background: url("../../assets/dashboard/toumingbeijing.png") no-repeat;
+    background: url("../../../../assets/dashboard/toumingbeijing.png") no-repeat;
     background-size: 100% 100%;
   }
   .yuan {
-    background: url("../../assets/dashboard/yuan.png") no-repeat;
+    background: url("../../../../assets/dashboard/yuan.png") no-repeat;
     background-size: 100% 100%;
   }
   .hengxian {
-    background: url("../../assets/dashboard/hengxian.png") no-repeat;
+    background: url("../../../../assets/dashboard/hengxian.png") no-repeat;
     background-size: 100% 100%;
   }
 </style>

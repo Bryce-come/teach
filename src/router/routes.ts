@@ -426,13 +426,13 @@ export const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: () => import('../views/dashboard.vue'),
+    component: () => import('../views/dashboard/dashboard.vue'),
     meta: { authDisabled: true },
   },
   {
     path: '/dashboard2',
     name: 'laboratoryDash',
-    component: () => import('../views/laboratoryDash.vue'),
+    component: () => import('../views/dashboard/laboratoryDash.vue'),
     meta: { authDisabled: true },
   },
   {

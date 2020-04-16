@@ -28,7 +28,7 @@ import { onMounted, onUnmounted } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
-import { NCExamList } from '../../dao/inClassDao';
+import { NCExamList } from '@/dao/inClassDao';
 import { useLoading } from 'web-toolkit/src/service';
 import { statusMap } from '@/utils/device-utils';
 import { CourseRecordInClass } from '@/dao/courseRecordDao';
@@ -52,9 +52,11 @@ export default {
     const active = ref<boolean>(true);
     async function getData() {
       courseRecord.value = props.courseRecord;
-      await Promise.all([
-        ncProgramList.value = await NCExamList({recordId: courseRecord.value.id}),
-      ]);
+      if (courseRecord.value.id) {
+        await Promise.all([
+          ncProgramList.value = await NCExamList({recordId: courseRecord.value.id}),
+        ]);
+      }
     }
     async function setData() {
       while (active.value) {
@@ -85,11 +87,11 @@ export default {
     text-align: center;
   }
   .yuan {
-    background: url("../../assets/dashboard/yuan.png") no-repeat;
+    background: url("../../../../assets/dashboard/yuan.png") no-repeat;
     background-size: 100% 100%;
   }
   .hengxian {
-    background: url("../../assets/dashboard/hengxian.png") no-repeat;
+    background: url("../../../../assets/dashboard/hengxian.png") no-repeat;
     background-size: 100% 100%;
   }
 </style>
