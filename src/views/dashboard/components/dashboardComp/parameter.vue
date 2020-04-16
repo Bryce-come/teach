@@ -15,7 +15,7 @@
           <div style="background-color:#28D0F1;width:0.5rem;height:1.6rem"></div>
           <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;margin-left: 1rem">设备运行参数</div>
         </div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;">{{'操作台名称：' + stationList[sort.up].name}}</div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 1.3rem;" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
       </div>
       <div
         v-if="device && device.extend && device.extend.paramsMap"
@@ -148,7 +148,7 @@ export default {
     }
     async function setVideo() {
       // 异步
-      await initVideo();
+      initVideo();
       darwVideo();
     }
     async function setData() {
@@ -176,23 +176,21 @@ export default {
       await startRealPlay(0, modalVideo.value.szDeviceIndentify, id);
     }
     async function init0() {
-      initVideo();
-      darwVideo();
-      // setVideo();
+      // initVideo();
+      // darwVideo();
+      setVideo();
       setData();
     }
     onUnmounted(() => {
       active.value = false;
     });
     return {
-      loading, device, stationList,
-      init0, sort,
+      loading, device, init0,
+      sort, stationList,
     };
   },
 };
 </script>
-
-
 <style scoped lang="scss">
   .bk {
     background: url("../../../../assets/dashboard/chartbk.png") no-repeat;
