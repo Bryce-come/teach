@@ -14,12 +14,12 @@
         <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
       </div>
       <div
-        v-if="device && device.extend && device.extend.paramsMap"
+        v-if="paramList"
         class="flex wrap between"
         style="margin-left:0.5vh;margin-right:1.5vh;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
           class="monitor-detail--param-item flex between"
-          v-for="(param,index) of device.extend.paramsMap.filter(p => p.available !== false).slice(0,18)"
+          v-for="(param,index) of paramList.record.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
           <div class="flex between" style="margin-top:0.5rem;width:15rem;height:40%">
             <span style="text-align:center;color:white;font-size:1.2rem;padding-left:1rem">{{ param.nameSimple }}：</span>
@@ -56,7 +56,7 @@ export default {
     const station = ref<any>();
     const count = ref<any>(0);
     const active = ref<boolean>(true);
-    const line1 = ref<any>(null);
+    const line1 = ref<any>({});
     const datetimeRange = ref<any>([]);
     const refreshTimeRatio = ref(false);
     const paramNameString = ref('');
@@ -167,7 +167,6 @@ export default {
     }
     async function setLine() {
       while (active.value) {
-        await getData();
         await getLine();
         await sleep(3000);
       }
@@ -186,7 +185,7 @@ export default {
         return;
       }
       const allParams: any[] = [{
-        deviceId: (device.value as any).id,
+        deviceId: stationList.value[sort.value.up].deviceList[0].id,
         keys: checkList.value,
       }];
       const list = await AnalysisParams({
