@@ -117,7 +117,9 @@ export default {
           if (sort.value.count >= stationList.value.length) {
             sort.value.count = 0;
           }
-          if(stationList.value[sort.value.up] && stationList.value[sort.value.up].extend && stationList.value[sort.value.up].extend.cameras && stationList.value[sort.value.up].extend.cameras.length>0 && stationList.value[sort.value.up].extend.cameras[0].channelId!==undefined){
+          if (stationList.value[sort.value.up] && stationList.value[sort.value.up].extend &&
+            stationList.value[sort.value.up].extend.cameras && stationList.value[sort.value.up].extend.cameras.length > 0 &&
+            stationList.value[sort.value.up].extend.cameras[0].channelId !== undefined) {
             startVideo(stationList.value[sort.value.up].extend.cameras[0].channelId);
           }
           break;

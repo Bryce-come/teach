@@ -105,6 +105,7 @@
   import {CourseRecordInClass, CourseRecordUpdate, ListLastStationBind} from '@/dao/courseRecordDao';
   import {StationList} from '@/dao/stationDao';
   import {ImageLink} from '@/dao/commonDao.ts';
+import { Message } from 'element-ui';
 
   export default {
     setup() {
@@ -207,17 +208,21 @@
       };
       const getBefor = async () => {
         const result = await ListLastStationBind(courseRecordInClass.value.id);
-        if (!courseRecordInClass.value.extend.stationBind) {
-          courseRecordInClass.value.extend.stationBind = {};
-        }
-        for (const d in result) {
-          if (d) {
-            courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
+        if ( !result ) {
+          Message.warning('无分配信息')
+        } else {
+          if (!courseRecordInClass.value.extend.stationBind) {
+            courseRecordInClass.value.extend.stationBind = {};
           }
+          for (const d in result) {
+            if (d) {
+              courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
+            }
+          }
+          stationExtend.value = courseRecordInClass.value.extend;
+          await courseRecordUpdate();
+          await queryCourseInClass();
         }
-        stationExtend.value = courseRecordInClass.value.extend;
-        await courseRecordUpdate();
-        await queryCourseInClass();
       };
       onMounted(useLoading(loading, async () => {
         await queryCourseInClass();
