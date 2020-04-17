@@ -208,18 +208,19 @@ import { Message } from 'element-ui';
       };
       const getBefor = async () => {
         const result = await ListLastStationBind(courseRecordInClass.value.id);
-        if ( !result ) {
+        if ( !result || Object.keys(result).length===0 ) {
           Message.warning('无分配信息')
         } else {
           if (!courseRecordInClass.value.extend.stationBind) {
             courseRecordInClass.value.extend.stationBind = {};
           }
-          for (const d in result) {
-            if (d) {
+          for (const d of Object.keys(result)) {
+            if (result[d]) {
               courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
             }
           }
           stationExtend.value = courseRecordInClass.value.extend;
+          Message.success('分配成功')
           await courseRecordUpdate();
           await queryCourseInClass();
         }

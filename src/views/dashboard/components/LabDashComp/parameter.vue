@@ -36,14 +36,10 @@
 
 <script lang="ts">
 import { onMounted, onUnmounted } from '@vue/composition-api';
-import { ref, createComponent} from '@vue/composition-api';
-import { useLoading } from 'web-toolkit/src/service';
+import { ref} from '@vue/composition-api';
 import {leftFill0, sleep, formatTime} from 'web-toolkit/src/utils';
-import { statusMap } from '@/utils/device-utils';
-import { MonitorStationList } from '@/dao/monitorDao';
-import {MonitorStationDetail} from '@/dao/monitorDao';
 import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
-import {timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
+import {getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';
 import {SettingGet} from '@/dao/settingDao';
 import {init, login, startRealPlay, stopPlay} from '@/utils/video';
 import {Message} from 'element-ui';
