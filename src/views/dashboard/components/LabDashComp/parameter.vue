@@ -16,12 +16,12 @@
       <div
         v-if="paramList"
         class="flex wrap between"
-        style="margin-left:0.5vh;margin-right:1.5vh;overflow:hidden;height:20vh;margin-top: 1rem">
+        style="margin-left:3vh;margin-right:1.5vh;width:30vw;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
           class="monitor-detail--param-item flex between"
           v-for="(param,index) of paramList.record.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
-          <div class="flex between" style="margin-top:0.5rem;width:15rem;height:40%">
+          <div class="flex between" style="margin-top:0.5rem;width:20rem;height:40%:">
             <span style="text-align:center;color:white;font-size:1.2rem;padding-left:1rem">{{ param.nameSimple }}：</span>
             <div style="text-align:center;color:white;font-size:1.2rem;">{{ param.value }}</div>
           </div>

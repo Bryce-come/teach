@@ -6,10 +6,10 @@
         <div class="hengxian" style="width:15vw;height:3vh;margin-left:10vw"></div>
       </div>
     <div class="flex column center">
-      <div class="monitor-left" style="border:0.5rem solid #263B5A;width:32vw;margin-top:3vh;overflow:hidden">
-        <div class="title" style="color: white; font-size:2rem;margin-top:1vh;margin-left:1vh">授课信息</div>
-        <div v-if="!courseRecord" style="color: grey;text-align: center">暂无上课信息</div>
-        <div v-else-if="courseRecord" class="content" style="margin-left:1vh;margin-top:1vh;color: white; font-size:1.7rem;">
+      <div v-if="!courseRecord" style="color:#28D0F1;font-weight:bold;font-size:2rem;text-align:center;margin-top: 3rem">暂无上课信息</div>
+      <div v-if="courseRecord" class="monitor-left" style="border:0.5rem solid #263B5A;width:32vw;margin-top:3vh;overflow:hidden">
+        <div v-if="courseRecord" class="title" style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-top:1vh;margin-left:1vh">授课信息</div>
+        <div v-if="courseRecord" class="content" style="margin-left:1vh;margin-top:1vh;color: white; font-size:1.7rem;">
           <div class="flex wrap between" style="width:60vh;">
             <div style="width:8vw" class="flex between">
               <div>{{'课程名称：'}}</div>

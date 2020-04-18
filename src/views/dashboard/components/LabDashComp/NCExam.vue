@@ -6,7 +6,7 @@
       <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
     </div>
     <div v-if="ncProgramList.length === 0" class="flex center" 
-      style="color:#28D0F1;font-weight:bold;font-size: 3rem;margin-top: 5rem">暂无内容</div>
+      style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-top:5rem">暂无审核程序</div>
     <div style="height:100%;overflow:hidden;margin-top:2vh;margin-left:1vw;" class="flex column">
       <div v-for="(item,i) of ncProgramList.slice(0,8)" :key="i" class="flex"
         style="color:white;justify-content:space-around;align-items:center;font-size:1.5rem">

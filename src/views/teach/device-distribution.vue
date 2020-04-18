@@ -100,156 +100,156 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, onMounted, watch} from '@vue/composition-api';
-  import {useLoading} from 'web-toolkit/src/service';
-  import {CourseRecordInClass, CourseRecordUpdate, ListLastStationBind} from '@/dao/courseRecordDao';
-  import {StationList} from '@/dao/stationDao';
-  import {ImageLink} from '@/dao/commonDao.ts';
+import {ref, onMounted, watch} from '@vue/composition-api';
+import {useLoading} from 'web-toolkit/src/service';
+import {CourseRecordInClass, CourseRecordUpdate, ListLastStationBind} from '@/dao/courseRecordDao';
+import {StationList} from '@/dao/stationDao';
+import {ImageLink} from '@/dao/commonDao.ts';
 import { Message } from 'element-ui';
 
-  export default {
-    setup() {
-      const loading = ref(false);
-      const stationList = ref<any>([]);
-      const stationID = ref(-1);
-      const studentID = ref(-1);
-      const stationExtend = ref<any>({});
-      const studentsList = ref<any>([]);
-      const overStudentList = ref<any>([]);
-      const studentMode = ref<any>({
-        visible: false,
-        data: '',
+export default {
+  setup() {
+    const loading = ref(false);
+    const stationList = ref<any>([]);
+    const stationID = ref(-1);
+    const studentID = ref(-1);
+    const stationExtend = ref<any>({});
+    const studentsList = ref<any>([]);
+    const overStudentList = ref<any>([]);
+    const studentMode = ref<any>({
+      visible: false,
+      data: '',
+    });
+    const checkList = ref([]);
+    const checkDeviceList = ref([]);
+    const courseRecordInClass = ref<any>();
+    const queryStationList = async () => {
+      stationList.value = await StationList({
+        simple: false,
       });
-      const checkList = ref([]);
-      const checkDeviceList = ref([]);
-      const courseRecordInClass = ref<any>();
-      const queryStationList = async () => {
-        stationList.value = await StationList({
-          simple: false,
-        });
-      };
-      const queryCourseInClass = async () => {
-        courseRecordInClass.value = await CourseRecordInClass();
-        if (!courseRecordInClass.value) {
-          return;
-        }
-        studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
-        if (courseRecordInClass.value.extend && courseRecordInClass.value.extend.stationBind) {
-          const obj = Object.values(courseRecordInClass.value.extend.stationBind);
-          // @ts-ignore
-          overStudentList.value = obj.reduce((a, b) => a.concat(b), []);
-        }
-      };
-
-      function img(path: any) {
-        if (path) {
-          return ImageLink(path);
-        }
+    };
+    const queryCourseInClass = async () => {
+      courseRecordInClass.value = await CourseRecordInClass();
+      if (!courseRecordInClass.value) {
+        return;
       }
+      studentsList.value = courseRecordInClass.value.studentList ? courseRecordInClass.value.studentList : null;
+      if (courseRecordInClass.value.extend && courseRecordInClass.value.extend.stationBind) {
+        const obj = Object.values(courseRecordInClass.value.extend.stationBind);
+        // @ts-ignore
+        overStudentList.value = obj.reduce((a, b) => a.concat(b), []);
+      }
+    };
 
-      // 分配
-      const distribution = async (id: any) => {
-        stationID.value = id;
-        studentMode.value.data = studentsList.value;
-        if (!courseRecordInClass.value.extend.stationBind) {
-          courseRecordInClass.value.extend.stationBind = {};
-        }
-        stationExtend.value = courseRecordInClass.value.extend;
-        if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {
-          checkList.value = courseRecordInClass.value.extend.stationBind[id.toString()];
-        } else {
-          checkList.value = [];
-        }
-        studentMode.value.visible = true;
-      };
-      const delectClick = async () => {
+    function img(path: any) {
+      if (path) {
+        return ImageLink(path);
+      }
+    }
+
+    // 分配
+    const distribution = async (id: any) => {
+      stationID.value = id;
+      studentMode.value.data = studentsList.value;
+      if (!courseRecordInClass.value.extend.stationBind) {
+        courseRecordInClass.value.extend.stationBind = {};
+      }
+      stationExtend.value = courseRecordInClass.value.extend;
+      if (courseRecordInClass.value.extend.stationBind[id.toString()] && courseRecordInClass.value.extend.stationBind[id.toString()].length !== 0) {
+        checkList.value = courseRecordInClass.value.extend.stationBind[id.toString()];
+      } else {
         checkList.value = [];
-      };
-      const update = async () => {
-        const stationId = stationID.value;
-        let flag = false;
-        if (checkList.value && checkList.value.length !== 0) {
-          for (const item of checkList.value) {
-            if (stationExtend.value.stationBind) {
-              for (const key in stationExtend.value.stationBind) {
-                if (stationExtend.value.stationBind[key] && stationExtend.value.stationBind[key].includes(item)) {
-                  stationExtend.value.stationBind[key].splice(stationExtend.value.stationBind[key].indexOf(item), 1);
-                }
+      }
+      studentMode.value.visible = true;
+    };
+    const delectClick = async () => {
+      checkList.value = [];
+    };
+    const update = async () => {
+      const stationId = stationID.value;
+      let flag = false;
+      if (checkList.value && checkList.value.length !== 0) {
+        for (const item of checkList.value) {
+          if (stationExtend.value.stationBind) {
+            for (const key in stationExtend.value.stationBind) {
+              if (stationExtend.value.stationBind[key] && stationExtend.value.stationBind[key].includes(item)) {
+                stationExtend.value.stationBind[key].splice(stationExtend.value.stationBind[key].indexOf(item), 1);
               }
             }
           }
-          flag = true;
-        } else {
-          flag = true;
         }
-        const obj1 = stationExtend.value.stationBind;
-        const obj = {} as any;
-        if (flag) {
-          obj[stationId.toString()] = checkList.value;
-          stationExtend.value.stationBind = {
-            ...obj1,
-            ...obj,
-          };
-          await courseRecordUpdate();
-          await queryCourseInClass();
-          studentMode.value.visible = false;
-        }
-      };
-      const StuUpdate = async () => {
-        const obj3 = [[1], [3], [2, 5]];
-        const obj4 = obj3.reduce((a, b) => a.concat(b), []);
-      };
-      const courseRecordUpdate = async () => {
-        await CourseRecordUpdate({
-          id: courseRecordInClass.value.id,
-          type: courseRecordInClass.value.type,
-          extendJson: JSON.stringify(stationExtend.value),
-        });
-      };
-      const getBefor = async () => {
-        const result = await ListLastStationBind(courseRecordInClass.value.id);
-        if ( !result || Object.keys(result).length===0 ) {
-          Message.warning('无分配信息')
-        } else {
-          if (!courseRecordInClass.value.extend.stationBind) {
-            courseRecordInClass.value.extend.stationBind = {};
-          }
-          for (const d of Object.keys(result)) {
-            if (result[d]) {
-              courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
-            }
-          }
-          stationExtend.value = courseRecordInClass.value.extend;
-          Message.success('分配成功')
-          await courseRecordUpdate();
-          await queryCourseInClass();
-        }
-      };
-      onMounted(useLoading(loading, async () => {
+        flag = true;
+      } else {
+        flag = true;
+      }
+      const obj1 = stationExtend.value.stationBind;
+      const obj = {} as any;
+      if (flag) {
+        obj[stationId.toString()] = checkList.value;
+        stationExtend.value.stationBind = {
+          ...obj1,
+          ...obj,
+        };
+        await courseRecordUpdate();
         await queryCourseInClass();
-        await queryStationList();
-        // await StuUpdate();
-      }));
-      return {
-        loading,
-        stationList,
-        studentsList,
-        distribution,
-        update,
-        studentMode,
-        checkList,
-        checkDeviceList,
-        courseRecordInClass,
-        queryCourseInClass,
-        img,
-        stationID, stationExtend, courseRecordUpdate,
-        studentID, getBefor,
-        overStudentList,
-        delectClick,
-        //  StuUpdate,
-      };
-    },
-  };
+        studentMode.value.visible = false;
+      }
+    };
+    const StuUpdate = async () => {
+      const obj3 = [[1], [3], [2, 5]];
+      const obj4 = obj3.reduce((a, b) => a.concat(b), []);
+    };
+    const courseRecordUpdate = async () => {
+      await CourseRecordUpdate({
+        id: courseRecordInClass.value.id,
+        type: courseRecordInClass.value.type,
+        extendJson: JSON.stringify(stationExtend.value),
+      });
+    };
+    const getBefor = async () => {
+      const result = await ListLastStationBind(courseRecordInClass.value.id);
+      if ( !result || Object.keys(result).length === 0 ) {
+        Message.warning('无分配信息');
+      } else {
+        if (!courseRecordInClass.value.extend.stationBind) {
+          courseRecordInClass.value.extend.stationBind = {};
+        }
+        for (const d of Object.keys(result)) {
+          if (result[d]) {
+            courseRecordInClass.value.extend.stationBind[d.toString()] = result[d].map((cc: any) => cc.id);
+          }
+        }
+        stationExtend.value = courseRecordInClass.value.extend;
+        Message.success('分配成功');
+        await courseRecordUpdate();
+        await queryCourseInClass();
+      }
+    };
+    onMounted(useLoading(loading, async () => {
+      await queryCourseInClass();
+      await queryStationList();
+      // await StuUpdate();
+    }));
+    return {
+      loading,
+      stationList,
+      studentsList,
+      distribution,
+      update,
+      studentMode,
+      checkList,
+      checkDeviceList,
+      courseRecordInClass,
+      queryCourseInClass,
+      img,
+      stationID, stationExtend, courseRecordUpdate,
+      studentID, getBefor,
+      overStudentList,
+      delectClick,
+      //  StuUpdate,
+    };
+  },
+};
 </script>
 <style scoped lang="scss">
   //  .card{

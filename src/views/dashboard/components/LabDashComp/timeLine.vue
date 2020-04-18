@@ -8,7 +8,7 @@
         <div style="color:#28D0F1;margin-left:1vw;font-size:1.5rem;" class="flex column center">
           <div>{{item.extend.deviceId}}</div>
           <div>
-            <el-tag style="margin-bottom: 5px" :type="statusMap(item.extend.status) && statusMap(item.extend.status).tag">{{ statusMap(item.extend.status) && statusMap(item.extend.status).arrName }}</el-tag>
+            <el-tag style="margin-bottom: 5px" effect='dark' :type="statusMap(item.extend.status) && statusMap(item.extend.status).tag">{{ statusMap(item.extend.status) && statusMap(item.extend.status).arrName }}</el-tag>
           </div>
         </div>
         <div class="device-time">

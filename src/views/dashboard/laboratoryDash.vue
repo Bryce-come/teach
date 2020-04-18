@@ -68,7 +68,6 @@ export default createComponent({
 
     async function getStationAll() {
       stationAll.value = await MonitorStationList();
-      console.log(stationAll)
     }
     async function setStationAll() {
       while (active.value) {
