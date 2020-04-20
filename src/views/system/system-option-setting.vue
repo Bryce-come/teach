@@ -116,6 +116,19 @@
         <kit-err-channel id="setting-nvr" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
+    <el-tab-pane name="6" label="展板选项设置">
+      <el-form ref="form6" label-width="200px" style="width: 350px" :model="modal">
+        <el-form-item label="大屏展板VNC地址：" prop="dashboardMidUrl" :rules="{ required: true, message: '请填写' }">
+          <el-input v-model="modal.dashboardMidUrl"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateDMU({
+            dashboardMidUrl: modal.dashboardMidUrl,
+          })">保存设置</el-button>
+        </el-form-item>
+        <kit-err-channel id="setting-link" style="margin-top: 5px" />
+      </el-form>
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script lang="ts">
@@ -133,6 +146,7 @@ export default {
     const tabName = ref<string>('1');
     const form2 = ref<ElForm|null>(null);
     const form5 = ref<ElForm|null>(null);
+    const form6 = ref<ElForm|null>(null);
     const modal = ref<any>({
       termsDt: [null, null],
     });
@@ -157,6 +171,16 @@ export default {
       const valid = await (form5.value as ElForm).validate();
       if (!valid) {
         return ;
+      }
+      await update(params, 'setting-nvr');
+    }
+    async function updateDMU(params: any) {
+      const valid = await (form6.value as ElForm).validate();
+      if (!valid) {
+        return ;
+      } else {
+        // const param = JSON.stringify(params);
+        // await update(params, 'setting-nvr');
       }
       await update(params, 'setting-nvr');
     }
@@ -187,7 +211,7 @@ export default {
       await query();
     }));
     return{
-      loading, modal, form2, form5, tabName,
+      loading, modal, form2, form5, form6, tabName, updateDMU,
       update: useLoading(loading, update),
       updateTerms: useLoading(loading, updateTerms),
       updateNVR: useLoading(loading, updateNVR),

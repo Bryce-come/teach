@@ -113,13 +113,13 @@ export default createComponent({
       timeBoard.value.timeOn = (str.getHours() - 8) * 2;
     }
     onMounted(useLoading(loading, async () => {
-      setStationAll();
       const data = await Login( {
           username: '@dashboard',
           pwd: '666666',
           schema: scheme,
       });
       updateStoreUserInfo(data);
+      setStationAll();
       setTimeBoard();
       parameter.value.init0();
       stateCount.value.init();
