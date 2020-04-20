@@ -13,7 +13,7 @@
         </div>
         <div class="device-time">
           <v-chart
-            style="width:20vw; height: 7vh;margin-top: 2vh"
+            style="width:20vw; height: 7vh;margin-top: 0vh"
             autoresize
             :options="times[item.extend.deviceId]"/>
         </div>

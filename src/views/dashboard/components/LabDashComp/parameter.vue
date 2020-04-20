@@ -9,21 +9,21 @@
       <div class="flex between" style="margin-left:1rem;margin-top:1vh">
         <div class="flex">
           <div class="yuan" style="width:2vw;height:3vh"></div>
-          <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">设备运行参数</div>
+          <div style="color:#28D0F1;font-weight:bold;font-size: 1.6rem;margin-left: 1rem">设备运行参数</div>
         </div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 1.6rem;margin-right: 1rem" v-if="stationList[sort.up]">{{'操作台名称：' + stationList[sort.up].name}}</div>
       </div>
       <div
         v-if="paramList"
         class="flex wrap between"
-        style="margin-left:3vh;margin-right:1.5vh;width:30vw;overflow:hidden;height:20vh;margin-top: 1rem">
+        style="margin-left:1vh;margin-right:0.5vh;width:31vw;overflow:hidden;height:20vh;margin-top: 1rem">
         <div
           class="monitor-detail--param-item flex between"
           v-for="(param,index) of paramList.record.paramsMap.filter(p => p.available !== false).slice(0,18)"
           :key="index">
-          <div class="flex between" style="margin-top:0.5rem;width:20rem;height:40%:">
-            <span style="text-align:center;color:white;font-size:1.2rem;padding-left:1rem">{{ param.nameSimple }}：</span>
-            <div style="text-align:center;color:white;font-size:1.2rem;">{{ param.value }}</div>
+          <div class="flex between" style="margin-top:0.5rem;width:13rem;height:40%:">
+            <span style="text-align:left;color:white;font-size:1.1rem;padding-left:1vh">{{ param.nameSimple }}：</span>
+            <div style="text-align:right;color:white;font-size:1.1rem;">{{ param.value }}</div>
           </div>
         </div>
       </div>
@@ -248,7 +248,7 @@ export default {
         color: getColors(),
         xAxis: {
           type: 'time',
-          name: '时间',
+          // name: '时间',
           nameGap: 2,
           nameTextStyle: {
             color: getColor(),
@@ -259,7 +259,7 @@ export default {
           },
           axisLine: {
             lineStyle: {
-              color: getColor(),
+              color: 'white',
             },
           },
           axisLabel: {
@@ -279,7 +279,7 @@ export default {
           },
           axisLine: {
             lineStyle: {
-              color: getColor(),
+              color: 'white',
             },
           },
           splitLine: {

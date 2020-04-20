@@ -1,15 +1,15 @@
 <template>
-  <div class="flex column" style="justify-content:space-around" v-loading="loading">
+  <div class="flex column" style="height:69vh;overflow:hidden" v-loading="loading">
     <div class="flex" style="margin-left:1rem;margin-top:1vh;">
         <div class="yuan" style="width:2vw;height:3vh"></div>
-        <div style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-left: 1rem">授课内容</div>
+        <div style="color:#28D0F1;font-weight:bold;font-size: 1.6rem;width:7vw;margin-left: 1rem">授课内容</div>
         <div class="hengxian" style="width:15vw;height:3vh;margin-left:10vw"></div>
       </div>
     <div class="flex column center">
-      <div v-if="!courseRecord" style="color:#28D0F1;font-weight:bold;font-size:2rem;text-align:center;margin-top: 3rem">暂无上课信息</div>
-      <div v-if="courseRecord" class="monitor-left" style="border:0.5rem solid #263B5A;width:32vw;margin-top:3vh;overflow:hidden">
-        <div v-if="courseRecord" class="title" style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-top:1vh;margin-left:1vh">授课信息</div>
-        <div v-if="courseRecord" class="content" style="margin-left:1vh;margin-top:1vh;color: white; font-size:1.7rem;">
+      <div v-if="!courseRecord" style="color:#28D0F1;font-weight:bold;font-size:1.6rem;text-align:center;margin-top: 3rem">暂无上课信息</div>
+      <div v-if="courseRecord" class="monitor-left" style="border:0.5rem solid #263B5A;width:32vw;margin-top:1.5vh;overflow:hidden">
+        <div v-if="courseRecord" class="title" style="color:#28D0F1;font-weight:bold;font-size: 1.6rem;margin-top:1vh;margin-left:1vh">授课信息</div>
+        <div v-if="courseRecord" class="content" style="margin-left:1vh;margin-top:1vh;color: white; font-size:1.3rem;">
           <div class="flex wrap between" style="width:60vh;">
             <div style="width:8vw" class="flex between">
               <div>{{'课程名称：'}}</div>
@@ -38,14 +38,14 @@
         </div>
       </div>
       <div class="flex column wrap" style="border:0.5rem solid #263B5A;width:32vw;margin-top:2vh;max-height:40vh;overflow:hidden;" v-if="courseRecord&&courseRecord.program">
-        <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验介绍</div>
-        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
+        <div class="title" style="color: white; font-size:1.6rem;margin-left:1vh;margin-top:1vh">实验介绍</div>
+        <div style="color: white; font-size:1.2rem;margin-left:1vh;margin-top:1vh;">
           {{courseRecord.program.purpose?courseRecord.program.purpose:''}}</div>
-        <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验原理</div>
-        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;">
+        <div class="title" style="color: white; font-size:1.6rem;margin-left:1vh;margin-top:1vh">实验原理</div>
+        <div style="color: white; font-size:1.2rem;margin-left:1vh;margin-top:1vh;">
           {{courseRecord.program.steps?courseRecord.program.steps:''}}</div>
-        <div class="title" style="color: white; font-size:2rem;margin-left:1vh;margin-top:1vh">实验结果</div>
-        <div style="color: white; font-size:1.5rem;margin-left:1vh;margin-top:1vh;margin-bottom:1vh;">
+        <div class="title" style="color: white; font-size:1.6rem;margin-left:1vh;margin-top:1vh">实验结果</div>
+        <div style="color: white; font-size:1.2rem;margin-left:1vh;margin-top:1vh;margin-bottom:1vh;">
           {{courseRecord.program.results?courseRecord.program.results:''}}</div>
       </div>
     </div>
