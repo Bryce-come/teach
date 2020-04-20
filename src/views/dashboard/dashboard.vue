@@ -119,6 +119,7 @@ export default createComponent({
           schema: scheme,
       });
       updateStoreUserInfo(data);
+      await getStationAll();
       setStationAll();
       setTimeBoard();
       parameter.value.init0();
