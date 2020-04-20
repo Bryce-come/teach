@@ -119,14 +119,14 @@
     <el-tab-pane name="6" label="展板选项设置">
       <el-form ref="form6" label-width="200px" style="width: 350px" :model="modal">
         <el-form-item label="大屏展板VNC地址：" prop="dashboardMidUrl" :rules="{ required: true, message: '请填写' }">
-          <el-input v-model="modal.dashboardMidUrl"/>
+          <el-input v-model="modal.dashboardMidUrl" style="width: 300px"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateDMU({
             dashboardMidUrl: modal.dashboardMidUrl,
           })">保存设置</el-button>
         </el-form-item>
-        <kit-err-channel id="setting-link" style="margin-top: 5px" />
+        <kit-err-channel id="setting-dashboard" style="margin-top: 5px" />
       </el-form>
     </el-tab-pane>
   </el-tabs>
