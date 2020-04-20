@@ -121,13 +121,14 @@ export default createComponent({
       timeBoard.value.timeOn = (str.getHours() - 8) * 2;
     }
     onMounted(useLoading(loading, async () => {
-      setStationAll();
       const data = await Login( {
           username: '@dashboard',
           pwd: '666666',
           schema: scheme,
       });
       updateStoreUserInfo(data);
+      await getStationAll();
+      setStationAll();
       setTimeBoard();
       const setting = await SettingGet();
       dashboardMidUrl.value = setting.dashboardMidUrl

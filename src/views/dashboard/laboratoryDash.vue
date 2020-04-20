@@ -76,16 +76,16 @@ export default createComponent({
       }
     }
     onMounted(useLoading(loading, async () => {
-      setStationAll();
-      await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
-      ]);
       const data = await Login( {
           username: '@dashboard',
           pwd: '666666',
           schema: scheme,
       });
       updateStoreUserInfo(data);
+      setStationAll();
+      await Promise.all([
+        courseRecord.value = await CourseRecordInClass(),
+      ]);
       parameter.value.init0();
       stateCount.value.init();
       timeLine.value.init();
