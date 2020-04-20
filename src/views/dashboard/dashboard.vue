@@ -29,7 +29,13 @@
         </div>
       </div>
       <div class="flex column" style="height:84vh;">
-        <iframe id="iframe" name="iframe" :src="'http://192.168.0.130:9000'" style="margin-top:1vh;width:33vw;height:40vh"></iframe>
+        <div style="margin-top:1vh;width:33vw;height:40vh">
+          <iframe
+            style="width: 100%;height: 100%"
+            v-if="dashboardMidUrl"
+            id="iframe" name="iframe" :src="dashboardMidUrl" ></iframe>
+        </div>
+
         <parameter :stationAll="stationAll" ref="parameter" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
       <div class="flex column" style="height:87vh;">
@@ -62,6 +68,7 @@ import timeLine from '@/views/dashboard/components/dashboardComp/timeLine.vue';
 import weather from '@/views/dashboard/components/dashboardComp/weather.vue';
 import dayTimeOn from '@/views/dashboard/components/dashboardComp/dayTimeOn.vue';
 import { MonitorStationList } from '@/dao/monitorDao';
+import {SettingGet} from "@/dao/settingDao";
 
 export default createComponent({
   components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather, dayTimeOn},
@@ -86,6 +93,7 @@ export default createComponent({
     const dayTimeOn = ref<any>();
     const active = ref<boolean>(true);
     const stationAll = ref<any>();
+    const dashboardMidUrl = ref<any>();
 
     async function getStationAll() {
       stationAll.value = await MonitorStationList();
@@ -121,6 +129,8 @@ export default createComponent({
       });
       updateStoreUserInfo(data);
       setTimeBoard();
+      const setting = await SettingGet();
+      dashboardMidUrl.value = setting.dashboardMidUrl
       parameter.value.init0();
       stateCount.value.init();
       useTime.value.init();
@@ -136,7 +146,7 @@ export default createComponent({
       active.value = false;
     });
     return {
-      loading, timeBoard, dayTimeOn, stationAll,
+      loading, timeBoard, dayTimeOn, stationAll,dashboardMidUrl,
       stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather,
     };
   },
