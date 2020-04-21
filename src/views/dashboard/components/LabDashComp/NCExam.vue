@@ -1,15 +1,15 @@
 <template>
   <div class="flex column" style="" v-loading="loading">
     <div class="flex" style="margin-left:2rem;margin-top:1vh">
-      <div class="yuan" style="width:2vw;height:3vh"></div>
-      <div style="color:#28D0F1;width:8vw;font-weight:bold;font-size: 2rem;margin-left: 1rem">程序审核记录</div>
+      <div class="yuan" style="width:2vw;height:3vh;margin-left:-1vh"></div>
+      <div style="color:#28D0F1;width:8vw;font-weight:bold;font-size: 1.6rem;margin-left: 1vh">程序审核记录</div>
       <div class="hengxian" style="width:14vw;height:3vh;margin-left:8vw"></div>
     </div>
     <div v-if="ncProgramList.length === 0" class="flex center" 
-      style="color:#28D0F1;font-weight:bold;font-size: 2rem;margin-top:5rem">暂无审核程序</div>
+      style="color:#28D0F1;font-weight:bold;font-size: 1.6rem;margin-top:5rem">暂无审核程序</div>
     <div style="height:100%;overflow:hidden;margin-top:2vh;margin-left:1vw;" class="flex column">
       <div v-for="(item,i) of ncProgramList.slice(0,8)" :key="i" class="flex"
-        style="color:white;justify-content:space-around;align-items:center;font-size:1.5rem">
+        style="color:white;justify-content:space-around;align-items:center;font-size:1.2rem">
         <div style="width:3vw">{{item.student.name}}</div>
         <div style="width:3vw">{{item.station.name}}</div>
         <div style="width:3vw">
