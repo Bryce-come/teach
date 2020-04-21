@@ -246,6 +246,11 @@ export default {
     function getOption() {
       return {
         color: getColors(),
+        legend: {
+          textStyle: {
+            color: 'white',
+          },
+        },
         xAxis: {
           type: 'time',
           // name: '时间',
