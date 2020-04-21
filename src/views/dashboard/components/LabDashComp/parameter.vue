@@ -212,7 +212,7 @@ export default {
           }
         }
         for (const param of dataset.paramConfigs) {
-          const data = paramsDataMap[(device.value as any).id + '.' + param.keyFull] || [];
+          const data = paramsDataMap[stationList.value[sort.value.up].deviceList[0].id + '.' + param.keyFull] || [];
           if (line1.value === null || refreshTimeRatio.value) {
             series.push({
               name: `${param.nameSimple}`,
