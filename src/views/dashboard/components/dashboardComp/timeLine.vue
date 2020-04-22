@@ -63,12 +63,12 @@ export default {
       timeValue: null,
       timeIf: null,
     });
-    async function draw() {
-      while (active.value) {
-        await fetchTimes();
-        await sleep(300000);
-      }
-    }
+    // async function draw() {
+    //   while (active.value) {
+    //     await fetchTimes();
+    //     await sleep(300000);
+    //   }
+    // }
     async function tagPage() {
       while (active.value) {
         sort.value.up += 1;
@@ -133,6 +133,7 @@ export default {
     async function drawDate() {
       while (active.value) {
         await getData();
+        await fetchTimes();
         await sleep(300000);
       }
     }
@@ -140,7 +141,7 @@ export default {
       await getData();
       // changeList();
       drawDate();
-      draw();
+      // draw();
     }
     async function init() {
       setDate();
