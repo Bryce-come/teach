@@ -53,6 +53,7 @@ export default {
     const chart = ref<any>({});
     const times = ref<any>({});
     const active = ref<boolean>(true);
+    const list = ref<any>();
     const sort = ref<any>({
       up: 0,
       count: 0,
@@ -65,8 +66,7 @@ export default {
     async function draw() {
       while (active.value) {
         await fetchTimes();
-        await getData();
-        await sleep(300000);
+        await sleep(5000);
       }
     }
     async function tagPage() {
@@ -84,12 +84,12 @@ export default {
       const d2 = new Date();
       const d1 = new Date();
       d1.setHours(d1.getHours() - 1);
-      const list = await AnalysisDeviceTimes({
+      list.value = await AnalysisDeviceTimes({
         start: d1.getTime(),
         end: d2.getTime(),
         needSummary: false,
       });
-      for (const d of list) {
+      for (const d of list.value) {
         const time = d.extend.times || [];
         set(times.value, d.id, timelineConfig(time, statusMap, { height: 40, dataZoom: false, showTime: true}));
         times.value[d.id].xAxis.axisLabel = {
@@ -115,8 +115,6 @@ export default {
           station.extend.deviceImg = device.deviceType.img;
         }
       }
-    }
-    async function changeList() {
       if (stationList.value.length > 4) {
         sort.value.up = -1;
         sort.value.count = -1;
@@ -124,9 +122,24 @@ export default {
         tagPage();
       }
     }
+    // async function changeList() {
+    //   if (stationList.value.length > 4) {
+    //     sort.value.up = -1;
+    //     sort.value.count = -1;
+    //     sort.value.sum = stationList.value.length / 4;
+    //     tagPage();
+    //   }
+    // }
+    async function drawDate() {
+      while (active.value) {
+        await getData();
+        await sleep(300000);
+      }
+    }
     async function setDate() {
       await getData();
-      changeList();
+      // changeList();
+      drawDate();
       draw();
     }
     async function init() {
