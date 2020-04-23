@@ -154,9 +154,11 @@ export default createComponent({
       }
     }
     async function countNext() {
-      next.value.timeValue = timeDiff(new Date(next.value.courseInfo.startDt));
-      if (new Date(next.value.courseInfo.startDt) <= new Date() ) {
-        clearInterval(timerB);
+      if (next.value.courseInfo) {
+        next.value.timeValue = timeDiff(new Date(next.value.courseInfo.startDt));
+        if (new Date(next.value.courseInfo.startDt) <= new Date() ) {
+          clearInterval(timerB);
+        }
       }
     }
     onUnmounted(() => {
@@ -170,7 +172,7 @@ export default createComponent({
       ]);
       courseRecord.value = some.value.data.record;
       next.value.courseInfo = some.value.data.next;
-      if (storeUserInfo.user && storeUserInfo.user.role && storeUserInfo.user.role.department) {
+      if (storeUserInfo.user && storeUserInfo.user.role && storeUserInfo.user.role.department && next.value.courseInfo) {
         if (storeUserInfo.user.role.department.id === Department.Teacher) {
           if (next.value.courseInfo.teacher.id === storeUserInfo.user.id) {
             next.value.flag = true;
