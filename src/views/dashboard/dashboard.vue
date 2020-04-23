@@ -101,7 +101,7 @@ export default createComponent({
     async function setStationAll() {
       while (active.value) {
         await getStationAll();
-        await sleep(180000);
+        await sleep(10000);
       }
     }
     function getTimeBoard() {
