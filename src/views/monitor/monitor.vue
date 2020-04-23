@@ -21,6 +21,9 @@
             </el-form-item>
           </el-form>
         </div>
+        <div v-if="next.flag&&next.courseInfo" style="color: grey;text-align: center">
+          {{'距离您下节课《'+next.courseInfo.course.name+'》还有'+next.timeValue}}
+        </div>
       </div>
       <div class="block-card monitor-right">
         <div class="title">设备状态统计</div>
@@ -80,6 +83,8 @@ import {MonitorStationList} from '@/dao/monitorDao';
 import {ImageLink} from '@/dao/commonDao';
 import {AnalysisDeviceTimes} from '@/dao/analysisDao';
 import {timelineConfig} from 'web-toolkit/src/utils/echarts-helper';
+import {storeUserInfo} from 'web-toolkit/src/case-main';
+import {Department, PRIVILEGE} from '@/types/privilege';
 
 export default createComponent({
   name: 'monitor',
@@ -90,6 +95,12 @@ export default createComponent({
     const stationList = ref<any>([]);
     const chart = ref<any>({});
     const times = ref<any>({});
+    const next = ref<any>({
+      courseInfo: {},
+      flag: false,
+      timeValue: undefined,
+    });
+    const some = ref<any>();
 
     const percentage = () => {
       const now = new Date().getTime();
@@ -120,6 +131,7 @@ export default createComponent({
       timeIf: null,
     });
     const timer = setInterval(countTime, 1000);
+    const timerB = setInterval(countNext, 1000);
     function summaryHandle(summary: any, key: string) {
       if (summary[key]) {
         summary[key] = summary[key] + 1;
@@ -141,14 +153,31 @@ export default createComponent({
         times.value[d.id] = timelineConfig(time, statusMap, { height: 30, dataZoom: false, showTime: true });
       }
     }
+    async function countNext() {
+      next.value.timeValue = timeDiff(new Date(next.value.courseInfo.startDt));
+      if (new Date(next.value.courseInfo.startDt) <= new Date() ) {
+        clearInterval(timerB);
+      }
+    }
     onUnmounted(() => {
         clearInterval(timer);
+        clearInterval(timerB);
     });
     onMounted(useLoading(loading, async () => {
       await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
+        some.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
       ]);
+      courseRecord.value = some.value.data.record;
+      next.value.courseInfo = some.value.data.next;
+      if (storeUserInfo.user && storeUserInfo.user.role && storeUserInfo.user.role.department) {
+        if (storeUserInfo.user.role.department.id === Department.Teacher) {
+          if (next.value.courseInfo.teacher.id === storeUserInfo.user.id) {
+            next.value.flag = true;
+            timerB;
+          }
+        }
+      }
       if (courseRecord.value === undefined) {
         clearInterval(timer);
       } else {
@@ -204,8 +233,8 @@ export default createComponent({
     return {
       loading, courseRecord,
       timeDiff, chart, times,
-      stationList, countTime,
-      ImageLink, timeCount, timer,
+      stationList, countTime, next,
+      ImageLink, timeCount, timer, timerB,
       percentage, statusMap,
     };
   },

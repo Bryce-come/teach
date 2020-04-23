@@ -89,8 +89,8 @@ export async function CourseRecordDel(params: any) {
  * 当前上课的记录
  */
 export async function CourseRecordInClass() {
-  const {data: {record}} = await postService('/rest/course/record/findInClass');
-  return record;
+  const data = await postService('/rest/course/record/findInClass');
+  return data;
 }
 
 /**
