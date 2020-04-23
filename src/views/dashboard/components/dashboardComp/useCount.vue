@@ -44,7 +44,7 @@ export default {
       while (active.value) {
         await getData();
         await drawLine();
-        await sleep(10000);
+        await sleep(21600000);
       }
     }
     async function drawLine() {
