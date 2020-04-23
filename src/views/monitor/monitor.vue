@@ -3,8 +3,8 @@
     <div class="monitor flex">
       <div class="block-card monitor-left">
         <div class="title">上课信息</div>
-        <div v-if="!courseRecord" style="color: grey;text-align: center">暂无上课信息</div>
-        <div v-else class="content">
+        <div v-if="!courseRecord&&!next.flag" style="color: grey;text-align: center">暂无上课信息</div>
+        <div v-if="courseRecord" class="content">
           <el-form label-width="110px" label-position="left" style="width:100%;margin-top:20px" >
             <div class="flex align-center wrap course-content">
               <el-form-item label="课程名称：">{{ courseRecord.course?courseRecord.course.name:'' }}</el-form-item>
@@ -21,8 +21,8 @@
             </el-form-item>
           </el-form>
         </div>
-        <div v-if="next.flag&&next.courseInfo" style="color: grey;text-align: center">
-          {{'距离您下节课《'+next.courseInfo.course.name+'》还有'+next.timeValue}}
+        <div v-if="next.flag&&next.courseInfo" style="color: grey;text-align: center;font-size:20px;margin-top:90px">
+          {{'距离您下节课《'+next.courseInfo.course.name+'》还有'+' '+next.timeValue}}
         </div>
       </div>
       <div class="block-card monitor-right">
