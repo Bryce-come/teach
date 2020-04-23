@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
@@ -111,14 +111,17 @@ export default {
       }
       setState();
     }
-    async function darwDate() {
-       while (active.value) {
-        await getData();
-        await sleep(300000);
-      }
-    }
+    // async function darwDate() {
+    //    while (active.value) {
+    //     await getData();
+    //     await sleep(10000);
+    //   }
+    // }
+    watch(() => props.stationAll, async () => {
+      await getData();
+    });
     async function init() {
-      darwDate();
+      await getData();
     }
     onUnmounted(() => {
       active.value = false;
