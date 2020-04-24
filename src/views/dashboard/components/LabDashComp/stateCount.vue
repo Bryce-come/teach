@@ -72,6 +72,16 @@ export default {
       }
     }
     function setState() {
+      state.value = {
+        workingNum: 0,
+        wp: 0,
+        emergencyNum: 0,
+        ep: 0,
+        offlineNum: 0,
+        op: 0,
+        qitaNum: 0,
+        qp: 0,
+      }
       for (const d of stationList.value) {
         if (d.extend.status === 'working') {
           state.value.workingNum++;
