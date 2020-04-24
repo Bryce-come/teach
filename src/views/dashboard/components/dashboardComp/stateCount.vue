@@ -81,7 +81,7 @@ export default {
         op: 0,
         qitaNum: 0,
         qp: 0,
-      }
+      };
       for (const d of stationList.value) {
         if (d.extend.status === 'working') {
           state.value.workingNum++;

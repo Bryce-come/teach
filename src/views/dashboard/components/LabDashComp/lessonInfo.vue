@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
+import { onMounted, onUnmounted, onBeforeUpdate, watch } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
@@ -102,6 +102,9 @@ export default {
     }
     onUnmounted(() => {
       active.value = false;
+    });
+    watch(() => props.courseRecord, async () => {
+      await drawLine();
     });
     return {
       loading, courseId,

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import { urlMap } from '@/config';
@@ -69,6 +69,9 @@ export default {
         await setData();
       } catch (err) {}
     }
+    watch(() => props.courseRecord, async () => {
+      await setData();
+    });
     onUnmounted(() => {
       active.value = false;
     });

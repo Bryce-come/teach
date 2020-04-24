@@ -68,7 +68,7 @@ import timeLine from '@/views/dashboard/components/dashboardComp/timeLine.vue';
 import weather from '@/views/dashboard/components/dashboardComp/weather.vue';
 import dayTimeOn from '@/views/dashboard/components/dashboardComp/dayTimeOn.vue';
 import { MonitorStationList } from '@/dao/monitorDao';
-import {SettingGet} from "@/dao/settingDao";
+import {SettingGet} from '@/dao/settingDao';
 
 export default createComponent({
   components: { stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather, dayTimeOn},
@@ -131,7 +131,7 @@ export default createComponent({
       setStationAll();
       setTimeBoard();
       const setting = await SettingGet();
-      dashboardMidUrl.value = setting.dashboardMidUrl
+      dashboardMidUrl.value = setting.dashboardMidUrl;
       parameter.value.init0();
       stateCount.value.init();
       useTime.value.init();
@@ -147,7 +147,7 @@ export default createComponent({
       active.value = false;
     });
     return {
-      loading, timeBoard, dayTimeOn, stationAll,dashboardMidUrl,
+      loading, timeBoard, dayTimeOn, stationAll, dashboardMidUrl,
       stateCount, useTime, useCount, timeOn, onTimeWeek, parameter, news, timeLine, weather,
     };
   },

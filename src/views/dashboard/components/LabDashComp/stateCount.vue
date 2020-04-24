@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref, createComponent, Ref} from '@vue/composition-api';
 import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
 import {leftFill0, sleep, formatTime} from 'web-toolkit/src/utils';
@@ -81,7 +81,7 @@ export default {
         op: 0,
         qitaNum: 0,
         qp: 0,
-      }
+      };
       for (const d of stationList.value) {
         if (d.extend.status === 'working') {
           state.value.workingNum++;
@@ -130,6 +130,9 @@ export default {
     async function init() {
       setData();
     }
+    watch(() => props.stationAll, async () => {
+      await setData();
+    });
     onUnmounted(() => {
       active.value = false;
     });

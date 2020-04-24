@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted, onBeforeUpdate } from '@vue/composition-api';
+import { onMounted, onUnmounted, onBeforeUpdate, watch } from '@vue/composition-api';
 import { leftFill0 } from 'web-toolkit/src/utils';
 import { ref, set} from '@vue/composition-api';
 import { statusMap } from '@/utils/device-utils';
@@ -146,6 +146,9 @@ export default {
     async function init() {
       setDate();
     }
+    watch(() => props.stationAll, async () => {
+      await setDate();
+    });
     onUnmounted(() => {
       active.value = false;
     });

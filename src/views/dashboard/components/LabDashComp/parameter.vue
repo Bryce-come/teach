@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref} from '@vue/composition-api';
 import {leftFill0, sleep, formatTime} from 'web-toolkit/src/utils';
 import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
@@ -313,6 +313,9 @@ export default {
     async function init0() {
       await setData();
     }
+    watch(() => props.stationAll, async () => {
+      await setData();
+    });
     onUnmounted(() => {
       active.value = false;
     });

@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted } from '@vue/composition-api';
+import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref} from '@vue/composition-api';
 import { MonitorStationList } from '@/dao/monitorDao';
 import {MonitorStationDetail} from '@/dao/monitorDao';
@@ -161,6 +161,9 @@ export default {
     async function init0() {
       setData();
     }
+    watch(() => props.stationAll, async () => {
+      await setData();
+    });
     onUnmounted(() => {
       active.value = false;
     });
