@@ -170,8 +170,8 @@ export default createComponent({
         some.value = await CourseRecordInClass(),
         stationList.value = await MonitorStationList(),
       ]);
-      courseRecord.value = some.value.data.record;
-      next.value.courseInfo = some.value.data.next;
+      courseRecord.value = some.value.record;
+      next.value.courseInfo = some.value.next;
       if (storeUserInfo.user && storeUserInfo.user.role && storeUserInfo.user.role.department && next.value.courseInfo) {
         if (storeUserInfo.user.role.department.id === Department.Teacher) {
           if (next.value.courseInfo.teacher.id === storeUserInfo.user.id) {

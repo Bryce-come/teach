@@ -16,10 +16,10 @@
           </div>
           <stateCount ref="stateCount" :stationAll="stationAll" style="width:28vw;margin-top:3vh"/>
           <timeLine ref="timeLine" :stationAll="stationAll" style="width:100%;height:100%;width:33vw;height:54vh;margin-top:1vh"/>
-        </div> 
+        </div>
         <NCExam ref="NCExam" :courseRecord="courseRecord" class="bk" style="width:32vw;height:28vh;margin-top:1vh"/>
       </div>
-      
+
       <div class="flex column" style="height:84vh;">
         <parameter ref="parameter" :stationAll="stationAll" style="width:33vw;height:48vh;margin-top:1vh"/>
       </div>
@@ -85,7 +85,7 @@ export default createComponent({
       await getStationAll();
       setStationAll();
       await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
+        courseRecord.value = (await CourseRecordInClass()).record,
       ]);
       parameter.value.init0();
       stateCount.value.init();

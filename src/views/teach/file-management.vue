@@ -70,7 +70,7 @@
       });
       const courseRecordInClass = ref<any>();
       const queryCourseInClass = async () => {
-        courseRecordInClass.value = await CourseRecordInClass();
+        courseRecordInClass.value = (await CourseRecordInClass()).record;
       };
       const remove = async (row: any) => {
         await TempFileDel({

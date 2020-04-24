@@ -180,7 +180,7 @@ export default {
     }
     onMounted(useLoading(loading, async () => {
       await Promise.all([
-        courseRecord.value = await CourseRecordInClass(),
+        courseRecord.value = (await CourseRecordInClass()).record,
         station.value = await MonitorStationDetail({stationId: router.currentRoute.params.id}),
       ]);
       const cameras = station.value.extend.cameras;

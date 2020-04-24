@@ -170,7 +170,7 @@ export default {
       await DownLoadPrivate(result.path, result.filename);
     }
     async function getClassNow() {
-      const result = await CourseRecordInClass();
+      const result = (await CourseRecordInClass()).record;
       if (result !== null) {
         courseNow.value.startdate = result.startDt;
         courseNow.value.enddate = result.endDt;

@@ -129,7 +129,7 @@ export default {
       });
     };
     const queryCourseInClass = async () => {
-      courseRecordInClass.value = await CourseRecordInClass();
+      courseRecordInClass.value = (await CourseRecordInClass()).record;
       if (!courseRecordInClass.value) {
         return;
       }

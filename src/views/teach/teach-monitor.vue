@@ -60,7 +60,7 @@ export default createComponent({
     onMounted(useLoading(loading, async () => {
       const data = await SettingGet({onlyLinkOn: true});
       linkOn.value = data.on;
-      show.value.flag = await CourseRecordInClass();
+      show.value.flag = (await CourseRecordInClass()).record;
     }));
     return{
      loading, linkOn, record,
