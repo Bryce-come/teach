@@ -72,6 +72,16 @@ export default {
       }
     }
     function setState() {
+      state.value = {
+        workingNum: 0,
+        wp: 0,
+        emergencyNum: 0,
+        ep: 0,
+        offlineNum: 0,
+        op: 0,
+        qitaNum: 0,
+        qp: 0,
+      }
       for (const d of stationList.value) {
         if (d.extend.status === 'working') {
           state.value.workingNum++;
@@ -94,18 +104,17 @@ export default {
     async function getData() {
       stationList.value = props.stationAll;
       const data = [];
-      const summary: any = {};
       for (const station of stationList.value) {
         if (!station.deviceList || station.deviceList.length === 0) {
-          summaryHandle(summary, 'offline');
+          // summaryHandle(summary, 'offline');
           station.extend.status = 'offline';
         } else {
           const device = station.deviceList[0];
-          if (device.extend.status) {
-            summaryHandle(summary, device.extend.status);
-          } else {
-            summaryHandle(summary, 'offline');
-          }
+          // if (device.extend.status) {
+          //   summaryHandle(summary, device.extend.status);
+          // } else {
+          //   summaryHandle(summary, 'offline');
+          // }
           station.extend.status = device.extend.status;
         }
       }

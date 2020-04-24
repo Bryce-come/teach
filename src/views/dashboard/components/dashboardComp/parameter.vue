@@ -125,7 +125,7 @@ export default {
       while (active.value) {
         await changeStation();
         // darwVideo();
-        await sleep(180000);
+        await sleep(30000);
       }
     }
     async function updata() {
