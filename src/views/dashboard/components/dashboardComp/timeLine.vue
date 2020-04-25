@@ -27,14 +27,10 @@
 </template>
 
 <script lang="ts">
-import { onMounted, onUnmounted, onBeforeUpdate, watch } from '@vue/composition-api';
-import { leftFill0 } from 'web-toolkit/src/utils';
+import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref, set} from '@vue/composition-api';
 import { statusMap } from '@/utils/device-utils';
 import { ImageLink } from '@/dao/commonDao';
-import { MonitorStationList } from '@/dao/monitorDao';
-import { MonitorStationDetail} from '@/dao/monitorDao';
-import { AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams } from '@/dao/analysisDao';
 import { sleep } from 'web-toolkit/src/utils';
 import { AnalysisDeviceTimes } from '@/dao/analysisDao';
 import { timelineConfig, getColor, getColors} from 'web-toolkit/src/utils/echarts-helper';

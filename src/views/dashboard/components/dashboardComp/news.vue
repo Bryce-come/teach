@@ -18,14 +18,7 @@
 
 <script lang="ts">
 import { onMounted, onUnmounted } from '@vue/composition-api';
-import { ref, createComponent, Ref} from '@vue/composition-api';
-import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
-import { urlMap } from '@/config';
-import { useLoading } from 'web-toolkit/src/service';
-import { statusMap } from '@/utils/device-utils';
-import { CourseRecordInClass } from '@/dao/courseRecordDao';
-import { MonitorStationList } from '@/dao/monitorDao';
-import {MonitorStationDetail} from '@/dao/monitorDao';
+import { ref} from '@vue/composition-api';
 import { sleep } from 'web-toolkit/src/utils';
 import {NewsList} from '@/dao/newsDao';
 

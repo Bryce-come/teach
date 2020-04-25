@@ -34,13 +34,7 @@
 
 <script lang="ts">
 import { onMounted, onUnmounted, watch } from '@vue/composition-api';
-import { ref, createComponent, Ref} from '@vue/composition-api';
-import { postService, mesPostUntilSuccess } from 'web-toolkit/src/case-main';
-import { urlMap } from '@/config';
-import { useLoading } from 'web-toolkit/src/service';
-import { statusMap } from '@/utils/device-utils';
-import { MonitorStationList } from '@/dao/monitorDao';
-import { sleep } from 'web-toolkit/src/utils';
+import { ref} from '@vue/composition-api';
 
 export default {
   name: 'stateCount',

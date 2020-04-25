@@ -178,7 +178,7 @@
         <el-form-item label="摄像头名称：" prop="name" :rules="{ required: true, message: '请输入摄像头名称'}">
           <el-input v-model="addCameraModal.cameraInfo.name"/>
         </el-form-item>
-        <el-form-item label="摄像头通道号：" prop="channelId" :rules="{ required: true, message: '请输入摄像头IP'}">
+        <el-form-item label="摄像头通道号：" prop="channelId" :rules="{ required: true, message: '请输入摄像头通道号'}">
           <el-input-number v-model="addCameraModal.cameraInfo.channelId" :min="0"/>
         </el-form-item>
       </el-form>

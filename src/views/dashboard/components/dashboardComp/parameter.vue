@@ -38,11 +38,9 @@
 <script lang="ts">
 import { onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { ref} from '@vue/composition-api';
-import { MonitorStationList } from '@/dao/monitorDao';
-import {MonitorStationDetail} from '@/dao/monitorDao';
 import { sleep } from 'web-toolkit/src/utils';
 import {SettingGet} from '@/dao/settingDao';
-import {AnalysisDeviceParam, AnalysisDeviceTime, AnalysisParams} from '@/dao/analysisDao';
+import {AnalysisDeviceParam} from '@/dao/analysisDao';
 import {init, login, startRealPlay, stopPlay} from '@/utils/video';
 import {Message} from 'element-ui';
 
