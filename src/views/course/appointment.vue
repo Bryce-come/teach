@@ -132,7 +132,7 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, message: '请选择预约日期'}">
+        <el-form-item label="选择预约日期：" prop="appointDate" :rules="{ required: true, validator: validDate}">
           <el-date-picker v-model="appointModal.appointInfo.appointDate" type="date"/>
         </el-form-item>
         <el-form-item label="选择开始课时：" prop="startLesson" :rules="{ required: true, message: '请选择开始课时'}">
@@ -186,7 +186,7 @@
   </div>
 </template>
 <script lang="ts">
-import {ref, onMounted, createComponent} from '@vue/composition-api';
+import {ref, onMounted, createComponent, set} from '@vue/composition-api';
 import {Message} from 'element-ui';
 import courseList from '../../components/courseList.vue';
 import {AppointListMine, AppointAdd, AppointUpdate, AppointOperate} from '@/dao/appointRecordDao';
@@ -221,7 +221,9 @@ export default createComponent({
     const lessonMap = ref<any>([]);
     const appointModal = ref<any>({
       visible: false,
-      appointInfo: {},
+      appointInfo: {
+        endLesson: undefined,
+      },
       type: 'add',
     });
     const form = ref<ElForm | null>(null);
@@ -244,14 +246,20 @@ export default createComponent({
         data = initAppointForm();
         appointModal.value.type = 'add';
       }
+      if (isStudent() && data.students) {
+        // 其他参与人中去除自己
+        for (let i = 0; i < data.students.length; i++) {
+          if ((storeUserInfo.user as any).id === data.students[i]) {
+            data.students.splice(i, 1);
+            break;
+          }
+        }
+      }
       appointModal.value.appointInfo = data;
       appointModal.value.visible = true;
     };
     function setEndtimeValue() {
-      appointModal.value.appointInfo.endLesson = undefined;
-    }
-    function setEndSelfValue() {
-      // appointModal.value.appointInfo.endLesson = appointModal.value.appointInfo.endLesson;
+      set(appointModal.value.appointInfo, 'endLesson', undefined);
     }
     function setGroupValue() {
       appointModal.value.appointInfo.extend.claszGroup = undefined;
@@ -267,24 +275,28 @@ export default createComponent({
         for (let i = appointModal.value.appointInfo.startLesson; i <= appointModal.value.appointInfo.endLesson; i++) {
           appointModal.value.appointInfo.extend.lessons.push(i);
         }
-        if (appointModal.value.appointInfo.extend.clasz) {
-          appointModal.value.appointInfo.extend.clasz = appointModal.value.appointInfo.extend.clasz;
-        }
-        if (appointModal.value.appointInfo.claszGroup) {
-          appointModal.value.appointInfo.extend.claszGroup = appointModal.value.appointInfo.extend.claszGroup;
-        }
+        // if (appointModal.value.appointInfo.extend.clasz) {
+        //   appointModal.value.appointInfo.extend.clasz = appointModal.value.appointInfo.extend.clasz;
+        // }
+        // if (appointModal.value.appointInfo.claszGroup) {
+        //   appointModal.value.appointInfo.extend.claszGroup = appointModal.value.appointInfo.extend.claszGroup;
+        // }
         const params = {
           id: appointModal.value.appointInfo.id,
           type: appointModal.value.appointInfo.type,
           courseId: appointModal.value.appointInfo.course ? appointModal.value.appointInfo.course.id : null,
           programId: appointModal.value.appointInfo.program ? appointModal.value.appointInfo.program.id : null,
           teacherId: appointModal.value.appointInfo.teacher ? appointModal.value.appointInfo.teacher.id : null,
-          studentJson: appointModal.value.appointInfo.students && appointModal.value.appointInfo.students.length > 0 ? JSON.stringify(appointModal.value.appointInfo.students) : null,
+          studentJson: null,
           stationJson: appointModal.value.appointInfo.stations && appointModal.value.appointInfo.stations.length > 0 ? JSON.stringify(appointModal.value.appointInfo.stations) : null,
           start: transformDate(appointModal.value.appointInfo.appointDate, lesson1[0]),
           end: transformDate(appointModal.value.appointInfo.appointDate, lesson2[1]),
           extendJson: JSON.stringify(appointModal.value.appointInfo.extend),
         };
+        let arr = [];
+        if (appointModal.value.appointInfo.students && appointModal.value.appointInfo.students.length > 0) { arr = appointModal.value.appointInfo.students; }
+        if (isStudent()) { arr.push((storeUserInfo.user as any).id); }
+        params.studentJson = JSON.stringify(arr) as any;
         if (appointModal.value.type === 'add') {
           await AppointAdd(params);
         } else {
@@ -347,9 +359,22 @@ export default createComponent({
         otherStudentInClasz.value = otherStudentInClasz.value.filter((user: any) => user.id !== (storeUserInfo.user as any).id);
       }
     }));
+    function validDate(rule: any, val: Date, callback: Function) {
+      const now = new Date();
+      now.setHours(0);
+      now.setMinutes(0);
+      now.setSeconds(0);
+      now.setMilliseconds(0);
+      if (!val || val.getTime() < now.getTime()) {
+        callback(new Error('已过期'));
+      } else {
+        callback();
+      }
+    }
     return {
       loading, courseButton, appointButton, showCourse, showAppoint,
-      appointRecordList, datetimeRange, setEndtimeValue, setGroupValue, setEndSelfValue,
+      appointRecordList, datetimeRange, setEndtimeValue, setGroupValue,
+      validDate,
       query: useLoading(loading, query),
       revokeAppoint: useConfirm('确认撤销预约申请？', useLoading(loading, revokeAppoint)),
       form, appointModal, showForm,

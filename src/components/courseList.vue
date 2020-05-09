@@ -338,7 +338,7 @@
   </div>
 </template>
 <script lang="ts">
-import {createComponent, onMounted, ref, watch} from '@vue/composition-api';
+import {createComponent, onMounted, ref, watch, set} from '@vue/composition-api';
 import {useConfirm, useLoading} from 'web-toolkit/src/service';
 import {Message} from 'element-ui';
 import {ElForm} from 'element-ui/types/form';
@@ -564,7 +564,7 @@ export default createComponent({
       showModal.value.visible = true;
     };
     function setEndtimeValue() {
-      showModal.value.oneLesson.endLesson = undefined;
+      set(showModal.value.oneLesson, "endLesson", undefined)
     }
     function setGroupValue() {
       showModal.value.oneLesson.extend.claszGroup = undefined;
