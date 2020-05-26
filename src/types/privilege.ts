@@ -7,6 +7,7 @@ export const PRIVILEGE = {
   deviceMaintenMng: 'deviceMaintenMng', // 设备保养维修
   deviceUsageAnalysis: 'deviceUsageAnalysis', // 使用过程分析
   deviceComponentMng: 'deviceComponentMng', // 刀具管理
+  deviceComponentApplyMng: 'deviceComponentApplyMng', // 刀具申请审核
   deviceAnalysis: 'deviceAnalysis', // 统计分析
   courseRecordMng: 'courseRecordMng', // 排课管理
   courseRecordUpdate: 'courseRecordUpdate', // 排课管理(自己)

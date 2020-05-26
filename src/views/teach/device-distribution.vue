@@ -51,7 +51,7 @@
                 </div>
               </div>
               <div class="flex align-center center">
-                <div style="width:150px;margin-rignt:5px" v-if="item.deviceList[0].deviceType">
+                <div style="width:150px;margin-right:5px" v-if="item.deviceList.length>0 && item.deviceList[0].deviceType">
                   <img :src="img(item.deviceList[0].deviceType.img)" alt="">
                 </div>
                 <div class="device-message" style="padding-left: 10px;width: 100px;">
