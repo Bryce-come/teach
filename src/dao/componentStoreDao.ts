@@ -4,8 +4,12 @@ import {postService} from 'web-toolkit/src/case-main/index';
  * 刀具增加
  * RequestParam String name,
  * RequestParam String no,
+ * ApiParam(value = "类型, 1-耗材, 2-量具",required = true)
+ * RequestParam int type,
  * ApiParam(value = "适配设备类型数组json")
- * RequestParam(required = false) String dTypeJson
+ * RequestParam(required = false) String dTypeJson,
+ * ApiParam(value = "place-货架位置字段, unit单位, model-型号")
+ * RequestParam(required = false) String extendJson
  */
 export async function ComponentStoreAdd(params: any) {
   await postService('/rest/device/component/store/add', params);
@@ -15,7 +19,11 @@ export async function ComponentStoreAdd(params: any) {
  * RequestParam int id,
  * RequestParam(required = false) String name,
  * RequestParam(required = false) String no,
- * RequestParam(required = false) String dTypeJson
+ * ApiParam(value = "类型, 1-耗材, 2-量具")
+ * RequestParam(required = false) Integer type,
+ * RequestParam(required = false) String dTypeJson,
+ * ApiParam(value = "place-货架位置字段, unit单位, model-型号")
+ * RequestParam(required = false) String extendJson
  */
 export async function ComponentStoreUpdate(params: any) {
   await postService('/rest/device/component/store/update', params);
@@ -30,16 +38,18 @@ export async function ComponentStoreDel(params: any) {
 
 /**
  * 刀具列表
+ * RequestParam(required = false, defaultValue = "false") boolean forSelect,
+ * RequestParam(required = false) String typesJson
  */
-export async function ComponentStoreList() {
-  const {data: {list}} = await postService('/rest/device/component/store/list');
+export async function ComponentStoreList(params:any) {
+  const {data: {list}} = await postService('/rest/device/component/store/list',params);
   return list;
 }
 
 /**
  * 出入库
  * RequestParam int componentId,
- * ApiParam(value = "0-新购，1-借出，2-还回，3-报废",required = true)
+ * ApiParam(value = "1-新购, 2-利旧, 3-还回, 10-借出, 11-领用, 12-报废",required = true)
  * RequestParam int type,
  * RequestParam int quantity,
  * RequestParam long dt,
@@ -53,7 +63,7 @@ export async function ComponentStoreRecordAdd(params: any) {
 
 /**
  * RequestParam int id,
- * ApiParam(value = "0-新购，1-借出，2-还回，3-报废")
+ * ApiParam(value = "1-新购, 2-利旧, 3-还回, 10-借出, 11-领用, 12-报废")
  * RequestParam(required = false) Integer type,
  * RequestParam(required = false) Integer quantity,
  * RequestParam(required = false) Long dt,
@@ -80,5 +90,74 @@ export async function ComponentStoreRecordDel(params: any) {
  */
 export async function ComponentStoreRecordList(params: any) {
   const {data: {list}} = await postService('/rest/device/component/store/record/list', params);
+  return list;
+}
+
+/**
+ * 工具包增加
+ * RequestParam String name
+ */
+export async function ComponentStoreGroupAdd(params: any) {
+  await postService('/rest/device/component/store/group/add', params);
+}
+
+/**
+ * 工具包修改
+ * RequestParam int id
+ * RequestParam String name
+ */
+export async function ComponentStoreGroupUpdate(params: any) {
+  await postService('/rest/device/component/store/group/update', params);
+}
+
+/**
+ * RequestParam int id
+ */
+export async function ComponentStoreGroupDel(params: any) {
+  await postService('/rest/device/component/store/group/del', params);
+}
+
+/**
+ * 工具包list
+ * RequestParam(required = false, defaultValue = "false") boolean forSelect
+ */
+export async function ComponentStoreGroupList(params: any) {
+  const {data: {list}} = await postService('/rest/device/component/store/group/list', params);
+  return list;
+}
+
+/**
+ * 工具包item增加
+ * RequestParam int grpId, - 工具包id
+ * RequestParam int componentId,
+ * RequestParam int quantity
+ */
+export async function ComponentStoreGroupItemAdd(params: any) {
+  await postService('/rest/device/component/store/group/item/add', params);
+}
+
+/**
+ * 工具包item修改
+ * RequestParam int id,
+ * RequestParam(required = false) Integer componentId,
+ * RequestParam(required = false) Integer quantity
+ */
+export async function ComponentStoreGroupItemUpdate(params: any) {
+  await postService('/rest/device/component/store/group/item/update', params);
+}
+
+/**
+ * RequestParam int id // item的id
+ */
+export async function ComponentStoreGroupItemDel(params: any) {
+  await postService('/rest/device/component/store/group/item/del', params);
+}
+
+/**
+ * 工具包list
+ * RequestParam int grpId -工具包id
+ */
+export async function ComponentStoreGroupItemList(params: any) {
+  const {data: {list}} = await postService('/rest/device/component/store/group/item/list', params);
   return list;
 }

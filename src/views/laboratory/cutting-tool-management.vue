@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" calss="cutting-tool-management">
+  <div v-loading="loading" class="cutting-tool-management">
     <div style="margin-bottom:10px">
       <el-button type="primary" @click="cutterForm()">增加刀具信息</el-button>
     </div>
@@ -10,15 +10,17 @@
       :data="cutterNameList"
       style="width:100%">
       <el-table-column prop="name" label="刀具名称"/>
-      <el-table-column prop="no" label="刀具型号"/>
-      <!-- <el-table-column prop="fitDeviceTypeList.name" label="适配设备类型"/> -->
-      <el-table-column label="适配设备类型">
-        <div class="flex center little-space" slot-scope="{row}">
-          <div v-for="(item,i) in row.fitDeviceTypeList" :key="i" style="padding: 0">
-            {{item.name}}
-          </div>
-        </div>
-      </el-table-column>
+      <el-table-column prop="no" label="刀具编号"/>
+      <el-table-column prop="type" label="刀具类型" :formatter="(row)=>{
+        return row.type===1?'耗材':'量具'
+      }"/>
+<!--      <el-table-column label="适配设备类型">-->
+<!--        <div class="flex center little-space" slot-scope="{row}">-->
+<!--          <div v-for="(item,i) in row.fitDeviceTypeList" :key="i" style="padding: 0">-->
+<!--            {{item.name}}-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </el-table-column>-->
       <el-table-column prop="quantity" label="库存"/>
       <el-table-column label="报废数量">
         <div slot-scope="{row}">
@@ -45,19 +47,29 @@
         <el-form-item label="刀具名称：" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
           <el-input v-model="addModal.cutterInfo.name"></el-input>
         </el-form-item>
-        <el-form-item label="刀具型号：" prop="no" :rules="{ required: true, message: '请选择刀具型号'}">
+        <el-form-item label="刀具编号：" prop="no" :rules="{ required: true, message: '请选择刀具编号'}">
           <el-input v-model="addModal.cutterInfo.no"></el-input>
         </el-form-item>
-        <el-form-item label="适配设备型号：" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">
-          <el-select v-model="addModal.cutterInfo.fitDeviceType" multiple placeholder="请选择">
+        <el-form-item label="刀具类型：" prop="type" :rules="{ required: true, message: '请选择刀具类型'}">
+          <el-select v-model="addModal.cutterInfo.type" placeholder="请选择">
             <el-option
-              v-for="item of deviceTypeList"
+              v-for="item of [{'id':1, 'name':'耗材'},{'id':2,'name':'量具'}]"
               :key="item.id"
               :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
+<!--        <el-form-item label="适配设备型号：" prop="fitDeviceType" :rules="{ required: true, message: '请选择适配设备型号'}">-->
+<!--          <el-select v-model="addModal.cutterInfo.fitDeviceType" multiple placeholder="请选择">-->
+<!--            <el-option-->
+<!--              v-for="item of deviceTypeList"-->
+<!--              :key="item.id"-->
+<!--              :label="item.name"-->
+<!--              :value="item.id">-->
+<!--            </el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
       </el-form>
     </kit-dialog-simple>
     <kit-dialog-simple
@@ -182,8 +194,7 @@
         </el-table-column>
         <el-table-column label="类型">
           <div slot-scope="{ row }">
-            {{row.type === 0 ?'新购': '' || row.type === 1 ?'借出': '' || row.type === 2 ?'还回': '' || row.type === 3 ?'报废':
-            ''}}
+            {{storeTypeList.filter(e=>e.id===row.type)[0].name}}
           </div>
         </el-table-column>
         <el-table-column prop="quantity" label="数量"/>
@@ -232,22 +243,31 @@ export default {
     const [keywords, cutterNameList] = useSearch(cutterList, {
       includeProps: ['dt', 'no', 'name'],
     });
+    // 1-新购, 2-利旧, 3-还回, 10-借出, 11-领用, 12-报废
     const storeTypeList = ref<any>([
       {
         name: '新购',
-        id: 0,
-      },
-      {
-        name: '借出',
         id: 1,
       },
       {
-        name: '归还',
+        name: '利旧',
         id: 2,
       },
       {
-        name: '报废',
+        name: '还回',
         id: 3,
+      },
+      {
+        name: '借出',
+        id: 10,
+      },
+      {
+        name: '领用',
+        id: 11,
+      },
+      {
+        name: '报废',
+        id: 12,
       },
     ]);
     const form1 = ref<ElForm | null>(null);
@@ -293,12 +313,13 @@ export default {
           await ComponentStoreAdd({
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
-            dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
+            type: addModal.value.cutterInfo.type,
+            // dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
           });
         }
         addModal.value.visible = false;
         Message.success('添加成功');
-        cutterList.value = await ComponentStoreList();
+        cutterList.value = await ComponentStoreList({});
       }
     }
 
@@ -306,7 +327,7 @@ export default {
       await ComponentStoreDel({
         id: row.id,
       });
-      cutterList.value = await ComponentStoreList();
+      cutterList.value = await ComponentStoreList({});
       Message.success('删除成功');
     };
     const storeRecordForm = async (data: any) => {
@@ -348,7 +369,7 @@ export default {
           remark: storeRecordModal.value.storeInfo.remark ? storeRecordModal.value.storeInfo.remark : null,
           extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
-        cutterList.value = await ComponentStoreList();
+        cutterList.value = await ComponentStoreList({});
         storeRecordModal.value.visible = false;
         Message.success('添加成功');
       }
@@ -365,7 +386,7 @@ export default {
       });
     };
     onMounted(useLoading(loading, async () => {
-      cutterList.value = await ComponentStoreList();
+      cutterList.value = await ComponentStoreList({});
       deviceTypeList.value = await DeviceTypeList();
       await queryStationList();
     }));
