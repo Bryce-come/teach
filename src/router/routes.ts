@@ -61,6 +61,16 @@ const cuttingToolManagement = {
     privileges: [PRIVILEGE.deviceComponentMng],
   },
 };
+const cuttingToolToolkit = {
+  path: '/laboratory/cutting-tool-toolkit',
+  name: 'cuttingToolToolkit',
+  component: () => import('../views/laboratory/cutting-tool-toolkit.vue'),
+  meta: {
+    CName: '刀具管理-工具包',
+    parentCName: '实验室管理',
+    privileges: [PRIVILEGE.deviceComponentMng],
+  },
+};
 const monitor = {
   path: '/monitor',
   name: 'monitor',
@@ -371,6 +381,7 @@ const indexChildren = [
   workTop,
   equipmentMaintenance,
   cuttingToolManagement,
+  cuttingToolToolkit,
   monitorDetail,
   monitorHistory,
   monitorHistoryDetail,
