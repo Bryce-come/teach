@@ -1,7 +1,16 @@
 <template>
   <div v-loading="loading" class="cutting-tool-management">
     <div style="margin-bottom:10px">
-      <el-button type="primary" @click="cutterForm()">增加刀具信息</el-button>
+      <el-button type="primary" style="margin-right: 1rem" @click="cutterForm()">增加刀具信息</el-button>
+      <el-upload
+        style="margin-right: 1rem"
+        action=""
+        :http-request="(option)=>upload(option)"
+        :show-file-list="false">
+        <el-button type="success">导入添加</el-button>
+      </el-upload>
+      <el-button type="primary" style="margin-right: 1rem" @click="downFile()">导入模板下载</el-button>
+      <el-button type="primary" @click="exportExcel()" style="margin-right: 1rem">导出</el-button>
     </div>
     <div class="flex end" style="margin-bottom: 5px;margin-top: -46px">
       <el-input slot="search" class="search-bar" v-model="keywords" placeholder="按关键字搜索" clearable/>
@@ -223,7 +232,7 @@ import {
   ComponentStoreRecordAdd,
   ComponentStoreRecordUpdate,
   ComponentStoreRecordDel,
-  ComponentStoreRecordList,
+  ComponentStoreRecordList, ComponentStoreImportSample, ComponentStoreAddImport, ComponentStoreExport,
 } from '@/dao/componentStoreDao';
 import {DeviceTypeList} from '@/dao/deviceDao';
 import {StationList} from '@/dao/stationDao';
@@ -385,6 +394,18 @@ export default {
         simple: false,
       });
     };
+    async function downFile() {
+      await ComponentStoreImportSample();
+    }
+    async function upload(option: any) {
+      await ComponentStoreAddImport({
+        file: option.file,
+      });
+      cutterList.value = await ComponentStoreList({});
+    }
+    async function exportExcel() {
+      await ComponentStoreExport({});
+    }
     onMounted(useLoading(loading, async () => {
       cutterList.value = await ComponentStoreList({});
       deviceTypeList.value = await DeviceTypeList();
@@ -401,6 +422,7 @@ export default {
       storeHistoryModal, storeHistoryForm,
       filterText, deviceComponentStoreRecord, deviceComponentStoreRecordList, componentID, storeTypeList,
       queryStationList, stationList,
+      downFile, upload, exportExcel
     };
   },
 };

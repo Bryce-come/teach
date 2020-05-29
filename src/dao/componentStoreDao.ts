@@ -1,4 +1,4 @@
-import {postService} from 'web-toolkit/src/case-main/index';
+import {postService,uploadService,download} from 'web-toolkit/src/case-main/index';
 
 /**
  * 刀具增加
@@ -160,4 +160,28 @@ export async function ComponentStoreGroupItemDel(params: any) {
 export async function ComponentStoreGroupItemList(params: any) {
   const {data: {list}} = await postService('/rest/device/component/store/group/item/list', params);
   return list;
+}
+
+
+/**
+ * 导入添加
+ * RequestParam MultipartFile file
+ */
+export async function ComponentStoreAddImport(params: any) {
+  await uploadService('/rest/device/component/store/import', params);
+}
+
+/**
+ * 导出Excel
+ * RequestParam(required = false)String typesJson
+ */
+export async function ComponentStoreExport(params: any) {
+  await download('/rest/device/component/store/export', params,{filename:"物料信息.xlsx"});
+}
+
+/**
+ * 下载导入模板
+ */
+export async function ComponentStoreImportSample() {
+  await download('/rest/device/component/store/import/sample', {}, {filename: '物料信息导入模板.xlsx'});
 }
