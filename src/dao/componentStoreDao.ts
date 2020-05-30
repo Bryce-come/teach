@@ -93,6 +93,8 @@ export async function ComponentStoreRecordList(params: any) {
   return list;
 }
 
+
+
 /**
  * 工具包增加
  * RequestParam String name
@@ -154,7 +156,7 @@ export async function ComponentStoreGroupItemDel(params: any) {
 }
 
 /**
- * 工具包list
+ * 工具包itemlist
  * RequestParam int grpId -工具包id
  */
 export async function ComponentStoreGroupItemList(params: any) {

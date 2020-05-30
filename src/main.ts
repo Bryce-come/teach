@@ -21,3 +21,10 @@ const vm = new Vue({
 });
 // 可用于延迟加载
 vm.$mount('#app');
+
+import Router from 'vue-router'
+Vue.config.productionTip = false
+const VueRouterPush = Router.prototype.push;
+Router.prototype.push = function push(toLocation: 'string') {
+    return (VueRouterPush.call(this, toLocation) as any).catch((err: any) => err)
+}
