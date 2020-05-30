@@ -56,8 +56,8 @@ const cuttingToolManagement = {
   name: 'cuttingToolManagement',
   component: () => import('../views/laboratory/cutting-tool-management.vue'),
   meta: {
-    CName: '刀具管理',
-    parentCName: '实验室管理',
+    CName: '物料库存信息',
+    parentCName: '物料仓储管理',
     privileges: [PRIVILEGE.deviceComponentMng],
   },
 };
@@ -66,8 +66,8 @@ const cuttingToolToolkit = {
   name: 'cuttingToolToolkit',
   component: () => import('../views/laboratory/cutting-tool-toolkit.vue'),
   meta: {
-    CName: '刀具管理-工具包',
-    parentCName: '实验室管理',
+    CName: '物料工具包配置',
+    parentCName: '物料仓储管理',
     privileges: [PRIVILEGE.deviceComponentMng],
   },
 };
