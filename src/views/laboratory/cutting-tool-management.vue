@@ -1,13 +1,13 @@
 <template>
   <div v-loading="loading" class="cutting-tool-management">
-    <div style="margin-bottom:10px">
-      <el-button type="primary" style="margin-right: 1rem" @click="cutterForm()">增加刀具信息</el-button>
+    <div style="margin-bottom:10px" class="flex">
+      <el-button type="success" style="margin-right: 1rem" @click="cutterForm()">增加刀具信息</el-button>
       <el-upload
         style="margin-right: 1rem"
         action=""
         :http-request="(option)=>upload(option)"
         :show-file-list="false">
-        <el-button type="success">导入添加</el-button>
+        <el-button type="success">导入添加修改</el-button>
       </el-upload>
       <el-button type="primary" style="margin-right: 1rem" @click="downFile()">导入模板下载</el-button>
       <el-button type="primary" @click="exportExcel()" style="margin-right: 1rem">导出</el-button>
@@ -24,7 +24,7 @@
         :formatter="(row)=>{
         return row.type===1?'耗材':'量具'
       }"/>
-      <el-table-column prop="extend.model" label="型号" />
+      <el-table-column prop="extend.model" label="规格型号" />
       <el-table-column prop="extend.unit" label="单位" />
       <el-table-column prop="extend.place" label="货架位置" />
       <el-table-column prop="quantity" label="库存" />
@@ -49,7 +49,7 @@
       :modal="addModal"
       :confirm="cutterInfoUpdate"
       width="500px">
-      <div slot="title" v-if="addModal.type=='add'">刀具信息登记</div>
+      <div slot="title" v-if="addModal.type==='add'">刀具信息登记</div>
       <div slot="title" v-else>刀具信息修改</div>
       <el-form
         v-if="addModal.cutterInfo"
@@ -74,13 +74,13 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="型号" prop="model" :rules="{ required: true}">
+        <el-form-item label="规格型号：" prop="model">
           <el-input v-model="addModal.cutterInfo.model"></el-input>
         </el-form-item>
-        <el-form-item label="单位" prop="unit" :rules="{ required: true}">
+        <el-form-item label="单位：" prop="unit">
           <el-input v-model="addModal.cutterInfo.unit"></el-input>
         </el-form-item>
-        <el-form-item label="库存" prop="quantity" :rules="{ required: true}">
+        <el-form-item label="当前库存：" prop="quantity" :rules="{ required: true}">
           <el-input v-model="addModal.cutterInfo.quantity"></el-input>
         </el-form-item>
       </el-form>
@@ -109,7 +109,7 @@
         </el-form-item>
       </el-form>
       <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 0"
+        v-if="storeRecordModal.storeInfo && (storeRecordModal.storeInfo.type === 1 || storeRecordModal.storeInfo.type === 2)"
         ref="form2"
         :model="storeRecordModal.storeInfo"
         label-width="160px"
@@ -147,14 +147,61 @@
         </el-form-item>
       </el-form>
       <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 1"
+        v-else-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 3"
         ref="form2"
         :model="storeRecordModal.storeInfo"
         label-width="160px"
         label-position="left"
         style="width: 377px;margin: 0 auto">
-        <el-form-item label="购入数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量"></el-input-number>
+        <el-form-item label="归还数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
+        </el-form-item>
+        <el-form-item
+          label="归还人："
+          prop="extend.person"
+          :rules="{ required: true, message: '请输入归还人名称'}">
+          <el-input v-model="storeRecordModal.storeInfo.extend.person" />
+        </el-form-item>
+        <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
+        </el-form-item>
+        <el-form-item label="备注：" prop="remark">
+          <el-input
+            v-model="storeRecordModal.storeInfo.remark"
+            type="textarea"
+            :autosize="{ minRows: 3}"
+          />
+        </el-form-item>
+      </el-form>
+      <el-form
+        v-else-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 3"
+        ref="form2"
+        :model="storeRecordModal.storeInfo"
+        label-width="160px"
+        label-position="left"
+        style="width: 377px;margin: 0 auto">
+        <el-form-item label="还回数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
+        </el-form-item>
+        <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
+        </el-form-item>
+        <el-form-item label="备注：" prop="remark">
+          <el-input
+            v-model="storeRecordModal.storeInfo.remark"
+            type="textarea"
+            :autosize="{ minRows: 3}"/>
+        </el-form-item>
+      </el-form>
+      <el-form
+        v-else-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 10"
+        ref="form2"
+        :model="storeRecordModal.storeInfo"
+        label-width="160px"
+        label-position="left"
+        style="width: 377px;margin: 0 auto">
+        <el-form-item label="借出数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
+          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
         </el-form-item>
         <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
           <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
@@ -183,74 +230,7 @@
         </el-form-item>
       </el-form>
       <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 2"
-        ref="form2"
-        :model="storeRecordModal.storeInfo"
-        label-width="160px"
-        label-position="left"
-        style="width: 377px;margin: 0 auto">
-        <el-form-item label="归还数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
-        </el-form-item>
-        <el-form-item
-          label="归还人："
-          prop="extend.person"
-          :rules="{ required: true, message: '请输入归还人名称'}">
-          <el-input v-model="storeRecordModal.storeInfo.extend.person" />
-        </el-form-item>
-        <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
-          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
-        </el-form-item>
-        <el-form-item label="备注：" prop="remark">
-          <el-input
-            v-model="storeRecordModal.storeInfo.remark"
-            type="textarea"
-            :autosize="{ minRows: 3}"
-          />
-        </el-form-item>
-      </el-form>
-      <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 3"
-        ref="form2"
-        :model="storeRecordModal.storeInfo"
-        label-width="160px"
-        label-position="left"
-        style="width: 377px;margin: 0 auto">
-        <el-form-item label="还回数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
-        </el-form-item>
-        <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
-          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
-        </el-form-item>
-        <el-form-item label="备注：" prop="remark">
-          <el-input
-            v-model="storeRecordModal.storeInfo.remark"
-            type="textarea"
-            :autosize="{ minRows: 3}"/>
-        </el-form-item>
-      </el-form>
-      <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 10"
-        ref="form2"
-        :model="storeRecordModal.storeInfo"
-        label-width="160px"
-        label-position="left"
-        style="width: 377px;margin: 0 auto">
-        <el-form-item label="借出数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
-          <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
-        </el-form-item>
-        <el-form-item label="时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
-          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
-        </el-form-item>
-        <el-form-item label="备注：" prop="remark">
-          <el-input
-            v-model="storeRecordModal.storeInfo.remark"
-            type="textarea"
-            :autosize="{ minRows: 3}"/>
-        </el-form-item>
-      </el-form>
-      <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 11"
+        v-else-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 11"
         ref="form2"
         :model="storeRecordModal.storeInfo"
         label-width="160px"
@@ -259,14 +239,24 @@
         <el-form-item label="领用数量：" prop="quantity" :rules="{ required: true, message: '请输入数量'}">
           <el-input-number v-model="storeRecordModal.storeInfo.quantity" :min="1" label="请输入数量" />
         </el-form-item>
+        <el-form-item label="领用时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
+          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
+        </el-form-item>
         <el-form-item
           label="领用人："
           prop="extend.person"
           :rules="{ required: true, message: '请输入借用人名称'}">
           <el-input v-model="storeRecordModal.storeInfo.extend.person" />
         </el-form-item>
-        <el-form-item label="领用时间：" prop="dt" :rules="{ required: true, message: '请选择时间'}">
-          <el-date-picker v-model="storeRecordModal.storeInfo.dt" />
+        <el-form-item label="使用操作台（多选）：" placeholder="请选择操作台">
+          <el-select multiple v-model="storeRecordModal.storeInfo.extend.stationRecord.id">
+            <el-option
+              v-for="item of stationList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注：" prop="remark">
           <el-input
@@ -276,7 +266,7 @@
         </el-form-item>
       </el-form>
       <el-form
-        v-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 12"
+        v-else-if="storeRecordModal.storeInfo && storeRecordModal.storeInfo.type === 12"
         ref="form2"
         :model="storeRecordModal.storeInfo"
         label-width="160px"
@@ -366,11 +356,11 @@ export default {
     const [filterText, deviceComponentStoreRecord] = useSearch(
       deviceComponentStoreRecordList,
       {
-        includeProps: ["dt", "remark", "person"]
+        includeProps: [ "remark", "person"]
       }
     );
     const [keywords, cutterNameList] = useSearch(cutterList, {
-      includeProps: ["dt", "no", "name"]
+      includeProps: ["no", "name", "extend.model", "extend.place"]
     });
     // 1-新购, 2-利旧, 3-还回, 10-借出, 11-领用, 12-报废
     const storeTypeList = ref<any>([
@@ -581,7 +571,7 @@ export default {
       storeTypeList,
       queryStationList,
       stationList,
-      downFile, upload, exportExcel
+      downFile, upload:useLoading(loading,upload), exportExcel
     };
   }
 };

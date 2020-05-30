@@ -170,7 +170,7 @@ export async function ComponentStoreGroupItemList(params: any) {
  * RequestParam MultipartFile file
  */
 export async function ComponentStoreAddImport(params: any) {
-  await uploadService('/rest/device/component/store/import', params);
+  await uploadService('/rest/device/component/store/add/import', params);
 }
 
 /**
