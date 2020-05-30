@@ -1,28 +1,23 @@
 <template>
   <div v-loading="loading" class="cutting-tool-management">
     <div style="margin-bottom:10px">
-      <el-button type="primary" @click="componentStoreForm()">增加工具包信息</el-button>
+      <el-button type="primary" @click="componentStoreForm()">增加工具包</el-button>
+      <el-button @click="getInfo()">test</el-button>
     </div>
     <lkt-table :data="componentList" style="width:100%">
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-button @click="addComponentStoreItemGroup(props.row)">增加刀具信息</el-button>
+          <el-button @click="addComponentStoreItemGroup(props.row.id,null)">增加工具</el-button>
           <el-table :data="props.row.itemList" style="width:100%">
-            <el-table-column>
-              <div slot-scope="{row}">
-                <span>刀具ID:{{row.id}}刀具数量:{{row.quantity}}</span>
-                <el-button
-                  type="text"
-                  @click="updateComponentStoreItemGroup(row)"
-                  style="margin-left:525px"
-                >修改</el-button>
-                <el-button
-                  type="danger"
-                  @click="removeComponentStoreGroupItem(row)"
-                  size="mini"
-                  style="float:right"
-                >删除</el-button>
-              </div>
+            <el-table-column prop="component.no" label="工具编号"></el-table-column>
+            <el-table-column prop="component.name" label="工具名称"></el-table-column>
+             <el-table-column prop="component.extend.model" label="型号"></el-table-column>
+            <el-table-column prop="quantity" label="数量"></el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="{row}">
+                <el-button type="text" @click="addComponentStoreItemGroup(props.row.id,row)">修改</el-button>
+                <el-button type="danger" @click="removeComponentStoreGroupItem(row)" size="mini"  style="margin-left:10px">删除</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </template>
@@ -31,7 +26,7 @@
       <el-table-column prop="id" label="工具包ID" />
       <el-table-column label="操作" width="280px">
         <div class="flex center little-space" slot-scope="{row}">
-          <el-button type="text" @click="updateComponentStoreGroup(row)">修改</el-button>
+          <el-button type="text" @click="componentStoreForm(row)">修改</el-button>
           <el-button
             type="danger"
             size="mini"
@@ -42,14 +37,15 @@
       </el-table-column>
     </lkt-table>
 
-    <!-- 增加工具包 -->
+    <!-- 增加/修改工具包 -->
     <kit-dialog-simple
       id="device-component"
       :modal="addModal"
       :confirm="componentStoreAlter"
       width="500px"
     >
-      <div slot="title">工具包信息登记</div>
+      <div slot="title" v-if="addModal.type=='add'">工具包信息登记</div>
+      <div slot="title" v-else>工具包信息修改</div>
       <el-form
         v-if="addModal.componentInfo"
         ref="form1"
@@ -64,14 +60,15 @@
       </el-form>
     </kit-dialog-simple>
 
-    <!-- 增加工具包item -->
+    <!-- 增加/修改工具包item -->
     <kit-dialog-simple
-      id="device-component"
+      id="addComponentStoreGroupItemModal"
       :modal="addComponentStoreGroupItemModal"
       :confirm="addComponentStoreGroupItemConfirm"
       width="500px"
     >
-      <div slot="title">增加工具包</div>
+      <div slot="title" v-if="addComponentStoreGroupItemModal.type=='add'">增加工具包</div>
+      <div slot="title" v-else>修改工具包</div>
       <el-form
         v-if="addComponentStoreGroupItemModal.componentStoreGroupItem"
         ref="form1"
@@ -80,63 +77,29 @@
         label-position="left"
         style="width: 357px;margin: 0 auto"
       >
-        <el-form-item label="刀具名称：" prop="name" :rules="{ required: true, message: '请输入刀具名称'}">
-          <el-input v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.name"></el-input>
+        <el-form-item label="刀具名称：" :rules="{ required: true}">
+          <el-select
+            v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.component"
+            value-key="id"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item of toolSelect "
+              :key="item.id"
+              :label="item.name +' '+ item.extend.model "
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
-      </el-form>
-    </kit-dialog-simple>
-
-    <!-- 更新工具包信息  -->
-    <kit-dialog-simple
-      id="updateComponentStoreGroup"
-      :modal="updateComponentStoreGroupModal"
-      :confirm="updateComponentStoreGroupConfirm"
-      width="550px"
-    >
-      <div slot="title">工具包信息</div>
-      <el-form
-        ref="form"
-        :model="updateComponentStoreGroupModal.componentStoreGroup"
-        label-width="120px"
-        label-position="left"
-        style="margin: 0 10px"
-      >
-        <el-form-item label="工具包名称：" prop="name">
-          <el-input v-model="updateComponentStoreGroupModal.componentStoreGroup.name" />
-        </el-form-item>
-        <el-form-item label="工具包ID：" prop="id">
-          <el-input v-model="updateComponentStoreGroupModal.componentStoreGroup.id" />
-        </el-form-item>
-      </el-form>
-    </kit-dialog-simple>
-
-    <!-- 更新工具包item信息  -->
-    <kit-dialog-simple
-      id="updateComponentStoreItemGroup"
-      :modal="updateComponentStoreGroupItemModal"
-      :confirm="updateComponentStoreGroupItemConfirm"
-      width="550px"
-    >
-      <div slot="title">工具包信息</div>
-      <el-form
-        ref="form"
-        :model="updateComponentStoreGroupItemModal.componentStoreGroupItem"
-        label-width="120px"
-        label-position="left"
-        style="margin: 0 10px"
-      >
-        <el-form-item label="ID：" prop="id">
-          <el-input v-model="updateComponentStoreGroupItemModal.componentStoreGroupItem.id" />
-        </el-form-item>
-        <el-form-item label="数量：" prop="quantity">
-          <el-input v-model="updateComponentStoreGroupItemModal.componentStoreGroupItem.quantity" />
+        <el-form-item label="刀具数量：" prop="quantity" :rules="{ required: true, message: '请输入刀具数量'}">
+          <el-input v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.quantity"></el-input>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted } from "@vue/composition-api";
+import { ref, Ref, onMounted,set } from "@vue/composition-api";
 import { Message } from "element-ui";
 import { useConfirm, useLoading, useSearch } from "web-toolkit/src/service";
 import { ElForm } from "element-ui/types/form";
@@ -168,7 +131,7 @@ export default {
     const cutterList = ref<any>([]);
     const componentList = ref<any>([]);
     const componentItemList = ref<any>([]);
-    //  const ComponentStoreGroupItemNameList = ref<any>([]);
+    const toolSelect = ref<any>([]);
     const deviceTypeList = ref<any>();
     const stationList = ref<any>([]);
     const deviceComponentStore = ref<any>();
@@ -180,7 +143,6 @@ export default {
         includeProps: ["dt", "remark", "person"]
       }
     );
-
     const form1 = ref<ElForm | null>(null);
     const form2 = ref<ElForm | null>(null);
 
@@ -188,7 +150,7 @@ export default {
     const addModal = ref<any>({
       visible: false,
       componentInfo: null,
-      type: "add"
+      type: ""
     });
     const componentStoreForm = async (data?: any) => {
       if (form1.value) {
@@ -212,6 +174,11 @@ export default {
           await ComponentStoreGroupAdd({
             name: addModal.value.componentInfo.name
           });
+        } else if (addModal.value.type === "update") {
+          await ComponentStoreGroupUpdate({
+            id: addModal.value.componentInfo.id,
+            name: addModal.value.componentInfo.name
+          });
         }
         addModal.value.visible = false;
         Message.success("添加成功");
@@ -233,8 +200,13 @@ export default {
       await ComponentStoreGroupItemDel({
         id: row.id
       });
-      componentItemList.value = await ComponentStoreGroupItemList({});
       Message.success("删除成功");
+      // componentList.value = await ComponentStoreGroupList({});
+      var list =  await ComponentStoreGroupList({});
+        for (var i=0; i<componentList.value.length;i++){
+          // componentList.value[i] =  list[i].itemList;
+          set(componentList.value[i], 'itemList', list[i].itemList) 
+        }
     };
 
     const query = async (data: any) => {
@@ -248,89 +220,79 @@ export default {
       });
     };
 
-    //更新工具包信息
-    const updateComponentStoreGroupModal = ref<any>({
-      visible: false,
-      componentStoreGroup: {
-        id: "",
-        name: "",
-        type: "",
-        storeNumber: "",
-        discardNumber: ""
-      }
-    });
-    const updateComponentStoreGroup = async (row: any) => {
-      updateComponentStoreGroupModal.value.componentStoreGroup.id = row.id;
-      updateComponentStoreGroupModal.value.componentStoreGroup.name = row.name;
-      updateComponentStoreGroupModal.value.visible = true;
-      console.log(row);
-      console.log(row.id);
-    };
-    const updateComponentStoreGroupConfirm = async () => {
-      await ComponentStoreGroupUpdate({
-        id: updateComponentStoreGroupModal.value.componentStoreGroup.id,
-        name: updateComponentStoreGroupModal.value.componentStoreGroup.name
-      });
-    };
-
-    // //工具包item：修改
-    const updateComponentStoreGroupItemModal = ref<any>({
-      visible: false,
-      componentStoreGroupItem: {
-        id: "",
-        type: "",
-        quantity: ""
-      }
-    });
-    
-    const updateComponentStoreItemGroup = async (row: any) => {
-      updateComponentStoreGroupItemModal.value.componentStoreGroupItem.grpId =
-        row.id;
-       updateComponentStoreGroupItemModal.value.componentStoreGroupItem.componentId= row.componentId;
-      updateComponentStoreGroupItemModal.value.componentStoreGroupItem.quantity =
-        row.quantity;
-      updateComponentStoreGroupItemModal.value.visible = true;
-    };
-    const updateComponentStoreGroupItemConfirm = async () => {
-      await ComponentStoreGroupItemUpdate({
-        id: updateComponentStoreGroupItemModal.value.componentStoreGroupItem.id
-      });
-    };
-     // //工具包item：新增
+    //工具包item：修改
     const addComponentStoreGroupItemModal = ref<any>({
       visible: false,
-      componentStoreGroupItem: {
-        grpId: "",
-        type: "add",
-        componentId:"",
-        quantity: ""
-      }
+      type: "",
+      componentStoreGroupItem: null,
+      grpId: null
     });
-    const addComponentStoreItemGroup = async (row: any) => {
-      updateComponentStoreGroupItemModal.value.componentStoreGroupItem.grpId =
-        row.id;
-       updateComponentStoreGroupItemModal.value.componentStoreGroupItem.componentId= row.componentId;
-      updateComponentStoreGroupItemModal.value.componentStoreGroupItem.quantity =
-        row.quantity;
-         updateComponentStoreGroupItemModal.value.componentStoreGroupItem.componentId =
-        row.componentId;
-      updateComponentStoreGroupItemModal.value.visible = true;
+    const addComponentStoreItemGroup = async (id: number, data?: any) => {
+      if (form1.value) {
+        (form1.value as ElForm).clearValidate();
+      }
+      if (data) {
+        console.log(data);
+        data = deepClone(data);
+        addComponentStoreGroupItemModal.value.type = "update";
+      } else {
+        data = {};
+        addComponentStoreGroupItemModal.value.type = "add";
+      }
+      addComponentStoreGroupItemModal.value.componentStoreGroupItem = data;
+      addComponentStoreGroupItemModal.value.grpId = id;
+      addComponentStoreGroupItemModal.value.visible = true;
     };
-    const addComponentStoreGroupItemConfirm = async (row: any) => {
-      await ComponentStoreGroupItemAdd({
-        grpId: addComponentStoreGroupItemModal.value.componentStoreGroupItem.grpId,
-        componentId: addComponentStoreGroupItemModal.value.componentStoreGroupItem.componentId,
-        quantity: addComponentStoreGroupItemModal.value.componentStoreGroupItem.quantity
-      });
-        addComponentStoreGroupItemModal.value.visible = true;
-    };
+    async function addComponentStoreGroupItemConfirm() {
+      const valid = await (form1.value as ElForm).validate();
+      if (valid) {
+        if (addComponentStoreGroupItemModal.value.type === "add") {
+          await ComponentStoreGroupItemAdd({
+            grpId: addComponentStoreGroupItemModal.value.grpId,
+            componentId:
+              addComponentStoreGroupItemModal.value.componentStoreGroupItem
+                .component.id,
+            quantity:
+              addComponentStoreGroupItemModal.value.componentStoreGroupItem
+                .quantity
+          });
+        } else if (addComponentStoreGroupItemModal.value.type === "update") {
+          await ComponentStoreGroupItemUpdate({
+            id: addComponentStoreGroupItemModal.value.componentStoreGroupItem.id,
+            componentId:
+              addComponentStoreGroupItemModal.value.componentStoreGroupItem
+                .component.id,
+            quantity:
+              addComponentStoreGroupItemModal.value.componentStoreGroupItem
+                .quantity
+          });
+        }
+        addComponentStoreGroupItemModal.value.visible = false;
+        Message.success("添加成功");
+        //刷新
+        var list =  await ComponentStoreGroupList({});
+        for (var i=0; i<componentList.value.length;i++){
+          // componentList.value[i] =  list[i].itemList;
+          set(componentList.value[i], 'itemList', list[i].itemList) 
+        }
+      }
+    }
+
+    async function getInfo() {
+      var test = await ComponentStoreGroupList({});
+      console.log(test);
+      // console.log(toolSelect.value)
+    }
+
     onMounted(
       useLoading(loading, async () => {
         componentList.value = await ComponentStoreGroupList({});
+        toolSelect.value = await ComponentStoreList({ forSelect: true });
         await queryStationList();
       })
     );
     return {
+      getInfo,
       loading,
       form1,
       form2,
@@ -351,21 +313,22 @@ export default {
       stationList,
       componentList,
       componentStoreForm,
-      updateComponentStoreGroupModal,
-      updateComponentStoreGroup,
-      updateComponentStoreGroupConfirm,
       removeComponentStoreGroupItem,
-      updateComponentStoreGroupItemModal,
-      updateComponentStoreItemGroup,
-      updateComponentStoreGroupItemConfirm,
-      addComponentStoreGroupItemModal,
       addComponentStoreGroupItemConfirm,
-      addComponentStoreItemGroup
+      initComponentStoreGroupItemForm,
+      addComponentStoreGroupItemModal,
+      addComponentStoreItemGroup,
+      toolSelect
     };
   }
 };
-
 function initcomponentStoreForm() {
+  return {
+    name: "",
+    no: ""
+  };
+}
+function initComponentStoreGroupItemForm() {
   return {
     name: "",
     no: ""
