@@ -326,11 +326,11 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted } from "@vue/composition-api";
-import { Message } from "element-ui";
-import { useConfirm, useLoading, useSearch } from "web-toolkit/src/service";
-import { ElForm } from "element-ui/types/form";
-import { isUndefined, deepClone } from "web-toolkit/src/utils";
+import { ref, Ref, onMounted } from '@vue/composition-api';
+import { Message } from 'element-ui';
+import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
+import { ElForm } from 'element-ui/types/form';
+import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 import {
   ComponentStoreAdd,
   ComponentStoreUpdate,
@@ -356,38 +356,38 @@ export default {
     const [filterText, deviceComponentStoreRecord] = useSearch(
       deviceComponentStoreRecordList,
       {
-        includeProps: [ "remark", "person"]
-      }
+        includeProps: [ 'remark', 'person'],
+      },
     );
     const [keywords, cutterNameList] = useSearch(cutterList, {
-      includeProps: ["no", "name", "extend.model", "extend.place"]
+      includeProps: ['no', 'name', 'extend.model', 'extend.place'],
     });
     // 1-新购, 2-利旧, 3-还回, 10-借出, 11-领用, 12-报废
     const storeTypeList = ref<any>([
       {
-        name: "新购",
-        id: 1
+        name: '新购',
+        id: 1,
       },
       {
-        name: "利旧",
-        id: 2
+        name: '利旧',
+        id: 2,
       },
       {
-        name: "还回",
-        id: 3
+        name: '还回',
+        id: 3,
       },
       {
-        name: "借出",
-        id: 10
+        name: '借出',
+        id: 10,
       },
       {
-        name: "领用",
-        id: 11
+        name: '领用',
+        id: 11,
       },
       {
-        name: "报废",
-        id: 12
-      }
+        name: '报废',
+        id: 12,
+      },
     ]);
     const form1 = ref<ElForm | null>(null);
     const form2 = ref<ElForm | null>(null);
@@ -395,7 +395,7 @@ export default {
     const addModal = ref<any>({
       visible: false,
       cutterInfo: null,
-      type: ""
+      type: '',
     });
     const cutterForm = async (data?: any) => {
       if (form1.value) {
@@ -403,10 +403,10 @@ export default {
       }
       if (data) {
         data = deepClone(data);
-        addModal.value.type = "update";
+        addModal.value.type = 'update';
       } else {
         data = initCutterForm();
-        addModal.value.type = "add";
+        addModal.value.type = 'add';
       }
       addModal.value.cutterInfo = data;
       addModal.value.visible = true;
@@ -415,55 +415,55 @@ export default {
     async function cutterInfoUpdate() {
       const valid = await (form1.value as ElForm).validate();
       if (valid) {
-        if (addModal.value.type === "add") {
+        if (addModal.value.type === 'add') {
           await ComponentStoreAdd({
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
-            type: addModal.value.cutterInfo.type
+            type: addModal.value.cutterInfo.type,
             // dTypeJson: JSON.stringify(addModal.value.cutterInfo.fitDeviceType),
           });
-        }else if(addModal.value.type === "update"){
+        } else if (addModal.value.type === 'update') {
           await ComponentStoreUpdate({
-            id:addModal.value.cutterInfo.id,
+            id: addModal.value.cutterInfo.id,
             name: addModal.value.cutterInfo.name,
             no: addModal.value.cutterInfo.no,
-            type: addModal.value.cutterInfo.type
-          })
+            type: addModal.value.cutterInfo.type,
+          });
         }
         addModal.value.visible = false;
-        Message.success("添加成功");
+        Message.success('添加成功');
         cutterList.value = await ComponentStoreList({});
       }
     }
 
     const remove = async (row: any) => {
       await ComponentStoreDel({
-        id: row.id
+        id: row.id,
       });
       cutterList.value = await ComponentStoreList({});
-      Message.success("删除成功");
+      Message.success('删除成功');
     };
     const storeRecordModal = ref<any>({
       visible: false,
       storeInfo: {
-        type: "新购",
-        quantity: "",
-        dt: "",
-        remark: "",
+        type: '新购',
+        quantity: '',
+        dt: '',
+        remark: '',
         extend: {
-          person: "",
+          person: '',
           stationRecord: {
             id: [],
-            quantity: ""
+            quantity: '',
           },
-          batchNo: "",
-          company: "",
-          supplier: "",
-          supplierTel: "",
-          buyDt: "",
-          keeper: ""
-        }
-      }
+          batchNo: '',
+          company: '',
+          supplier: '',
+          supplierTel: '',
+          buyDt: '',
+          keeper: '',
+        },
+      },
     });
     const storeRecordForm = async (data: any) => {
       if (form2.value) {
@@ -481,7 +481,7 @@ export default {
 
     const storeHistoryModal = ref<any>({
       visible: false,
-      storeHistoryInfo: null
+      storeHistoryInfo: null,
     });
     const storeHistoryForm = async (row: any) => {
       storeHistoryModal.value.storeHistoryInfo = row;
@@ -508,22 +508,22 @@ export default {
           remark: storeRecordModal.value.storeInfo.remark
             ? storeRecordModal.value.storeInfo.remark
             : null,
-          extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend)
+          extendJson: JSON.stringify(storeRecordModal.value.storeInfo.extend),
         });
         cutterList.value = await ComponentStoreList({});
         storeRecordModal.value.visible = false;
-        Message.success("添加成功");
+        Message.success('添加成功');
       }
     }
 
     const query = async (data: any) => {
       deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
-        componentId: data.id
+        componentId: data.id,
       });
     };
     const queryStationList = async () => {
       stationList.value = await StationList({
-        simple: false
+        simple: false,
       });
     };
     async function downFile() {
@@ -543,7 +543,7 @@ export default {
         cutterList.value = await ComponentStoreList({});
         deviceTypeList.value = await DeviceTypeList();
         await queryStationList();
-      })
+      }),
     );
     return {
       loading,
@@ -554,7 +554,7 @@ export default {
       form2,
       query,
       deviceComponentStore,
-      remove: useConfirm("确认删除？", useLoading(loading, remove)),
+      remove: useConfirm('确认删除？', useLoading(loading, remove)),
       addModal,
       cutterForm,
       deviceTypeList,
@@ -571,37 +571,37 @@ export default {
       storeTypeList,
       queryStationList,
       stationList,
-      downFile, upload:useLoading(loading,upload), exportExcel
+      downFile, upload: useLoading(loading, upload), exportExcel,
     };
-  }
+  },
 };
 
 function initCutterForm() {
   return {
-    name: "",
-    no: ""
+    name: '',
+    no: '',
   };
 }
 
 function initStoreRecordForm() {
   return {
     type: 1,
-    quantity: "",
-    remark: "",
-    dt: "",
+    quantity: '',
+    remark: '',
+    dt: '',
     extend: {
-      person: "",
+      person: '',
       stationRecord: {
         id: [],
-        quantity: ""
+        quantity: '',
       },
-      batchNo: "",
-      company: "",
-      supplier: "",
-      supplierTel: "",
-      buyDt: "",
-      keeper: ""
-    }
+      batchNo: '',
+      company: '',
+      supplier: '',
+      supplierTel: '',
+      buyDt: '',
+      keeper: '',
+    },
   };
 }
 </script>

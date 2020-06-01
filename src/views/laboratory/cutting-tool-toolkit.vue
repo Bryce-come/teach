@@ -99,11 +99,11 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, Ref, onMounted,set } from "@vue/composition-api";
-import { Message } from "element-ui";
-import { useConfirm, useLoading, useSearch } from "web-toolkit/src/service";
-import { ElForm } from "element-ui/types/form";
-import { isUndefined, deepClone } from "web-toolkit/src/utils";
+import { ref, Ref, onMounted, set } from '@vue/composition-api';
+import { Message } from 'element-ui';
+import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
+import { ElForm } from 'element-ui/types/form';
+import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 import {
   ComponentStoreAdd,
   ComponentStoreUpdate,
@@ -120,10 +120,10 @@ import {
   ComponentStoreGroupItemAdd,
   ComponentStoreGroupItemUpdate,
   ComponentStoreGroupItemDel,
-  ComponentStoreGroupItemList
-} from "@/dao/componentStoreDao";
-import { DeviceTypeList } from "@/dao/deviceDao";
-import { StationList } from "@/dao/stationDao";
+  ComponentStoreGroupItemList,
+} from '@/dao/componentStoreDao';
+import { DeviceTypeList } from '@/dao/deviceDao';
+import { StationList } from '@/dao/stationDao';
 
 export default {
   setup() {
@@ -140,17 +140,17 @@ export default {
     const [filterText, deviceComponentStoreRecord] = useSearch(
       deviceComponentStoreRecordList,
       {
-        includeProps: ["dt", "remark", "person"]
-      }
+        includeProps: ['dt', 'remark', 'person'],
+      },
     );
     const form1 = ref<ElForm | null>(null);
     const form2 = ref<ElForm | null>(null);
 
-    //新增工具包
+    // 新增工具包
     const addModal = ref<any>({
       visible: false,
       componentInfo: null,
-      type: ""
+      type: '',
     });
     const componentStoreForm = async (data?: any) => {
       if (form1.value) {
@@ -158,74 +158,74 @@ export default {
       }
       if (data) {
         data = deepClone(data);
-        addModal.value.type = "update";
+        addModal.value.type = 'update';
       } else {
         data = initcomponentStoreForm();
-        addModal.value.type = "add";
+        addModal.value.type = 'add';
       }
       addModal.value.componentInfo = data;
       addModal.value.visible = true;
     };
-    //工具包新增确认
+    // 工具包新增确认
     async function componentStoreAlter() {
       const valid = await (form1.value as ElForm).validate();
       if (valid) {
-        if (addModal.value.type === "add") {
+        if (addModal.value.type === 'add') {
           await ComponentStoreGroupAdd({
-            name: addModal.value.componentInfo.name
+            name: addModal.value.componentInfo.name,
           });
-        } else if (addModal.value.type === "update") {
+        } else if (addModal.value.type === 'update') {
           await ComponentStoreGroupUpdate({
             id: addModal.value.componentInfo.id,
-            name: addModal.value.componentInfo.name
+            name: addModal.value.componentInfo.name,
           });
         }
         addModal.value.visible = false;
-        Message.success("添加成功");
+        Message.success('添加成功');
         componentList.value = await ComponentStoreGroupList({});
       }
     }
 
-    //删除工具包
+    // 删除工具包
     const removeComponentStoreGroup = async (row: any) => {
       await ComponentStoreGroupDel({
-        id: row.id
+        id: row.id,
       });
       componentList.value = await ComponentStoreGroupList({});
-      Message.success("删除成功");
+      Message.success('删除成功');
     };
 
-    //删除工具包item
+    // 删除工具包item
     const removeComponentStoreGroupItem = async (row: any) => {
       await ComponentStoreGroupItemDel({
-        id: row.id
+        id: row.id,
       });
-      Message.success("删除成功");
+      Message.success('删除成功');
       // componentList.value = await ComponentStoreGroupList({});
-      var list =  await ComponentStoreGroupList({});
-        for (var i=0; i<componentList.value.length;i++){
+      let list =  await ComponentStoreGroupList({});
+      for (let i = 0; i < componentList.value.length; i++) {
           // componentList.value[i] =  list[i].itemList;
-          set(componentList.value[i], 'itemList', list[i].itemList) 
+          set(componentList.value[i], 'itemList', list[i].itemList);
         }
     };
 
     const query = async (data: any) => {
       deviceComponentStoreRecordList.value = await ComponentStoreRecordList({
-        componentId: data.id
+        componentId: data.id,
       });
     };
     const queryStationList = async () => {
       stationList.value = await StationList({
-        simple: false
+        simple: false,
       });
     };
 
-    //工具包item：修改
+    // 工具包item：修改
     const addComponentStoreGroupItemModal = ref<any>({
       visible: false,
-      type: "",
+      type: '',
       componentStoreGroupItem: null,
-      grpId: null
+      grpId: null,
     });
     const addComponentStoreItemGroup = async (id: number, data?: any) => {
       if (form1.value) {
@@ -234,10 +234,10 @@ export default {
       if (data) {
         console.log(data);
         data = deepClone(data);
-        addComponentStoreGroupItemModal.value.type = "update";
+        addComponentStoreGroupItemModal.value.type = 'update';
       } else {
         data = {};
-        addComponentStoreGroupItemModal.value.type = "add";
+        addComponentStoreGroupItemModal.value.type = 'add';
       }
       addComponentStoreGroupItemModal.value.componentStoreGroupItem = data;
       addComponentStoreGroupItemModal.value.grpId = id;
@@ -246,7 +246,7 @@ export default {
     async function addComponentStoreGroupItemConfirm() {
       const valid = await (form1.value as ElForm).validate();
       if (valid) {
-        if (addComponentStoreGroupItemModal.value.type === "add") {
+        if (addComponentStoreGroupItemModal.value.type === 'add') {
           await ComponentStoreGroupItemAdd({
             grpId: addComponentStoreGroupItemModal.value.grpId,
             componentId:
@@ -254,9 +254,9 @@ export default {
                 .component.id,
             quantity:
               addComponentStoreGroupItemModal.value.componentStoreGroupItem
-                .quantity
+                .quantity,
           });
-        } else if (addComponentStoreGroupItemModal.value.type === "update") {
+        } else if (addComponentStoreGroupItemModal.value.type === 'update') {
           await ComponentStoreGroupItemUpdate({
             id: addComponentStoreGroupItemModal.value.componentStoreGroupItem.id,
             componentId:
@@ -264,22 +264,22 @@ export default {
                 .component.id,
             quantity:
               addComponentStoreGroupItemModal.value.componentStoreGroupItem
-                .quantity
+                .quantity,
           });
         }
         addComponentStoreGroupItemModal.value.visible = false;
-        Message.success("添加成功");
-        //刷新
-        var list =  await ComponentStoreGroupList({});
-        for (var i=0; i<componentList.value.length;i++){
+        Message.success('添加成功');
+        // 刷新
+        let list =  await ComponentStoreGroupList({});
+        for (let i = 0; i < componentList.value.length; i++) {
           // componentList.value[i] =  list[i].itemList;
-          set(componentList.value[i], 'itemList', list[i].itemList) 
+          set(componentList.value[i], 'itemList', list[i].itemList);
         }
       }
     }
 
     async function getInfo() {
-      var test = await ComponentStoreGroupList({});
+      let test = await ComponentStoreGroupList({});
       console.log(test);
       // console.log(toolSelect.value)
     }
@@ -289,7 +289,7 @@ export default {
         componentList.value = await ComponentStoreGroupList({});
         toolSelect.value = await ComponentStoreList({ forSelect: true });
         await queryStationList();
-      })
+      }),
     );
     return {
       getInfo,
@@ -299,8 +299,8 @@ export default {
       query,
       deviceComponentStore,
       removeComponentStoreGroup: useConfirm(
-        "确认删除？",
-        useLoading(loading, removeComponentStoreGroup)
+        '确认删除？',
+        useLoading(loading, removeComponentStoreGroup),
       ),
       addModal,
       deviceTypeList,
@@ -318,20 +318,20 @@ export default {
       initComponentStoreGroupItemForm,
       addComponentStoreGroupItemModal,
       addComponentStoreItemGroup,
-      toolSelect
+      toolSelect,
     };
-  }
+  },
 };
 function initcomponentStoreForm() {
   return {
-    name: "",
-    no: ""
+    name: '',
+    no: '',
   };
 }
 function initComponentStoreGroupItemForm() {
   return {
-    name: "",
-    no: ""
+    name: '',
+    no: '',
   };
 }
 </script>

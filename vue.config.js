@@ -23,7 +23,6 @@ module.exports = {
       sass: {
         data: `
           @import "node_modules/web-toolkit/src/scss/color.scss";
-          @import "node_modules/web-toolkit/src/scss/device.scss";
           @import "node_modules/web-toolkit/src/scss/${theme}.scss";
         `
       }

@@ -564,7 +564,7 @@ export default createComponent({
       showModal.value.visible = true;
     };
     function setEndtimeValue() {
-      set(showModal.value.oneLesson, "endLesson", undefined)
+      set(showModal.value.oneLesson, 'endLesson', undefined);
     }
     function setGroupValue() {
       showModal.value.oneLesson.extend.claszGroup = undefined;

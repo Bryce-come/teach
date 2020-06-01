@@ -64,7 +64,6 @@ import { Message } from 'element-ui';
 import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { deepClone } from 'web-toolkit/src/utils';
 import {postService, storeUserInfo} from 'web-toolkit/src/case-main';
-import {IUser} from '@/types/beans';
 import {urlMap} from '@/config';
 import {ElForm} from 'element-ui/types/form';
 import {AdminUserList, RoleList, UserDel} from '@/dao/userDao';
@@ -93,7 +92,7 @@ export default createComponent({
         callback();
       }
     }
-    function showForm(row?: IUser) {
+    function showForm(row?: any) {
       if (row) {
         row.pwd = '';
         (row as any).pwdCheck = '';
@@ -123,7 +122,7 @@ export default createComponent({
       modal.value.visible = false;
       await query();
     }
-    async function toggleStatus(row: IUser) {
+    async function toggleStatus(row: any) {
       const off = row.off;
       await UserDel({
         id: row.id,
@@ -132,7 +131,7 @@ export default createComponent({
       Message.success(`${off === Status.Normal ? '冻结' : '恢复'}成功`);
       await query();
     }
-    async function remove(row: IUser) {
+    async function remove(row: any) {
       await UserDel({
         id: row.id,
         off: 0,

@@ -42,7 +42,6 @@ import { Message } from 'element-ui';
 import { ref, onMounted } from '@vue/composition-api';
 import { useSearch, useLoading, useConfirm } from 'web-toolkit/src/service';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
-import {IRole} from 'web-toolkit/src/types/interfaces';
 import {postService} from 'web-toolkit/src/case-main';
 import {urlMap} from '@/config';
 import {ElForm} from 'element-ui/types/form';
@@ -66,14 +65,14 @@ export default {
     });
     const form = ref<ElForm|null>(null);
 
-    async function showForm(row?: IRole) {
+    async function showForm(row?: any) {
       modal.value.data = row ? deepClone(row) : initRoleForm();
       modal.value.visible = true;
     }
     async function update() {
       const valid = await (form.value as ElForm).validate();
       if (!valid) { return ; }
-      const { department, privileges, name, id } = modal.value.data as IRole;
+      const { department, privileges, name, id } = modal.value.data as any;
       const params = {
         name,
         id,
@@ -95,7 +94,7 @@ export default {
       roleList.value = await RoleList({});
     }
 
-    async function deleteRole(role: IRole) {
+    async function deleteRole(role: any) {
       await postService(urlMap.role_del.url, { id: role.id });
       await queryRoleList();
       Message.success('删除成功');
@@ -125,7 +124,7 @@ export default {
     };
   },
 };
-function initRoleForm(): Partial<IRole> {
+function initRoleForm(): Partial<any> {
   return {
     name: '',
     privileges: [],

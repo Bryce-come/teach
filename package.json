@@ -7,7 +7,7 @@
     "build.demo": "vue-cli-service build --modern --mode pro.demo",
     "lint": "vue-cli-service lint",
     "rm_cache": "rm -rf ./node_modules/.cache",
-    "core": "yarn add git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git"
+    "core": "yarn add git+ssh://git@github.com/mizuki1412/web-toolkit.git"
   },
   "lint-staged": {
     "*.ts": [
@@ -18,7 +18,7 @@
   "dependencies": {
     "amap-js": "^1.2.1",
     "element-ui": "^2.13.0",
-    "web-toolkit": "git+ssh://git@git.linkortech.com:10022/yingchaojie/web-toolkit.git"
+    "web-toolkit": "git+ssh://git@github.com/mizuki1412/web-toolkit.git"
   },
   "devDependencies": {
     "@babel/core": "7.7.4",
