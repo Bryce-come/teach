@@ -18,7 +18,7 @@
   "dependencies": {
     "amap-js": "^1.2.1",
     "element-ui": "^2.13.0",
-    "web-toolkit": "git+ssh://git@github.com/mizuki1412/web-toolkit.git"
+    "web-toolkit": "git+https://github.com/mizuki1412/web-toolkit.git"
   },
   "devDependencies": {
     "@babel/core": "7.7.4",

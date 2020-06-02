@@ -2,7 +2,6 @@
   <div v-loading="loading" class="cutting-tool-management">
     <div style="margin-bottom:10px">
       <el-button type="primary" @click="componentStoreForm()">增加工具包</el-button>
-      <el-button @click="getInfo()">test</el-button>
     </div>
     <lkt-table :data="componentList" style="width:100%">
       <el-table-column type="expand">
@@ -23,7 +22,6 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="工具包名称" />
-      <el-table-column prop="id" label="工具包ID" />
       <el-table-column label="操作" width="280px">
         <div class="flex center little-space" slot-scope="{row}">
           <el-button type="text" @click="componentStoreForm(row)">修改</el-button>
@@ -92,7 +90,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="刀具数量：" prop="quantity" :rules="{ required: true, message: '请输入刀具数量'}">
-          <el-input v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.quantity"></el-input>
+          <el-input-number v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.quantity"></el-input-number>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -105,9 +103,6 @@ import { useConfirm, useLoading, useSearch } from 'web-toolkit/src/service';
 import { ElForm } from 'element-ui/types/form';
 import { isUndefined, deepClone } from 'web-toolkit/src/utils';
 import {
-  ComponentStoreAdd,
-  ComponentStoreUpdate,
-  ComponentStoreDel,
   ComponentStoreList,
   ComponentStoreRecordAdd,
   ComponentStoreRecordUpdate,
@@ -232,7 +227,6 @@ export default {
         (form1.value as ElForm).clearValidate();
       }
       if (data) {
-        console.log(data);
         data = deepClone(data);
         addComponentStoreGroupItemModal.value.type = 'update';
       } else {
@@ -278,12 +272,6 @@ export default {
       }
     }
 
-    async function getInfo() {
-      let test = await ComponentStoreGroupList({});
-      console.log(test);
-      // console.log(toolSelect.value)
-    }
-
     onMounted(
       useLoading(loading, async () => {
         componentList.value = await ComponentStoreGroupList({});
@@ -292,7 +280,6 @@ export default {
       }),
     );
     return {
-      getInfo,
       loading,
       form1,
       form2,

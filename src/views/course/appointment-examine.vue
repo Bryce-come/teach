@@ -13,6 +13,7 @@
               :value="item.id"/>
           </el-select>
         </div>
+
         <div class="flex align-center" style="margin-left:10px">
           <span>预约结果：</span>
           <el-select v-model="appointResult" multiple collapse-tags :clearable="false" placeholder="请选择预约结果"
@@ -25,16 +26,19 @@
           </el-select>
         </div>
       </div>
+
       <div class="flex align-center wrap" style="margin: 5px 0">
         <div class="flex align-center" style="width:60%">
           <span>申请时间：</span>
           <lkt-date-picker v-model="appointDt"/>
           <el-button type="primary" style="margin-left:5px" @click="query()">查询</el-button>
         </div>
+
         <div class="flex end" style="width:40%">
           <el-input v-model="keywords" placeholder="输入搜索：申请人/角色" style="width:400px"/>
         </div>
       </div>
+
       <lkt-table :data="flitered">
         <el-table-column type="expand">
           <div slot-scope="props" class="flex start">
@@ -51,7 +55,7 @@
           </div>
         </el-table-column>
         <el-table-column label="预约人" prop="applicant.name" width="80"/>
-        <el-table-column label="角色" width="80" prop="applicant.role.name"/>
+        <el-table-column label="角色"  prop="applicant.role.name" width="80"/>
         <el-table-column label="申请时间" width="160" prop="createDt" sortable align="center"/>
         <el-table-column label="预约类型" width="100">
           <span slot-scope="{ row }">
@@ -77,7 +81,7 @@
         <el-table-column label="操作" fixed="right" align="center" min-width="150">
           <div class="flex center little-space wrap" slot-scope="{ row }">
             <el-button type="warning" size="mini"
-                       @click="()=>{ modal.dt = new Date(row.startDt);modal.visible = true;}">对比课表
+                       @click="()=>{ modal.dt = new Date(row.startDt); modal.visible = true;}">对比课表
             </el-button>
             <el-button type="primary" size="mini" :disabled="row.result!==0" @click="agreeAppoint(row)">同意</el-button>
             <el-button type="danger" size="mini" :disabled="row.result!==0" @click="disagreeAppoint(row)">拒绝</el-button>
@@ -85,6 +89,7 @@
         </el-table-column>
       </lkt-table>
     </div>
+
     <kit-dialog-simple
       v-if="modal.dt"
       :no-footer="true"
@@ -128,6 +133,7 @@
         visible: false,
         dt: null,
       });
+
       const query = async () => {
         appointRecords.value = await AppointList({
           typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
@@ -144,6 +150,7 @@
         Message.success('已同意申请');
         await query();
       };
+
       const disagreeAppoint = async (row: any) => {
         await AppointOperate({
           id: row.id,
@@ -155,6 +162,7 @@
       onMounted(useLoading(loading, async () => {
         await query();
       }));
+      
       return {
         loading, appointRecords, query, modal,
         agreeAppoint,
