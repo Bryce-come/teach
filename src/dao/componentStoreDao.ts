@@ -93,8 +93,6 @@ export async function ComponentStoreRecordList(params: any) {
   return list;
 }
 
-
-
 /**
  * 工具包增加
  * RequestParam String name
@@ -163,7 +161,6 @@ export async function ComponentStoreGroupItemList(params: any) {
   const {data: {list}} = await postService('/rest/device/component/store/group/item/list', params);
   return list;
 }
-
 
 /**
  * 导入添加

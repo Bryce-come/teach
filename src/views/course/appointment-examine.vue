@@ -102,76 +102,76 @@
   </div>
 </template>
 <script lang="ts">
-  import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
-  import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
-  import {Message} from 'element-ui';
-  import courseList from '../../components/courseList.vue';
-  import {AppointList, AppointOperate} from '@/dao/appointRecordDao';
+import {ref, Ref, onMounted, createComponent} from '@vue/composition-api';
+import {useSearch, useLoading, useConfirm} from 'web-toolkit/src/service';
+import {Message} from 'element-ui';
+import courseList from '../../components/courseList.vue';
+import {AppointList, AppointOperate} from '@/dao/appointRecordDao';
 
-  export default createComponent({
-    components: {courseList},
-    setup() {
-      const loading = ref(false);
-      const appointRecords = ref<any>();
-      const appointTypeList = ref<any>([
-        {id: 1, name: '授课预约'},
-        {id: 2, name: '个人预约'},
-      ]);
-      const appointType = ref<any>();
-      const appointResultList = ref<any>([
-        {id: 0, name: '未审核'},
-        {id: 1, name: '已同意'},
-        {id: 2, name: '已拒绝'},
-        {id: 3, name: '申请撤销'},
-      ]);
-      const appointResult = ref<any>();
-      const appointDt = ref<any>(null);
-      const [keywords, flitered] = useSearch(appointRecords, {
-        includeProps: ['applicant.name', 'applicant.role'],
+export default createComponent({
+  components: {courseList},
+  setup() {
+    const loading = ref(false);
+    const appointRecords = ref<any>();
+    const appointTypeList = ref<any>([
+      {id: 1, name: '授课预约'},
+      {id: 2, name: '个人预约'},
+    ]);
+    const appointType = ref<any>();
+    const appointResultList = ref<any>([
+      {id: 0, name: '未审核'},
+      {id: 1, name: '已同意'},
+      {id: 2, name: '已拒绝'},
+      {id: 3, name: '申请撤销'},
+    ]);
+    const appointResult = ref<any>();
+    const appointDt = ref<any>(null);
+    const [keywords, flitered] = useSearch(appointRecords, {
+      includeProps: ['applicant.name', 'applicant.role'],
+    });
+    const modal = ref<any>({
+      visible: false,
+      dt: null,
+    });
+
+    const query = async () => {
+      appointRecords.value = await AppointList({
+        typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
+        resultJson: appointResult.value && appointResult.value.length > 0 ? JSON.stringify(appointResult.value) : null,
+        start: appointDt.value && appointDt.value[0] ? (appointDt.value[0] as Date).getTime() : null,
+        end: appointDt.value && appointDt.value[1] ? (appointDt.value[1] as Date).getTime() : null,
       });
-      const modal = ref<any>({
-        visible: false,
-        dt: null,
+    };
+    const agreeAppoint = async (row: any) => {
+      await AppointOperate({
+        id: row.id,
+        result: 1,
       });
+      Message.success('已同意申请');
+      await query();
+    };
 
-      const query = async () => {
-        appointRecords.value = await AppointList({
-          typeJson: appointType.value && appointType.value.length > 0 ? JSON.stringify(appointType.value) : null,
-          resultJson: appointResult.value && appointResult.value.length > 0 ? JSON.stringify(appointResult.value) : null,
-          start: appointDt.value && appointDt.value[0] ? (appointDt.value[0] as Date).getTime() : null,
-          end: appointDt.value && appointDt.value[1] ? (appointDt.value[1] as Date).getTime() : null,
-        });
-      };
-      const agreeAppoint = async (row: any) => {
-        await AppointOperate({
-          id: row.id,
-          result: 1,
-        });
-        Message.success('已同意申请');
-        await query();
-      };
+    const disagreeAppoint = async (row: any) => {
+      await AppointOperate({
+        id: row.id,
+        result: 2,
+      });
+      Message.success('已拒绝申请');
+      await query();
+    };
+    onMounted(useLoading(loading, async () => {
+      await query();
+    }));
 
-      const disagreeAppoint = async (row: any) => {
-        await AppointOperate({
-          id: row.id,
-          result: 2,
-        });
-        Message.success('已拒绝申请');
-        await query();
-      };
-      onMounted(useLoading(loading, async () => {
-        await query();
-      }));
-      
-      return {
-        loading, appointRecords, query, modal,
-        agreeAppoint,
-        disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
-        appointTypeList, appointType, appointResultList, appointResult, appointDt,
-        keywords, flitered,
-      };
-    },
-  });
+    return {
+      loading, appointRecords, query, modal,
+      agreeAppoint,
+      disagreeAppoint: useConfirm('确认拒绝？', useLoading(loading, disagreeAppoint)),
+      appointTypeList, appointType, appointResultList, appointResult, appointDt,
+      keywords, flitered,
+    };
+  },
+});
 </script>
 <style scoped lang="scss">
 

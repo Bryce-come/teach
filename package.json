@@ -7,7 +7,7 @@
     "build.demo": "vue-cli-service build --modern --mode pro.demo",
     "lint": "vue-cli-service lint",
     "rm_cache": "rm -rf ./node_modules/.cache",
-    "core": "yarn add git+ssh://git@github.com/mizuki1412/web-toolkit.git"
+    "core": "yarn add git+https://github.com/mizuki1412/web-toolkit.git"
   },
   "lint-staged": {
     "*.ts": [

@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column prop="name" label="工具包名称" />
       <el-table-column label="操作" width="280px">
-        <div class="flex center little-space" slot-scope="{row}">
+        <div class="flex little-space" slot-scope="{row}">
           <el-button type="text" @click="componentStoreForm(row)">修改</el-button>
           <el-button
             type="danger"
@@ -197,7 +197,7 @@ export default {
       });
       Message.success('删除成功');
       // componentList.value = await ComponentStoreGroupList({});
-      let list =  await ComponentStoreGroupList({});
+      const list =  await ComponentStoreGroupList({});
       for (let i = 0; i < componentList.value.length; i++) {
           // componentList.value[i] =  list[i].itemList;
           set(componentList.value[i], 'itemList', list[i].itemList);
@@ -264,7 +264,7 @@ export default {
         addComponentStoreGroupItemModal.value.visible = false;
         Message.success('添加成功');
         // 刷新
-        let list =  await ComponentStoreGroupList({});
+        const list =  await ComponentStoreGroupList({});
         for (let i = 0; i < componentList.value.length; i++) {
           // componentList.value[i] =  list[i].itemList;
           set(componentList.value[i], 'itemList', list[i].itemList);
