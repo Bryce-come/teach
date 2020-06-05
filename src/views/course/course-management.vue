@@ -65,7 +65,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, validator:validator}">
+        <el-form-item label="操作评分占比：" prop="extend.scoreRatio[0]" :rules="{ required: true, validator:validator }">
           <el-input-number :min="0" :max="100" v-model="courseModal.courseInfo.extend.scoreRatio[0]"/>
         </el-form-item>
         <el-form-item label="报告评分占比：" prop="extend.scoreRatio[1]" :rules="{ required: true, validator:validator}">
@@ -211,7 +211,7 @@ export default {
     }
 
     function validator(rule: any, value: string, callback: Function) {
-      if (value && (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] !== 100)) {
+     if (value && (courseModal.value.courseInfo.extend.scoreRatio[1] + courseModal.value.courseInfo.extend.scoreRatio[0] !== 100)) {
         callback(new Error('分数比相加需为100'));
       } else if (!value) {
         callback(new Error('请输入占比'));
@@ -219,7 +219,7 @@ export default {
         callback();
       }
     }
-
+ 
     async function courseUpdate() {
       const valid = await (form.value as ElForm).validate();
       if (valid) {

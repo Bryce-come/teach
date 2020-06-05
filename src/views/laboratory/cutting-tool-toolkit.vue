@@ -89,8 +89,8 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="刀具数量：" prop="quantity" :rules="{ required: true, message: '请输入刀具数量'}">
-          <el-input-number v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.quantity"></el-input-number>
+        <el-form-item label="刀具数量：" prop="quantity" :rules="{ required: true, message: '请输入刀具数量', validator:validator}">
+          <el-input-number :min="0"  v-model="addComponentStoreGroupItemModal.componentStoreGroupItem.quantity"></el-input-number>
         </el-form-item>
       </el-form>
     </kit-dialog-simple>
@@ -272,6 +272,16 @@ export default {
       }
     }
 
+    function validator(rule: any, value: string, callback: Function) {
+     if (value && addComponentStoreGroupItemModal.value.componentStoreGroupItem.quantity<=0) {
+        callback(new Error('数量必须大于0'));
+      } else if (!value) {
+        callback(new Error('请输入数量'));
+      } else {
+        callback();
+      }
+    }
+
     onMounted(
       useLoading(loading, async () => {
         componentList.value = await ComponentStoreGroupList({});
@@ -306,6 +316,7 @@ export default {
       addComponentStoreGroupItemModal,
       addComponentStoreItemGroup,
       toolSelect,
+      validator
     };
   },
 };
@@ -323,16 +334,4 @@ function initComponentStoreGroupItemForm() {
 }
 </script>
 <style scoped lang="scss">
-.demo-table-expand {
-  font-size: 0;
-}
-.demo-table-expand label {
-  width: 90px;
-  color: #99a9bf;
-}
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
-}
 </style>
