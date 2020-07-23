@@ -193,6 +193,7 @@ export default {
     const [keywords, filtered] = useSearch(experimentList, {
       includeProps: ['name'],
     });
+    //filtered是筛选之后的结果，在experimentList中进行筛选，筛选包含name的关键词的条目显示在filterd中
     const tab = ref<'所有实验' | '课内实验' | '开放实验'>('所有实验');
 
     async function changeTab(tab: any) {

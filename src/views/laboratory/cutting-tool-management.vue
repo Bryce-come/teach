@@ -15,6 +15,7 @@
     <div class="flex end" style="margin-bottom: 5px;margin-top: -46px">
       <el-input slot="search" class="search-bar" v-model="keywords" placeholder="按关键字搜索" clearable />
     </div>
+    
     <lkt-table :data="cutterNameList" style="width:100%">
       <el-table-column prop="name" label="刀具名称" />
       <el-table-column prop="no" label="刀具编号" />
